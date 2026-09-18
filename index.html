@@ -563,34 +563,177 @@ window.addEventListener('load',function(){
 });
 </script><script id="full-i18n">
 (function(){
-const D={
-en:{'아마데':'Amade','페라':'Fera','로사':'Rosa','알카':'Alka','마르고':'Margo','살로':'Salo','예거':'Jaeger','첸코':'Chenko','아마네':'Amane','파드':'Fard','힐데':'Hilde','고든':'Gordon','비율':'Ratio','열':'Row','상대가 강하면':'If the opponent is strong,','고려':'consider','연습':'Practice','집결장':'Rally Leader','집결원':'Rally Member','공격':'Attack','수성':'Defense','방어':'Defense','성검쟁탈':'Holy Sword Clash','바이킹':'Viking','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','규칙':'Rules','3대연맹전':'3 Alliances','공지':'Notice','공지 일정':'Schedule','대체자':'Substitutes','개돌조':'Rush Team','닉네임':'Nickname','저장':'Save','새로고침':'Refresh','관리자 수정':'Admin Edit','수정 종료':'Exit Edit','관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'Admin edit mode. Press Save to save immediately.','현재 보기 전용입니다. 관리자만 수정할 수 있습니다.':'View only. Only administrators can edit.','최신 공성전 내용을 불러왔습니다.':'Latest Castle Siege content loaded.','공성전 저장 완료! / Saved!':'Castle Siege saved!','서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.':'Server refresh failed — showing this device\'s saved copy.'},
-ja:{'아마데':'アマデ','페라':'フェラ','로사':'ロサ','알카':'アルカ','마르고':'マルゴ','살로':'サロ','예거':'イェーガー','첸코':'チェンコ','아마네':'アマネ','파드':'ファード','힐데':'ヒルデ','고든':'ゴードン','비율':'割合','열':'列','상대가 강하면':'相手が強い場合は','고려':'検討','연습':'練習','집결장':'集結長','집결원':'集結メンバー','공격':'攻撃','수성':'防衛','방어':'防衛','성검쟁탈':'聖剣争奪','바이킹':'バイキング','공성전':'攻城戦','곰사냥':'熊狩り','곰 사냥':'熊狩り','규칙':'ルール','3대연맹전':'3大連盟戦','공지':'お知らせ','공지 일정':'スケジュール','대체자':'交代要員','개돌조':'突撃隊','닉네임':'ニックネーム','저장':'保存','새로고침':'更新','관리자 수정':'管理者編集','수정 종료':'編集終了'},
-zh:{'아마데':'阿玛德','페라':'佩拉','로사':'罗莎','알카':'阿尔卡','마르고':'马尔戈','살로':'萨洛','예거':'耶格','첸코':'琴科','아마네':'阿玛内','파드':'帕德','힐데':'希尔德','고든':'戈登','비율':'比例','열':'排','상대가 강하면':'如果对手很强，','고려':'考虑','연습':'练习','집결장':'集结长','집결원':'集结成员','공격':'攻击','수성':'防守','방어':'防守','성검쟁탈':'圣剑争夺','바이킹':'维京','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','규칙':'规则','3대연맹전':'三大联盟战','공지':'公告','공지 일정':'日程','대체자':'替补','개돌조':'突击组','닉네임':'昵称','저장':'保存','새로고침':'刷新','관리자 수정':'管理员编辑','수정 종료':'结束编辑'},
-de:{'아마데':'Amade','페라':'Fera','로사':'Rosa','알카':'Alka','마르고':'Margo','살로':'Salo','예거':'Jaeger','첸코':'Chenko','아마네':'Amane','파드':'Fard','힐데':'Hilde','고든':'Gordon','비율':'Verhältnis','열':'Reihe','상대가 강하면':'Wenn der Gegner stark ist,','고려':'in Betracht ziehen','연습':'Übung','집결장':'Rally-Leiter','집결원':'Rally-Mitglied','공격':'Angriff','수성':'Verteidigung','방어':'Verteidigung','성검쟁탈':'Heiliger Schwertkampf','바이킹':'Wikinger','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','규칙':'Regeln','3대연맹전':'3 Allianzen','공지':'Ankündigung','공지 일정':'Zeitplan','대체자':'Ersatzspieler','개돌조':'Sturmteam','닉네임':'Spitzname','저장':'Speichern','새로고침':'Aktualisieren','관리자 수정':'Admin-Bearbeitung','수정 종료':'Bearbeitung beenden'}
-};
-const NAV={en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ 3 Alliances','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliger Schwertkampf','⚔️ 3 Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln']};
-function L(){return localStorage.getItem('kor1816_lang')||'ko'}
-function translateText(str,lang){
- if(lang==='ko'||!D[lang])return str;
- let x=str;
- const m=D[lang];
- Object.keys(m).sort((a,b)=>b.length-a.length).forEach(k=>{x=x.split(k).join(m[k])});
- return x;
-}
-function apply(){
- const lang=L(); if(lang==='ko')return;
- if(NAV[lang])document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
- // Translate every visible text node, including dynamically rendered Firebase content.
- const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
- let n;while(n=walker.nextNode()){
-   const p=n.parentElement;if(!p||p.closest('.lang-switch')||['SCRIPT','STYLE'].includes(p.tagName))continue;
-   if(n.nodeValue.trim())n.nodeValue=translateText(n.nodeValue,lang);
- }
- // Translate all editable placeholders too.
- document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(e=>e.placeholder=translateText(e.placeholder,lang));
-}
-window.setLang=function(x){localStorage.setItem('kor1816_lang',x);if(x==='ko')location.reload();else apply()};
-setTimeout(apply,150);setInterval(apply,500);
+  /*
+    KOR1816 automatic translation
+    - Korean is the single source of truth.
+    - Display text is translated on demand into EN/JA/ZH/DE.
+    - Translation results are cached in localStorage so the same text is not
+      translated repeatedly.
+    - Admin inputs remain Korean so saving always uses the original Korean data.
+  */
+  const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de'};
+  const NAV={
+    en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ 3 Alliances','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
+    ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
+    zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
+    de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliger Schwertkampf','⚔️ 3 Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln']
+  };
+  const CACHE_KEY='kor1816_auto_translation_v1';
+  const pending=new Map();
+  let applying=false;
+  let applyAgain=false;
+
+  function currentLang(){return localStorage.getItem('kor1816_lang')||'ko'}
+  function cacheLoad(){
+    try{return JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}
+    catch(e){return {}}
+  }
+  const cache=cacheLoad();
+  function cacheSave(){
+    try{localStorage.setItem(CACHE_KEY,JSON.stringify(cache))}catch(e){}
+  }
+
+  function hasKorean(s){return /[\uac00-\ud7a3]/.test(s)}
+  function key(lang,text){return lang+'|'+text}
+
+  async function googleTranslate(text,lang){
+    const target=LANGS[lang];
+    if(!target || !hasKorean(text)) return text;
+    const k=key(lang,text);
+    if(cache[k]) return cache[k];
+    if(pending.has(k)) return pending.get(k);
+
+    const p=(async()=>{
+      try{
+        const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl='+
+          encodeURIComponent(target)+'&dt=t&q='+encodeURIComponent(text);
+        const res=await fetch(url,{mode:'cors'});
+        if(!res.ok) throw new Error('translation HTTP '+res.status);
+        const data=await res.json();
+        const out=Array.isArray(data)&&Array.isArray(data[0])
+          ? data[0].map(x=>x&&x[0]||'').join('')
+          : '';
+        if(!out) throw new Error('empty translation');
+        cache[k]=out;
+        cacheSave();
+        return out;
+      }catch(e){
+        console.warn('Automatic translation failed:',e);
+        return text;
+      }finally{
+        pending.delete(k);
+      }
+    })();
+    pending.set(k,p);
+    return p;
+  }
+
+  function markOriginal(node){
+    if(!node.dataset.kor1816Original)
+      node.dataset.kor1816Original=node.nodeValue;
+    return node.dataset.kor1816Original;
+  }
+
+  function restoreKorean(){
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    let n;
+    while(n=walker.nextNode()){
+      const p=n.parentElement;
+      if(!p || p.closest('.lang-switch') || ['SCRIPT','STYLE'].includes(p.tagName)) continue;
+      if(n.dataset.kor1816Original!==undefined) n.nodeValue=n.dataset.kor1816Original;
+    }
+    document.querySelectorAll('input[placeholder],textarea[placeholder],select').forEach(el=>{
+      if(el.dataset.kor1816Placeholder!==undefined) el.placeholder=el.dataset.kor1816Placeholder;
+    });
+    document.querySelectorAll('nav button').forEach((b,i)=>{
+      if(NAV.ko && NAV.ko[i]) b.textContent=NAV.ko[i];
+      else if(b.dataset.kor1816NavOriginal!==undefined) b.textContent=b.dataset.kor1816NavOriginal;
+    });
+  }
+
+  async function translateNodes(lang){
+    if(!LANGS[lang]) return;
+    const nodes=[];
+    const seen=new Set();
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    let n;
+    while(n=walker.nextNode()){
+      const p=n.parentElement;
+      if(!p || p.closest('.lang-switch') || ['SCRIPT','STYLE'].includes(p.tagName)) continue;
+      const original=markOriginal(n);
+      if(!original.trim() || !hasKorean(original)) continue;
+      if(seen.has(original)) continue;
+      seen.add(original);
+      nodes.push({node:n,original});
+    }
+
+    const queue=nodes.slice();
+    const workers=Array.from({length:4},async()=>{
+      while(queue.length){
+        const item=queue.shift();
+        const out=await googleTranslate(item.original,lang);
+        if(item.node.isConnected && currentLang()===lang && out!==item.node.nodeValue)
+          item.node.nodeValue=out;
+      }
+    });
+    await Promise.all(workers);
+
+    // Placeholders are useful to translate, but editable values themselves
+    // stay untouched because the administrator always edits Korean.
+    const ph=[];
+    document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
+      if(el.dataset.kor1816Placeholder===undefined)
+        el.dataset.kor1816Placeholder=el.placeholder||'';
+      const original=el.dataset.kor1816Placeholder||'';
+      if(hasKorean(original)) ph.push({el,original});
+    });
+    const pq=ph.slice();
+    await Promise.all(Array.from({length:3},async()=>{
+      while(pq.length){
+        const item=pq.shift();
+        const out=await googleTranslate(item.original,lang);
+        if(item.el.isConnected && currentLang()===lang) item.el.placeholder=out;
+      }
+    }));
+  }
+
+  async function apply(){
+    const lang=currentLang();
+    if(applying){applyAgain=true;return}
+    applying=true;
+    try{
+      if(lang==='ko'){
+        restoreKorean();
+      }else{
+        const nav=document.querySelectorAll('nav button');
+        nav.forEach((b,i)=>{
+          if(b.dataset.kor1816NavOriginal===undefined)
+            b.dataset.kor1816NavOriginal=b.textContent;
+          if(NAV[lang]&&NAV[lang][i]) b.textContent=NAV[lang][i];
+        });
+        await translateNodes(lang);
+      }
+    }finally{
+      applying=false;
+      if(applyAgain){applyAgain=false;setTimeout(apply,0)}
+    }
+  }
+
+  window.setLang=function(lang){
+    if(!['ko','en','ja','zh','de'].includes(lang)) return;
+    localStorage.setItem('kor1816_lang',lang);
+    // Restore immediately before translating so the new language always starts
+    // from the original Korean text, including freshly loaded Firebase content.
+    restoreKorean();
+    apply();
+  };
+
+  const observer=new MutationObserver(()=>{
+    if(currentLang()!=='ko') apply();
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
+
+  window.addEventListener('load',()=>setTimeout(apply,100));
+  setTimeout(apply,100);
 })();
 </script></body></html>
