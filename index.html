@@ -510,7 +510,7 @@ function toggleCastleAdmin(){if(castleAdmin){castleAdmin=false;setCastleAdminMod
 async function loadCastle(){renderCastle(castleDataLocal());if(!CASTLE_DOC||!window.__firebaseGetDoc)return;try{const snap=await window.__firebaseGetDoc(CASTLE_DOC);if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_castle_v1',JSON.stringify(d));renderCastle(d);document.getElementById('castleMsg').textContent='최신 공성전 내용을 불러왔습니다.'}}catch(e){console.error(e);document.getElementById('castleMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}}
 async function saveCastle(){if(!castleAdmin)return;const d={titles:[],texts:[]};for(let i=1;i<=4;i++){d.titles.push(document.getElementById('castleTitleInput'+i).value.trim());d.texts.push(document.getElementById('castleTextInput'+i).value.trim())}localStorage.setItem('kor1816_castle_v1',JSON.stringify(d));renderCastle(d);try{if(CASTLE_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(CASTLE_DOC,d);document.getElementById('castleMsg').textContent='공성전 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('castleMsg').textContent='공성전은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
 
-const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10',heroes:'아마데우스\n첸코\n연우\n마르고\n아마네\n영웅없이'};
+const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10',heroes:'아마데우스\n첸코\n연우\n마르고 🙏\n아마네\n영웅없이'};
 function bearDataLocal(){
   try{
     const d=JSON.parse(localStorage.getItem('kor1816_bear_v1')||'null');
