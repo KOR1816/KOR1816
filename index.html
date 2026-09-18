@@ -638,7 +638,7 @@ it:{
 '출발하세요':'Partite!','아마데 / 페라 / 로사':'Amade / Fera / Rosa','상대가 강하면':'Se il rivale è forte','Jäger 고려':'considera Jäger','페라':'Fera','로사':'Rosa','알카':'Alka','마르고':'Margo','살로':'Salo','성검쟁탈':'Contesa della Spada Sacra','3대연맹전':'Guerra delle Tre Alleanze','공성전':'Assedio del Castello','곰사냥':'Caccia all’Orso','곰 사냥':'Caccia all’Orso','집결장':'Capo della spedizione','집결원':'Membro della spedizione','비율':'Rapporto truppe','수성':'Difesa','공격':'Attacco','연습':'Allenamento','바이킹 안내':'Guida dei Vichinghi','바이킹 진행':'Svolgimento dei Vichinghi','바이킹 편성':'Formazione dei Vichinghi','바이킹 규칙':'Regole dei Vichinghi'}
 }
 };
-const TARGETS=['#homeView','#vikingView','#teams > .card > h2','#teams .team-columns-wrap','#alliance > .card > h2','#allianceView','#castle > .card > h2','#castleView','#bear > .card > h2','#bearView','#rules > .card > h2','#rulesView'];
+const TARGETS=['header','.sub','nav','#homeView','#vikingView','#teams','#alliance','#castle','#bear','#rules'];
 let token=0;
 const hasKo=s=>/[\uac00-\ud7a3]/.test(s||'');
 function dictText(s,lang){let x=s,d=T[lang]||{};Object.keys(d).sort((a,b)=>b.length-a.length).forEach(k=>x=x.split(k).join(d[k]));return x}
