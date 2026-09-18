@@ -564,6 +564,27 @@ window.addEventListener('load',function(){
 </script><script id="full-i18n">
 (function(){
 const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de',es:'es',it:'it'};
+/* language bridge: install the global click handler before any translation work */
+window.setLang=function(lang){
+ if(!['ko','en','ja','zh','de','es','it'].includes(lang)) return;
+ localStorage.setItem('kor1816_lang',lang);
+ const navs={
+  ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
+  en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
+  ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
+  zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
+  de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],
+  es:['🏠 Inicio','🛡️ Vikingos','⚔️ Disputa de la Espada Sagrada','⚔️ Guerra de las Tres Alianzas','🏰 Asedio del Castillo','🐻 Caza del Oso','📋 Reglas'],
+  it:['🏠 Home','🛡️ Vichinghi','⚔️ Contesa della Spada Sacra','⚔️ Guerra delle Tre Alleanze','🏰 Assedio del Castello','🐻 Caccia all’Orso','📋 Regole']
+ };
+ const names=['ko','en','ja','zh','de','es','it'];
+ document.querySelectorAll('.lang-switch button').forEach((b,i)=>{b.textContent=navs[lang][i];b.onclick=function(e){e.preventDefault();window.setLang(names[i]);}});
+ if(typeof token!=='undefined') token++;
+ if(typeof restore==='function') restore();
+ document.querySelectorAll('nav button').forEach((b,i)=>{b.textContent=(navs[lang]&&navs[lang][i])||b.textContent;});
+ if(lang!=='ko' && typeof apply==='function') setTimeout(apply,0);
+};
+
 const NAV={
 ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
 en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
@@ -604,17 +625,7 @@ async function translateRoot(root,lang,my){
  return true
 }
 async function apply(){let my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';restore();if(lang==='ko')return;document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV[lang]?.[i]||b.textContent);for(const sel of TARGETS){for(const el of document.querySelectorAll(sel)){if(my!==token)return;let box=document.createElement('div');box.innerHTML=el.dataset.kor1816Source||el.innerHTML;await translateRoot(box,lang,my);if(my!==token)return;el.innerHTML=box.innerHTML}}if(!await translateRoot(document.body,lang,my))return;}
-window.setLang=function(lang){
-if(!['ko','en','ja','zh','de','es','it'].includes(lang))return;
-localStorage.setItem('kor1816_lang',lang);
-token++;
-restore();
-document.querySelectorAll('.lang-switch button').forEach((b,i)=>{
- const langs=['ko','en','ja','zh','de','es','it'];
- b.classList.toggle('active',langs[i]===lang);
-});
-if(lang!=='ko')setTimeout(apply,0);
-};
+/* legacy setLang replaced by the early global bridge */
 function bindLanguageButtons(){
  const langs=['ko','en','ja','zh','de','es','it'];
  document.querySelectorAll('.lang-switch button').forEach((b,i)=>{
