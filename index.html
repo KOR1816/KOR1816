@@ -596,16 +596,24 @@ window.addEventListener('load',function(){
     Object.keys(dict).sort((a,b)=>b.length-a.length).forEach(k=>{out=out.split(k).join(dict[k])});
     return out;
   }
+  const CACHE_KEY='kor1816_i18n_cache_v2';
+  let cache={};
+  try{cache=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}catch(e){cache={}}
+  function cacheKey(text,lang){return lang+'::'+text}
   async function tr(text,lang){
     if(!hasKo(text)||!text.trim())return text;
     const masked=terms(text,lang);
-    // If the glossary fully handled the string, do not call an external API.
     if(!hasKo(masked))return masked;
+    const key=cacheKey(masked,lang);
+    if(cache[key])return cache[key];
     try{
       const u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(masked)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]);
       const r=await fetch(u);if(!r.ok)throw 0;
       const d=await r.json();
-      return d&&d.responseData&&d.responseData.translatedText?d.responseData.translatedText:masked;
+      const out=d&&d.responseData&&d.responseData.translatedText?d.responseData.translatedText:masked;
+      cache[key]=out;
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify(cache))}catch(e){}
+      return out;
     }catch(e){return masked}
   }
   async function translateElement(el,lang,my){
@@ -619,11 +627,12 @@ window.addEventListener('load',function(){
       if(hasKo(n.nodeValue)&&n.nodeValue.trim())nodes.push(n);
     }
     // Parallelize a small number of requests; glossary handles fixed terms.
-    for(let i=0;i<nodes.length;i+=4){
+    for(let i=0;i<nodes.length;i+=8){
       if(my!==token)return null;
-      const batch=nodes.slice(i,i+4);
+      const batch=nodes.slice(i,i+8);
       const outs=await Promise.all(batch.map(x=>tr(x.nodeValue,lang)));
       batch.forEach((x,j)=>x.nodeValue=outs[j]);
+      if(i+8<nodes.length) await new Promise(r=>setTimeout(r,0));
     }
     return box.innerHTML;
   }
@@ -631,6 +640,19 @@ window.addEventListener('load',function(){
     const my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';
     restore();if(lang==='ko')return;
     document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
+    // Show glossary translations immediately; API fills the remaining sentences.
+    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
+      const src=el.dataset.kor1816Source||el.innerHTML;
+      const box=document.createElement('div');box.innerHTML=src;
+      const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
+      let n;
+      while(n=walker.nextNode()){
+        const p=n.parentElement;
+        if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button'))continue;
+        if(hasKo(n.nodeValue)&&n.nodeValue.trim())n.nodeValue=terms(n.nodeValue,lang);
+      }
+      el.innerHTML=box.innerHTML;
+    }));
     for(const sel of TARGETS){
       for(const el of document.querySelectorAll(sel)){
         if(my!==token)return;
