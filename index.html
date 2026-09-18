@@ -26,7 +26,7 @@
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('notice')">📢 공지</button><button onclick="show('sword')">⚔️ 성검쟁탈</button><button onclick="show('teams')">👥 팀 편성 / Teams</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰 사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
 <main class="wrap">
-<section id="home" class="page active"><div class="grid"><div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br>7개 팀 × 7명 = 49명 + 개돌조 2명<br>대체자 10명</div></div><div class="card"><span class="tag">SCHEDULE</span><h2>📅 주요 일정</h2><p>⚔️ 성검쟁탈 · 23:00</p><p>🐻 곰 1트랩 · 23:00</p><p>🐻 곰 2트랩 · 09:10</p></div><div class="card"><span class="tag">WELCOME</span><h2>🌍 Kingdom 1816</h2><p>소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.</p></div></div></section>
+<section id="home" class="page active"><div class="grid"><div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br><br>대체자 10명</div></div><div class="card"><span class="tag">SCHEDULE</span><h2>📅 주요 일정</h2><p>⚔️ 성검쟁탈 · 23:00</p><p>🐻 곰 1트랩 · 23:00</p><p>🐻 곰 2트랩 · 09:10</p></div><div class="card"><span class="tag">WELCOME</span><h2>🌍 Kingdom 1816</h2><p>소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.</p></div></div></section>
 <section id="notice" class="page"><div class="card"><h2>📢 공지사항</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br>7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.<br>대체자는 별도로 10명을 등록합니다.</div></div></section>
 <section id="sword" class="page"><div class="card"><h2>⚔️ 성검쟁탈 팀 편성</h2><p class="big">7개 팀 + 개돌조 2명 + 대체자 10명</p><p>팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.</p></div></section>
 <section id="teams" class="page"><div class="card"><h2>👥 성검쟁탈 팀 편성 / Team Setup</h2><div class="sword-image-wrap"><img src="holy_sword1.png" alt="Holy Sword Clash" class="sword-image"></div><div class="admin-bar"><button class="admin-btn" onclick="loadSharedTeams()">🔄 새로고침</button><button class="admin-btn" id="adminBtn" onclick="toggleAdmin()">🔐 관리자 수정</button></div><div id="adminNote" class="admin-note">현재 보기 전용입니다. 관리자만 수정할 수 있습니다.</div><div id="teamMsg" class="msg"></div><div class="team-columns-wrap"><div class="team-columns">
@@ -222,7 +222,7 @@ function setLang(lang){
 en:{
 '🏰 KOR1816':'🏰 KOR1816','Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':'Kingdom 1816 · Mess with us and we bite! · Home of Bear Hunters!!',
 '🏠 홈':'🏠 Home','📢 공지':'📢 Notice','⚔️ 성검쟁탈':'⚔️ Holy Sword Clash','👥 팀 편성 / Teams':'👥 Team Setup / Teams','🏰 공성전':'🏰 Castle War','🐻 곰 사냥':'🐻 Bear Hunt','📋 규칙':'📋 Rules',
-'LATEST':'LATEST','📢 최신 공지':'📢 Latest Notice','성검쟁탈 팀 편성':'Holy Sword Clash Team Setup','7개 팀 × 7명 = 49명 + 개돌조 2명':'7 teams × 4 players = 28 + 2 extra = 30','대체자 10명':'10 substitutes',
+'LATEST':'LATEST','📢 최신 공지':'📢 Latest Notice','성검쟁탈 팀 편성':'Holy Sword Clash Team Setup','':'7 teams × 4 players = 28 + 2 extra = 30','대체자 10명':'10 substitutes',
 'SCHEDULE':'SCHEDULE','📅 주요 일정':'📅 Schedule','⚔️ 성검쟁탈 · 23:00':'⚔️ Holy Sword Clash · 23:00','🐻 곰 1트랩 · 23:00':'🐻 Bear Trap 1 · 23:00','🐻 곰 2트랩 · 09:10':'🐻 Bear Trap 2 · 09:10',
 'WELCOME':'WELCOME','🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'We grow together through communication, cooperation, growth, and KVK teamwork.',
 '📢 공지사항':'📢 Notices','7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.':'7 teams of 4 = 28 players, plus 2 extra players for 30 total.','대체자는 별도로 10명을 등록합니다.':'Register 10 substitutes separately.',
@@ -238,7 +238,7 @@ en:{
 ja:{
 '🏰 KOR1816':'🏰 KOR1816','Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':'Kingdom 1816 · 触ると噛みつく！ · 熊好きの集まり!!',
 '🏠 홈':'🏠 ホーム','📢 공지':'📢 お知らせ','⚔️ 성검쟁탈':'⚔️ 聖剣争奪戦','👥 팀 편성 / Teams':'👥 チーム編成 / Teams','🏰 공성전':'🏰 城戦','🐻 곰 사냥':'🐻 熊狩り','📋 규칙':'📋 ルール',
-'📢 최신 공지':'📢 最新のお知らせ','성검쟁탈 팀 편성':'聖剣争奪戦 チーム編成','7개 팀 × 7명 = 49명 + 개돌조 2명':'7チーム × 4人 = 28人 + 追加2人 = 30人','대체자 10명':'交代メンバー10人',
+'📢 최신 공지':'📢 最新のお知らせ','성검쟁탈 팀 편성':'聖剣争奪戦 チーム編成','':'7チーム × 4人 = 28人 + 追加2人 = 30人','대체자 10명':'交代メンバー10人',
 '📅 주요 일정':'📅 スケジュール','⚔️ 성검쟁탈 · 23:00':'⚔️ 聖剣争奪戦 · 23:00','🐻 곰 1트랩 · 23:00':'🐻 熊トラップ1 · 23:00','🐻 곰 2트랩 · 09:10':'🐻 熊トラップ2 · 09:10',
 '🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'コミュニケーション・協力・成長・KVK組織力を大切にしています。',
 '📢 공지사항':'📢 お知らせ','7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.':'7チーム各4人 = 28人、追加2人で合計30人です。','대체자는 별도로 10명을 등록합니다.':'交代メンバーを10人登録します。',
@@ -253,7 +253,7 @@ ja:{
 zh:{
 '🏰 KOR1816':'🏰 KOR1816','Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':'Kingdom 1816 · 惹我们就咬！ · 熊猎爱好者的聚会!!',
 '🏠 홈':'🏠 首页','📢 공지':'📢 公告','⚔️ 성검쟁탈':'⚔️ 圣剑争夺战','👥 팀 편성 / Teams':'👥 队伍编成 / Teams','🏰 공성전':'🏰 城战','🐻 곰 사냥':'🐻 熊猎','📋 규칙':'📋 规则',
-'📢 최신 공지':'📢 最新公告','성검쟁탈 팀 편성':'圣剑争夺战队伍编成','7개 팀 × 7명 = 49명 + 개돌조 2명':'7个队 × 4人 = 28人 + 额外2人 = 30人','대체자 10명':'10名替补',
+'📢 최신 공지':'📢 最新公告','성검쟁탈 팀 편성':'圣剑争夺战队伍编成','':'7个队 × 4人 = 28人 + 额外2人 = 30人','대체자 10명':'10名替补',
 '📅 주요 일정':'📅 日程','⚔️ 성검쟁탈 · 23:00':'⚔️ 圣剑争夺战 · 23:00','🐻 곰 1트랩 · 23:00':'🐻 熊陷阱1 · 23:00','🐻 곰 2트랩 · 09:10':'🐻 熊陷阱2 · 09:10',
 '🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'以沟通、合作、成长和KVK组织力为核心共同发展。',
 '📢 공지사항':'📢 公告','7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.':'7个队各4人 = 28人，加2名额外成员共30人。','대체자는 별도로 10명을 등록합니다.':'另外登记10名替补。',
@@ -268,7 +268,7 @@ zh:{
 de:{
 '🏰 KOR1816':'🏰 KOR1816','Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':'Kingdom 1816 · Wer uns ärgert, wird gebissen! · Treffpunkt der Bärenfans!!',
 '🏠 홈':'🏠 Startseite','📢 공지':'📢 Ankündigungen','⚔️ 성검쟁탈':'⚔️ Heiliger Schwertkampf','👥 팀 편성 / Teams':'👥 Teamaufstellung / Teams','🏰 공성전':'🏰 Burgenkrieg','🐻 곰 사냥':'🐻 Bärenjagd','📋 규칙':'📋 Regeln',
-'📢 최신 공지':'📢 Neueste Mitteilung','성검쟁탈 팀 편성':'Teamaufstellung – Heiliger Schwertkampf','7개 팀 × 7명 = 49명 + 개돌조 2명':'7 Teams × 4 Spieler = 28 + 2 zusätzliche = 30','대체자 10명':'10 Ersatzspieler',
+'📢 최신 공지':'📢 Neueste Mitteilung','성검쟁탈 팀 편성':'Teamaufstellung – Heiliger Schwertkampf','':'7 Teams × 4 Spieler = 28 + 2 zusätzliche = 30','대체자 10명':'10 Ersatzspieler',
 '📅 주요 일정':'📅 Zeitplan','⚔️ 성검쟁탈 · 23:00':'⚔️ Heiliger Schwertkampf · 23:00','🐻 곰 1트랩 · 23:00':'🐻 Bärenfalle 1 · 23:00','🐻 곰 2트랩 · 09:10':'🐻 Bärenfalle 2 · 09:10',
 '🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'Wir setzen auf Kommunikation, Zusammenarbeit, Wachstum und KVK-Teamwork.',
 '📢 공지사항':'📢 Ankündigungen','7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.':'7 Teams mit je 4 Spielern = 28, plus 2 zusätzliche = insgesamt 30.','대체자는 별도로 10명을 등록합니다.':'10 Ersatzspieler werden separat eingetragen.',
