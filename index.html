@@ -8,7 +8,7 @@
 *{box-sizing:border-box}body{margin:0;font-family:Arial,"Malgun Gothic",sans-serif;background:#0b1020;color:#eef2ff}
 header{padding:28px 20px;background:linear-gradient(135deg,#111a35,#1d315c);text-align:center}
 h1{margin:0;font-size:34px}.sub{opacity:.8;margin-top:8px}
-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:14px;background:#11172a;position:sticky;top:0}
+nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:14px;background:#11172a;position:sticky;top:0;z-index:5}
 nav button{border:0;border-radius:10px;padding:10px 15px;background:#263354;color:#fff;cursor:pointer}
 nav button:hover{background:#3b4f7d}.wrap{max-width:1050px;margin:auto;padding:20px}
 .page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px}
@@ -17,51 +17,48 @@ nav button:hover{background:#3b4f7d}.wrap{max-width:1050px;margin:auto;padding:2
 .notice{border-left:4px solid #7195ff;padding-left:14px;margin:15px 0}
 table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid #2b3655;text-align:left}
 footer{text-align:center;padding:35px;opacity:.55}.big{font-size:22px;font-weight:bold}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px;margin-top:15px}
+.slot{display:flex;align-items:center;gap:8px;margin:8px 0}
+.slot-id{display:inline-block;min-width:42px;font-weight:bold;color:#9db8ff}
+.slot input{flex:1;padding:10px;border-radius:8px;border:1px solid #3b4f7d;background:#0f1730;color:#fff}
+.save-team{width:100%;margin-top:10px;padding:10px;border:0;border-radius:9px;background:#4f6fb8;color:#fff;font-weight:bold;cursor:pointer}
+.msg{min-height:22px;margin-top:12px}
 </style>
 </head>
 <body>
 <header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav>
 <button onclick="show('home')">🏠 홈</button><button onclick="show('notice')">📢 공지</button>
-<button onclick="show('sword')">⚔️ 성검쟁탈</button><button onclick="show('attendance')">📝 참가 신청 / Attendance</button><button onclick="show('castle')">🏰 공성전</button>
+<button onclick="show('sword')">⚔️ 성검쟁탈</button><button onclick="show('teams')">👥 팀 편성 / Teams</button><button onclick="show('castle')">🏰 공성전</button>
 <button onclick="show('bear')">🐻 곰 사냥</button><button onclick="show('rules')">📋 규칙</button>
 </nav>
 <main class="wrap">
 <section id="home" class="page active">
 <div class="grid">
-<div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><div class="notice"><b>성검쟁탈 참여 안내</b><br>1군 30명 + 대체 10명. 참석 여부를 꼭 확인해주세요.</div></div>
+<div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><div class="notice"><b>성검쟁탈 참여 안내</b><br>팀 A~D 각 4명 + 별도 팀 4명으로 팀을 편성합니다.</div></div>
 <div class="card"><span class="tag">SCHEDULE</span><h2>📅 주요 일정</h2><p>⚔️ 성검쟁탈 · 23:00</p><p>🐻 곰 1트랩 · 23:00</p><p>🐻 곰 2트랩 · 09:10</p></div>
 <div class="card"><span class="tag">WELCOME</span><h2>🌍 Kingdom 1816</h2><p>소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.</p></div>
 </div>
 </section>
 
 <section id="notice" class="page"><div class="card"><h2>📢 공지사항</h2>
-<div class="notice"><b>성검쟁탈 안내</b><br>1군 30명 / 로테이션 10명<br>180,000점 획득 후 대체자와 교체 가능<br>군사 소진 후 전장 나가기 → 12분 동안 대체자와 교체 가능<br>미참전 시 미리 DM으로 알려주시면 교체 가능합니다.</div>
+<div class="notice"><b>성검쟁탈 안내</b><br>팀 A~D 각 4명으로 편성하고, 별도 팀 1개를 추가로 운영합니다.<br>팀원은 각 칸의 아이디로 저장해주세요.</div>
 </div></section>
 
 <section id="sword" class="page"><div class="card"><h2>⚔️ 성검쟁탈 팀 편성</h2>
-<p class="big">1군 30명 + 대체 10명</p>
-<table><tr><th>구분 / Group</th><th>인원 / Members</th><th>비고 / Note</th></tr>
-<tr><td>1군 / Group 1</td><td>30명</td><td>주전 / Main</td></tr>
-<tr><td>대체 / Substitute</td><td>10명</td><td>로테이션 / Rotation</td></tr>
-<tr><td>2군 / Group 2</td><td>참석 체크</td><td>30명 초과 시 대체 가능 / Substitute if over 30</td></tr></table>
+<p class="big">A팀 ~ D팀 · 각 4명 + 별도 팀 1개</p>
+<p>팀원 아이디를 입력해 저장하면 됩니다.</p>
 </div></section>
 
-<section id="attendance" class="page">
+<section id="teams" class="page">
 <div class="card">
-<h2>📝 참가 신청 / Attendance</h2>
-<p>성검쟁탈 참가 여부를 등록해주세요. / Please register your attendance for Holy Sword Clash.</p>
-<div style="display:grid;gap:12px;max-width:500px">
-<input id="nickname" type="text" placeholder="닉네임 / Nickname" style="padding:12px;border-radius:10px;border:1px solid #3b4f7d;background:#0f1730;color:#fff">
-<label><input type="radio" name="group" value="1"> 1군 / Group 1</label>
-<label><input type="radio" name="group" value="2"> 2군 / Group 2</label>
-<button onclick="saveAttendance()" style="padding:12px;border:0;border-radius:10px;background:#4f6fb8;color:#fff;font-weight:bold;cursor:pointer">참가 신청 저장 / Save Attendance</button>
-<div id="attendanceMsg" style="min-height:22px"></div>
+<h2>👥 성검쟁탈 팀 편성 / Team Setup</h2>
+<p>A-1 ~ D-2 형식의 팀원 아이디를 저장할 수 있습니다. 각 팀은 4칸입니다.</p>
+<div id="teamMsg" class="msg"></div>
 </div>
-</div>
-<div class="grid" style="margin-top:15px">
-<div class="card"><h2>1군 / Group 1 <span class="big"><span id="group1Count">0</span>/30</span></h2><div id="group1List">아직 없습니다. / None yet.</div></div>
-<div class="card"><h2>2군 / Group 2 <span class="big"><span id="group2Count">0</span></span></h2><div id="group2List">아직 없습니다. / None yet.</div></div>
+<div class="team-grid">
+<div class="card"><h2>🅰️ A팀 / Team A</h2><div class="slot"><span class="slot-id">A-1</span><input id="A-1" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">A-2</span><input id="A-2" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">A-3</span><input id="A-3" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">A-4</span><input id="A-4" placeholder="팀원 ID / Player ID"></div><button class="save-team" onclick="saveTeam('A')">💾 A팀 저장 / Save</button></div><div class="card"><h2>🅰️ B팀 / Team B</h2><div class="slot"><span class="slot-id">B-1</span><input id="B-1" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">B-2</span><input id="B-2" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">B-3</span><input id="B-3" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">B-4</span><input id="B-4" placeholder="팀원 ID / Player ID"></div><button class="save-team" onclick="saveTeam('B')">💾 B팀 저장 / Save</button></div><div class="card"><h2>🅰️ C팀 / Team C</h2><div class="slot"><span class="slot-id">C-1</span><input id="C-1" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">C-2</span><input id="C-2" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">C-3</span><input id="C-3" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">C-4</span><input id="C-4" placeholder="팀원 ID / Player ID"></div><button class="save-team" onclick="saveTeam('C')">💾 C팀 저장 / Save</button></div><div class="card"><h2>🅰️ D팀 / Team D</h2><div class="slot"><span class="slot-id">D-1</span><input id="D-1" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">D-2</span><input id="D-2" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">D-3</span><input id="D-3" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">D-4</span><input id="D-4" placeholder="팀원 ID / Player ID"></div><button class="save-team" onclick="saveTeam('D')">💾 D팀 저장 / Save</button></div>
+<div class="card"><h2>⭐ 별도 팀 / Extra Team</h2><div class="slot"><span class="slot-id">E-1</span><input id="E-1" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">E-2</span><input id="E-2" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">E-3</span><input id="E-3" placeholder="팀원 ID / Player ID"></div><div class="slot"><span class="slot-id">E-4</span><input id="E-4" placeholder="팀원 ID / Player ID"></div><button class="save-team" onclick="saveTeam('E')">💾 별도 팀 저장 / Save</button></div>
 </div>
 </section>
 
@@ -80,37 +77,23 @@ footer{text-align:center;padding:35px;opacity:.55}.big{font-size:22px;font-weigh
 </main>
 <footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
 <script>
-function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='attendance')renderAttendance();scrollTo(0,0)}
-function getAttendance(){try{return JSON.parse(localStorage.getItem('kor1816_attendance')||'[]')}catch(e){return[]}}
-function saveAttendance(){
-  const nickname=document.getElementById('nickname').value.trim();
-  const selected=document.querySelector('input[name="group"]:checked');
-  const msg=document.getElementById('attendanceMsg');
-  if(!nickname){msg.textContent='닉네임을 입력해주세요. / Please enter your nickname.';return}
-  if(!selected){msg.textContent='1군 또는 2군을 선택해주세요. / Please select Group 1 or Group 2.';return}
-  let data=getAttendance();
-  const existing=data.find(x=>x.nickname.toLowerCase()===nickname.toLowerCase());
-  if(existing){existing.group=selected.value}
-  else{
-    if(selected.value==='1' && data.filter(x=>x.group==='1').length>=30){msg.textContent='1군은 30명까지입니다. / Group 1 is limited to 30.';return}
-    data.push({nickname:nickname,group:selected.value})
-  }
-  localStorage.setItem('kor1816_attendance',JSON.stringify(data));
-  msg.textContent='저장되었습니다! / Saved!';
-  document.getElementById('nickname').value='';
-  document.querySelectorAll('input[name="group"]').forEach(x=>x.checked=false);
-  renderAttendance();
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='teams')renderTeams();scrollTo(0,0)}
+function getTeams(){try{return JSON.parse(localStorage.getItem('kor1816_teams')||'{}')}catch(e){return{}}}
+function saveTeam(team){
+  const data=getTeams();
+  data[team]=[1,2,3,4].map(n=>document.getElementById(team+'-'+n).value.trim());
+  localStorage.setItem('kor1816_teams',JSON.stringify(data));
+  document.getElementById('teamMsg').textContent=(team==='E'?'별도 팀':'팀 '+team)+' 저장 완료! / Saved!';
 }
-function renderAttendance(){
-  const data=getAttendance();
-  const g1=data.filter(x=>x.group==='1');
-  const g2=data.filter(x=>x.group==='2');
-  document.getElementById('group1Count').textContent=g1.length;
-  document.getElementById('group2Count').textContent=g2.length;
-  document.getElementById('group1List').innerHTML=g1.length?g1.map(x=>'• '+escapeHtml(x.nickname)).join('<br>'):'아직 없습니다. / None yet.';
-  document.getElementById('group2List').innerHTML=g2.length?g2.map(x=>'• '+escapeHtml(x.nickname)).join('<br>'):'아직 없습니다. / None yet.';
+function renderTeams(){
+  const data=getTeams();
+  ['A','B','C','D','E'].forEach(team=>{
+    [1,2,3,4].forEach(n=>{
+      const el=document.getElementById(team+'-'+n);
+      if(el)el.value=(data[team]&&data[team][n-1])||'';
+    });
+  });
 }
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-renderAttendance();
+renderTeams();
 </script>
 </body></html>
