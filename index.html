@@ -16,9 +16,25 @@
 <section id="bear" class="page"><div class="card"><h2>🐻 곰 사냥</h2><p>곰 1트랩: <b>23:00</b></p><p>곰 2트랩: <b>09:10</b></p></div></section>
 <section id="rules" class="page"><div class="card"><h2>📋 KOR1816 운영 안내</h2><ul><li>공지사항을 먼저 확인해주세요.</li><li>참석이 어려운 경우 미리 DM으로 알려주세요.</li><li>KVK는 소통과 협력을 우선합니다.</li><li>팀 편성은 이벤트별 공지를 기준으로 합니다.</li></ul></div></section>
 </main><footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+<script>
+let db=null;
+let TEAM_DOC=null;
+(async function initFirebase(){
+  try{
+    const {initializeApp}=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js");
+    const {getFirestore,doc,getDoc,setDoc}=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
+    window.__firebaseGetDoc=getDoc;
+    window.__firebaseSetDoc=setDoc;
+    const firebaseApp=initializeApp(firebaseConfig);
+    db=getFirestore(firebaseApp);
+    TEAM_DOC=doc(db,'siteData','teams');
+    await loadSharedTeams();
+  }catch(e){
+    console.error('Firebase init failed:',e);
+    const m=document.getElementById('teamMsg');
+    if(m)m.textContent='공용 데이터 연결에 실패했습니다. 관리자 수정은 잠시 후 다시 시도해주세요.';
+  }
+}
 const firebaseConfig = {
   apiKey: "AIzaSyB_7Uk6QkCQAt6LyWMVuQNARaXD78WdlZQ",
   authDomain: "kor1816.firebaseapp.com",
@@ -28,12 +44,23 @@ const firebaseConfig = {
   appId: "1:838991083698:web:de37c21f443386d902b1ab",
   measurementId: "G-SZ2ZX729BT"
 };
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
-const TEAM_DOC = doc(db, 'siteData', 'teams');
 let sharedTeams={};
-async function loadSharedTeams(){try{const snap=await getDoc(TEAM_DOC);sharedTeams=snap.exists()?snap.data():{};renderTeams();}catch(e){console.error(e);document.getElementById('teamMsg').textContent='공용 데이터 불러오기에 실패했습니다.';}}
-async function saveSharedTeams(){await setDoc(TEAM_DOC,sharedTeams);}
+async function loadSharedTeams(){
+  if(!TEAM_DOC||!window.__firebaseGetDoc)return;
+  try{
+    const snap=await window.__firebaseGetDoc(TEAM_DOC);
+    sharedTeams=snap.exists()?snap.data():{};
+    renderTeams();
+  }catch(e){
+    console.error(e);
+    const m=document.getElementById('teamMsg');
+    if(m)m.textContent='공용 데이터 불러오기에 실패했습니다.';
+  }
+}
+async function saveSharedTeams(){
+  if(!TEAM_DOC||!window.__firebaseSetDoc)throw new Error('Firebase not ready');
+  await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
+}
 let isAdmin=false;
 const ADMIN_PASSWORD='0001';
 function toggleAdmin(){
@@ -56,7 +83,6 @@ async function saveExtra(){if(!isAdmin)return;const data=getTeams();data.extra=[
 async function saveSubs(){if(!isAdmin)return;const data=getTeams();data.subs=[1,2,3,4,5,6,7,8,9,10].map(n=>document.getElementById('sub-'+n).value.trim());sharedTeams=data;try{await saveSharedTeams();document.getElementById('teamMsg').textContent='대체자 저장 완료! / Saved!';}catch(e){console.error(e);document.getElementById('teamMsg').textContent='저장 실패: Firebase를 확인해주세요.'}}
 function renderTeams(){const data=getTeams();['A','B','C','D'].forEach(team=>[1,2,3,4,5,6,7].forEach(n=>{const el=document.getElementById('team-'+team+'-'+n);if(el)el.value=(data[team]&&data[team][n-1])||''}));if(data.extra){document.getElementById('extra-1').value=data.extra[0]||'';document.getElementById('extra-2').value=data.extra[1]||''}for(let n=1;n<=10;n++){const el=document.getElementById('sub-'+n);if(el)el.value=(data.subs&&data.subs[n-1])||''}}
 setAdminMode();
-loadSharedTeams();
 
 function setLang(lang){
   localStorage.setItem('kor1816_lang',lang);
