@@ -28,29 +28,28 @@ renderTeams();
 function setLang(lang){
   localStorage.setItem('kor1816_lang',lang);
   const dict={
-    en:{'홈':'Home','공지':'Notice','성검쟁탈':'Holy Sword Clash','팀 편성 / Teams':'Team Setup / Teams','공성전':'Castle War','곰 사냥':'Bear Hunt','규칙':'Rules','최신 공지':'Latest Notice','주요 일정':'Schedule','성검쟁탈 팀 편성':'Holy Sword Clash Team Setup','성검쟁탈 팀 편성 / Team Setup':'Holy Sword Clash / Team Setup','공지사항':'Notices','개돌조':'Rush Team','대체자':'Substitutes','저장':'Save','집결장 공격':'Rally Leader Attack','수성':'Defense','집결원 공격':'Rally Member Attack','집결원 수성':'Rally Member Defense','곰 1트랩':'Bear Trap 1','곰 2트랩':'Bear Trap 2','KOR1816 운영 안내':'KOR1816 Operations Guide','운영 안내':'Operations Guide'},
-    ja:{'홈':'ホーム','공지':'お知らせ','성검쟁탈':'聖剣争奪戦','팀 편성 / Teams':'チーム編成 / Teams','공성전':'城戦','곰 사냥':'熊狩り','규칙':'ルール','최신 공지':'最新のお知らせ','주요 일정':'スケジュール','성검쟁탈 팀 편성':'聖剣争奪戦 チーム編成','성검쟁탈 팀 편성 / Team Setup':'聖剣争奪戦 / チーム編成','공지사항':'お知らせ','개돌조':'突撃隊','대체자':'交代メンバー','저장':'保存','집결장 공격':'集結リーダー攻撃','수성':'防衛','집결원 공격':'集結メンバー攻撃','집결원 수성':'集結メンバー防衛','곰 1트랩':'熊トラップ1','곰 2트랩':'熊トラップ2','KOR1816 운영 안내':'KOR1816 運営案内','운영 안내':'運営案内'},
-    zh:{'홈':'首页','공지':'公告','성검쟁탈':'圣剑争夺战','팀 편성 / Teams':'队伍编成 / Teams','공성전':'城战','곰 사냥':'熊猎','규칙':'规则','최신 공지':'最新公告','주요 일정':'日程','성검쟁탈 팀 편성':'圣剑争夺战队伍编成','성검쟁탈 팀 편성 / Team Setup':'圣剑争夺战 / 队伍编成','공지사항':'公告','개돌조':'突击队','대체자':'替补','저장':'保存','집결장 공격':'集结队长攻击','수성':'防守','집결원 공격':'集结成员攻击','집결원 수성':'集结成员防守','곰 1트랩':'熊陷阱1','곰 2트랩':'熊陷阱2','KOR1816 운영 안내':'KOR1816 运营指南','운영 안내':'运营指南'},
-    de:{'홈':'Startseite','공지':'Ankündigungen','성검쟁탈':'Heiliger Schwertkampf','팀 편성 / Teams':'Teamaufstellung / Teams','공성전':'Burgenkrieg','곰 사냥':'Bärenjagd','규칙':'Regeln','최신 공지':'Neueste Mitteilung','주요 일정':'Zeitplan','성검쟁탈 팀 편성':'Teamaufstellung – Heiliger Schwertkampf','성검쟁탈 팀 편성 / Team Setup':'Heiliger Schwertkampf / Teamaufstellung','공지사항':'Ankündigungen','개돌조':'Sturmteam','대체자':'Ersatzspieler','저장':'Speichern','집결장 공격':'Rally-Leader-Angriff','수성':'Verteidigung','집결원 공격':'Rally-Mitglieder-Angriff','집결원 수성':'Rally-Mitglieder-Verteidigung','곰 1트랩':'Bärenfalle 1','곰 2트랩':'Bärenfalle 2','KOR1816 운영 안내':'KOR1816 Betriebsinfo','운영 안내':'Betriebsinfo'}
+    en:{'홈':'Home','공지':'Notice','성검쟁탈':'Holy Sword Clash','팀 편성 / Teams':'Team Setup / Teams','공성전':'Castle War','곰 사냥':'Bear Hunt','규칙':'Rules','최신 공지':'Latest Notice','주요 일정':'Schedule','성검쟁탈 팀 편성':'Holy Sword Clash Team Setup','공지사항':'Notices','개돌조':'Rush Team','대체자':'Substitutes','저장':'Save','집결장 공격':'Rally Leader Attack','수성':'Defense','집결원 공격':'Rally Member Attack','집결원 수성':'Rally Member Defense','곰 1트랩':'Bear Trap 1','곰 2트랩':'Bear Trap 2','KOR1816 운영 안내':'KOR1816 Operations Guide','운영 안내':'Operations Guide','건들면 문다!':'Mess with us and we bite!','곰친자들의 모임!!':'Home of Bear Hunters!!','성검쟁탈 팀 편성 / Team Setup':'Holy Sword Clash / Team Setup','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'Enter Player IDs in Team Setup and save them.','공지사항을 먼저 확인해주세요.':'Please check the notices first.','참석이 어려운 경우 미리 DM으로 알려주세요.':'If you cannot attend, please let us know by DM in advance.','KVK는 소통과 협력을 우선합니다.':'Communication and cooperation come first in KVK.','팀 편성은 이벤트별 공지를 기준으로 합니다.':'Team assignments follow each event announcement.','상대가 강하면 예거 고려':'Consider Yager if the opponent is strong','연습:':'Practice:','비율:':'Ratio:','7개 팀 + 별도 2명 + 대체자 10명':'7 teams + 2 extra + 10 substitutes','7개 팀 × 4명 = 28명 + 별도 2명 = 30명':'7 teams × 4 players = 28 + 2 extra = 30','대체자 10명':'10 substitutes','7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.':'7 teams of 4 = 28, plus 2 extra for 30 total.','대체자는 별도로 10명을 등록합니다.':'Register 10 substitutes separately.','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'We grow together through communication, cooperation, growth, and KVK teamwork.'},
+    ja:{'홈':'ホーム','공지':'お知らせ','성검쟁탈':'聖剣争奪戦','팀 편성 / Teams':'チーム編成 / Teams','공성전':'城戦','곰 사냥':'熊狩り','규칙':'ルール','최신 공지':'最新のお知らせ','주요 일정':'スケジュール','성검쟁탈 팀 편성':'聖剣争奪戦 チーム編成','공지사항':'お知らせ','개돌조':'突撃隊','대체자':'交代メンバー','저장':'保存','집결장 공격':'集結リーダー攻撃','수성':'防衛','집결원 공격':'集結メンバー攻撃','집결원 수성':'集結メンバー防衛','곰 1트랩':'熊トラップ1','곰 2트랩':'熊トラップ2','KOR1816 운영 안내':'KOR1816 運営案内','운영 안내':'運営案内','건들면 문다!':'触ると噛みつく！','곰친자들의 모임!!':'熊好きの集まり!!','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'チーム編成でPlayer IDを入力して保存できます。','공지사항을 먼저 확인해주세요.':'まずお知らせを確認してください。','참석이 어려운 경우 미리 DM으로 알려주세요.':'参加できない場合は事前にDMで知らせてください。','KVK는 소통과 협력을 우선합니다.':'KVKではコミュニケーションと協力を優先します。','팀 편성은 이벤트별 공지를 기준으로 합니다.':'チーム編成は各イベントのお知らせに従います。','상대가 강하면 예거 고려':'相手が強い場合はイェーガーを検討','연습:':'練習:','비율:':'比率:','7개 팀 + 별도 2명 + 대체자 10명':'7チーム + 追加2名 + 交代10名','7개 팀 × 4명 = 28명 + 별도 2명 = 30명':'7チーム × 4人 = 28人 + 追加2人 = 30人','대체자 10명':'交代10名','7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.':'7チーム各4人 = 28人、追加2人で合計30人です。','대체자는 별도로 10명을 등록합니다.':'交代メンバーを10人登録します。','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'コミュニケーション・協力・成長・KVK組織力を大切にしています。'},
+    zh:{'홈':'首页','공지':'公告','성검쟁탈':'圣剑争夺战','팀 편성 / Teams':'队伍编成 / Teams','공성전':'城战','곰 사냥':'熊猎','규칙':'规则','최신 공지':'最新公告','주요 일정':'日程','성검쟁탈 팀 편성':'圣剑争夺战队伍编成','공지사항':'公告','개돌조':'突击队','대체자':'替补','저장':'保存','집결장 공격':'集结队长攻击','수성':'防守','집결원 공격':'集结成员攻击','집결원 수성':'集结成员防守','곰 1트랩':'熊陷阱1','곰 2트랩':'熊陷阱2','KOR1816 운영 안내':'KOR1816 运营指南','운영 안내':'运营指南','건들면 문다!':'惹我们就咬！','곰친자들의 모임!!':'熊猎爱好者的聚会!!','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'可在队伍编成中输入并保存Player ID。','공지사항을 먼저 확인해주세요.':'请先查看公告。','참석이 어려운 경우 미리 DM으로 알려주세요.':'无法参加时请提前私信告知。','KVK는 소통과 협력을 우선합니다.':'KVK优先沟通与合作。','팀 편성은 이벤트별 공지를 기준으로 합니다.':'队伍编成以各活动公告为准。','상대가 강하면 예거 고려':'对手较强时可考虑耶格尔','연습:':'练习:','비율:':'比例:','7개 팀 + 별도 2명 + 대체자 10명':'7个队 + 2名额外成员 + 10名替补','7개 팀 × 4명 = 28명 + 별도 2명 = 30명':'7队 × 4人 = 28人 + 额外2人 = 30人','대체자 10명':'10名替补','7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.':'7队各4人 = 28人，加2名额外成员共30人。','대체자는 별도로 10명을 등록합니다.':'另外登记10名替补。','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'以沟通、合作、成长和KVK组织力为核心共同发展。'},
+    de:{'홈':'Startseite','공지':'Ankündigungen','성검쟁탈':'Heiliger Schwertkampf','팀 편성 / Teams':'Teamaufstellung / Teams','공성전':'Burgenkrieg','곰 사냥':'Bärenjagd','규칙':'Regeln','최신 공지':'Neueste Mitteilung','주요 일정':'Zeitplan','성검쟁탈 팀 편성':'Teamaufstellung – Heiliger Schwertkampf','공지사항':'Ankündigungen','개돌조':'Sturmteam','대체자':'Ersatzspieler','저장':'Speichern','집결장 공격':'Rally-Leader-Angriff','수성':'Verteidigung','집결원 공격':'Rally-Mitglieder-Angriff','집결원 수성':'Rally-Mitglieder-Verteidigung','곰 1트랩':'Bärenfalle 1','곰 2트랩':'Bärenfalle 2','KOR1816 운영 안내':'KOR1816 Betriebsinfo','운영 안내':'Betriebsinfo','건들면 문다!':'Wer uns ärgert, wird gebissen!','곰친자들의 모임!!':'Treffpunkt der Bärenfans!!','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'Player-IDs können bei der Teamaufstellung eingegeben und gespeichert werden.','공지사항을 먼저 확인해주세요.':'Bitte zuerst die Ankündigungen prüfen.','참석이 어려운 경우 미리 DM으로 알려주세요.':'Wenn du nicht teilnehmen kannst, informiere uns bitte vorher per DM.','KVK는 소통과 협력을 우선합니다.':'Bei KVK stehen Kommunikation und Zusammenarbeit im Vordergrund.','팀 편성은 이벤트별 공지를 기준으로 합니다.':'Die Teamaufstellung richtet sich nach den Ankündigungen der jeweiligen Events.','상대가 강하면 예거 고려':'Bei einem starken Gegner Yager in Betracht ziehen','연습:':'Übung:','비율:':'Verhältnis:','7개 팀 + 별도 2명 + 대체자 10명':'7 Teams + 2 zusätzliche + 10 Ersatzspieler','7개 팀 × 4명 = 28명 + 별도 2명 = 30명':'7 Teams × 4 Spieler = 28 + 2 zusätzliche = 30','대체자 10명':'10 Ersatzspieler','7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.':'7 Teams mit je 4 = 28, plus 2 zusätzliche = insgesamt 30.','대체자는 별도로 10명을 등록합니다.':'10 Ersatzspieler werden separat eingetragen.','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'Wir setzen auf Kommunikation, Zusammenarbeit, Wachstum und KVK-Teamwork.'}
   };
+  if(lang==='ko'){ location.reload(); return; }
   const map=dict[lang]||{};
-  document.querySelectorAll('body *').forEach(el=>{
-    if(el.children.length===0 && el.tagName!=='SCRIPT' && el.tagName!=='STYLE'){
-      if(!el.dataset.originalText) el.dataset.originalText=el.textContent;
-      const original=el.dataset.originalText;
-      if(map[original]) el.textContent=map[original];
-    }
-    if(el.hasAttribute('placeholder')){
-      if(!el.dataset.originalPlaceholder) el.dataset.originalPlaceholder=el.getAttribute('placeholder');
-      const p=el.dataset.originalPlaceholder;
-      if(lang==='en') el.placeholder=p==='Player ID'?'Player ID':p;
-      else if(lang==='ja') el.placeholder=p==='Player ID'?'Player ID':p;
-      else if(lang==='zh') el.placeholder=p==='Player ID'?'Player ID':p;
-      else if(lang==='de') el.placeholder=p==='Player ID'?'Player ID':p;
-      else el.placeholder=p;
-    }
+  const keys=Object.keys(map).sort((a,b)=>b.length-a.length);
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  const nodes=[];
+  while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    if(node.parentElement.closest('script,style')) return;
+    let s=node.nodeValue;
+    keys.forEach(k=>{ if(s.includes(k)) s=s.split(k).join(map[k]); });
+    node.nodeValue=s;
   });
-  document.documentElement.lang=lang==='ko'?'ko':lang;
+  document.querySelectorAll('input[placeholder]').forEach(el=>{
+    el.placeholder='Player ID';
+  });
+  document.documentElement.lang=lang;
 }
+
 setLang(localStorage.getItem('kor1816_lang')||'ko');
 </script></body></html>
