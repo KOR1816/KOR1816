@@ -93,6 +93,10 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #teams>.card{overflow:visible!important}
 #teams .team-columns-wrap{overflow-x:auto!important;overflow-y:visible!important}
 @media(max-width:600px){.page-admin{gap:6px!important;margin-top:8px!important}.admin-btn{padding:7px 9px!important;font-size:12px!important}}
+</style><style id="castle-2x2">
+#castleView{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#castleEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+@media(max-width:700px){#castleView,#castleEdit{grid-template-columns:1fr!important}}
 </style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
@@ -408,7 +412,7 @@ function setCastleAdminMode(){
   document.getElementById('castleView').style.display=castleAdmin?'none':'grid';
   document.getElementById('castleEdit').style.display=castleAdmin?'grid':'none';
   document.getElementById('castleAdminBtn').textContent=castleAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  document.getElementById('castleAdminNote').textContent=castleAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
+  const n=document.getElementById('castleAdminNote');if(n)n.textContent=castleAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'';
 }
 let castleAdmin=false;
 function toggleCastleAdmin(){if(castleAdmin){castleAdmin=false;setCastleAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){castleAdmin=true;setCastleAdminMode();document.getElementById('castleMsg').textContent='공성전 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
