@@ -404,7 +404,7 @@ function renderCastle(data){
     const title=(data.titles&&data.titles[i-1])||CASTLE_DEFAULT.titles[i-1];
     const body=(data.texts&&data.texts[i-1])||'';
     document.getElementById('castleTitle'+i).textContent=title;
-    document.getElementById('castleText'+i).innerHTML=escapeHome(body).replace(/\n/g,'<br>');
+    document.getElementById('castleText'+i).innerHTML=escapeHome(body).replace(/ /g,'&nbsp;').replace(/\n/g,'<br>');
     document.getElementById('castleTitleInput'+i).value=title;
     document.getElementById('castleTextInput'+i).value=body;
   }
