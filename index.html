@@ -306,7 +306,18 @@ const VIKING_DEFAULT={
   titles:['🛡️ 바이킹 진행','👥 바이킹 편성','📋 바이킹 규칙'],
   texts:['바이킹 진행 내용을 입력하세요.','바이킹 편성 내용을 입력하세요.','바이킹 규칙을 입력하세요.']
 };
-function vikingDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_viking_v1')||'null')||VIKING_DEFAULT}catch(e){return VIKING_DEFAULT}}
+function vikingDataLocal(){
+  try{
+    const raw=JSON.parse(localStorage.getItem('kor1816_viking_v1')||'null');
+    if(raw && Array.isArray(raw.titles) && raw.titles.length>3){
+      localStorage.setItem('kor1816_viking_guide_v1',JSON.stringify({title:raw.titles[0],text:(raw.texts||[])[0]||''}));
+      raw.titles=raw.titles.slice(1,4);
+      raw.texts=(raw.texts||[]).slice(1,4);
+      localStorage.setItem('kor1816_viking_v1',JSON.stringify(raw));
+    }
+    return raw||VIKING_DEFAULT;
+  }catch(e){return VIKING_DEFAULT}
+}
 function renderViking(data){
   data=data||vikingDataLocal();
   for(let i=1;i<=3;i++){
