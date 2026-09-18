@@ -100,29 +100,12 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #homeSchedule{display:flex!important;flex-direction:column!important;gap:10px!important;padding-top:4px!important}
 #homeSchedule p{margin:0!important;padding:10px 14px!important;line-height:1.35!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:10px!important;background:rgba(255,255,255,.035)!important}
 @media(max-width:600px){#homeSchedule{gap:8px!important}#homeSchedule p{padding:9px 11px!important;font-size:14px!important}}
-</style><style id="bear-layout-final">
-#bearView,#bearEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
-#bearView .card{border:2px solid #3f5d89!important;border-top:2px solid #3f5d89!important}
-#bearView .bear-hero-item{display:inline-flex!important;align-items:center;justify-content:center;white-space:nowrap;margin:5px 4px;padding:8px 12px;border:1px solid #5270ad;border-radius:9px;background:#162844;font-size:16px;font-weight:700}
-
-#bearView .card,#bearEdit .card{min-width:0;min-height:245px!important;display:flex!important;flex-direction:column!important}
-#bearView .card h2,#bearEdit .card h2{margin:0 0 18px!important;padding:12px 14px!important;text-align:center!important;border-radius:11px!important;background:linear-gradient(180deg,#263d62,#182b49)!important;border:1px solid #3f5d89!important;color:#f7d77a!important}
-#bearView .card:first-child h2{color:#ffd27a!important}
-#bearView .card:nth-child(2) h2{color:#9fe8d7!important}
-#bearView #bearText,#bearView #bearHeroes{flex:1!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;text-align:center!important;padding:12px 10px!important;border-radius:11px!important;background:rgba(7,14,27,.48)!important;border:1px solid rgba(63,93,137,.55)!important;font-size:17px!important;font-weight:600!important;line-height:2!important}
-#bearView #bearHeroes{line-height:2.05!important}
-#bearEdit .card{min-height:220px!important}
-#bearEdit .card h2{font-size:18px!important}
-@media(max-width:700px){
-#bearView,#bearEdit{grid-template-columns:1fr!important}
-#bearView .card,#bearEdit .card{min-height:0!important}
-}
-</style><style id="bear-castle-match">
-#bearView{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
-#bearView .card{min-width:0!important}
-#bearView #bearHeroes{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;align-items:center!important}
-#bearView .bear-hero-item{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;white-space:nowrap!important;margin:0!important;padding:9px 5px!important;border:1px solid #5270ad!important;border-radius:9px!important;background:#162844!important;font-size:15px!important;font-weight:700!important}
-@media(max-width:700px){#bearView{grid-template-columns:1fr!important}#bearView #bearHeroes{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+</style><style id="bear-use-castle-cards">
+#bearView{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#bearEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#bearView #bearHeroes{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+#bearView .bear-hero-item{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;white-space:nowrap!important}
+@media(max-width:700px){#bearView,#bearEdit{grid-template-columns:1fr!important}#bearView #bearHeroes{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
