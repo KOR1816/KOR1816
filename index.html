@@ -16,9 +16,26 @@
 <section id="bear" class="page"><div class="card"><h2>🐻 곰 사냥</h2><p>곰 1트랩: <b>23:00</b></p><p>곰 2트랩: <b>09:10</b></p></div></section>
 <section id="rules" class="page"><div class="card"><h2>📋 KOR1816 운영 안내</h2><ul><li>공지사항을 먼저 확인해주세요.</li><li>참석이 어려운 경우 미리 DM으로 알려주세요.</li><li>KVK는 소통과 협력을 우선합니다.</li><li>팀 편성은 이벤트별 공지를 기준으로 합니다.</li></ul></div></section>
 </main><footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyB_7Uk6QkCQAt6LyWMVuQNARaXD78WdlZQ",
+  authDomain: "kor1816.firebaseapp.com",
+  projectId: "kor1816",
+  storageBucket: "kor1816.firebasestorage.app",
+  messagingSenderId: "838991083698",
+  appId: "1:838991083698:web:de37c21f443386d902b1ab",
+  measurementId: "G-SZ2ZX729BT"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+const TEAM_DOC = doc(db, 'siteData', 'teams');
+let sharedTeams={};
+async function loadSharedTeams(){try{const snap=await getDoc(TEAM_DOC);sharedTeams=snap.exists()?snap.data():{};renderTeams();}catch(e){console.error(e);document.getElementById('teamMsg').textContent='공용 데이터 불러오기에 실패했습니다.';}}
+async function saveSharedTeams(){await setDoc(TEAM_DOC,sharedTeams);}
 let isAdmin=false;
-const ADMIN_PASSWORD='1816kor';
+const ADMIN_PASSWORD='0001';
 function toggleAdmin(){
   if(isAdmin){isAdmin=false;setAdminMode();return}
   const pw=prompt('관리자 비밀번호를 입력하세요.');
@@ -29,17 +46,18 @@ function setAdminMode(){
   const sec=document.getElementById('teams');
   sec.classList.toggle('readonly',!isAdmin);
   document.getElementById('adminBtn').textContent=isAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  document.getElementById('adminNote').textContent=isAdmin?'관리자 수정 모드입니다. 저장 버튼으로 이 브라우저에 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
+  document.getElementById('adminNote').textContent=isAdmin?'관리자 수정 모드입니다. 저장 버튼으로 공용 서버에 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
   sec.querySelectorAll('input').forEach(x=>x.readOnly=!isAdmin);
 }
 function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='teams')renderTeams();scrollTo(0,0)}
-function getTeams(){try{return JSON.parse(localStorage.getItem('kor1816_teams')||'{}')}catch(e){return{}}}
-function saveTeam(team){if(!isAdmin)return;const data=getTeams();data[team]=[1,2,3,4,5,6,7].map(n=>document.getElementById('team-'+team+'-'+n).value.trim());localStorage.setItem('kor1816_teams',JSON.stringify(data));document.getElementById('teamMsg').textContent=team+'팀 저장 완료! / Saved!'}
-function saveExtra(){if(!isAdmin)return;const data=getTeams();data.extra=[document.getElementById('extra-1').value.trim(),document.getElementById('extra-2').value.trim()];localStorage.setItem('kor1816_teams',JSON.stringify(data));document.getElementById('teamMsg').textContent='개돌조 저장 완료! / Saved!'}
-function saveSubs(){if(!isAdmin)return;const data=getTeams();data.subs=[1,2,3,4,5,6,7,8,9,10].map(n=>document.getElementById('sub-'+n).value.trim());localStorage.setItem('kor1816_teams',JSON.stringify(data));document.getElementById('teamMsg').textContent='대체자 저장 완료! / Saved!'}
+function getTeams(){return sharedTeams||{}}
+async function saveTeam(team){if(!isAdmin)return;const data=getTeams();data[team]=[1,2,3,4,5,6,7].map(n=>document.getElementById('team-'+team+'-'+n).value.trim());sharedTeams=data;try{await saveSharedTeams();document.getElementById('teamMsg').textContent=team+'팀 저장 완료! / Saved!';}catch(e){console.error(e);document.getElementById('teamMsg').textContent='저장 실패: Firebase를 확인해주세요.'}}
+async function saveExtra(){if(!isAdmin)return;const data=getTeams();data.extra=[document.getElementById('extra-1').value.trim(),document.getElementById('extra-2').value.trim()];sharedTeams=data;try{await saveSharedTeams();document.getElementById('teamMsg').textContent='개돌조 저장 완료! / Saved!';}catch(e){console.error(e);document.getElementById('teamMsg').textContent='저장 실패: Firebase를 확인해주세요.'}}
+async function saveSubs(){if(!isAdmin)return;const data=getTeams();data.subs=[1,2,3,4,5,6,7,8,9,10].map(n=>document.getElementById('sub-'+n).value.trim());sharedTeams=data;try{await saveSharedTeams();document.getElementById('teamMsg').textContent='대체자 저장 완료! / Saved!';}catch(e){console.error(e);document.getElementById('teamMsg').textContent='저장 실패: Firebase를 확인해주세요.'}}
 function renderTeams(){const data=getTeams();['A','B','C','D'].forEach(team=>[1,2,3,4,5,6,7].forEach(n=>{const el=document.getElementById('team-'+team+'-'+n);if(el)el.value=(data[team]&&data[team][n-1])||''}));if(data.extra){document.getElementById('extra-1').value=data.extra[0]||'';document.getElementById('extra-2').value=data.extra[1]||''}for(let n=1;n<=10;n++){const el=document.getElementById('sub-'+n);if(el)el.value=(data.subs&&data.subs[n-1])||''}}
 renderTeams();
 setAdminMode();
+loadSharedTeams();
 
 function setLang(lang){
   localStorage.setItem('kor1816_lang',lang);
