@@ -563,177 +563,134 @@ window.addEventListener('load',function(){
 });
 </script><script id="full-i18n">
 (function(){
-  /*
-    KOR1816 automatic translation
-    - Korean is the single source of truth.
-    - Display text is translated on demand into EN/JA/ZH/DE.
-    - Translation results are cached in localStorage so the same text is not
-      translated repeatedly.
-    - Admin inputs remain Korean so saving always uses the original Korean data.
-  */
+  // Safe automatic translation: translate only once per language switch.
+  // No polling and no MutationObserver, so Firebase/UI buttons cannot be blocked.
   const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de'};
   const NAV={
+    ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
     en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ 3 Alliances','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
     ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
     zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
     de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliger Schwertkampf','⚔️ 3 Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln']
   };
-  const CACHE_KEY='kor1816_auto_translation_v1';
-  const pending=new Map();
-  let applying=false;
-  let applyAgain=false;
+  const CACHE_KEY='kor1816_auto_translation_v2';
+  let cache={};
+  try{cache=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}catch(e){cache={}}
+  let runId=0;
 
-  function currentLang(){return localStorage.getItem('kor1816_lang')||'ko'}
-  function cacheLoad(){
-    try{return JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}
-    catch(e){return {}}
-  }
-  const cache=cacheLoad();
-  function cacheSave(){
-    try{localStorage.setItem(CACHE_KEY,JSON.stringify(cache))}catch(e){}
-  }
+  function lang(){return localStorage.getItem('kor1816_lang')||'ko'}
+  function korean(s){return /[\uac00-\ud7a3]/.test(s)}
+  function ck(l,s){return l+'|'+s}
+  function saveCache(){try{localStorage.setItem(CACHE_KEY,JSON.stringify(cache))}catch(e){}}
 
-  function hasKorean(s){return /[\uac00-\ud7a3]/.test(s)}
-  function key(lang,text){return lang+'|'+text}
-
-  async function googleTranslate(text,lang){
-    const target=LANGS[lang];
-    if(!target || !hasKorean(text)) return text;
-    const k=key(lang,text);
-    if(cache[k]) return cache[k];
-    if(pending.has(k)) return pending.get(k);
-
-    const p=(async()=>{
-      try{
-        const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl='+
-          encodeURIComponent(target)+'&dt=t&q='+encodeURIComponent(text);
-        const res=await fetch(url,{mode:'cors'});
-        if(!res.ok) throw new Error('translation HTTP '+res.status);
-        const data=await res.json();
-        const out=Array.isArray(data)&&Array.isArray(data[0])
-          ? data[0].map(x=>x&&x[0]||'').join('')
-          : '';
-        if(!out) throw new Error('empty translation');
-        cache[k]=out;
-        cacheSave();
-        return out;
-      }catch(e){
-        console.warn('Automatic translation failed:',e);
-        return text;
-      }finally{
-        pending.delete(k);
-      }
-    })();
-    pending.set(k,p);
-    return p;
-  }
-
-  function markOriginal(node){
-    if(!node.dataset.kor1816Original)
-      node.dataset.kor1816Original=node.nodeValue;
-    return node.dataset.kor1816Original;
-  }
-
-  function restoreKorean(){
+  function rememberOriginals(){
     const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
     let n;
     while(n=walker.nextNode()){
       const p=n.parentElement;
-      if(!p || p.closest('.lang-switch') || ['SCRIPT','STYLE'].includes(p.tagName)) continue;
-      if(n.dataset.kor1816Original!==undefined) n.nodeValue=n.dataset.kor1816Original;
+      if(!p||p.closest('.lang-switch')||['SCRIPT','STYLE'].includes(p.tagName))continue;
+      if(n.dataset.kor1816Original===undefined)n.dataset.kor1816Original=n.nodeValue;
     }
-    document.querySelectorAll('input[placeholder],textarea[placeholder],select').forEach(el=>{
-      if(el.dataset.kor1816Placeholder!==undefined) el.placeholder=el.dataset.kor1816Placeholder;
+    document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
+      if(el.dataset.kor1816Placeholder===undefined)el.dataset.kor1816Placeholder=el.placeholder||'';
     });
     document.querySelectorAll('nav button').forEach((b,i)=>{
-      if(NAV.ko && NAV.ko[i]) b.textContent=NAV.ko[i];
-      else if(b.dataset.kor1816NavOriginal!==undefined) b.textContent=b.dataset.kor1816NavOriginal;
+      if(b.dataset.kor1816NavOriginal===undefined)b.dataset.kor1816NavOriginal=NAV.ko[i]||b.textContent;
     });
   }
 
-  async function translateNodes(lang){
-    if(!LANGS[lang]) return;
-    const nodes=[];
+  function restore(){
+    rememberOriginals();
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    let n;
+    while(n=walker.nextNode()){
+      const p=n.parentElement;
+      if(!p||p.closest('.lang-switch')||['SCRIPT','STYLE'].includes(p.tagName))continue;
+      if(n.dataset.kor1816Original!==undefined)n.nodeValue=n.dataset.kor1816Original;
+    }
+    document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
+      el.placeholder=el.dataset.kor1816Placeholder||'';
+    });
+    document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV.ko[i]||b.dataset.kor1816NavOriginal||b.textContent);
+  }
+
+  async function translate(text,l,id){
+    if(!text||!korean(text)||!LANGS[l])return text;
+    const k=ck(l,text);
+    if(cache[k])return cache[k];
+    try{
+      const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl='+
+        encodeURIComponent(LANGS[l])+'&dt=t&q='+encodeURIComponent(text);
+      const res=await fetch(url,{mode:'cors'});
+      if(!res.ok)throw new Error(String(res.status));
+      const data=await res.json();
+      const out=Array.isArray(data)&&Array.isArray(data[0])?data[0].map(x=>x&&x[0]||'').join(''):'';
+      if(out){cache[k]=out;saveCache();return out}
+    }catch(err){console.warn('translation failed',err)}
+    return text;
+  }
+
+  async function apply(){
+    const id=++runId;
+    const l=lang();
+    rememberOriginals();
+    if(l==='ko'){restore();return}
+
+    // Freeze a snapshot of the Korean DOM first. This prevents translated text
+    // from becoming the next translation source.
+    const items=[];
     const seen=new Set();
     const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
     let n;
     while(n=walker.nextNode()){
       const p=n.parentElement;
-      if(!p || p.closest('.lang-switch') || ['SCRIPT','STYLE'].includes(p.tagName)) continue;
-      const original=markOriginal(n);
-      if(!original.trim() || !hasKorean(original)) continue;
-      if(seen.has(original)) continue;
-      seen.add(original);
-      nodes.push({node:n,original});
+      if(!p||p.closest('.lang-switch')||['SCRIPT','STYLE'].includes(p.tagName))continue;
+      const original=n.dataset.kor1816Original;
+      if(!original||!original.trim()||!korean(original)||seen.has(original))continue;
+      seen.add(original);items.push({node:n,original});
     }
 
-    const queue=nodes.slice();
-    const workers=Array.from({length:4},async()=>{
-      while(queue.length){
-        const item=queue.shift();
-        const out=await googleTranslate(item.original,lang);
-        if(item.node.isConnected && currentLang()===lang && out!==item.node.nodeValue)
-          item.node.nodeValue=out;
-      }
-    });
-    await Promise.all(workers);
+    // Small batches: never flood the browser/network.
+    for(let i=0;i<items.length;i+=3){
+      if(id!==runId||lang()!==l)return;
+      const batch=items.slice(i,i+3);
+      const outs=await Promise.all(batch.map(x=>translate(x.original,l,id)));
+      if(id!==runId||lang()!==l)return;
+      batch.forEach((x,j)=>{if(x.node.isConnected)x.node.nodeValue=outs[j]});
+    }
 
-    // Placeholders are useful to translate, but editable values themselves
-    // stay untouched because the administrator always edits Korean.
     const ph=[];
     document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
-      if(el.dataset.kor1816Placeholder===undefined)
-        el.dataset.kor1816Placeholder=el.placeholder||'';
       const original=el.dataset.kor1816Placeholder||'';
-      if(hasKorean(original)) ph.push({el,original});
+      if(korean(original))ph.push({el,original});
     });
-    const pq=ph.slice();
-    await Promise.all(Array.from({length:3},async()=>{
-      while(pq.length){
-        const item=pq.shift();
-        const out=await googleTranslate(item.original,lang);
-        if(item.el.isConnected && currentLang()===lang) item.el.placeholder=out;
-      }
-    }));
-  }
-
-  async function apply(){
-    const lang=currentLang();
-    if(applying){applyAgain=true;return}
-    applying=true;
-    try{
-      if(lang==='ko'){
-        restoreKorean();
-      }else{
-        const nav=document.querySelectorAll('nav button');
-        nav.forEach((b,i)=>{
-          if(b.dataset.kor1816NavOriginal===undefined)
-            b.dataset.kor1816NavOriginal=b.textContent;
-          if(NAV[lang]&&NAV[lang][i]) b.textContent=NAV[lang][i];
-        });
-        await translateNodes(lang);
-      }
-    }finally{
-      applying=false;
-      if(applyAgain){applyAgain=false;setTimeout(apply,0)}
+    for(let i=0;i<ph.length;i+=3){
+      if(id!==runId||lang()!==l)return;
+      const batch=ph.slice(i,i+3);
+      const outs=await Promise.all(batch.map(x=>translate(x.original,l,id)));
+      if(id!==runId||lang()!==l)return;
+      batch.forEach((x,j)=>{if(x.el.isConnected)x.el.placeholder=outs[j]});
     }
+
+    // Navigation is instant and never depends on translation requests.
+    document.querySelectorAll('nav button').forEach((b,i)=>{
+      if(NAV[l]&&NAV[l][i])b.textContent=NAV[l][i];
+    });
   }
 
-  window.setLang=function(lang){
-    if(!['ko','en','ja','zh','de'].includes(lang)) return;
-    localStorage.setItem('kor1816_lang',lang);
-    // Restore immediately before translating so the new language always starts
-    // from the original Korean text, including freshly loaded Firebase content.
-    restoreKorean();
-    apply();
+  window.setLang=function(l){
+    if(!['ko','en','ja','zh','de'].includes(l))return;
+    localStorage.setItem('kor1816_lang',l);
+    runId++;
+    // Restore immediately so clicking another language never chains translations.
+    restore();
+    if(l==='ko')return;
+    // Yield to the browser before starting network work; controls remain responsive.
+    setTimeout(apply,50);
   };
 
-  const observer=new MutationObserver(()=>{
-    if(currentLang()!=='ko') apply();
-  });
-  observer.observe(document.body,{childList:true,subtree:true});
-
-  window.addEventListener('load',()=>setTimeout(apply,100));
-  setTimeout(apply,100);
+  // Do not run continuously. One run on page load and one run per language click.
+  window.addEventListener('load',function(){setTimeout(apply,150)});
+  setTimeout(apply,150);
 })();
 </script></body></html>
