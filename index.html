@@ -563,8 +563,8 @@ window.addEventListener('load',function(){
 });
 </script><script id="full-i18n">
 (function(){
-  // Client-safe translation provider. Google translate's unofficial endpoint
-  // is not suitable for browser fetches because of CORS; use MyMemory instead.
+  // Fast batch i18n. Collects all visible Korean text and translates it in
+  // a few larger requests instead of one request per sentence.
   const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de'};
   const NAV={
     ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
@@ -574,8 +574,8 @@ window.addEventListener('load',function(){
     de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliger Schwertkampf','⚔️ 3 Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln']
   };
   const TARGETS=['header','nav','#homeView','#vikingView','#teams .card','#allianceView','#castleView','#bearView','#rulesView','footer'];
-  const CACHE='kor1816_i18n_mymemory_v1';
-  let cache={}; try{cache=JSON.parse(localStorage.getItem(CACHE)||'{}')||{}}catch(e){}
+  const CACHE='kor1816_i18n_batch_v1';
+  let cache={};try{cache=JSON.parse(localStorage.getItem(CACHE)||'{}')||{}}catch(e){}
   let token=0;
 
   const hasKo=s=>/[\uac00-\ud7a3]/.test(s||'');
@@ -588,31 +588,74 @@ window.addEventListener('load',function(){
   }
   function capture(){
     TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
-      // Capture fresh Korean HTML on every language switch, including Firebase updates.
       el.dataset.kor1816Source=el.innerHTML;
     }));
   }
-  async function one(text,lang){
-    const key=lang+'|'+text;
-    if(cache[key])return cache[key];
-    const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]);
-    try{
-      const res=await fetch(url);
-      if(!res.ok)throw new Error('HTTP '+res.status);
-      const data=await res.json();
-      const out=data&&data.responseData&&data.responseData.translatedText;
-      if(out){cache[key]=out;save();return out}
-    }catch(err){console.warn('translation failed',err)}
-    return text;
+
+  async function batchTranslate(texts,lang){
+    const result=new Array(texts.length);
+    const missing=[];
+    texts.forEach((t,i)=>{
+      const k=lang+'|'+t;
+      if(cache[k])result[i]=cache[k];else missing.push({i,t,k});
+    });
+    if(!missing.length)return result;
+
+    // Pack many strings into one request. The separator is deliberately
+    // unlikely to occur in normal site content, then results are mapped back.
+    const SEP='\n<<<KOR1816_SPLIT>>>\n';
+    const MAX=700;
+    for(let start=0;start<missing.length;start+=MAX/120){
+      const group=[];
+      let size=0;
+      for(let j=start;j<missing.length&&group.length<12;j++){
+        const item=missing[j];
+        if(group.length&&size+item.t.length>650)break;
+        group.push(item);size+=item.t.length+SEP.length;
+      }
+      if(!group.length)group.push(missing[start]);
+      const payload=group.map(x=>x.t).join(SEP);
+      const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(payload)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]);
+      try{
+        const res=await fetch(url);
+        if(!res.ok)throw new Error('HTTP '+res.status);
+        const data=await res.json();
+        const out=data&&data.responseData&&data.responseData.translatedText||'';
+        const parts=out.split(SEP);
+        if(parts.length===group.length){
+          group.forEach((x,k)=>{
+            result[x.i]=parts[k];
+            cache[x.k]=parts[k];
+          });
+        }else{
+          // If the provider alters the separator, fall back to individual
+          // requests for only this small group.
+          await Promise.all(group.map(async x=>{
+            try{
+              const rr=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(x.t)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]));
+              const dd=await rr.json();
+              const oo=dd&&dd.responseData&&dd.responseData.translatedText||x.t;
+              result[x.i]=oo;cache[x.k]=oo;
+            }catch(err){result[x.i]=x.t}
+          }));
+        }
+        save();
+      }catch(err){
+        console.warn('batch translation failed',err);
+        group.forEach(x=>{result[x.i]=x.t});
+      }
+      if(token===0){} // keep lint-free; cancellation is checked by caller
+    }
+    return result;
   }
+
   async function apply(){
-    const my=++token, lang=localStorage.getItem('kor1816_lang')||'ko';
+    const my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';
     restore();
     if(lang==='ko')return;
-    capture();
     document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
-    const nodes=[];
-    const seen=new Set();
+
+    const nodes=[],seen=new Map();
     TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
       const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
       let n;
@@ -620,42 +663,37 @@ window.addEventListener('load',function(){
         const p=n.parentElement;
         if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button'))continue;
         const t=n.nodeValue;
-        if(hasKo(t)&&t.trim()&&!seen.has(t)){
-          seen.add(t);nodes.push(n);
-        }
+        if(hasKo(t)&&t.trim()&&!seen.has(t)){seen.set(t,n);nodes.push({node:n,text:t})}
       }
     }));
-    // MyMemory accepts max ~500 bytes per segment. Keep requests small and
-    // limited so the page stays responsive.
-    for(let i=0;i<nodes.length;i+=2){
+
+    // One batch at a time, up to ~650 chars each, with up to 12 strings.
+    // This is dramatically faster than one HTTP request per text node.
+    const texts=nodes.map(x=>x.text);
+    const translated=await batchTranslate(texts,lang);
+    if(my!==token||localStorage.getItem('kor1816_lang')!==lang)return;
+    nodes.forEach((x,i)=>{if(x.node.isConnected&&translated[i])x.node.nodeValue=translated[i]});
+
+    const ph=[...document.querySelectorAll('input[placeholder],textarea[placeholder]')]
+      .filter(el=>hasKo(el.getAttribute('placeholder')||''));
+    if(ph.length){
+      const ptexts=ph.map(el=>el.getAttribute('placeholder')||'');
+      const po=await batchTranslate(ptexts,lang);
       if(my!==token||localStorage.getItem('kor1816_lang')!==lang)return;
-      const batch=nodes.slice(i,i+2);
-      await Promise.all(batch.map(async n=>{
-        const old=n.nodeValue;
-        const out=await one(old,lang);
-        if(my===token&&n.isConnected)n.nodeValue=out;
-      }));
-    }
-    // Translate placeholders without touching editable values.
-    const ph=[...document.querySelectorAll('input[placeholder],textarea[placeholder]')];
-    for(const el of ph){
-      const old=el.getAttribute('placeholder')||'';
-      if(!hasKo(old))continue;
-      const out=await one(old,lang);
-      if(my===token)el.placeholder=out;
+      ph.forEach((el,i)=>{if(po[i])el.placeholder=po[i]});
     }
   }
+
   window.setLang=function(lang){
     if(!['ko','en','ja','zh','de'].includes(lang))return;
     localStorage.setItem('kor1816_lang',lang);
     token++;
     restore();
-    if(lang==='ko')return;
-    // Let the click event finish before network requests start.
-    setTimeout(apply,0);
+    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang]&&NAV[lang][i])b.textContent=NAV[lang][i]});
+    if(lang!=='ko')setTimeout(apply,0);
   };
+
   window.addEventListener('load',function(){
-    // Do not translate automatically on page load. Korean remains instant.
     capture();
     const saved=localStorage.getItem('kor1816_lang')||'ko';
     if(saved!=='ko')setTimeout(apply,100);
