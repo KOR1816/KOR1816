@@ -47,6 +47,24 @@ footer{text-align:center;padding:35px;opacity:.55}.big{font-size:22px;font-weigh
 <tr><td>2군 / Group 2</td><td>참석 체크</td><td>30명 초과 시 대체 가능 / Substitute if over 30</td></tr></table>
 </div></section>
 
+<section id="attendance" class="page">
+<div class="card">
+<h2>📝 참가 신청 / Attendance</h2>
+<p>성검쟁탈 참가 여부를 등록해주세요. / Please register your attendance for Holy Sword Clash.</p>
+<div style="display:grid;gap:12px;max-width:500px">
+<input id="nickname" type="text" placeholder="닉네임 / Nickname" style="padding:12px;border-radius:10px;border:1px solid #3b4f7d;background:#0f1730;color:#fff">
+<label><input type="radio" name="group" value="1"> 1군 / Group 1</label>
+<label><input type="radio" name="group" value="2"> 2군 / Group 2</label>
+<button onclick="saveAttendance()" style="padding:12px;border:0;border-radius:10px;background:#4f6fb8;color:#fff;font-weight:bold;cursor:pointer">참가 신청 저장 / Save Attendance</button>
+<div id="attendanceMsg" style="min-height:22px"></div>
+</div>
+</div>
+<div class="grid" style="margin-top:15px">
+<div class="card"><h2>1군 / Group 1 <span class="big"><span id="group1Count">0</span>/30</span></h2><div id="group1List">아직 없습니다. / None yet.</div></div>
+<div class="card"><h2>2군 / Group 2 <span class="big"><span id="group2Count">0</span></span></h2><div id="group2List">아직 없습니다. / None yet.</div></div>
+</div>
+</section>
+
 <section id="castle" class="page"><div class="grid">
 <div class="card"><h2>⚔️ 집결장 공격</h2><p>아마데 / 페라 / 로사</p><p><b>비율:</b> 505 / 55.5.40 / 514 / 415 / 406</p></div>
 <div class="card"><h2>🛡️ 수성</h2><p>알카 / 마르고 / 살로</p><p>상대가 강하면 예거 고려</p><p><b>연습:</b> 집결장 631 · 집결원 640</p></div>
