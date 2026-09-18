@@ -186,7 +186,7 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 <section id="rules" class="page">
 
 <div id="rulesMsg" class="msg"></div>
-<div id="rulesView" class="card"><h2>📋 KOR1816 운영 안내</h2><div id="rulesText" class="rules-text-full"></div></div>
+<div id="rulesView" class="card"><h2>📋 KOR1816 운영진 및 안내</h2><div id="rulesText" class="rules-text-full"></div></div>
 <div class="admin-bar page-admin"><button class="admin-btn" onclick="loadRules()">🔄 새로고침</button><button class="admin-btn" id="rulesAdminBtn" onclick="toggleRulesAdmin()">🔐 관리자 수정</button></div><div id="rulesEdit" class="card" style="display:none"><label>운영 안내 내용</label><textarea id="rulesTextInput" class="home-input home-area"></textarea><button class="admin-btn" onclick="saveRules()">💾 규칙 저장</button></div>
 </section>
 </main><footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
@@ -474,7 +474,7 @@ function toggleBearAdmin(){if(bearAdmin){bearAdmin=false;setBearAdminMode();retu
 async function loadBear(){renderBear(bearDataLocal());if(!BEAR_DOC||!window.__firebaseGetDoc)return;try{const snap=await window.__firebaseGetDoc(BEAR_DOC);if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));renderBear(d);document.getElementById('bearMsg').textContent='최신 곰사냥 내용을 불러왔습니다.'}}catch(e){console.error(e);document.getElementById('bearMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}}
 async function saveBear(){if(!bearAdmin)return;const d={text:document.getElementById('bearTextInput').value.trim()};localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));renderBear(d);try{if(BEAR_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(BEAR_DOC,d);document.getElementById('bearMsg').textContent='곰사냥 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('bearMsg').textContent='곰사냥은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
 
-const RULES_DEFAULT={text:'공지사항을 먼저 확인해주세요.\n참석이 어려운 경우 미리 DM으로 알려주세요.\nKVK는 소통과 협력을 우선합니다.\n팀 편성은 이벤트별 공지를 기준으로 합니다.'};
+const RULES_DEFAULT={text:'### 🛡️ 바이킹 안내\n[KOR]༺༒༽Pham༼༒༻ - 총대장 / 정신적지주\n\n[KOR]Nemesis - 집결장 / 외교, 이민 / 유적쟁탈 /\n\n[KOR]Agaresᴷᴼᴿ - 전체적인 벨런스(에이스)\n\n[KOR]༺༒༽LJ༼༒༻ - 거점총사령관\n\n[KOR]샌디에이고 - 집결장 / 댕댕이전문가\n\n[KOR]momo - 캐슬전 통솔자 / 모모찡엄마\n\n[KOR]Rarara - SIN연맹장 / 천사의마음씨\n\n[KOR]Aimée - 분위기메이커 / 태그담당자\n\n[KOR]GGGz需要起床 - 히어로 / 너무바쁘다 / 영어.중국어가능\n\n[KOR]DAWN - 침묵의왕자 / 그저조용하다\n\n[KOR]KOREAN MONSTER - 동물의숲\n\n[KOR]Hair loss beam - 탈모를원하는가?'};
 function rulesDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_rules_v1')||'null')||RULES_DEFAULT}catch(e){return RULES_DEFAULT}}
 function renderRules(data){
   data=data||rulesDataLocal();
@@ -509,7 +509,7 @@ async function loadRules(){
     if(RULES_DOC){
       const snap=await window.__firebaseGetDoc(RULES_DOC);
       if(snap.exists()){
-        const d=snap.data()||{};
+        let d=snap.data()||{};\n        if(!d.text || String(d.text).includes('본부(HQ) 첫영웅 고든') || String(d.text).includes('공지사항을 먼저 확인해주세요.')){\n          d={...d,text:RULES_DEFAULT.text};\n          if(window.__firebaseSetDoc) await window.__firebaseSetDoc(RULES_DOC,d);\n        }
         localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));
         renderRules(d);
         document.getElementById('rulesMsg').textContent='최신 규칙을 불러왔습니다.';
