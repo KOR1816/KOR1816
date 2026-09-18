@@ -478,13 +478,8 @@ const RULES_DEFAULT={text:'### 🛡️ 바이킹 안내\n[KOR]༺༒༽Pham༼�
 function rulesDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_rules_v1')||'null')||RULES_DEFAULT}catch(e){return RULES_DEFAULT}}
 function renderRules(data){
   data=data||rulesDataLocal();
-  const v=vikingDataLocal();
-  let guide={};
-  try{guide=JSON.parse(localStorage.getItem('kor1816_viking_guide_v1')||'{}')}catch(e){}
-  const guideTitle=guide.title||((v.titles&&v.titles.length>3)?v.titles[0]:'🛡️ 바이킹 안내');
-  const guideText=guide.text||((v.texts&&v.texts.length>3)?v.texts[0]:'');
-  const guideBlock=guideText ? '<div style="margin-bottom:22px"><h3 style="margin:0 0 8px">'+escapeHome(guideTitle)+'</h3><div>'+escapeHome(guideText).replace(/\n/g,'<br>')+'</div></div>' : '';
-  document.getElementById('rulesText').innerHTML=guideBlock+escapeHome(data.text||'').replace(/\n/g,'<br>');
+  // 운영진 안내는 규칙 페이지의 단일 본문으로 표시합니다. 이전 바이킹 안내 데이터는 더 이상 붙이지 않습니다.
+  document.getElementById('rulesText').innerHTML=escapeHome(data.text||'').replace(/\n/g,'<br>');
   document.getElementById('rulesTextInput').value=data.text||'';
 }
 let rulesAdmin=false;
@@ -509,7 +504,7 @@ async function loadRules(){
     if(RULES_DOC){
       const snap=await window.__firebaseGetDoc(RULES_DOC);
       if(snap.exists()){
-        let d=snap.data()||{};\n        if(!d.text || String(d.text).includes('본부(HQ) 첫영웅 고든') || String(d.text).includes('공지사항을 먼저 확인해주세요.')){\n          d={...d,text:RULES_DEFAULT.text};\n          if(window.__firebaseSetDoc) await window.__firebaseSetDoc(RULES_DOC,d);\n        }
+        let d=snap.data()||{};\n        if(!d.text || String(d.text).includes('본부(HQ) 첫영웅 고든') || String(d.text).includes('공지사항을 먼저 확인해주세요.') || !String(d.text).includes('[KOR]༺༒༽Pham༼༒༻')){\n          d={...d,text:RULES_DEFAULT.text};\n          if(window.__firebaseSetDoc) await window.__firebaseSetDoc(RULES_DOC,d);\n        }
         localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));
         renderRules(d);
         document.getElementById('rulesMsg').textContent='최신 규칙을 불러왔습니다.';
