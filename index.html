@@ -512,41 +512,14 @@ async function saveCastle(){if(!castleAdmin)return;const d={titles:[],texts:[]};
 
 const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10',heroes:'아마데우스\n첸코\n연우\n마르고(4성🙏)\n아마네\n영웅없이'};
 const BEAR_LOCAL_KEY='kor1816_bear_saved_v2';
-const BEAR_COOKIE_KEY='kor1816_bear_saved_v2';
-function bearReadSaved(){
-  try{
-    const a=localStorage.getItem(BEAR_LOCAL_KEY);
-    if(a){const d=JSON.parse(a);if(d&&typeof d==='object')return d;}
-  }catch(e){}
-  try{
-    const m=document.cookie.match(new RegExp('(?:^|; )'+BEAR_COOKIE_KEY.replace(/[.*+?^$\\{}()|[\\]\\\\]/g,'\\\\const BEAR_LOCAL_KEY='kor1816_bear_saved_v2';
 function bearDataLocal(){
   try{
     const d=JSON.parse(localStorage.getItem(BEAR_LOCAL_KEY)||'null');
-    if(d)return d;
+    if(d&&typeof d==='object')return d;
     const old=JSON.parse(localStorage.getItem('kor1816_bear_v1')||'null');
-    if(old)return old;
-    return BEAR_DEFAULT;
-  }catch(e){return BEAR_DEFAULT}
-}')+'=([^;]*)'));
-    if(m){const d=JSON.parse(decodeURIComponent(m[1]));if(d&&typeof d==='object')return d;}
-  }catch(e){}
-  try{
-    const old=JSON.parse(localStorage.getItem('kor1816_bear_v1')||'null');
-    if(old)return old;
-  }catch(e){}
-  return null;
-}
-function bearWriteSaved(d){
-  const s=JSON.stringify(d);
-  let ok=false;
-  try{localStorage.setItem(BEAR_LOCAL_KEY,s);ok=true}catch(e){console.error('Bear localStorage save failed:',e)}
-  try{localStorage.setItem('kor1816_bear_v1',s)}catch(e){}
-  try{document.cookie=BEAR_COOKIE_KEY+'='+encodeURIComponent(s)+'; Max-Age=31536000; Path=/; SameSite=Lax';}catch(e){console.error('Bear cookie save failed:',e)}
-  return ok;
-}
-function bearDataLocal(){
-  return bearReadSaved()||BEAR_DEFAULT;
+    if(old&&typeof old==='object')return old;
+  }catch(e){console.error('Bear local read failed:',e)}
+  return BEAR_DEFAULT;
 }
 function renderBear(data){
   data=data||bearDataLocal();
@@ -560,8 +533,22 @@ function renderBear(data){
   if(hi)hi.value=heroes;
 }
 let bearAdmin=false;
-function setBearAdminMode(){const v=document.getElementById('bearView'),e=document.getElementById('bearEdit'),b=document.getElementById('bearAdminBtn'),n=document.getElementById('bearAdminNote');if(v)v.style.display=bearAdmin?'none':'block';if(e)e.style.display=bearAdmin?'block':'none';if(b)b.textContent=bearAdmin?'🔒 수정 종료':'🔐 관리자 수정';if(n)n.textContent=bearAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';}
-function toggleBearAdmin(){if(bearAdmin){bearAdmin=false;setBearAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){bearAdmin=true;setBearAdminMode();document.getElementById('bearMsg').textContent='곰사냥 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
+function setBearAdminMode(){
+  const v=document.getElementById('bearView'),e=document.getElementById('bearEdit'),btn=document.getElementById('bearAdminBtn'),n=document.getElementById('bearAdminNote');
+  if(v)v.style.display=bearAdmin?'none':'block';
+  if(e)e.style.display=bearAdmin?'block':'none';
+  if(btn)btn.textContent=bearAdmin?'🔒 수정 종료':'🔐 관리자 수정';
+  if(n)n.textContent=bearAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';
+}
+function toggleBearAdmin(){
+  if(bearAdmin){bearAdmin=false;setBearAdminMode();return}
+  const pw=prompt('관리자 비밀번호를 입력하세요.');
+  if(pw===ADMIN_PASSWORD){
+    bearAdmin=true;
+    setBearAdminMode();
+    const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥 관리자 수정 모드입니다.';
+  }else if(pw!==null)alert('비밀번호가 올바르지 않습니다.');
+}
 async function loadBear(){
   const local=bearDataLocal();
   renderBear(local);
@@ -572,16 +559,14 @@ async function loadBear(){
       const remote=snap.data()||{};
       const localTime=Number(local&&local._updatedAt||0);
       const remoteTime=Number(remote&&remote._updatedAt||0);
-      // v2 local save is authoritative on this browser. Only adopt Firebase
-      // when there is no local saved record yet.
-      const hasSaved=!!bearReadSaved();
+      const hasSaved=!!localStorage.getItem(BEAR_LOCAL_KEY);
       const d=hasSaved?local:(localTime>remoteTime?local:remote);
-      if(!hasSaved)bearWriteSaved(d);
+      if(!hasSaved)localStorage.setItem(BEAR_LOCAL_KEY,JSON.stringify(d));
       renderBear(d);
       const m=document.getElementById('bearMsg');if(m)m.textContent=hasSaved?'저장된 곰사냥 내용을 불러왔습니다.':'최신 곰사냥 내용을 불러왔습니다.';
     }
   }catch(e){
-    console.error(e);
+    console.error('Bear read failed:',e);
     const m=document.getElementById('bearMsg');if(m)m.textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.';
   }
 }
@@ -590,8 +575,8 @@ async function saveBear(){
   const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
   const d={text:ti?ti.value.trim():'',heroes:hi?hi.value.trim():'',_updatedAt:Date.now()};
   try{
-    // Dedicated local key is written synchronously BEFORE any Firebase call.
-    if(!bearWriteSaved(d) && !document.cookie)throw new Error('no persistent storage');
+    localStorage.setItem(BEAR_LOCAL_KEY,JSON.stringify(d));
+    localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));
     renderBear(d);
   }catch(e){
     console.error('Bear local save failed:',e);
