@@ -498,6 +498,8 @@ function show(id){
   if(id==='rules')loadRules();
   window.scrollTo(0,0);
 }
+initFirebase().catch(e=>console.error('Firebase init failed:',e));
+
 window.addEventListener('load',function(){
   try{renderHome(homeDataLocal());setHomeAdminMode();}catch(e){console.error(e)}
   try{renderViking(vikingDataLocal());setVikingAdminMode();}catch(e){console.error(e)}
