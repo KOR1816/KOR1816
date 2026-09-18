@@ -694,9 +694,24 @@ function bindLanguageButtons(){
  });
 }
 bindLanguageButtons();
-function refresh(){restore();capture();if((localStorage.getItem('kor1816_lang')||'ko')!=='ko')setTimeout(apply,0)}
-function hook(name){const f=window[name];if(typeof f!=='function')return;window[name]=function(){let r=f.apply(this,arguments);setTimeout(refresh,0);return r}}
+let refreshTimer=0;
+function refresh(){
+ clearTimeout(refreshTimer);
+ refreshTimer=setTimeout(()=>{
+   restore();capture();
+   if((localStorage.getItem('kor1816_lang')||'ko')!=='ko')setTimeout(apply,50);
+ },800);
+}
+function hook(name){
+ const f=window[name];
+ if(typeof f!=='function')return;
+ window[name]=function(){
+   let r=f.apply(this,arguments);
+   refresh();
+   return r;
+ }
+}
 ['renderViking','renderCastle','renderHome','renderBear','renderRules','renderAlliance','renderTeams'].forEach(hook);
-window.addEventListener('load',()=>setTimeout(refresh,500));
+window.addEventListener('load',()=>setTimeout(refresh,1200));
 })();
 </script></body></html>
