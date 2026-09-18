@@ -480,3 +480,30 @@ function renderTeams(){
 }
 async function refreshTeams(){
   const btn=document.querySelector('[onclick="refreshTeams()"]');
+  if(btn){btn.disabled=true;btn.textContent='🔄 불러오는 중...';}
+  try{await loadSharedTeams();showSaveResult('최신 성검쟁탈 팀편성을 불러왔습니다.');}
+  catch(e){console.error(e);showSaveResult('팀편성 새로고침에 실패했습니다.');}
+  finally{if(btn){btn.disabled=false;btn.textContent='🔄 새로고침';}}
+}
+function show(id){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('active');
+  if(id==='home')loadHome();
+  if(id==='viking')loadViking();
+  if(id==='alliance')loadAlliance();
+  if(id==='teams')renderTeams();
+  if(id==='castle')loadCastle();
+  if(id==='bear')loadBear();
+  if(id==='rules')loadRules();
+  window.scrollTo(0,0);
+}
+window.addEventListener('load',function(){
+  try{renderHome(homeDataLocal());setHomeAdminMode();}catch(e){console.error(e)}
+  try{renderViking(vikingDataLocal());setVikingAdminMode();}catch(e){console.error(e)}
+  try{renderAlliance(allianceDataLocal());setAllianceAdminMode();}catch(e){console.error(e)}
+  try{renderCastle(castleDataLocal());setCastleAdminMode();}catch(e){console.error(e)}
+  try{renderBear(bearDataLocal());setBearAdminMode();}catch(e){console.error(e)}
+  try{renderRules(rulesDataLocal());setRulesAdminMode();}catch(e){console.error(e)}
+});
+</script></body></html>
