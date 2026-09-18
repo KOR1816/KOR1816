@@ -512,6 +512,14 @@ async function saveCastle(){if(!castleAdmin)return;const d={titles:[],texts:[]};
 
 const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10',heroes:'아마데우스\n첸코\n연우\n마르고(4성🙏)\n아마네\n영웅없이'};
 const BEAR_LOCAL_KEY='kor1816_bear_saved_v2';
+const BEAR_COOKIE_KEY='kor1816_bear_saved_v2';
+function bearReadSaved(){
+  try{
+    const a=localStorage.getItem(BEAR_LOCAL_KEY);
+    if(a){const d=JSON.parse(a);if(d&&typeof d==='object')return d;}
+  }catch(e){}
+  try{
+    const m=document.cookie.match(new RegExp('(?:^|; )'+BEAR_COOKIE_KEY.replace(/[.*+?^$\\{}()|[\\]\\\\]/g,'\\\\const BEAR_LOCAL_KEY='kor1816_bear_saved_v2';
 function bearDataLocal(){
   try{
     const d=JSON.parse(localStorage.getItem(BEAR_LOCAL_KEY)||'null');
@@ -520,6 +528,25 @@ function bearDataLocal(){
     if(old)return old;
     return BEAR_DEFAULT;
   }catch(e){return BEAR_DEFAULT}
+}')+'=([^;]*)'));
+    if(m){const d=JSON.parse(decodeURIComponent(m[1]));if(d&&typeof d==='object')return d;}
+  }catch(e){}
+  try{
+    const old=JSON.parse(localStorage.getItem('kor1816_bear_v1')||'null');
+    if(old)return old;
+  }catch(e){}
+  return null;
+}
+function bearWriteSaved(d){
+  const s=JSON.stringify(d);
+  let ok=false;
+  try{localStorage.setItem(BEAR_LOCAL_KEY,s);ok=true}catch(e){console.error('Bear localStorage save failed:',e)}
+  try{localStorage.setItem('kor1816_bear_v1',s)}catch(e){}
+  try{document.cookie=BEAR_COOKIE_KEY+'='+encodeURIComponent(s)+'; Max-Age=31536000; Path=/; SameSite=Lax';}catch(e){console.error('Bear cookie save failed:',e)}
+  return ok;
+}
+function bearDataLocal(){
+  return bearReadSaved()||BEAR_DEFAULT;
 }
 function renderBear(data){
   data=data||bearDataLocal();
@@ -547,9 +574,9 @@ async function loadBear(){
       const remoteTime=Number(remote&&remote._updatedAt||0);
       // v2 local save is authoritative on this browser. Only adopt Firebase
       // when there is no local saved record yet.
-      const hasSaved=!!localStorage.getItem(BEAR_LOCAL_KEY);
+      const hasSaved=!!bearReadSaved();
       const d=hasSaved?local:(localTime>remoteTime?local:remote);
-      if(!hasSaved)localStorage.setItem(BEAR_LOCAL_KEY,JSON.stringify(d));
+      if(!hasSaved)bearWriteSaved(d);
       renderBear(d);
       const m=document.getElementById('bearMsg');if(m)m.textContent=hasSaved?'저장된 곰사냥 내용을 불러왔습니다.':'최신 곰사냥 내용을 불러왔습니다.';
     }
@@ -564,8 +591,7 @@ async function saveBear(){
   const d={text:ti?ti.value.trim():'',heroes:hi?hi.value.trim():'',_updatedAt:Date.now()};
   try{
     // Dedicated local key is written synchronously BEFORE any Firebase call.
-    localStorage.setItem(BEAR_LOCAL_KEY,JSON.stringify(d));
-    localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));
+    if(!bearWriteSaved(d) && !document.cookie)throw new Error('no persistent storage');
     renderBear(d);
   }catch(e){
     console.error('Bear local save failed:',e);
