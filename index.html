@@ -28,36 +28,28 @@ renderTeams();
 function setLang(lang){
   localStorage.setItem('kor1816_lang',lang);
   const dict={
-    en:{
-      '홈':'Home','공지':'Notice','성검쟁탈':'Holy Sword Clash','팀 편성 / Teams':'Team Setup / Teams','공성전':'Castle War','곰 사냥':'Bear Hunt','규칙':'Rules',
-      '공지사항':'Notices','최신 공지':'Latest Notice','주요 일정':'Schedule','성검쟁탈 팀 편성':'Holy Sword Clash Team Setup','성검쟁탈 팀 편성 / Team Setup':'Holy Sword Clash / Team Setup',
-      '7개 팀 + 별도 2명 + 대체자 10명':'7 Teams + 2 Extra + 10 Substitutes','개돌조':'Rush Team','대체자':'Substitutes','저장':'Save','Player ID':'Player ID',
-      '집결장 공격':'Rally Leader Attack','수성':'Defense','집결원 공격':'Rally Member Attack','집결원 수성':'Rally Member Defense','운영 안내':'Operations Guide'
-    },
-    ja:{
-      '홈':'ホーム','공지':'お知らせ','성검쟁탈':'聖剣争奪戦','팀 편성 / Teams':'チーム編成 / Teams','공성전':'城戦','곰 사냥':'熊狩り','규칙':'ルール',
-      '공지사항':'お知らせ','최신 공지':'最新のお知らせ','주요 일정':'スケジュール','성검쟁탈 팀 편성':'聖剣争奪戦 チーム編成','성검쟁탈 팀 편성 / Team Setup':'聖剣争奪戦 / チーム編成',
-      '7개 팀 + 별도 2명 + 대체자 10명':'7チーム + 追加2名 + 交代10名','개돌조':'突撃隊','대체자':'交代メンバー','저장':'保存','Player ID':'Player ID',
-      '집결장 공격':'集結リーダー攻撃','수성':'防衛','집결원 공격':'集結メンバー攻撃','집결원 수성':'集結メンバー防衛','운영 안내':'運営案内'
-    },
-    zh:{
-      '홈':'首页','공지':'公告','성검쟁탈':'圣剑争夺战','팀 편성 / Teams':'队伍编成 / Teams','공성전':'城战','곰 사냥':'熊猎','규칙':'规则',
-      '공지사항':'公告','최신 공지':'最新公告','주요 일정':'日程','성검쟁탈 팀 편성':'圣剑争夺战队伍编成','성검쟁탈 팀 편성 / Team Setup':'圣剑争夺战 / 队伍编成',
-      '7개 팀 + 별도 2명 + 대체자 10명':'7个队伍 + 2名额外成员 + 10名替补','개돌조':'突击队','대체자':'替补','저장':'保存','Player ID':'Player ID',
-      '집결장 공격':'集结队长攻击','수성':'防守','집결원 공격':'集结成员攻击','집결원 수성':'集结成员防守','운영 안내':'运营指南'
-    },
-    de:{
-      '홈':'Startseite','공지':'Ankündigungen','성검쟁탈':'Heiliger Schwertkampf','팀 편성 / Teams':'Teamaufstellung / Teams','공성전':'Burgenkrieg','곰 사냥':'Bärenjagd','규칙':'Regeln',
-      '공지사항':'Ankündigungen','최신 공지':'Neueste Mitteilung','주요 일정':'Zeitplan','성검쟁탈 팀 편성':'Teamaufstellung – Heiliger Schwertkampf','성검쟁탈 팀 편성 / Team Setup':'Heiliger Schwertkampf / Teamaufstellung',
-      '7개 팀 + 별도 2명 + 대체자 10명':'7 Teams + 2 zusätzliche + 10 Ersatzspieler','개돌조':'Sturmteam','대체자':'Ersatzspieler','저장':'Speichern','Player ID':'Player ID',
-      '집결장 공격':'Angriff des Rally-Leaders','수성':'Verteidigung','집결원 공격':'Angriff der Rally-Mitglieder','집결원 수성':'Verteidigung der Rally-Mitglieder','운영 안내':'Betriebsinfo'
-    }
+    en:{'홈':'Home','공지':'Notice','성검쟁탈':'Holy Sword Clash','팀 편성 / Teams':'Team Setup / Teams','공성전':'Castle War','곰 사냥':'Bear Hunt','규칙':'Rules','최신 공지':'Latest Notice','주요 일정':'Schedule','성검쟁탈 팀 편성':'Holy Sword Clash Team Setup','성검쟁탈 팀 편성 / Team Setup':'Holy Sword Clash / Team Setup','공지사항':'Notices','개돌조':'Rush Team','대체자':'Substitutes','저장':'Save','집결장 공격':'Rally Leader Attack','수성':'Defense','집결원 공격':'Rally Member Attack','집결원 수성':'Rally Member Defense','곰 1트랩':'Bear Trap 1','곰 2트랩':'Bear Trap 2','KOR1816 운영 안내':'KOR1816 Operations Guide','운영 안내':'Operations Guide'},
+    ja:{'홈':'ホーム','공지':'お知らせ','성검쟁탈':'聖剣争奪戦','팀 편성 / Teams':'チーム編成 / Teams','공성전':'城戦','곰 사냥':'熊狩り','규칙':'ルール','최신 공지':'最新のお知らせ','주요 일정':'スケジュール','성검쟁탈 팀 편성':'聖剣争奪戦 チーム編成','성검쟁탈 팀 편성 / Team Setup':'聖剣争奪戦 / チーム編成','공지사항':'お知らせ','개돌조':'突撃隊','대체자':'交代メンバー','저장':'保存','집결장 공격':'集結リーダー攻撃','수성':'防衛','집결원 공격':'集結メンバー攻撃','집결원 수성':'集結メンバー防衛','곰 1트랩':'熊トラップ1','곰 2트랩':'熊トラップ2','KOR1816 운영 안내':'KOR1816 運営案内','운영 안내':'運営案内'},
+    zh:{'홈':'首页','공지':'公告','성검쟁탈':'圣剑争夺战','팀 편성 / Teams':'队伍编成 / Teams','공성전':'城战','곰 사냥':'熊猎','규칙':'规则','최신 공지':'最新公告','주요 일정':'日程','성검쟁탈 팀 편성':'圣剑争夺战队伍编成','성검쟁탈 팀 편성 / Team Setup':'圣剑争夺战 / 队伍编成','공지사항':'公告','개돌조':'突击队','대체자':'替补','저장':'保存','집결장 공격':'集结队长攻击','수성':'防守','집결원 공격':'集结成员攻击','집결원 수성':'集结成员防守','곰 1트랩':'熊陷阱1','곰 2트랩':'熊陷阱2','KOR1816 운영 안내':'KOR1816 运营指南','운영 안내':'运营指南'},
+    de:{'홈':'Startseite','공지':'Ankündigungen','성검쟁탈':'Heiliger Schwertkampf','팀 편성 / Teams':'Teamaufstellung / Teams','공성전':'Burgenkrieg','곰 사냥':'Bärenjagd','규칙':'Regeln','최신 공지':'Neueste Mitteilung','주요 일정':'Zeitplan','성검쟁탈 팀 편성':'Teamaufstellung – Heiliger Schwertkampf','성검쟁탈 팀 편성 / Team Setup':'Heiliger Schwertkampf / Teamaufstellung','공지사항':'Ankündigungen','개돌조':'Sturmteam','대체자':'Ersatzspieler','저장':'Speichern','집결장 공격':'Rally-Leader-Angriff','수성':'Verteidigung','집결원 공격':'Rally-Mitglieder-Angriff','집결원 수성':'Rally-Mitglieder-Verteidigung','곰 1트랩':'Bärenfalle 1','곰 2트랩':'Bärenfalle 2','KOR1816 운영 안내':'KOR1816 Betriebsinfo','운영 안내':'Betriebsinfo'}
   };
   const map=dict[lang]||{};
-  document.querySelectorAll('script,style').forEach(()=>{});
-  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
-  const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
-  nodes.forEach(n=>{if(n.parentElement.tagName==='SCRIPT'||n.parentElement.tagName==='STYLE')return; const raw=n.nodeValue, t=raw.trim(); if(map[t]) n.nodeValue=raw.replace(t,map[t]);});
+  document.querySelectorAll('body *').forEach(el=>{
+    if(el.children.length===0 && el.tagName!=='SCRIPT' && el.tagName!=='STYLE'){
+      if(!el.dataset.originalText) el.dataset.originalText=el.textContent;
+      const original=el.dataset.originalText;
+      if(map[original]) el.textContent=map[original];
+    }
+    if(el.hasAttribute('placeholder')){
+      if(!el.dataset.originalPlaceholder) el.dataset.originalPlaceholder=el.getAttribute('placeholder');
+      const p=el.dataset.originalPlaceholder;
+      if(lang==='en') el.placeholder=p==='Player ID'?'Player ID':p;
+      else if(lang==='ja') el.placeholder=p==='Player ID'?'Player ID':p;
+      else if(lang==='zh') el.placeholder=p==='Player ID'?'Player ID':p;
+      else if(lang==='de') el.placeholder=p==='Player ID'?'Player ID':p;
+      else el.placeholder=p;
+    }
+  });
   document.documentElement.lang=lang==='ko'?'ko':lang;
 }
 setLang(localStorage.getItem('kor1816_lang')||'ko');
