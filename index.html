@@ -256,6 +256,7 @@ let firebaseReady=false;
 let sharedTeams={};
 const LOCAL_KEY='kor1816_teams_v2';
 const EXTRA_LOCAL_KEY='kor1816_teams_extra_v1';
+const TEAM_LOCAL_TIME_KEY='kor1816_teams_local_time_v1';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_7Uk6QkCQAt6LyWMVuQNARaXD78WdlZQ",
@@ -346,14 +347,22 @@ async function loadSharedTeams(){
     const snap=await window.__firebaseGetDocFromServer(TEAM_DOC);
     if(snap.exists()){
       const server=snap.data()||{};
-      const localTime=Number(local._updatedAt||0);
+      const localTime=Math.max(
+        Number(local._updatedAt||0),
+        Number(localStorage.getItem(TEAM_LOCAL_TIME_KEY)||0)
+      );
       const serverTime=Number(server._updatedAt||0);
       if(serverTime>localTime){
         sharedTeams=server;
         saveLocalTeams();
+        localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(serverTime));
         renderTeams();
-      }else if(localTime>serverTime && window.__firebaseSetDoc){
-        await window.__firebaseSetDoc(TEAM_DOC,local);
+      }else if(localTime>=serverTime && window.__firebaseSetDoc){
+        // 이 브라우저에서 더 최근에 등록한 팀은 서버의 오래된 값으로 덮어쓰지 않습니다.
+        const upload={...(local||{}),_updatedAt:localTime};
+        sharedTeams=upload;
+        await window.__firebaseSetDoc(TEAM_DOC,upload);
+        saveLocalTeams();
       }
     }else if(Object.keys(local).length && window.__firebaseSetDoc){
       await window.__firebaseSetDoc(TEAM_DOC,local);
@@ -393,25 +402,17 @@ async function saveSharedTeams(){
   const data={...(sharedTeams||{}),_updatedAt:Date.now()};
   sharedTeams=data;
   saveLocalTeams();
+  localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(data._updatedAt));
 
-  // Firebase 초기화 중인 순간에는 자기 자신(firebaseInitPromise)을 기다리면
-  // initFirebase -> loadSharedTeams -> saveSharedTeams가 서로 기다리는 교착이 생길 수 있습니다.
-  // 초기화가 끝난 뒤에 서버 저장을 시도하도록 합니다.
-  if(!TEAM_DOC || !window.__firebaseSetDoc){
-    if(typeof firebaseReady!=='undefined' && !firebaseReady){
-      return;
-    }
+  if(!TEAM_DOC||!window.__firebaseSetDoc){
+    if(typeof firebaseReady!=='undefined'&&!firebaseReady)return;
     throw new Error('Firestore가 초기화되지 않았습니다.');
   }
-
   await window.__firebaseSetDoc(TEAM_DOC,data);
-
   if(window.__firebaseGetDocFromServer){
     const verify=await window.__firebaseGetDocFromServer(TEAM_DOC);
     const saved=verify.exists()?(verify.data()||{}):{};
-    if(Number(saved._updatedAt||0)!==Number(data._updatedAt)){
-      throw new Error('Firestore 저장 검증 실패');
-    }
+    if(Number(saved._updatedAt||0)!==Number(data._updatedAt)) throw new Error('Firestore 저장 검증 실패');
   }
 }
 
@@ -760,15 +761,32 @@ function showSaveResult(message){
 
 async function saveTeam(team){
   if(!isAdmin)return;
-  const data=getTeams();
+  const data={...(getTeams()||{})};
   data[team]=[1,2,3,4,5,6,7].map(n=>document.getElementById('team-'+team+'-'+n).value.trim());
+  const localTime=Date.now();
+  data._updatedAt=localTime;
   sharedTeams=data;
+
+  // 팀 등록은 먼저 이 브라우저에 확실히 기록합니다.
+  // Firebase가 느리거나 인증/규칙 오류가 있어도 F5 후 입력값이 사라지지 않습니다.
+  saveLocalTeams();
+  localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(localTime));
+  showSaveResult(team+'팀 저장 완료! / Saved!');
+
+  // 서버 저장은 백그라운드에서 진행합니다.
   try{
-    await saveSharedTeams();
-    showSaveResult(team+'팀 저장 완료! / Saved!');
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
+    if(!TEAM_DOC||!window.__firebaseSetDoc) throw new Error('Firestore가 초기화되지 않았습니다.');
+    await window.__firebaseSetDoc(TEAM_DOC,data);
+    if(window.__firebaseGetDocFromServer){
+      const verify=await window.__firebaseGetDocFromServer(TEAM_DOC);
+      const saved=verify.exists()?(verify.data()||{}):{};
+      if(Number(saved._updatedAt||0)!==localTime) throw new Error('서버 저장 검증 실패');
+    }
   }catch(e){
-    console.error(e);
-    showSaveResult(team+'팀은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.');
+    console.error('Team Firebase save failed:',e);
+    // 로컬 저장은 이미 완료됐으므로 등록 자체는 유지합니다.
+    showSaveResult(team+'팀 저장 완료! (이 기기 저장) / Firebase 서버 동기화 실패');
   }
 }
 
