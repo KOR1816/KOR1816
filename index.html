@@ -98,7 +98,7 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #castleEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media(max-width:700px){#castleView,#castleEdit{grid-template-columns:1fr!important}}
 </style></head><body>
-<div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button><button onclick="setLang('es')">🇪🇸 Español</button><button onclick="setLang('it')">🇮🇹 Italiano</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
+<div class="lang-switch"><button type="button" data-lang="ko" onclick="window.kor1816SetLang('ko');return false;">🇰🇷 한국어</button><button type="button" data-lang="en" onclick="window.kor1816SetLang('en');return false;">🇺🇸 English</button><button type="button" data-lang="ja" onclick="window.kor1816SetLang('ja');return false;">🇯🇵 日本語</button><button type="button" data-lang="zh" onclick="window.kor1816SetLang('zh');return false;">🇨🇳 中文</button><button type="button" data-lang="de" onclick="window.kor1816SetLang('de');return false;">🇩🇪 Deutsch</button><button type="button" data-lang="es" onclick="window.kor1816SetLang('es');return false;">🇪🇸 Español</button><button type="button" data-lang="it" onclick="window.kor1816SetLang('it');return false;">🇮🇹 Italiano</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
 <main class="wrap">
 <section id="home" class="page active"><div class="sword-image-wrap"><img src="./1816.jpg?v=2" alt="KOR1816" class="sword-image"></div>
@@ -561,6 +561,15 @@ window.addEventListener('load',function(){
   try{renderBear(bearDataLocal());setBearAdminMode();}catch(e){console.error(e)}
   try{renderRules(rulesDataLocal());setRulesAdminMode();}catch(e){console.error(e)}
 });
+</script><script>
+window.kor1816SetLang=function(lang){
+  try{
+    if(window.setLang){window.setLang(lang);return false;}
+    localStorage.setItem('kor1816_lang',lang);
+    window.location.reload();
+  }catch(e){console.error(e)}
+  return false;
+};
 </script><script id="full-i18n">
 (function(){
 const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de',es:'es',it:'it'};
