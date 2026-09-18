@@ -362,14 +362,22 @@ async function loadSharedTeams(){
     // 개돌조는 별도 문서로 관리해 다른 팀 저장/로드에 의해 덮어쓰이지 않게 합니다.
     if(EXTRA_DOC){
       const extraSnap=await window.__firebaseGetDocFromServer(EXTRA_DOC);
+      const localExtraTime=Number(localStorage.getItem(EXTRA_LOCAL_KEY+'_time')||0);
       if(extraSnap.exists()){
         const extraData=extraSnap.data()||{};
-        const extra=Array.isArray(extraData.extra)?extraData.extra:[];
-        sharedTeams={...(sharedTeams||{}),extra};
-        saveLocalExtra(extra);
-        renderTeams();
+        const serverExtra=Array.isArray(extraData.extra)?extraData.extra:[];
+        const serverExtraTime=Number(extraData._updatedAt||0);
+        if(serverExtraTime>=localExtraTime){
+          sharedTeams={...(sharedTeams||{}),extra:serverExtra};
+          saveLocalExtra(serverExtra);
+          localStorage.setItem(EXTRA_LOCAL_KEY+'_time',String(serverExtraTime));
+          renderTeams();
+        }else if(localExtra.length && window.__firebaseSetDoc){
+          await window.__firebaseSetDoc(EXTRA_DOC,{extra:localExtra,_updatedAt:localExtraTime});
+        }
       }else if(localExtra.length && window.__firebaseSetDoc){
-        await window.__firebaseSetDoc(EXTRA_DOC,{extra:localExtra,_updatedAt:Date.now()});
+        const t=localExtraTime||Date.now();
+        await window.__firebaseSetDoc(EXTRA_DOC,{extra:localExtra,_updatedAt:t});
       }
     }
   }catch(e){
@@ -772,11 +780,13 @@ async function saveExtra(){
   ];
   sharedTeams={...(sharedTeams||{}),extra};
   saveLocalExtra(extra);
+  const extraTime=Date.now();
+  localStorage.setItem(EXTRA_LOCAL_KEY+'_time',String(extraTime));
   saveLocalTeams();
 
   try{
     if(!EXTRA_DOC || !window.__firebaseSetDoc) throw new Error('개돌조 Firestore가 초기화되지 않았습니다.');
-    const payload={extra,_updatedAt:Date.now()};
+    const payload={extra,_updatedAt:extraTime};
     await window.__firebaseSetDoc(EXTRA_DOC,payload);
     if(window.__firebaseGetDocFromServer){
       const verify=await window.__firebaseGetDocFromServer(EXTRA_DOC);
