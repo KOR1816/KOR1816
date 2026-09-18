@@ -19,7 +19,7 @@
 <script>
 let db=null;
 let TEAM_DOC=null;
-(async function initFirebase(){
+async function initFirebase(){
   try{
     const {initializeApp}=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js");
     const {getFirestore,doc,getDoc,setDoc}=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
@@ -162,4 +162,5 @@ de:{
 
 window.show=show;window.toggleAdmin=toggleAdmin;window.saveTeam=saveTeam;window.saveExtra=saveExtra;window.saveSubs=saveSubs;window.setLang=setLang;
 setLang(localStorage.getItem('kor1816_lang')||'ko');
+initFirebase();
 </script></body></html>
