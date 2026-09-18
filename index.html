@@ -22,13 +22,13 @@
   .admin-btn{color:#fff;font-weight:800}
   .admin-note{color:#e2e8f0;opacity:1}
 }
-</style></head><body>
+.msg{color:#a7f3d0;font-weight:700;text-align:center}.readonly input{user-select:none}</style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('notice')">📢 공지</button><button onclick="show('sword')">⚔️ 성검쟁탈</button><button onclick="show('teams')">👥 팀 편성 / Teams</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰 사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
 <main class="wrap">
-<section id="home" class="page active"><div class="grid"><div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br>7개 팀 × 4명 = 28명 + 별도 2명 = 30명<br>대체자 10명</div></div><div class="card"><span class="tag">SCHEDULE</span><h2>📅 주요 일정</h2><p>⚔️ 성검쟁탈 · 23:00</p><p>🐻 곰 1트랩 · 23:00</p><p>🐻 곰 2트랩 · 09:10</p></div><div class="card"><span class="tag">WELCOME</span><h2>🌍 Kingdom 1816</h2><p>소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.</p></div></div></section>
-<section id="notice" class="page"><div class="card"><h2>📢 공지사항</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br>7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.<br>대체자는 별도로 10명을 등록합니다.</div></div></section>
-<section id="sword" class="page"><div class="card"><h2>⚔️ 성검쟁탈 팀 편성</h2><p class="big">7개 팀 + 별도 2명 + 대체자 10명</p><p>팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.</p></div></section>
+<section id="home" class="page active"><div class="grid"><div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br>7개 팀 × 7명 = 49명 + 개돌조 2명<br>대체자 10명</div></div><div class="card"><span class="tag">SCHEDULE</span><h2>📅 주요 일정</h2><p>⚔️ 성검쟁탈 · 23:00</p><p>🐻 곰 1트랩 · 23:00</p><p>🐻 곰 2트랩 · 09:10</p></div><div class="card"><span class="tag">WELCOME</span><h2>🌍 Kingdom 1816</h2><p>소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.</p></div></div></section>
+<section id="notice" class="page"><div class="card"><h2>📢 공지사항</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br>7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.<br>대체자는 별도로 10명을 등록합니다.</div></div></section>
+<section id="sword" class="page"><div class="card"><h2>⚔️ 성검쟁탈 팀 편성</h2><p class="big">7개 팀 + 개돌조 2명 + 대체자 10명</p><p>팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.</p></div></section>
 <section id="teams" class="page"><div class="card"><h2>👥 성검쟁탈 팀 편성 / Team Setup</h2><div class="sword-image-wrap"><img src="holy_sword1.png" alt="Holy Sword Clash" class="sword-image"></div><div class="admin-bar"><button class="admin-btn" onclick="loadSharedTeams()">🔄 새로고침</button><button class="admin-btn" id="adminBtn" onclick="toggleAdmin()">🔐 관리자 수정</button></div><div id="adminNote" class="admin-note">현재 보기 전용입니다. 관리자만 수정할 수 있습니다.</div><div id="teamMsg" class="msg"></div><div class="team-columns-wrap"><div class="team-columns">
 <div class="team-column"><div class="team-title">A팀</div><div class="slot"><span>1</span><input id="team-A-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="team-A-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="team-A-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="team-A-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="team-A-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="team-A-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="team-A-7" placeholder="Player ID"></div><button onclick="saveTeam('A')">💾 저장</button></div><div class="team-column"><div class="team-title">B팀</div><div class="slot"><span>1</span><input id="team-B-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="team-B-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="team-B-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="team-B-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="team-B-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="team-B-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="team-B-7" placeholder="Player ID"></div><button onclick="saveTeam('B')">💾 저장</button></div><div class="team-column"><div class="team-title">C팀</div><div class="slot"><span>1</span><input id="team-C-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="team-C-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="team-C-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="team-C-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="team-C-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="team-C-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="team-C-7" placeholder="Player ID"></div><button onclick="saveTeam('C')">💾 저장</button></div><div class="team-column"><div class="team-title">D팀</div><div class="slot"><span>1</span><input id="team-D-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="team-D-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="team-D-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="team-D-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="team-D-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="team-D-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="team-D-7" placeholder="Player ID"></div><button onclick="saveTeam('D')">💾 저장</button></div>
 <div class="team-column special"><div class="team-title">💥 개돌조</div><div class="slot"><span>1</span><input id="extra-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="extra-2" placeholder="Player ID"></div><button onclick="saveExtra()">💾 저장</button></div>
@@ -41,22 +41,10 @@
 <script>
 let db=null;
 let TEAM_DOC=null;
-async function initFirebase(){
-  try{
-    const {initializeApp}=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js");
-    const {getFirestore,doc,getDoc,setDoc}=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
-    window.__firebaseGetDoc=getDoc;
-    window.__firebaseSetDoc=setDoc;
-    const firebaseApp=initializeApp(firebaseConfig);
-    db=getFirestore(firebaseApp);
-    TEAM_DOC=doc(db,'siteData','teams');
-    await loadSharedTeams();
-  }catch(e){
-    console.error('Firebase init failed:',e);
-    const m=document.getElementById('teamMsg');
-    if(m)m.textContent='공용 데이터 연결에 실패했습니다. 관리자 수정은 잠시 후 다시 시도해주세요.';
-  }
-}
+let firebaseReady=false;
+let sharedTeams={};
+const LOCAL_KEY='kor1816_teams_v2';
+
 const firebaseConfig = {
   apiKey: "AIzaSyB_7Uk6QkCQAt6LyWMVuQNARaXD78WdlZQ",
   authDomain: "kor1816.firebaseapp.com",
@@ -66,37 +54,159 @@ const firebaseConfig = {
   appId: "1:838991083698:web:de37c21f443386d902b1ab",
   measurementId: "G-SZ2ZX729BT"
 };
-let sharedTeams={};
-async function loadSharedTeams(){
-  if(!TEAM_DOC||!window.__firebaseGetDoc)return;
+
+function getLocalTeams(){
+  try { return JSON.parse(localStorage.getItem(LOCAL_KEY)||'{}') || {}; }
+  catch(e){ return {}; }
+}
+function saveLocalTeams(){
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(sharedTeams||{}));
+}
+
+async function initFirebase(){
+  // Local storage is always enabled, so refreshes never erase edits.
+  sharedTeams=getLocalTeams();
+  renderTeams();
+
   try{
-    const snap=await window.__firebaseGetDoc(TEAM_DOC);
-    sharedTeams=snap.exists()?snap.data():{};
-    renderTeams();
+    const appMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js");
+    const fsMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
+    const authMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js");
+    const firebaseApp=appMod.initializeApp(firebaseConfig);
+    const auth=authMod.getAuth(firebaseApp);
+    await authMod.signInAnonymously(auth);
+    db=fsMod.getFirestore(firebaseApp);
+    TEAM_DOC=fsMod.doc(db,'siteData','teams');
+    window.__firebaseGetDoc=fsMod.getDoc;
+    window.__firebaseSetDoc=fsMod.setDoc;
+    firebaseReady=true;
+    await loadSharedTeams();
   }catch(e){
-    console.error(e);
+    console.warn('Firebase unavailable; using browser backup:',e);
     const m=document.getElementById('teamMsg');
-    if(m)m.textContent='공용 데이터 불러오기에 실패했습니다.';
+    if(m && isAdmin) m.textContent='공용 서버 연결이 안 되어 현재 이 브라우저에 안전하게 임시 저장됩니다.';
   }
 }
+
+async function loadSharedTeams(){
+  // Always load the local copy first.
+  sharedTeams=getLocalTeams();
+  renderTeams();
+  if(!TEAM_DOC || !window.__firebaseGetDoc) return;
+  try{
+    const snap=await window.__firebaseGetDoc(TEAM_DOC);
+    if(snap.exists()){
+      sharedTeams=snap.data()||{};
+      saveLocalTeams();
+      renderTeams();
+    }
+  }catch(e){
+    console.error('Firestore read failed:',e);
+    const m=document.getElementById('teamMsg');
+    if(m) m.textContent='공용 서버를 읽지 못했습니다. 이 기기의 저장본을 표시합니다.';
+  }
+}
+
 async function saveSharedTeams(){
-  if(!TEAM_DOC||!window.__firebaseSetDoc)throw new Error('Firebase not ready');
+  // Save locally first, so a successful click is never lost on refresh.
+  saveLocalTeams();
+  if(!TEAM_DOC || !window.__firebaseSetDoc) return;
   await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
 }
+
 let isAdmin=false;
 const ADMIN_PASSWORD='0001';
+
 function toggleAdmin(){
-  if(isAdmin){isAdmin=false;setAdminMode();return}
+  if(isAdmin){
+    isAdmin=false;
+    setAdminMode();
+    return;
+  }
   const pw=prompt('관리자 비밀번호를 입력하세요.');
-  if(pw===ADMIN_PASSWORD){isAdmin=true;setAdminMode();document.getElementById('teamMsg').textContent='관리자 수정 모드입니다.'}
-  else if(pw!==null) alert('비밀번호가 올바르지 않습니다.');
+  if(pw===ADMIN_PASSWORD){
+    isAdmin=true;
+    setAdminMode();
+    document.getElementById('teamMsg').textContent='관리자 수정 모드입니다.';
+  } else if(pw!==null) {
+    alert('비밀번호가 올바르지 않습니다.');
+  }
 }
+
 function setAdminMode(){
   const sec=document.getElementById('teams');
   sec.classList.toggle('readonly',!isAdmin);
   document.getElementById('adminBtn').textContent=isAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  document.getElementById('adminNote').textContent=isAdmin?'관리자 수정 모드입니다. 저장 버튼으로 공용 서버에 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
+  document.getElementById('adminNote').textContent=isAdmin
+    ? '관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.'
+    : '현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
   sec.querySelectorAll('input').forEach(x=>x.readOnly=!isAdmin);
+}
+
+function showSaveResult(message){
+  const m=document.getElementById('teamMsg');
+  if(m) m.textContent=message;
+}
+
+async function saveTeam(team){
+  if(!isAdmin)return;
+  const data=getTeams();
+  data[team]=[1,2,3,4,5,6,7].map(n=>document.getElementById('team-'+team+'-'+n).value.trim());
+  sharedTeams=data;
+  try{
+    await saveSharedTeams();
+    showSaveResult(team+'팀 저장 완료! / Saved!');
+  }catch(e){
+    console.error(e);
+    showSaveResult(team+'팀은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.');
+  }
+}
+
+async function saveExtra(){
+  if(!isAdmin)return;
+  const data=getTeams();
+  data.extra=[
+    document.getElementById('extra-1').value.trim(),
+    document.getElementById('extra-2').value.trim()
+  ];
+  sharedTeams=data;
+  try{
+    await saveSharedTeams();
+    showSaveResult('개돌조 저장 완료! / Saved!');
+  }catch(e){
+    console.error(e);
+    showSaveResult('개돌조는 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.');
+  }
+}
+
+async function saveSubs(){
+  if(!isAdmin)return;
+  const data=getTeams();
+  data.subs=[1,2,3,4,5,6,7,8,9,10].map(n=>document.getElementById('sub-'+n).value.trim());
+  sharedTeams=data;
+  try{
+    await saveSharedTeams();
+    showSaveResult('대체자 저장 완료! / Saved!');
+  }catch(e){
+    console.error(e);
+    showSaveResult('대체자는 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.');
+  }
+}
+
+function getTeams(){return sharedTeams||{}}
+
+function renderTeams(){
+  const data=getTeams();
+  ['A','B','C','D'].forEach(team=>[1,2,3,4,5,6,7].forEach(n=>{
+    const el=document.getElementById('team-'+team+'-'+n);
+    if(el)el.value=(data[team]&&data[team][n-1])||'';
+  }));
+  document.getElementById('extra-1').value=(data.extra&&data.extra[0])||'';
+  document.getElementById('extra-2').value=(data.extra&&data.extra[1])||'';
+  for(let n=1;n<=10;n++){
+    const el=document.getElementById('sub-'+n);
+    if(el)el.value=(data.subs&&data.subs[n-1])||'';
+  }
 }
 function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='teams')renderTeams();window.scrollTo(0,0)}
 function getTeams(){return sharedTeams||{}}
@@ -112,11 +222,11 @@ function setLang(lang){
 en:{
 '🏰 KOR1816':'🏰 KOR1816','Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':'Kingdom 1816 · Mess with us and we bite! · Home of Bear Hunters!!',
 '🏠 홈':'🏠 Home','📢 공지':'📢 Notice','⚔️ 성검쟁탈':'⚔️ Holy Sword Clash','👥 팀 편성 / Teams':'👥 Team Setup / Teams','🏰 공성전':'🏰 Castle War','🐻 곰 사냥':'🐻 Bear Hunt','📋 규칙':'📋 Rules',
-'LATEST':'LATEST','📢 최신 공지':'📢 Latest Notice','성검쟁탈 팀 편성':'Holy Sword Clash Team Setup','7개 팀 × 4명 = 28명 + 별도 2명 = 30명':'7 teams × 4 players = 28 + 2 extra = 30','대체자 10명':'10 substitutes',
+'LATEST':'LATEST','📢 최신 공지':'📢 Latest Notice','성검쟁탈 팀 편성':'Holy Sword Clash Team Setup','7개 팀 × 7명 = 49명 + 개돌조 2명':'7 teams × 4 players = 28 + 2 extra = 30','대체자 10명':'10 substitutes',
 'SCHEDULE':'SCHEDULE','📅 주요 일정':'📅 Schedule','⚔️ 성검쟁탈 · 23:00':'⚔️ Holy Sword Clash · 23:00','🐻 곰 1트랩 · 23:00':'🐻 Bear Trap 1 · 23:00','🐻 곰 2트랩 · 09:10':'🐻 Bear Trap 2 · 09:10',
 'WELCOME':'WELCOME','🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'We grow together through communication, cooperation, growth, and KVK teamwork.',
-'📢 공지사항':'📢 Notices','7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.':'7 teams of 4 = 28 players, plus 2 extra players for 30 total.','대체자는 별도로 10명을 등록합니다.':'Register 10 substitutes separately.',
-'⚔️ 성검쟁탈 팀 편성':'⚔️ Holy Sword Clash Team Setup','7개 팀 + 별도 2명 + 대체자 10명':'7 teams + 2 extra players + 10 substitutes','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'Enter Player IDs in Team Setup and save them.',
+'📢 공지사항':'📢 Notices','7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.':'7 teams of 4 = 28 players, plus 2 extra players for 30 total.','대체자는 별도로 10명을 등록합니다.':'Register 10 substitutes separately.',
+'⚔️ 성검쟁탈 팀 편성':'⚔️ Holy Sword Clash Team Setup','7개 팀 + 개돌조 2명 + 대체자 10명':'7 teams + 2 extra players + 10 substitutes','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'Enter Player IDs in Team Setup and save them.',
 '👥 성검쟁탈 팀 편성 / Team Setup':'👥 Holy Sword Clash / Team Setup','A팀':'Team A','B팀':'Team B','C팀':'Team C','D팀':'Team D','💥 개돌조':'💥 Rush Team','🔄 대체자':'🔄 Substitutes','💾 저장':'💾 Save',
 '⚔️ 집결장 공격':'⚔️ Rally Leader Attack','아마데 / 페라 / 로사':'Amade / Pera / Rosa','비율:':'Ratio:','🛡️ 수성':'🛡️ Defense','알카 / 마르고 / 살로':'Alka / Margo / Salro','상대가 강하면 예거 고려':'Consider Yager if the opponent is strong','연습:':'Practice:','집결장':'Rally Leader','집결원':'Rally Member',
 '👥 집결원 공격':'👥 Rally Member Attack','1열: 2첸코 / 2아마':'Row 1: 2 Chenko / 2 Ama','2열: 2첸코 / 아마네 / 파드':'Row 2: 2 Chenko / Amane / Pad','3열: 2살로 / 첸코 / 아마네':'Row 3: 2 Salro / Chenko / Amane','4열: 2힐데 / 살로 / 첸코':'Row 4: 2 Hilde / Salro / Chenko',
@@ -128,11 +238,11 @@ en:{
 ja:{
 '🏰 KOR1816':'🏰 KOR1816','Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':'Kingdom 1816 · 触ると噛みつく！ · 熊好きの集まり!!',
 '🏠 홈':'🏠 ホーム','📢 공지':'📢 お知らせ','⚔️ 성검쟁탈':'⚔️ 聖剣争奪戦','👥 팀 편성 / Teams':'👥 チーム編成 / Teams','🏰 공성전':'🏰 城戦','🐻 곰 사냥':'🐻 熊狩り','📋 규칙':'📋 ルール',
-'📢 최신 공지':'📢 最新のお知らせ','성검쟁탈 팀 편성':'聖剣争奪戦 チーム編成','7개 팀 × 4명 = 28명 + 별도 2명 = 30명':'7チーム × 4人 = 28人 + 追加2人 = 30人','대체자 10명':'交代メンバー10人',
+'📢 최신 공지':'📢 最新のお知らせ','성검쟁탈 팀 편성':'聖剣争奪戦 チーム編成','7개 팀 × 7명 = 49명 + 개돌조 2명':'7チーム × 4人 = 28人 + 追加2人 = 30人','대체자 10명':'交代メンバー10人',
 '📅 주요 일정':'📅 スケジュール','⚔️ 성검쟁탈 · 23:00':'⚔️ 聖剣争奪戦 · 23:00','🐻 곰 1트랩 · 23:00':'🐻 熊トラップ1 · 23:00','🐻 곰 2트랩 · 09:10':'🐻 熊トラップ2 · 09:10',
 '🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'コミュニケーション・協力・成長・KVK組織力を大切にしています。',
-'📢 공지사항':'📢 お知らせ','7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.':'7チーム各4人 = 28人、追加2人で合計30人です。','대체자는 별도로 10명을 등록합니다.':'交代メンバーを10人登録します。',
-'⚔️ 성검쟁탈 팀 편성':'⚔️ 聖剣争奪戦 チーム編成','7개 팀 + 별도 2명 + 대체자 10명':'7チーム + 追加2人 + 交代10人','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'チーム編成でPlayer IDを入力して保存できます。',
+'📢 공지사항':'📢 お知らせ','7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.':'7チーム各4人 = 28人、追加2人で合計30人です。','대체자는 별도로 10명을 등록합니다.':'交代メンバーを10人登録します。',
+'⚔️ 성검쟁탈 팀 편성':'⚔️ 聖剣争奪戦 チーム編成','7개 팀 + 개돌조 2명 + 대체자 10명':'7チーム + 追加2人 + 交代10人','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'チーム編成でPlayer IDを入力して保存できます。',
 '👥 성검쟁탈 팀 편성 / Team Setup':'👥 聖剣争奪戦 / チーム編成','A팀':'Aチーム','B팀':'Bチーム','C팀':'Cチーム','D팀':'Dチーム','💥 개돌조':'💥 突撃隊','🔄 대체자':'🔄 交代メンバー','💾 저장':'💾 保存',
 '⚔️ 집결장 공격':'⚔️ 集結リーダー攻撃','아마데 / 페라 / 로사':'アマデ / ペラ / ロサ','비율:':'比率:','🛡️ 수성':'🛡️ 防衛','알카 / 마르고 / 살로':'アルカ / マルゴ / サロ','상대가 강하면 예거 고려':'相手が強い場合はイェーガーを検討','연습:':'練習:','집결장':'集結リーダー','집결원':'集結メンバー',
 '👥 집결원 공격':'👥 集結メンバー攻撃','1열: 2첸코 / 2아마':'1列: 2チェンコ / 2アマ','2열: 2첸코 / 아마네 / 파드':'2列: 2チェンコ / アマネ / パド','3열: 2살로 / 첸코 / 아마네':'3列: 2サロ / チェンコ / アマネ','4열: 2힐데 / 살로 / 첸코':'4列: 2ヒルデ / サロ / チェンコ',
@@ -143,11 +253,11 @@ ja:{
 zh:{
 '🏰 KOR1816':'🏰 KOR1816','Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':'Kingdom 1816 · 惹我们就咬！ · 熊猎爱好者的聚会!!',
 '🏠 홈':'🏠 首页','📢 공지':'📢 公告','⚔️ 성검쟁탈':'⚔️ 圣剑争夺战','👥 팀 편성 / Teams':'👥 队伍编成 / Teams','🏰 공성전':'🏰 城战','🐻 곰 사냥':'🐻 熊猎','📋 규칙':'📋 规则',
-'📢 최신 공지':'📢 最新公告','성검쟁탈 팀 편성':'圣剑争夺战队伍编成','7개 팀 × 4명 = 28명 + 별도 2명 = 30명':'7个队 × 4人 = 28人 + 额外2人 = 30人','대체자 10명':'10名替补',
+'📢 최신 공지':'📢 最新公告','성검쟁탈 팀 편성':'圣剑争夺战队伍编成','7개 팀 × 7명 = 49명 + 개돌조 2명':'7个队 × 4人 = 28人 + 额外2人 = 30人','대체자 10명':'10名替补',
 '📅 주요 일정':'📅 日程','⚔️ 성검쟁탈 · 23:00':'⚔️ 圣剑争夺战 · 23:00','🐻 곰 1트랩 · 23:00':'🐻 熊陷阱1 · 23:00','🐻 곰 2트랩 · 09:10':'🐻 熊陷阱2 · 09:10',
 '🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'以沟通、合作、成长和KVK组织力为核心共同发展。',
-'📢 공지사항':'📢 公告','7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.':'7个队各4人 = 28人，加2名额外成员共30人。','대체자는 별도로 10명을 등록합니다.':'另外登记10名替补。',
-'⚔️ 성검쟁탈 팀 편성':'⚔️ 圣剑争夺战队伍编成','7개 팀 + 별도 2명 + 대체자 10명':'7个队 + 2名额外成员 + 10名替补','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'可在队伍编成中输入并保存Player ID。',
+'📢 공지사항':'📢 公告','7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.':'7个队各4人 = 28人，加2名额外成员共30人。','대체자는 별도로 10명을 등록합니다.':'另外登记10名替补。',
+'⚔️ 성검쟁탈 팀 편성':'⚔️ 圣剑争夺战队伍编成','7개 팀 + 개돌조 2명 + 대체자 10명':'7个队 + 2名额外成员 + 10名替补','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'可在队伍编成中输入并保存Player ID。',
 '👥 성검쟁탈 팀 편성 / Team Setup':'👥 圣剑争夺战 / 队伍编成','A팀':'A队','B팀':'B队','C팀':'C队','D팀':'D队','💥 개돌조':'💥 突击队','🔄 대체자':'🔄 替补','💾 저장':'💾 保存',
 '⚔️ 집결장 공격':'⚔️ 集结队长攻击','아마데 / 페라 / 로사':'阿马德 / 佩拉 / 罗莎','비율:':'比例:','🛡️ 수성':'🛡️ 防守','알카 / 마르고 / 살로':'阿尔卡 / 马尔戈 / 萨洛','상대가 강하면 예거 고려':'对手较强时可考虑耶格尔','연습:':'练习:','집결장':'集结队长','집결원':'集结成员',
 '👥 집결원 공격':'👥 集结成员攻击','1열: 2첸코 / 2아마':'第1列: 2切恩科 / 2阿玛','2열: 2첸코 / 아마네 / 파드':'第2列: 2切恩科 / 阿玛内 / 帕德','3열: 2살로 / 첸코 / 아마네':'第3列: 2萨洛 / 切恩科 / 阿玛内','4열: 2힐데 / 살로 / 첸코':'第4列: 2希尔德 / 萨洛 / 切恩科',
@@ -158,11 +268,11 @@ zh:{
 de:{
 '🏰 KOR1816':'🏰 KOR1816','Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':'Kingdom 1816 · Wer uns ärgert, wird gebissen! · Treffpunkt der Bärenfans!!',
 '🏠 홈':'🏠 Startseite','📢 공지':'📢 Ankündigungen','⚔️ 성검쟁탈':'⚔️ Heiliger Schwertkampf','👥 팀 편성 / Teams':'👥 Teamaufstellung / Teams','🏰 공성전':'🏰 Burgenkrieg','🐻 곰 사냥':'🐻 Bärenjagd','📋 규칙':'📋 Regeln',
-'📢 최신 공지':'📢 Neueste Mitteilung','성검쟁탈 팀 편성':'Teamaufstellung – Heiliger Schwertkampf','7개 팀 × 4명 = 28명 + 별도 2명 = 30명':'7 Teams × 4 Spieler = 28 + 2 zusätzliche = 30','대체자 10명':'10 Ersatzspieler',
+'📢 최신 공지':'📢 Neueste Mitteilung','성검쟁탈 팀 편성':'Teamaufstellung – Heiliger Schwertkampf','7개 팀 × 7명 = 49명 + 개돌조 2명':'7 Teams × 4 Spieler = 28 + 2 zusätzliche = 30','대체자 10명':'10 Ersatzspieler',
 '📅 주요 일정':'📅 Zeitplan','⚔️ 성검쟁탈 · 23:00':'⚔️ Heiliger Schwertkampf · 23:00','🐻 곰 1트랩 · 23:00':'🐻 Bärenfalle 1 · 23:00','🐻 곰 2트랩 · 09:10':'🐻 Bärenfalle 2 · 09:10',
 '🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'Wir setzen auf Kommunikation, Zusammenarbeit, Wachstum und KVK-Teamwork.',
-'📢 공지사항':'📢 Ankündigungen','7개 팀 각 4명 = 28명, 별도 2명으로 총 30명입니다.':'7 Teams mit je 4 Spielern = 28, plus 2 zusätzliche = insgesamt 30.','대체자는 별도로 10명을 등록합니다.':'10 Ersatzspieler werden separat eingetragen.',
-'⚔️ 성검쟁탈 팀 편성':'⚔️ Teamaufstellung – Heiliger Schwertkampf','7개 팀 + 별도 2명 + 대체자 10명':'7 Teams + 2 zusätzliche Spieler + 10 Ersatzspieler','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'Player-IDs können bei der Teamaufstellung eingegeben und gespeichert werden.',
+'📢 공지사항':'📢 Ankündigungen','7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.':'7 Teams mit je 4 Spielern = 28, plus 2 zusätzliche = insgesamt 30.','대체자는 별도로 10명을 등록합니다.':'10 Ersatzspieler werden separat eingetragen.',
+'⚔️ 성검쟁탈 팀 편성':'⚔️ Teamaufstellung – Heiliger Schwertkampf','7개 팀 + 개돌조 2명 + 대체자 10명':'7 Teams + 2 zusätzliche Spieler + 10 Ersatzspieler','팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.':'Player-IDs können bei der Teamaufstellung eingegeben und gespeichert werden.',
 '👥 성검쟁탈 팀 편성 / Team Setup':'👥 Heiliger Schwertkampf / Teamaufstellung','A팀':'Team A','B팀':'Team B','C팀':'Team C','D팀':'Team D','💥 개돌조':'💥 Sturmteam','🔄 대체자':'🔄 Ersatzspieler','💾 저장':'💾 Speichern',
 '⚔️ 집결장 공격':'⚔️ Rally-Leader-Angriff','아마데 / 페라 / 로사':'Amade / Pera / Rosa','비율:':'Verhältnis:','🛡️ 수성':'🛡️ Verteidigung','알카 / 마르고 / 살로':'Alka / Margo / Salro','상대가 강하면 예거 고려':'Bei einem starken Gegner Yager in Betracht ziehen','연습:':'Übung:','집결장':'Rally-Leader','집결원':'Rally-Mitglied',
 '👥 집결원 공격':'👥 Rally-Mitglieder-Angriff','1열: 2첸코 / 2아마':'Reihe 1: 2 Chenko / 2 Ama','2열: 2첸코 / 아마네 / 파드':'Reihe 2: 2 Chenko / Amane / Pad','3열: 2살로 / 첸코 / 아마네':'Reihe 3: 2 Salro / Chenko / Amane','4열: 2힐데 / 살로 / 첸코':'Reihe 4: 2 Hilde / Salro / Chenko',
