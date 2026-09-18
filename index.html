@@ -187,7 +187,7 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 
 <div id="rulesMsg" class="msg"></div>
 <div id="rulesView" class="card"><h2>📋 KOR1816 운영진 및 안내</h2><div id="rulesText" class="rules-text-full"></div></div>
-<div class="admin-bar page-admin"><button class="admin-btn" onclick="loadRules()">🔄 새로고침</button><button class="admin-btn" id="rulesAdminBtn" onclick="toggleRulesAdmin()">🔐 관리자 수정</button></div><div id="rulesEdit" class="card" style="display:none"><label>운영 안내 내용</label><textarea id="rulesTextInput" class="home-input home-area"></textarea><button class="admin-btn" onclick="saveRules()">💾 규칙 저장</button></div>
+<div class="admin-bar page-admin"><button type="button" class="admin-btn" onclick="loadRules()">🔄 새로고침</button><button type="button" class="admin-btn" id="rulesAdminBtn" onclick="toggleRulesAdmin()">🔐 관리자 수정</button></div><div id="rulesEdit" class="card" style="display:none"><div id="rulesAdminNote" class="admin-note"></div><label>운영 안내 내용</label><textarea id="rulesTextInput" class="home-input home-area"></textarea><button type="button" class="admin-btn" onclick="saveRules(event)">💾 규칙 저장</button></div>
 </section>
 </main><footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
 <script>
@@ -518,7 +518,7 @@ async function loadRules(){
     document.getElementById('rulesMsg').textContent='서버 새로고침 실패 — 저장된 규칙을 표시합니다.';
   }
 }
-async function saveRules(){if(!rulesAdmin)return;const d={text:document.getElementById('rulesTextInput').value.trim()};localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));renderRules(d);try{if(RULES_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(RULES_DOC,d);document.getElementById('rulesMsg').textContent='규칙 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('rulesMsg').textContent='규칙은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
+async function saveRules(event){if(event)event.preventDefault();if(!rulesAdmin)return;const d={text:document.getElementById('rulesTextInput').value.trim()};localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));renderRules(d);try{if(RULES_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(RULES_DOC,d);document.getElementById('rulesMsg').textContent='규칙 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('rulesMsg').textContent='규칙은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
 
 let isAdmin=false;
 const ADMIN_PASSWORD='0001';
