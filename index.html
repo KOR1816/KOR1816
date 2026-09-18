@@ -515,6 +515,9 @@ function setHomeAdminMode(){
 }
 async function loadHome(){
   renderHome(homeDataLocal());
+  try{
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
+  }catch(e){}
   if(!HOME_DOC||!window.__firebaseGetDoc)return;
   try{
     const snap=await window.__firebaseGetDoc(HOME_DOC);
@@ -534,11 +537,18 @@ async function loadHome(){
 async function saveHome(){
   if(!homeAdmin)return;
   const d={latestTitle:document.getElementById('homeLatestInput').value.trim(),latestBody:document.getElementById('homeLatestBody').value.trim(),schedule:document.getElementById('homeScheduleInput').value.trim(),welcome:document.getElementById('homeWelcomeInput').value.trim()};
-  localStorage.setItem('kor1816_home_v1',JSON.stringify(d));renderHome(d);
+  // 로컬과 서버 모두 같은 저장 경로를 사용하고, Firebase 초기화가 끝난 뒤 서버에 기록합니다.
+  localStorage.setItem('kor1816_home_v1',JSON.stringify(d));
+  renderHome(d);
   try{
-    if(HOME_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(HOME_DOC,d);
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
+    if(!HOME_DOC||!window.__firebaseSetDoc) throw new Error('Firestore가 초기화되지 않았습니다.');
+    await window.__firebaseSetDoc(HOME_DOC,d);
     document.getElementById('homeMsg').textContent='홈 저장 완료! 새로고침해도 유지됩니다.';
-  }catch(e){console.error('Home save failed:',e);document.getElementById('homeMsg').textContent='홈은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}
+  }catch(e){
+    console.error('Home save failed:',e);
+    document.getElementById('homeMsg').textContent='홈은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.';
+  }
 }
 let CASTLE_DOC=null;
 let BEAR_DOC=null;
