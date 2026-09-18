@@ -22,11 +22,28 @@
   .admin-btn{color:#fff;font-weight:800}
   .admin-note{color:#e2e8f0;opacity:1}
 }
-.msg{color:#a7f3d0;font-weight:700;text-align:center}.readonly input{user-select:none}</style></head><body>
+.home-input{width:100%;padding:11px;border-radius:8px;border:1px solid #3b4f7d;background:#0f1730;color:#fff;margin:6px 0 14px;font-family:inherit;font-size:15px}.home-area{min-height:120px;resize:vertical}.home-input:focus{outline:none;border-color:#7195ff}.card label{display:block;font-size:13px;opacity:.8;margin-top:4px}.msg{color:#a7f3d0;font-weight:700;text-align:center}.readonly input{user-select:none}</style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('notice')">📢 공지</button><button onclick="show('sword')">⚔️ 성검쟁탈</button><button onclick="show('teams')">👥 팀 편성 / Teams</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰 사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
 <main class="wrap">
-<section id="home" class="page active"><div class="grid"><div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br><br>대체자 10명</div></div><div class="card"><span class="tag">SCHEDULE</span><h2>📅 주요 일정</h2><p>⚔️ 성검쟁탈 · 23:00</p><p>🐻 곰 1트랩 · 23:00</p><p>🐻 곰 2트랩 · 09:10</p></div><div class="card"><span class="tag">WELCOME</span><h2>🌍 Kingdom 1816</h2><p>소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.</p></div></div></section>
+<section id="home" class="page active">
+<div class="card">
+  <div class="admin-bar"><button class="admin-btn" onclick="loadHome()">🔄 새로고침</button><button class="admin-btn" id="homeAdminBtn" onclick="toggleHomeAdmin()">🔐 관리자 수정</button></div>
+  <div id="homeAdminNote" class="admin-note">현재 보기 전용입니다. 관리자만 수정할 수 있습니다.</div>
+  <div id="homeMsg" class="msg"></div>
+</div>
+<div id="homeView" class="grid">
+  <div class="card"><span class="tag">LATEST</span><h2 id="homeLatestTitle">📢 최신 공지</h2><div class="notice" id="homeLatest"></div></div>
+  <div class="card"><span class="tag">SCHEDULE</span><h2 id="homeScheduleTitle">📅 주요 일정</h2><div id="homeSchedule"></div></div>
+  <div class="card"><span class="tag">WELCOME</span><h2 id="homeWelcomeTitle">🌍 Kingdom 1816</h2><p id="homeWelcome"></p></div>
+</div>
+<div id="homeEdit" class="grid" style="display:none">
+  <div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><label>제목</label><input id="homeLatestInput" class="home-input" placeholder="최신 공지"><label>내용</label><textarea id="homeLatestBody" class="home-input home-area" placeholder="공지 내용을 입력하세요."></textarea></div>
+  <div class="card"><span class="tag">SCHEDULE</span><h2>📅 주요 일정</h2><textarea id="homeScheduleInput" class="home-input home-area" placeholder="한 줄에 일정 하나씩 입력"></textarea></div>
+  <div class="card"><span class="tag">WELCOME</span><h2>🌍 Kingdom 1816</h2><textarea id="homeWelcomeInput" class="home-input home-area" placeholder="홈 환영 문구"></textarea></div>
+  <div class="card" style="grid-column:1/-1"><button class="admin-btn" onclick="saveHome()">💾 홈 저장</button></div>
+</div>
+</section>
 <section id="notice" class="page"><div class="card"><h2>📢 공지사항</h2><div class="notice"><b>성검쟁탈 팀 편성</b><br>7개 팀 각 7명 = 49명이며, 개돌조 2명과 대체자 10명을 별도로 등록합니다.<br>대체자는 별도로 10명을 등록합니다.</div></div></section>
 <section id="sword" class="page"><div class="card"><h2>⚔️ 성검쟁탈 팀 편성</h2><p class="big">7개 팀 + 개돌조 2명 + 대체자 10명</p><p>팀 편성 메뉴에서 Player ID를 입력하고 저장할 수 있습니다.</p></div></section>
 <section id="teams" class="page"><div class="card"><h2>👥 성검쟁탈 팀 편성 / Team Setup</h2><div class="sword-image-wrap"><img src="holy_sword1.png" alt="Holy Sword Clash" class="sword-image"></div><div class="admin-bar"><button class="admin-btn" onclick="loadSharedTeams()">🔄 새로고침</button><button class="admin-btn" id="adminBtn" onclick="toggleAdmin()">🔐 관리자 수정</button></div><div id="adminNote" class="admin-note">현재 보기 전용입니다. 관리자만 수정할 수 있습니다.</div><div id="teamMsg" class="msg"></div><div class="team-columns-wrap"><div class="team-columns">
@@ -77,8 +94,11 @@ async function initFirebase(){
     await authMod.signInAnonymously(auth);
     db=fsMod.getFirestore(firebaseApp);
     TEAM_DOC=fsMod.doc(db,'siteData','teams');
+    HOME_DOC=fsMod.doc(db,'siteData','home');
     window.__firebaseGetDoc=fsMod.getDoc;
     window.__firebaseSetDoc=fsMod.setDoc;
+    renderHome(homeDataLocal());
+    setHomeAdminMode();
     firebaseReady=true;
     await loadSharedTeams();
   }catch(e){
@@ -114,6 +134,50 @@ async function saveSharedTeams(){
   await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
 }
 
+let homeAdmin=false;
+const HOME_DEFAULT={latestTitle:'성검쟁탈 팀 편성',latestBody:'대체자 10명',schedule:'⚔️ 성검쟁탈 · 23:00\n🐻 곰 1트랩 · 23:00\n🐻 곰 2트랩 · 09:10',welcome:'소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.'};
+let HOME_DOC=null;
+function homeDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_home_v1')||'null')||HOME_DEFAULT}catch(e){return HOME_DEFAULT}}
+function renderHome(data){
+  data=data||homeDataLocal();
+  document.getElementById('homeLatest').innerHTML='<b>'+escapeHome(data.latestTitle||'')+'</b><br><br>'+escapeHome(data.latestBody||'').replace(/\n/g,'<br>');
+  document.getElementById('homeSchedule').innerHTML=escapeHome(data.schedule||'').split('\n').filter(Boolean).map(x=>'<p>'+x+'</p>').join('');
+  document.getElementById('homeWelcome').textContent=data.welcome||'';
+  document.getElementById('homeLatestInput').value=data.latestTitle||'';
+  document.getElementById('homeLatestBody').value=data.latestBody||'';
+  document.getElementById('homeScheduleInput').value=data.schedule||'';
+  document.getElementById('homeWelcomeInput').value=data.welcome||'';
+}
+function escapeHome(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+function toggleHomeAdmin(){
+  if(homeAdmin){homeAdmin=false;setHomeAdminMode();return}
+  const pw=prompt('관리자 비밀번호를 입력하세요.');
+  if(pw===ADMIN_PASSWORD){homeAdmin=true;setHomeAdminMode();document.getElementById('homeMsg').textContent='홈 관리자 수정 모드입니다.'}
+  else if(pw!==null) alert('비밀번호가 올바르지 않습니다.');
+}
+function setHomeAdminMode(){
+  document.getElementById('homeView').style.display=homeAdmin?'none':'grid';
+  document.getElementById('homeEdit').style.display=homeAdmin?'grid':'none';
+  document.getElementById('homeAdminBtn').textContent=homeAdmin?'🔒 수정 종료':'🔐 관리자 수정';
+  document.getElementById('homeAdminNote').textContent=homeAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
+}
+async function loadHome(){
+  renderHome(homeDataLocal());
+  if(!HOME_DOC||!window.__firebaseGetDoc)return;
+  try{
+    const snap=await window.__firebaseGetDoc(HOME_DOC);
+    if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_home_v1',JSON.stringify(d));renderHome(d);document.getElementById('homeMsg').textContent='홈 내용을 불러왔습니다.'}
+  }catch(e){console.error('Home read failed:',e);document.getElementById('homeMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}
+}
+async function saveHome(){
+  if(!homeAdmin)return;
+  const d={latestTitle:document.getElementById('homeLatestInput').value.trim(),latestBody:document.getElementById('homeLatestBody').value.trim(),schedule:document.getElementById('homeScheduleInput').value.trim(),welcome:document.getElementById('homeWelcomeInput').value.trim()};
+  localStorage.setItem('kor1816_home_v1',JSON.stringify(d));renderHome(d);
+  try{
+    if(HOME_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(HOME_DOC,d);
+    document.getElementById('homeMsg').textContent='홈 저장 완료! 새로고침해도 유지됩니다.';
+  }catch(e){console.error('Home save failed:',e);document.getElementById('homeMsg').textContent='홈은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}
+}
 let isAdmin=false;
 const ADMIN_PASSWORD='0001';
 
@@ -330,5 +394,7 @@ window.show=show;window.toggleAdmin=toggleAdmin;window.refreshTeams=refreshTeams
 window.saveTeam=saveTeam;window.saveExtra=saveExtra;window.saveSubs=saveSubs;
 window.loadSharedTeams=loadSharedTeams;window.setLang=setLang;
 setLang(localStorage.getItem('kor1816_lang')||'ko');
+renderHome(homeDataLocal());
+setHomeAdminMode();
 initFirebase();
 </script></body></html>
