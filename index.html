@@ -135,9 +135,11 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 .bear-image{width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important}
 .bear-image-wrap{width:100%!important}
 </style><style id="bear-image-full-final">
-#bear .bear-image-wrap{width:calc(100% + 40px)!important;margin-left:-20px!important;margin-right:-20px!important;text-align:center!important}
-#bear .bear-image{display:block!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;object-fit:contain!important;border-radius:14px!important}
-@media(max-width:600px){#bear .bear-image-wrap{width:calc(100% + 30px)!important;margin-left:-15px!important;margin-right:-15px!important}}
+#bear .bear-image-wrap{width:100%!important;margin:0 0 20px!important;text-align:center!important}
+#bear .bear-image{display:block!important;width:80%!important;max-width:80%!important;height:auto!important;max-height:none!important;object-fit:contain!important;margin:0 auto!important;border-radius:14px!important}
+#bear .bear-ratio-card{grid-column:1!important}
+#bear .bear-ratio-text{text-align:center!important;line-height:2!important;white-space:normal!important}
+@media(max-width:700px){#bear .bear-image{width:80%!important;max-width:80%!important}.bear-ratio-card{grid-column:1!important}}
 </style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
@@ -222,6 +224,7 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 <div id="bearView" class="grid">
   <div class="card"><h2 id="bearTitle">🐻 곰 사냥</h2><div id="bearText"></div></div>
   <div class="card"><h2 id="bearHeroTitle">🐻 곰 영웅</h2><div id="bearHeroes"></div></div>
+  <div class="card bear-ratio-card"><h2>📊 비율</h2><div class="bear-ratio-text">10/10/80 비율 (대중적인 범용 메타)<br>1/10/89 비율 (극강의 딜러 메타)<br>5/5/90 비율 (명사수 특화 고인물 메타)</div></div>
 </div>
 <div class="admin-bar page-admin"><button class="admin-btn" onclick="loadBear()">🔄 새로고침</button><button class="admin-btn" id="bearAdminBtn" onclick="toggleBearAdmin()">🔐 관리자 수정</button></div>
 <div id="bearEdit" class="grid" style="display:none">
