@@ -117,16 +117,12 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #bearView,#bearEdit{grid-template-columns:1fr!important}
 #bearView .card,#bearEdit .card{min-height:0!important}
 }
-</style><style id="bear-motif-final">
-.bear-motif{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
-.bear-panel{padding:16px!important;border:2px solid #365783!important;border-radius:16px!important;background:linear-gradient(145deg,#121f37,#0d172a)!important;min-height:245px!important}
-.bear-panel h2{margin:0 0 14px!important;padding:11px 12px!important;text-align:center!important;border-radius:10px!important;background:#202f52!important;border:1px solid #496da2!important;color:#f7d77a!important}
-.bear-inner{min-height:155px!important;padding:16px!important;border:2px solid #496da2!important;border-radius:12px!important;background:#101a31!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important}
-#bearText{font-size:17px!important;font-weight:700!important;line-height:2!important}
-.bear-heroes-wrap{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
-#bearHeroes .bear-hero-item{display:flex!important;align-items:center!important;justify-content:center!important;min-height:44px!important;padding:8px 6px!important;border:1px solid #5270ad!important;border-radius:9px!important;background:#162844!important;white-space:nowrap!important;font-size:15px!important;font-weight:700!important}
-#bearHeroes .bear-hero-item:last-child{grid-column:1/-1!important}
-@media(max-width:700px){.bear-motif{grid-template-columns:1fr!important}.bear-panel{min-height:0!important}}
+</style><style id="bear-castle-match">
+#bearView{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
+#bearView .card{min-width:0!important}
+#bearView #bearHeroes{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;align-items:center!important}
+#bearView .bear-hero-item{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;white-space:nowrap!important;margin:0!important;padding:9px 5px!important;border:1px solid #5270ad!important;border-radius:9px!important;background:#162844!important;font-size:15px!important;font-weight:700!important}
+@media(max-width:700px){#bearView{grid-template-columns:1fr!important}#bearView #bearHeroes{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
@@ -206,9 +202,9 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 </div></section>
 <section id="bear" class="page">
 <div id="bearMsg" class="msg"></div>
-<div id="bearView" class="grid bear-motif">
-  <div class="card bear-panel"><h2 id="bearTitle">🐻 곰 사냥</h2><div class="bear-inner" id="bearText"></div></div>
-  <div class="card bear-panel"><h2 id="bearHeroTitle">🐻 곰 영웅</h2><div class="bear-inner bear-heroes-wrap" id="bearHeroes"></div></div>
+<div id="bearView" class="grid">
+  <div class="card"><h2 id="bearTitle">🐻 곰 사냥</h2><div id="bearText"></div></div>
+  <div class="card"><h2 id="bearHeroTitle">🐻 곰 영웅</h2><div id="bearHeroes"></div></div>
 </div>
 <div class="admin-bar page-admin"><button class="admin-btn" onclick="loadBear()">🔄 새로고침</button><button class="admin-btn" id="bearAdminBtn" onclick="toggleBearAdmin()">🔐 관리자 수정</button></div>
 <div id="bearEdit" class="grid" style="display:none">
