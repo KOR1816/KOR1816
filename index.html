@@ -669,6 +669,25 @@ window.addEventListener('load',function(){
         if(out!==null)el.innerHTML=out;
       }
     }
+    // Final pass: translate any remaining Korean text nodes in the visible page.
+    // This catches dynamic names/sentences that are not covered by section selectors.
+    const root=document.body;
+    const box=document.createElement('div');
+    box.innerHTML=root.innerHTML;
+    const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
+    const rest=[];let rn;
+    while(rn=walker.nextNode()){
+      const p=rn.parentElement;
+      if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button,input,textarea,select'))continue;
+      if(hasKo(rn.nodeValue)&&rn.nodeValue.trim())rest.push(rn);
+    }
+    for(let i=0;i<rest.length;i+=8){
+      if(my!==token)return;
+      const batch=rest.slice(i,i+8);
+      const outs=await Promise.all(batch.map(x=>tr(x.nodeValue,lang)));
+      batch.forEach((x,j)=>x.nodeValue=outs[j]);
+    }
+    root.innerHTML=box.innerHTML;
   }
   window.setLang=function(lang){
     if(!['ko','en','ja','zh','de','es','it'].includes(lang))return;
