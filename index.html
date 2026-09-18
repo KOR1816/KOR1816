@@ -373,27 +373,8 @@ async async function loadSharedTeams(){
       await window.__firebaseSetDoc(TEAM_DOC,local);
     }
 
-    // 개돌조는 별도 문서로 관리해 다른 팀 저장/로드에 의해 덮어쓰이지 않게 합니다.
-    if(EXTRA_DOC){
-      const extraSnap=await window.__firebaseGetDocFromServer(EXTRA_DOC);
-      const localExtraTime=Number(localStorage.getItem(EXTRA_LOCAL_KEY+'_time')||0);
-      if(extraSnap.exists()){
-        const extraData=extraSnap.data()||{};
-        const serverExtra=Array.isArray(extraData.extra)?extraData.extra:[];
-        const serverExtraTime=Number(extraData._updatedAt||0);
-        if(serverExtraTime>=localExtraTime){
-          sharedTeams={...(sharedTeams||{}),extra:serverExtra};
-          saveLocalExtra(serverExtra);
-          localStorage.setItem(EXTRA_LOCAL_KEY+'_time',String(serverExtraTime));
-          renderTeams();
-        }else if(localExtra.length && window.__firebaseSetDoc){
-          await window.__firebaseSetDoc(EXTRA_DOC,{extra:localExtra,_updatedAt:localExtraTime});
-        }
-      }else if(localExtra.length && window.__firebaseSetDoc){
-        const t=localExtraTime||Date.now();
-        await window.__firebaseSetDoc(EXTRA_DOC,{extra:localExtra,_updatedAt:t});
-      }
-    }
+    // 개돌조(extra)는 siteData/teams 한 곳만 진실의 원본으로 사용합니다.
+    // 별도 teamsExtra 문서가 오래된 빈 값을 가지고 있어도 팀 화면을 덮어쓰지 않습니다.
   }catch(e){
     console.error('Firestore read failed:',e);
     sharedTeams={...(sharedTeams||{}),extra:localExtra};
@@ -802,26 +783,19 @@ async async async function saveExtra(){
     document.getElementById('extra-1').value.trim(),
     document.getElementById('extra-2').value.trim()
   ];
-  sharedTeams={...(sharedTeams||{}),extra};
+  const data={...(sharedTeams||{}),extra,_updatedAt:Date.now()};
+  sharedTeams=data;
   saveLocalExtra(extra);
-  const extraTime=Date.now();
-  localStorage.setItem(EXTRA_LOCAL_KEY+'_time',String(extraTime));
   saveLocalTeams();
-
+  localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(data._updatedAt));
   try{
-    if(!EXTRA_DOC || !window.__firebaseSetDoc) throw new Error('개돌조 Firestore가 초기화되지 않았습니다.');
-    const payload={extra,_updatedAt:extraTime};
-    await window.__firebaseSetDoc(EXTRA_DOC,payload);
-    if(window.__firebaseGetDocFromServer){
-      const verify=await window.__firebaseGetDocFromServer(EXTRA_DOC);
-      const saved=verify.exists()?(verify.data()||{}):{};
-      const savedExtra=Array.isArray(saved.extra)?saved.extra:[];
-      if(JSON.stringify(savedExtra)!==JSON.stringify(extra)) throw new Error('개돌조 서버 저장 검증 실패');
-    }
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
+    if(!TEAM_DOC || !window.__firebaseSetDoc) throw new Error('Firestore가 초기화되지 않았습니다.');
+    await window.__firebaseSetDoc(TEAM_DOC,data);
     showSaveResult('개돌조 저장 완료! / Saved!');
   }catch(e){
     console.error('Extra Firebase save failed:',e);
-    showSaveResult('개돌조는 이 기기에 저장되었습니다. 공용 서버 저장 실패: '+(e?.code||e?.message||'unknown'));
+    showSaveResult('개돌조 저장 완료! (이 기기 저장) / Firebase 서버 동기화 실패');
   }
 }
 
