@@ -49,13 +49,12 @@ function setAdminMode(){
   document.getElementById('adminNote').textContent=isAdmin?'관리자 수정 모드입니다. 저장 버튼으로 공용 서버에 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
   sec.querySelectorAll('input').forEach(x=>x.readOnly=!isAdmin);
 }
-function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='teams')renderTeams();scrollTo(0,0)}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='teams')renderTeams();window.scrollTo(0,0)}
 function getTeams(){return sharedTeams||{}}
 async function saveTeam(team){if(!isAdmin)return;const data=getTeams();data[team]=[1,2,3,4,5,6,7].map(n=>document.getElementById('team-'+team+'-'+n).value.trim());sharedTeams=data;try{await saveSharedTeams();document.getElementById('teamMsg').textContent=team+'팀 저장 완료! / Saved!';}catch(e){console.error(e);document.getElementById('teamMsg').textContent='저장 실패: Firebase를 확인해주세요.'}}
 async function saveExtra(){if(!isAdmin)return;const data=getTeams();data.extra=[document.getElementById('extra-1').value.trim(),document.getElementById('extra-2').value.trim()];sharedTeams=data;try{await saveSharedTeams();document.getElementById('teamMsg').textContent='개돌조 저장 완료! / Saved!';}catch(e){console.error(e);document.getElementById('teamMsg').textContent='저장 실패: Firebase를 확인해주세요.'}}
 async function saveSubs(){if(!isAdmin)return;const data=getTeams();data.subs=[1,2,3,4,5,6,7,8,9,10].map(n=>document.getElementById('sub-'+n).value.trim());sharedTeams=data;try{await saveSharedTeams();document.getElementById('teamMsg').textContent='대체자 저장 완료! / Saved!';}catch(e){console.error(e);document.getElementById('teamMsg').textContent='저장 실패: Firebase를 확인해주세요.'}}
 function renderTeams(){const data=getTeams();['A','B','C','D'].forEach(team=>[1,2,3,4,5,6,7].forEach(n=>{const el=document.getElementById('team-'+team+'-'+n);if(el)el.value=(data[team]&&data[team][n-1])||''}));if(data.extra){document.getElementById('extra-1').value=data.extra[0]||'';document.getElementById('extra-2').value=data.extra[1]||''}for(let n=1;n<=10;n++){const el=document.getElementById('sub-'+n);if(el)el.value=(data.subs&&data.subs[n-1])||''}}
-renderTeams();
 setAdminMode();
 loadSharedTeams();
 
