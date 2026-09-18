@@ -532,11 +532,30 @@ function renderBear(data){
 let bearAdmin=false;
 function setBearAdminMode(){const v=document.getElementById('bearView'),e=document.getElementById('bearEdit'),b=document.getElementById('bearAdminBtn'),n=document.getElementById('bearAdminNote');if(v)v.style.display=bearAdmin?'none':'block';if(e)e.style.display=bearAdmin?'block':'none';if(b)b.textContent=bearAdmin?'🔒 수정 종료':'🔐 관리자 수정';if(n)n.textContent=bearAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';}
 function toggleBearAdmin(){if(bearAdmin){bearAdmin=false;setBearAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){bearAdmin=true;setBearAdminMode();document.getElementById('bearMsg').textContent='곰사냥 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
-async function loadBear(){renderBear(bearDataLocal());if(!BEAR_DOC||!window.__firebaseGetDoc)return;try{const snap=await window.__firebaseGetDoc(BEAR_DOC);if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));renderBear(d);document.getElementById('bearMsg').textContent='최신 곰사냥 내용을 불러왔습니다.'}}catch(e){console.error(e);document.getElementById('bearMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}}
+async function loadBear(){
+  const local=bearDataLocal();
+  renderBear(local);
+  if(!BEAR_DOC||!window.__firebaseGetDoc)return;
+  try{
+    const snap=await window.__firebaseGetDoc(BEAR_DOC);
+    if(snap.exists()){
+      const remote=snap.data()||{};
+      const localTime=Number(local&&local._updatedAt||0), remoteTime=Number(remote&&remote._updatedAt||0);
+      const d=localTime>remoteTime?local:remote;
+      localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));
+      renderBear(d);
+      const m=document.getElementById('bearMsg');
+      if(m)m.textContent=localTime>remoteTime?'이 기기의 최신 저장본을 유지했습니다.':'최신 곰사냥 내용을 불러왔습니다.';
+    }
+  }catch(e){
+    console.error(e);
+    const m=document.getElementById('bearMsg');if(m)m.textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.';
+  }
+}
 async function saveBear(){
   if(!bearAdmin)return;
   const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
-  const d={text:ti?ti.value.trim():'',heroes:hi?hi.value.trim():''};
+  const d={text:ti?ti.value.trim():'',heroes:hi?hi.value.trim():'',_updatedAt:Date.now()};
   localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));
   renderBear(d);
   try{
