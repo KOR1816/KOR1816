@@ -332,12 +332,7 @@ function renderViking(data){
     document.getElementById('vikingTextInput'+i).value=body;
   }
 }
-function setVikingAdminMode(){
-  document.getElementById('vikingView').style.display=vikingAdmin?'none':'grid';
-  document.getElementById('vikingEdit').style.display=vikingAdmin?'grid':'none';
-  document.getElementById('vikingAdminBtn').textContent=vikingAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  document.getElementById('vikingAdminNote').textContent=vikingAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
-}
+function setVikingAdminMode(){const v=document.getElementById('vikingView'),e=document.getElementById('vikingEdit'),b=document.getElementById('vikingAdminBtn'),n=document.getElementById('vikingAdminNote');if(v)v.style.display=vikingAdmin?'none':'grid';if(e)e.style.display=vikingAdmin?'grid':'none';if(b)b.textContent=vikingAdmin?'🔒 수정 종료':'🔐 관리자 수정';if(n)n.textContent=vikingAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';}
 function toggleVikingAdmin(){
   if(vikingAdmin){vikingAdmin=false;setVikingAdminMode();return}
   const pw=prompt('관리자 비밀번호를 입력하세요.');
@@ -469,7 +464,7 @@ const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10'};
 function bearDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_bear_v1')||'null')||BEAR_DEFAULT}catch(e){return BEAR_DEFAULT}}
 function renderBear(data){data=data||bearDataLocal();document.getElementById('bearText').innerHTML=escapeHome(data.text||'').replace(/\n/g,'<br>');document.getElementById('bearTextInput').value=data.text||''}
 let bearAdmin=false;
-function setBearAdminMode(){document.getElementById('bearView').style.display=bearAdmin?'none':'block';document.getElementById('bearEdit').style.display=bearAdmin?'block':'none';document.getElementById('bearAdminBtn').textContent=bearAdmin?'🔒 수정 종료':'🔐 관리자 수정';document.getElementById('bearAdminNote').textContent=bearAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.'}
+function setBearAdminMode(){const v=document.getElementById('bearView'),e=document.getElementById('bearEdit'),b=document.getElementById('bearAdminBtn'),n=document.getElementById('bearAdminNote');if(v)v.style.display=bearAdmin?'none':'block';if(e)e.style.display=bearAdmin?'block':'none';if(b)b.textContent=bearAdmin?'🔒 수정 종료':'🔐 관리자 수정';if(n)n.textContent=bearAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';}
 function toggleBearAdmin(){if(bearAdmin){bearAdmin=false;setBearAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){bearAdmin=true;setBearAdminMode();document.getElementById('bearMsg').textContent='곰사냥 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
 async function loadBear(){renderBear(bearDataLocal());if(!BEAR_DOC||!window.__firebaseGetDoc)return;try{const snap=await window.__firebaseGetDoc(BEAR_DOC);if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));renderBear(d);document.getElementById('bearMsg').textContent='최신 곰사냥 내용을 불러왔습니다.'}}catch(e){console.error(e);document.getElementById('bearMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}}
 async function saveBear(){if(!bearAdmin)return;const d={text:document.getElementById('bearTextInput').value.trim()};localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));renderBear(d);try{if(BEAR_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(BEAR_DOC,d);document.getElementById('bearMsg').textContent='곰사냥 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('bearMsg').textContent='곰사냥은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
@@ -505,9 +500,7 @@ function setAdminMode(){
   const sec=document.getElementById('teams');
   sec.classList.toggle('readonly',!isAdmin);
   document.getElementById('adminBtn').textContent=isAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  document.getElementById('adminNote').textContent=isAdmin
-    ? '관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.'
-    : '현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
+  const note=document.getElementById('adminNote');if(note)note.textContent=isAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.';
   sec.querySelectorAll('input').forEach(x=>x.readOnly=!isAdmin);
 }
 
