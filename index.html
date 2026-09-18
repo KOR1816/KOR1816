@@ -97,6 +97,9 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #castleView{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 #castleEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media(max-width:700px){#castleView,#castleEdit{grid-template-columns:1fr!important}}
+#homeSchedule{display:flex!important;flex-direction:column!important;gap:10px!important;padding-top:4px!important}
+#homeSchedule p{margin:0!important;padding:10px 14px!important;line-height:1.35!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:10px!important;background:rgba(255,255,255,.035)!important}
+@media(max-width:600px){#homeSchedule{gap:8px!important}#homeSchedule p{padding:9px 11px!important;font-size:14px!important}}
 </style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
