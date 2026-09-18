@@ -311,14 +311,26 @@ async function initFirebase(){
 }
 
 async function loadSharedTeams(){
-  // Always show the local copy first, then replace it with the shared server copy.
-  sharedTeams=getLocalTeams();
+  // 성검쟁탈은 로컬 저장본과 서버 저장본 중 더 최근 것을 사용합니다.
+  // 다른 페이지의 저장 로직은 건드리지 않습니다.
+  const local=getLocalTeams();
+  sharedTeams=local;
   renderTeams();
   if(!TEAM_DOC || !window.__firebaseGetDoc) return;
   try{
     const snap=await window.__firebaseGetDoc(TEAM_DOC);
-    if(snap.exists()){
-      sharedTeams=snap.data()||{};
+    if(!snap.exists()) return;
+    const server=snap.data()||{};
+    const localTime=Number(local._updatedAt||0);
+    const serverTime=Number(server._updatedAt||0);
+
+    if(localTime>serverTime){
+      // 이 기기에서 더 최근에 저장된 편성이 서버의 오래된 값으로 덮어써지지 않게 합니다.
+      sharedTeams=local;
+      renderTeams();
+      if(window.__firebaseSetDoc) await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
+    }else{
+      sharedTeams=server;
       saveLocalTeams();
       renderTeams();
     }
@@ -330,8 +342,10 @@ async function loadSharedTeams(){
 }
 
 async function saveSharedTeams(){
-  // Save locally first, so a successful click is never lost on refresh.
+  // 저장할 때마다 성검쟁탈 데이터의 최신 시각을 기록합니다.
+  sharedTeams={...(sharedTeams||{}),_updatedAt:Date.now()};
   saveLocalTeams();
+  if(typeof firebaseInitPromise!=='undefined' && firebaseInitPromise) await firebaseInitPromise;
   if(!TEAM_DOC || !window.__firebaseSetDoc) return;
   await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
 }
