@@ -563,31 +563,36 @@ window.addEventListener('load',function(){
 });
 </script><script id="full-i18n">
 (function(){
-const K={
-'성검쟁탈 팀 편성':'Holy Sword Clash Team Formation','대체자 10명':'10 Substitutes','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'Communication · Cooperation · Growth · We work together with a focus on KVK organization.','성검쟁탈 · 23:00':'Holy Sword Clash · 23:00','곰 1트랩 · 23:00':'Bear Trap 1 · 23:00','곰 2트랩 · 09:10':'Bear Trap 2 · 09:10',
-'바이킹 관련 안내를 입력하세요.':'Enter Viking information here.','바이킹 진행 내용을 입력하세요.':'Enter Viking progress information here.','바이킹 편성 내용을 입력하세요.':'Enter Viking formation information here.','바이킹 규칙을 입력하세요.':'Enter Viking rules here.',
-'곰 1트랩: 23:00':'Bear Trap 1: 23:00','곰 2트랩: 09:10':'Bear Trap 2: 09:10','공지사항을 먼저 확인해주세요.':'Please check the announcements first.','참석이 어려운 경우 미리 DM으로 알려주세요.':'If you cannot attend, please let us know by DM in advance.','KVK는 소통과 협력을 우선합니다.':'Communication and cooperation are the priority during KVK.','팀 편성은 이벤트별 공지를 기준으로 합니다.':'Team formation follows the announcement for each event.',
-'아마데 / 페라 / 로사':'Amade / Fera / Rosa','알카 / 마르고 / 살로':'Alka / Margo / Salo','상대가 강하면 예거 고려':'Consider Jaeger if the opponent is strong','연습: 집결장 631 · 집결원 640':'Practice: Rally Leader 631 · Rally Member 640',
-'1열: 2첸코 / 2아마':'Row 1: 2 Chenko / 2 Ama','2열: 2첸코 / 아마네 / 파드':'Row 2: 2 Chenko / Amane / Fard','3열: 2살로 / 첸코 / 아마네':'Row 3: 2 Salo / Chenko / Amane','4열: 2힐데 / 살로 / 첸코':'Row 4: 2 Hilde / Salo / Chenko','1열: 2힐데 / 살로 / 첸코':'Row 1: 2 Hilde / Salo / Chenko','2열: 4힐데':'Row 2: 4 Hilde','3열: 2힐데 / 살로 / 고든':'Row 3: 2 Hilde / Salo / Gordon',
-'비율: 505 / 55.5.40 / 514 / 415 / 406':'Ratio: 505 / 55.5.40 / 514 / 415 / 406',
-'공지':'Notice','공지 일정':'Schedule','홈':'Home','바이킹':'Viking','성검쟁탈':'Holy Sword Clash','3대연맹전':'3 Alliances','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','규칙':'Rules','저장':'Save','새로고침':'Refresh','관리자 수정':'Admin Edit','수정 종료':'Exit Edit',
-'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'Admin edit mode. Press Save to save immediately.','현재 보기 전용입니다. 관리자만 수정할 수 있습니다.':'View only. Only administrators can edit.','관리자 비밀번호를 입력하세요.':'Enter the administrator password.','비밀번호가 올바르지 않습니다.':'Incorrect password.',
-'홈 내용을 불러왔습니다.':'Home content loaded.','최신 바이킹 내용을 불러왔습니다.':'Latest Viking content loaded.','최신 공성전 내용을 불러왔습니다.':'Latest Castle Siege content loaded.','최신 곰사냥 내용을 불러왔습니다.':'Latest Bear Hunt content loaded.','최신 규칙을 불러왔습니다.':'Latest rules loaded.'
-};
-const nav=['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ 3 Alliances','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'];
-function translateText(s){let v=s;for(const a of Object.keys(K).sort((a,b)=>b.length-a.length))v=v.split(a).join(K[a]);return v}
-function translatePage(){
- if((localStorage.getItem('kor1816_lang')||'ko')!=='en')return;
- document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=nav[i]);
- const sub=document.querySelector('.sub');if(sub)sub.textContent='Kingdom 1816 · We bite when touched! · Bear lovers gathering!!';
- const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){if(n.parentElement&&n.parentElement.closest('.lang-switch'))continue;if(n.parentElement&&['SCRIPT','STYLE','TEXTAREA','INPUT'].includes(n.parentElement.tagName))continue;n.nodeValue=translateText(n.nodeValue)}
- const h=['📢 Notice','📅 Schedule','🌍 Kingdom 1816'];['homeLatestTitle','homeScheduleTitle','homeWelcomeTitle'].forEach((id,i)=>{const x=document.getElementById(id);if(x)x.textContent=h[i]});
- ['🛡️ Viking Guide','⚔️ Viking Progress','👥 Viking Formation','📋 Viking Rules'].forEach((v,i)=>{const x=document.getElementById('vikingTitle'+(i+1));if(x)x.textContent=v});
- ['⚔️ Rally Leader Attack','🛡️ Defense','👥 Rally Member Attack','👥 Rally Member Defense'].forEach((v,i)=>{const x=document.getElementById('castleTitle'+(i+1));if(x)x.textContent=v});
+const T={
+en:{home:{latestTitle:'Holy Sword Clash Team Formation',latestBody:'10 Substitutes',schedule:'⚔️ Holy Sword Clash · 23:00\n🐻 Bear Trap 1 · 23:00\n🐻 Bear Trap 2 · 09:10',welcome:'Communication · Cooperation · Growth · We work together with a focus on KVK organization.'},viking:{titles:['🛡️ Viking Guide','⚔️ Viking Progress','👥 Viking Formation','📋 Viking Rules'],texts:['Enter Viking information here.','Enter Viking progress information here.','Enter Viking formation information here.','Enter Viking rules here.']},bear:'🐻 Bear Hunt',rules:'📋 KOR1816 Guide',castle:['⚔️ Rally Leader Attack','🛡️ Defense','👥 Rally Member Attack','👥 Rally Member Defense']},
+ja:{home:{latestTitle:'聖剣争奪チーム編成',latestBody:'交代要員10名',schedule:'⚔️ 聖剣争奪 · 23:00\n🐻 熊トラップ1 · 23:00\n🐻 熊トラップ2 · 09:10',welcome:'コミュニケーション・協力・成長・KVKの組織力を大切にしています。'},viking:{titles:['🛡️ バイキング案内','⚔️ バイキング進行','👥 バイキング編成','📋 バイキングルール'],texts:['バイキング案内を入力してください。','バイキング進行内容を入力してください。','バイキング編成内容を入力してください。','バイキングルールを入力してください。']},bear:'🐻 熊狩り',rules:'📋 KOR1816運営案内',castle:['⚔️ 集結長攻撃','🛡️ 防衛','👥 集結メンバー攻撃','👥 集結メンバー防衛']},
+zh:{home:{latestTitle:'圣剑争夺队伍编组',latestBody:'10名替补',schedule:'⚔️ 圣剑争夺 · 23:00\n🐻 猎熊陷阱1 · 23:00\n🐻 猎熊陷阱2 · 09:10',welcome:'我们重视沟通、合作、成长以及KVK组织力。'},viking:{titles:['🛡️ 维京指南','⚔️ 维京进行','👥 维京编组','📋 维京规则'],texts:['请输入维京指南内容。','请输入维京进行内容。','请输入维京编组内容。','请输入维京规则内容。']},bear:'🐻 猎熊',rules:'📋 KOR1816运营指南',castle:['⚔️ 集结长攻击','🛡️ 防守','👥 集结成员攻击','👥 集结成员防守']},
+de:{home:{latestTitle:'Teamaufstellung Heiliger Schwertkampf',latestBody:'10 Ersatzspieler',schedule:'⚔️ Heiliger Schwertkampf · 23:00\n🐻 Bärenfalle 1 · 23:00\n🐻 Bärenfalle 2 · 09:10',welcome:'Wir setzen auf Kommunikation, Zusammenarbeit, Wachstum und KVK-Organisation.'},viking:{titles:['🛡️ Wikinger-Info','⚔️ Wikinger-Ablauf','👥 Wikinger-Aufstellung','📋 Wikinger-Regeln'],texts:['Wikinger-Informationen eingeben.','Wikinger-Ablauf eingeben.','Wikinger-Aufstellung eingeben.','Wikinger-Regeln eingeben.']},bear:'🐻 Bärenjagd',rules:'📋 KOR1816 Betriebsregeln',castle:['⚔️ Angriff des Rally-Leiters','🛡️ Verteidigung','👥 Angriff der Rally-Mitglieder','👥 Verteidigung der Rally-Mitglieder']},
+ko:null};
+const NAV={en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ 3 Alliances','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliger Schwertkampf','⚔️ 3 Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln']};
+function render(lang){
+ if(lang==='ko')return;
+ const t=T[lang]; if(!t)return;
+ const nav=document.querySelectorAll('nav button'); (NAV[lang]||NAV.en).forEach((v,i)=>{if(nav[i])nav[i].textContent=v});
+ const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+ if(t.home){set('homeLatestTitle','📢 '+(lang==='en'?'Notice':lang==='ja'?'お知らせ':lang==='zh'?'公告':'Ankündigung'));set('homeScheduleTitle','📅 '+(lang==='en'?'Schedule':lang==='ja'?'スケジュール':lang==='zh'?'日程':'Zeitplan'));set('homeWelcomeTitle','🌍 Kingdom 1816');}
+ if(t.viking)t.viking.titles.forEach((v,i)=>set('vikingTitle'+(i+1),v));
+ if(t.castle)t.castle.forEach((v,i)=>set('castleTitle'+(i+1),v));
+ const h=document.querySelector('#teams h2');if(h)h.textContent=NAV[lang][2]; const a=document.querySelector('#alliance h2');if(a)a.textContent=NAV[lang][3]; const b=document.querySelector('#bear h2');if(b)b.textContent=t.bear; const r=document.querySelector('#rules h2');if(r)r.textContent=t.rules;
+ const d=t.home;
+ const lv=document.getElementById('homeLatest'),sv=document.getElementById('homeSchedule'),wv=document.getElementById('homeWelcome');
+ if(lv)lv.innerHTML='<b>'+d.latestTitle+'</b><br><br>'+d.latestBody.replace(/\n/g,'<br>');
+ if(sv)sv.innerHTML=d.schedule.split('\n').map(x=>'<p>'+x+'</p>').join('');
+ if(wv)wv.textContent=d.welcome;
+ const bd=document.getElementById('bearText');if(bd)bd.innerHTML=t.bear==='🐻 Bear Hunt'?'Bear Trap 1: 23:00<br>Bear Trap 2: 09:10':bd.innerHTML;
 }
-const originals={renderHome:window.renderHome,renderViking:window.renderViking,renderCastle:window.renderCastle,renderBear:window.renderBear,renderRules:window.renderRules};
-['renderHome','renderViking','renderCastle','renderBear','renderRules'].forEach(name=>{if(typeof window[name]==='function'){const f=window[name];window[name]=function(){const z=f.apply(this,arguments);setTimeout(translatePage,0);return z}}});
-window.setLang=function(x){localStorage.setItem('kor1816_lang',x);if(x==='ko'){location.reload();return}lang=x;translatePage();};
-setTimeout(translatePage,100);setInterval(translatePage,500);
+window.setLang=function(x){localStorage.setItem('kor1816_lang',x);lang=x; if(x==='ko')location.reload(); else render(x)};
+setTimeout(()=>render(localStorage.getItem('kor1816_lang')||'ko'),200);
+const oldR={renderHome,renderViking,renderCastle,renderBear,renderRules};
+window.renderHome=function(d){oldR.renderHome(d);render(localStorage.getItem('kor1816_lang')||'ko')};
+window.renderViking=function(d){oldR.renderViking(d);render(localStorage.getItem('kor1816_lang')||'ko')};
+window.renderCastle=function(d){oldR.renderCastle(d);render(localStorage.getItem('kor1816_lang')||'ko')};
+window.renderBear=function(d){oldR.renderBear(d);render(localStorage.getItem('kor1816_lang')||'ko')};
+window.renderRules=function(d){oldR.renderRules(d);render(localStorage.getItem('kor1816_lang')||'ko')};
 })();
 </script></body></html>
