@@ -102,6 +102,9 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 @media(max-width:600px){#homeSchedule{gap:8px!important}#homeSchedule p{padding:9px 11px!important;font-size:14px!important}}
 </style><style id="bear-layout-final">
 #bearView,#bearEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
+#bearView .card{border:2px solid #3f5d89!important;border-top:2px solid #3f5d89!important}
+#bearView .bear-hero-item{display:inline-flex!important;align-items:center;justify-content:center;white-space:nowrap;margin:5px 4px;padding:8px 12px;border:1px solid #5270ad;border-radius:9px;background:#162844;font-size:16px;font-weight:700}
+#bearView #bearHeroes{display:block!important;text-align:center!important;line-height:1.5!important}
 #bearView .card,#bearEdit .card{min-width:0;min-height:245px!important;display:flex!important;flex-direction:column!important}
 #bearView .card h2,#bearEdit .card h2{margin:0 0 18px!important;padding:12px 14px!important;text-align:center!important;border-radius:11px!important;background:linear-gradient(180deg,#263d62,#182b49)!important;border:1px solid #3f5d89!important;color:#f7d77a!important}
 #bearView .card:first-child h2{color:#ffd27a!important}
@@ -497,7 +500,7 @@ function renderBear(data){
   const t=document.getElementById('bearText'),h=document.getElementById('bearHeroes');
   const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
   if(t)t.innerHTML=escapeHome(text).replace(/\n/g,'<br>');
-  if(h)h.innerHTML=escapeHome(heroes).replace(/\n/g,'<br>');
+  if(h)h.innerHTML=heroes.split(/\n+/).filter(Boolean).map(x=>'<span class="bear-hero-item">'+escapeHome(x.trim())+'</span>').join('');
   if(ti)ti.value=text;
   if(hi)hi.value=heroes;
 }
