@@ -98,7 +98,7 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #castleEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media(max-width:700px){#castleView,#castleEdit{grid-template-columns:1fr!important}}
 </style></head><body>
-<div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button><button onclick="setLang('es')">🇪🇸 Español</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
+<div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
 <main class="wrap">
 <section id="home" class="page active"><div class="sword-image-wrap"><img src="./1816.jpg?v=2" alt="KOR1816" class="sword-image"></div>
@@ -563,13 +563,13 @@ window.addEventListener('load',function(){
 });
 </script><script id="full-i18n">
 (function(){
-  const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de',es:'es',es:'es'};
+  const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de'};
   const NAV={
     ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
     en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
     ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
     zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
-    de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],es:['🏠 Inicio','🛡️ Vikingos','⚔️ Disputa de la Espada Sagrada','⚔️ Guerra de las Tres Alianzas','🏰 Asedio del Castillo','🐻 Caza del Oso','📋 Reglas']
+    de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln']
   };
   const TERMS={
     en:{'성검쟁탈':'Holy Sword Clash','3대연맹전':'Three Alliances War','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','집결장':'Rally Leader','집결원':'Rally Member','개돌조':'Charge Team','대체자':'Substitute','비율':'Troop Ratio','1열':'Row 1','2열':'Row 2','3열':'Row 3','4열':'Row 4','수성':'Defense','집결':'Rally','공격':'Attack','연습':'Practice','공지':'Notice','공지 일정':'Schedule','새로고침':'Refresh','관리자 수정':'Admin Edit','저장':'Save','바이킹':'Viking','편성':'Formation','규칙':'Rules','안내':'Guide','진행':'Progress','소통':'Communication','협력':'Cooperation','성장':'Growth'},
@@ -662,7 +662,7 @@ window.addEventListener('load',function(){
     }
   }
   window.setLang=function(lang){
-    if(!['ko','en','ja','zh','de','es'].includes(lang))return;
+    if(!['ko','en','ja','zh','de'].includes(lang))return;
     localStorage.setItem('kor1816_lang',lang);token++;restore();
     document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang]&&NAV[lang][i])b.textContent=NAV[lang][i]});
     if(lang!=='ko')setTimeout(apply,0);
