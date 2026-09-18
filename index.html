@@ -311,17 +311,32 @@ async function initFirebase(){
 }
 
 async function loadSharedTeams(){
-  // Always show the local copy first, then replace it with the shared server copy.
-  sharedTeams=getLocalTeams();
+  // Local copy is shown immediately. Server/local timestamps decide which copy is newer.
+  const local=getLocalTeams();
+  sharedTeams=local;
   renderTeams();
   if(!TEAM_DOC || !window.__firebaseGetDoc) return;
   try{
     const snap=await window.__firebaseGetDoc(TEAM_DOC);
-    if(snap.exists()){
-      sharedTeams=snap.data()||{};
-      saveLocalTeams();
+    if(!snap.exists()) return;
+    const server=snap.data()||{};
+    const localTime=Number(local._updatedAt||0);
+    const serverTime=Number(server._updatedAt||0);
+
+    if(localTime>serverTime){
+      // This browser has a newer saved version. Keep it visible and sync it back to Firebase.
+      sharedTeams=local;
       renderTeams();
+      if(window.__firebaseSetDoc){
+        try{await window.__firebaseSetDoc(TEAM_DOC,local);}
+        catch(syncErr){console.error('Firestore sync failed:',syncErr);}
+      }
+      return;
     }
+
+    sharedTeams=server;
+    saveLocalTeams();
+    renderTeams();
   }catch(e){
     console.error('Firestore read failed:',e);
     const m=document.getElementById('teamMsg');
@@ -330,7 +345,8 @@ async function loadSharedTeams(){
 }
 
 async function saveSharedTeams(){
-  // Save locally first, so a successful click is never lost on refresh.
+  // Stamp every save so an older Firebase copy can never overwrite a newer local save.
+  sharedTeams={...(sharedTeams||{}),_updatedAt:Date.now()};
   saveLocalTeams();
   if(!TEAM_DOC || !window.__firebaseSetDoc) return;
   await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
