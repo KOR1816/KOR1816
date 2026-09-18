@@ -190,6 +190,14 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 </section>
 </main><footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
 <script>
+/* force current Holy Sword team labels */
+document.addEventListener('DOMContentLoaded',function(){
+  const labels=['A1','A2','D1','D2'];
+  const cols=document.querySelectorAll('#teams .team-column');
+  cols.forEach((col,i)=>{ if(i<4){ const t=col.querySelector('.team-title'); if(t)t.textContent=labels[i]; }});
+});
+</script>
+<script>
 let db=null;
 let TEAM_DOC=null;
 let firebaseReady=false;
