@@ -373,7 +373,12 @@ async function saveViking(){
 function homeDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_home_v1')||'null')||HOME_DEFAULT}catch(e){return HOME_DEFAULT}}
 function renderHome(data){
   data=data||homeDataLocal();
-  document.getElementById('homeLatest').innerHTML='<b>'+escapeHome(data.latestTitle||'')+'</b><br><br>'+escapeHome(data.latestBody||'').replace(/\n/g,'<br>');
+  // 이전 공지(성검쟁탈 팀 편성 / 대체자 10명)는 자동 정리
+  const oldBody=String(data.latestBody||'');
+  if(data.latestTitle==='성검쟁탈 팀 편성' || oldBody.includes('대체자 10명')){
+    data={...data,latestTitle:'',latestBody:'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.\\n기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.'};
+  }
+  document.getElementById('homeLatest').innerHTML='<b>'+escapeHome(data.latestTitle||'')+'</b>'+((data.latestTitle&&data.latestBody)?'<br><br>':'')+escapeHome(data.latestBody||'').replace(/\n/g,'<br>');
   document.getElementById('homeSchedule').innerHTML=escapeHome(data.schedule||'').split('\n').filter(Boolean).map(x=>'<p>'+x+'</p>').join('');
   document.getElementById('homeWelcome').textContent=data.welcome||'';
   document.getElementById('homeLatestInput').value=data.latestTitle||'';
@@ -399,7 +404,17 @@ async function loadHome(){
   if(!HOME_DOC||!window.__firebaseGetDoc)return;
   try{
     const snap=await window.__firebaseGetDoc(HOME_DOC);
-    if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_home_v1',JSON.stringify(d));renderHome(d);document.getElementById('homeMsg').textContent='홈 내용을 불러왔습니다.'}
+    if(snap.exists()){
+      let d=snap.data()||{};
+      if(d.latestTitle==='성검쟁탈 팀 편성' || String(d.latestBody||'').includes('대체자 10명')){
+        d={...d,latestTitle:'',latestBody:'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.\\n기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.'};
+        localStorage.setItem('kor1816_home_v1',JSON.stringify(d));
+        if(window.__firebaseSetDoc) await window.__firebaseSetDoc(HOME_DOC,d);
+      }else{
+        localStorage.setItem('kor1816_home_v1',JSON.stringify(d));
+      }
+      renderHome(d);document.getElementById('homeMsg').textContent='홈 내용을 불러왔습니다.';
+    }
   }catch(e){console.error('Home read failed:',e);document.getElementById('homeMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}
 }
 async function saveHome(){
@@ -642,10 +657,10 @@ window.addEventListener('load',function(){
     de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln']
   };
   const TERMS={
-    en:{'성검쟁탈':'Holy Sword Clash','3대연맹전':'Three Alliances War','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','집결장':'Rally Leader','집결원':'Rally Member','개돌조':'Charge Team','대체자':'Substitute','비율':'Troop Ratio','1열':'Row 1','2열':'Row 2','3열':'Row 3','4열':'Row 4','수성':'Defense','집결':'Rally','공격':'Attack','연습':'Practice','공지':'Notice','공지 일정':'Schedule','새로고침':'Refresh','관리자 수정':'Admin Edit','저장':'Save','바이킹':'Viking','편성':'Formation','규칙':'Rules','안내':'Guide','진행':'Progress','소통':'Communication','협력':'Cooperation','성장':'Growth'},
-    ja:{'성검쟁탈':'聖剣争奪','3대연맹전':'3大連盟戦','공성전':'攻城戦','곰사냥':'熊狩り','곰 사냥':'熊狩り','집결장':'集結リーダー','집결원':'集結メンバー','개돌조':'突撃隊','대체자':'交代要員','비율':'兵力比率','1열':'1列目','2열':'2列目','3열':'3列目','4열':'4列目','수성':'防衛','집결':'集結','공격':'攻撃','연습':'練習','공지':'お知らせ','공지 일정':'スケジュール','새로고침':'更新','관리자 수정':'管理者編集','저장':'保存','바이킹':'バイキング','편성':'編成','규칙':'ルール','안내':'案内','진행':'進行','소통':'コミュニケーション','협력':'協力','성장':'成長'},
-    zh:{'성검쟁탈':'圣剑争夺','3대연맹전':'三大联盟战','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','집결장':'集结队长','집결원':'集结成员','개돌조':'突击队','대체자':'替补','비율':'兵力比例','1열':'第1排','2열':'第2排','3열':'第3排','4열':'第4排','수성':'防守','집결':'集结','공격':'攻击','연습':'练习','공지':'公告','공지 일정':'日程','새로고침':'刷新','관리자 수정':'管理员编辑','저장':'保存','바이킹':'维京','편성':'编组','규칙':'规则','안내':'说明','진행':'进行','소통':'沟通','협력':'合作','성장':'成长'},
-    de:{'성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','개돌조':'Sturmtrupp','대체자':'Ersatz','비율':'Truppenverhältnis','1열':'Reihe 1','2열':'Reihe 2','3열':'Reihe 3','4열':'Reihe 4','수성':'Verteidigung','집결':'Versammlung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','공지 일정':'Zeitplan','새로고침':'Aktualisieren','관리자 수정':'Admin bearbeiten','저장':'Speichern','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf','소통':'Kommunikation','협력':'Zusammenarbeit','성장':'Wachstum'}
+    en:{'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.':'For the time being, rewards from Fort and Sanc will be distributed primarily to immigrants who came here after making troop sacrifices.','기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.':'We respectfully ask our existing KOR alliance members for their understanding.','성검쟁탈':'Holy Sword Clash','3대연맹전':'Three Alliances War','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','집결장':'Rally Leader','집결원':'Rally Member','개돌조':'Charge Team','대체자':'Substitute','비율':'Troop Ratio','1열':'Row 1','2열':'Row 2','3열':'Row 3','4열':'Row 4','수성':'Defense','집결':'Rally','공격':'Attack','연습':'Practice','공지':'Notice','공지 일정':'Schedule','새로고침':'Refresh','관리자 수정':'Admin Edit','저장':'Save','바이킹':'Viking','편성':'Formation','규칙':'Rules','안내':'Guide','진행':'Progress','소통':'Communication','협력':'Cooperation','성장':'Growth'},
+    ja:{'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.':'当面、FortとSancの報酬は、兵力を犠牲にして移民してきた方々を中心に分配する予定です。','기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.':'既存のKOR連盟員の皆様には、何卒ご理解いただきますようお願いいたします。','성검쟁탈':'聖剣争奪','3대연맹전':'3大連盟戦','공성전':'攻城戦','곰사냥':'熊狩り','곰 사냥':'熊狩り','집결장':'集結リーダー','집결원':'集結メンバー','개돌조':'突撃隊','대체자':'交代要員','비율':'兵力比率','1열':'1列目','2열':'2列目','3열':'3列目','4열':'4列目','수성':'防衛','집결':'集結','공격':'攻撃','연습':'練習','공지':'お知らせ','공지 일정':'スケジュール','새로고침':'更新','관리자 수정':'管理者編集','저장':'保存','바이킹':'バイキング','편성':'編成','규칙':'ルール','안내':'案内','진행':'進行','소통':'コミュニケーション','협력':'協力','성장':'成長'},
+    zh:{'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.':'暂时，Fort和Sanc的奖励计划优先分配给那些牺牲兵力来到这里的移民。','기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.':'也请原有的KOR联盟成员予以理解。','성검쟁탈':'圣剑争夺','3대연맹전':'三大联盟战','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','집결장':'集结队长','집결원':'集结成员','개돌조':'突击队','대체자':'替补','비율':'兵力比例','1열':'第1排','2열':'第2排','3열':'第3排','4열':'第4排','수성':'防守','집결':'集结','공격':'攻击','연습':'练习','공지':'公告','공지 일정':'日程','새로고침':'刷新','관리자 수정':'管理员编辑','저장':'保存','바이킹':'维京','편성':'编组','규칙':'规则','안내':'说明','진행':'进行','소통':'沟通','협력':'合作','성장':'成长'},
+    de:{'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.':'Vorerst sollen die Belohnungen für Fort und Sanc hauptsächlich an Einwanderer verteilt werden, die unter Einsatz ihrer Truppen hierher gekommen sind.','기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.':'Wir bitten die bisherigen KOR-Allianzmitglieder höflich um ihr Verständnis.','성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','개돌조':'Sturmtrupp','대체자':'Ersatz','비율':'Truppenverhältnis','1열':'Reihe 1','2열':'Reihe 2','3열':'Reihe 3','4열':'Reihe 4','수성':'Verteidigung','집결':'Versammlung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','공지 일정':'Zeitplan','새로고침':'Aktualisieren','관리자 수정':'Admin bearbeiten','저장':'Speichern','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf','소통':'Kommunikation','협력':'Zusammenarbeit','성장':'Wachstum'}
   };
   const TARGETS=['#homeView','#vikingView','#teams > .card > h2','#teams .team-columns-wrap','#alliance > .card > h2','#alliance > .card > h2 + .sword-image-wrap','#allianceView','#castle > .card > h2','#castleView','#bear > .card > h2','#bearView','#rules > .card > h2','#rulesView'];
   let token=0;
