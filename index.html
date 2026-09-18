@@ -577,7 +577,7 @@ window.addEventListener('load',function(){
     zh:{'성검쟁탈':'圣剑争夺','3대연맹전':'三大联盟战','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','집결장':'集结队长','집결원':'集结成员','개돌조':'突击队','대체자':'替补','비율':'兵力比例','1열':'第1排','2열':'第2排','3열':'第3排','4열':'第4排','수성':'防守','집결':'集结','공격':'攻击','연습':'练习','공지':'公告','공지 일정':'日程','새로고침':'刷新','관리자 수정':'管理员编辑','저장':'保存','바이킹':'维京','편성':'编组','규칙':'规则','안내':'说明','진행':'进行','소통':'沟通','협력':'合作','성장':'成长'},
     de:{'성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','개돌조':'Sturmtrupp','대체자':'Ersatz','비율':'Truppenverhältnis','1열':'Reihe 1','2열':'Reihe 2','3열':'Reihe 3','4열':'Reihe 4','수성':'Verteidigung','집결':'Versammlung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','공지 일정':'Zeitplan','새로고침':'Aktualisieren','관리자 수정':'Admin bearbeiten','저장':'Speichern','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf','소통':'Kommunikation','협력':'Zusammenarbeit','성장':'Wachstum'}
   };
-  const TARGETS=['#homeView','#vikingView','#teams > .card > h2','#teams .team-columns-wrap','#alliance > .card > h2','#allianceView','#castle > .card > h2','#castleView','#bear > .card > h2','#bearView','#rules > .card > h2','#rulesView'];
+  const TARGETS=['#homeView','#vikingView','#teams > .card > h2','#teams .team-columns-wrap','#alliance > .card > h2','#alliance > .card > h2 + .sword-image-wrap','#allianceView','#castle > .card > h2','#castleView','#bear > .card > h2','#bearView','#rules > .card > h2','#rulesView'];
   let token=0;
 
   function hasKo(s){return /[\uac00-\ud7a3]/.test(s||'')}
