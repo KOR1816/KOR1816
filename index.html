@@ -481,72 +481,157 @@ async function saveViking(){
     document.getElementById('vikingMsg').textContent='바이킹 저장 완료! / Saved!';
   }catch(e){console.error('Viking save failed:',e);document.getElementById('vikingMsg').textContent='바이킹은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}
 }
-function homeDataLocal(){try{const d=JSON.parse(localStorage.getItem('kor1816_home_v1')||'null');if(d){if(d.latestTitle==='성검쟁탈 팀 편성'||String(d.latestBody||'').includes('대체자 10명')){d.latestTitle='';d.latestBody='당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.\\n기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.';localStorage.setItem('kor1816_home_v1',JSON.stringify(d));}return d;}return HOME_DEFAULT}catch(e){return HOME_DEFAULT}}
-function renderHome(data){
-  data=data||homeDataLocal();
-  // 이전 공지(성검쟁탈 팀 편성 / 대체자 10명)는 자동 정리
-  const oldBody=String(data.latestBody||'');
-  if(data.latestTitle==='성검쟁탈 팀 편성' || oldBody.includes('대체자 10명')){
-    data={...data,latestTitle:'',latestBody:'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.\\n기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.'};
+function homeDataLocal(){
+  try{
+    const raw=localStorage.getItem('kor1816_home_v1');
+    if(!raw)return {...HOME_DEFAULT};
+    const d=JSON.parse(raw);
+    return d&&typeof d==='object'?d:{...HOME_DEFAULT};
+  }catch(e){
+    return {...HOME_DEFAULT};
   }
-  document.getElementById('homeLatest').innerHTML='<b>'+escapeHome(data.latestTitle||'')+'</b>'+((data.latestTitle&&data.latestBody)?'<br><br>':'')+escapeHome(data.latestBody||'').replace(/\n/g,'<br>');
-  document.getElementById('homeSchedule').innerHTML=escapeHome(data.schedule||'').split('\n').filter(Boolean).map(x=>'<p>'+x+'</p>').join('');
-  document.getElementById('homeWelcome').textContent=data.welcome||'';
-  document.getElementById('homeLatestInput').value=data.latestTitle||'';
-  document.getElementById('homeLatestBody').value=data.latestBody||'';
-  document.getElementById('homeScheduleInput').value=data.schedule||'';
-  document.getElementById('homeWelcomeInput').value=data.welcome||'';
 }
-function escapeHome(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+
+function renderHome(data){
+  const d=data||homeDataLocal();
+  const latestTitle=String(d.latestTitle||'');
+  const latestBody=String(d.latestBody||'');
+  const schedule=String(d.schedule||'');
+  const welcome=String(d.welcome||'');
+
+  const latest=document.getElementById('homeLatest');
+  const scheduleEl=document.getElementById('homeSchedule');
+  const welcomeEl=document.getElementById('homeWelcome');
+
+  if(latest)latest.innerHTML='<b>'+escapeHome(latestTitle)+'</b>'+
+    ((latestTitle&&latestBody)?'<br><br>':'')+
+    escapeHome(latestBody).replace(/\n/g,'<br>');
+  if(scheduleEl)scheduleEl.innerHTML=escapeHome(schedule).split('\n').filter(Boolean).map(x=>'<p>'+x+'</p>').join('');
+  if(welcomeEl)welcomeEl.textContent=welcome;
+
+  const a=document.getElementById('homeLatestInput');
+  const b=document.getElementById('homeLatestBody');
+  const c=document.getElementById('homeScheduleInput');
+  const dEl=document.getElementById('homeWelcomeInput');
+  if(a)a.value=latestTitle;
+  if(b)b.value=latestBody;
+  if(c)c.value=schedule;
+  if(dEl)dEl.value=welcome;
+}
+
+function escapeHome(s){
+  return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+}
+
 function toggleHomeAdmin(){
-  if(homeAdmin){homeAdmin=false;setHomeAdminMode();return}
+  if(homeAdmin){
+    homeAdmin=false;
+    setHomeAdminMode();
+    renderHome(homeDataLocal());
+    return;
+  }
   const pw=prompt('관리자 비밀번호를 입력하세요.');
-  if(pw===ADMIN_PASSWORD){homeAdmin=true;setHomeAdminMode();document.getElementById('homeMsg').textContent='홈 관리자 수정 모드입니다.'}
-  else if(pw!==null) alert('비밀번호가 올바르지 않습니다.');
+  if(pw===ADMIN_PASSWORD){
+    homeAdmin=true;
+    setHomeAdminMode();
+    renderHome(homeDataLocal());
+    document.getElementById('homeMsg').textContent='홈 관리자 수정 모드입니다.';
+  }else if(pw!==null){
+    alert('비밀번호가 올바르지 않습니다.');
+  }
 }
+
 function setHomeAdminMode(){
-  document.getElementById('homeView').style.display=homeAdmin?'none':'grid';
-  document.getElementById('homeEdit').style.display=homeAdmin?'grid':'none';
-  document.getElementById('homeAdminBtn').textContent=homeAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  
+  const view=document.getElementById('homeView');
+  const edit=document.getElementById('homeEdit');
+  const btn=document.getElementById('homeAdminBtn');
+  if(view)view.style.display=homeAdmin?'none':'grid';
+  if(edit)edit.style.display=homeAdmin?'grid':'none';
+  if(btn)btn.textContent=homeAdmin?'🔒 수정 종료':'🔐 관리자 수정';
 }
-async function loadHome(){
-  renderHome(homeDataLocal());
-  try{
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
-  }catch(e){}
-  if(!HOME_DOC||!window.__firebaseGetDoc)return;
-  try{
-    const snap=await window.__firebaseGetDoc(HOME_DOC);
-    if(snap.exists()){
-      let d=snap.data()||{};
-      if(d.latestTitle==='성검쟁탈 팀 편성' || String(d.latestBody||'').includes('대체자 10명')){
-        d={...d,latestTitle:'',latestBody:'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.\\n기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.'};
-        localStorage.setItem('kor1816_home_v1',JSON.stringify(d));
-        if(window.__firebaseSetDoc) await window.__firebaseSetDoc(HOME_DOC,d);
-      }else{
-        localStorage.setItem('kor1816_home_v1',JSON.stringify(d));
-      }
-      renderHome(d);document.getElementById('homeMsg').textContent='홈 내용을 불러왔습니다.';
-    }
-  }catch(e){console.error('Home read failed:',e);document.getElementById('homeMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}
+
+function homeSaveData(){
+  return {
+    latestTitle:document.getElementById('homeLatestInput')?.value||'',
+    latestBody:document.getElementById('homeLatestBody')?.value||'',
+    schedule:document.getElementById('homeScheduleInput')?.value||'',
+    welcome:document.getElementById('homeWelcomeInput')?.value||'',
+    _updatedAt:Date.now()
+  };
 }
+
 async function saveHome(){
   if(!homeAdmin)return;
-  const d={latestTitle:document.getElementById('homeLatestInput').value.trim(),latestBody:document.getElementById('homeLatestBody').value.trim(),schedule:document.getElementById('homeScheduleInput').value.trim(),welcome:document.getElementById('homeWelcomeInput').value.trim()};
-  // 로컬과 서버 모두 같은 저장 경로를 사용하고, Firebase 초기화가 끝난 뒤 서버에 기록합니다.
-  localStorage.setItem('kor1816_home_v1',JSON.stringify(d));
-  renderHome(d);
+
+  const data=homeSaveData();
+
+  // 저장 버튼을 누르는 즉시 이 브라우저에 먼저 보관합니다.
+  localStorage.setItem('kor1816_home_v1',JSON.stringify(data));
+  renderHome(data);
+  document.getElementById('homeMsg').textContent='저장 중...';
+
   try{
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
-    if(!HOME_DOC||!window.__firebaseSetDoc) throw new Error('Firestore가 초기화되지 않았습니다.');
-    await window.__firebaseSetDoc(HOME_DOC,d);
-    document.getElementById('homeMsg').textContent='홈 저장 완료! 새로고침해도 유지됩니다.';
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise){
+      await Promise.race([
+        firebaseInitPromise,
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase 초기화 시간 초과')),5000))
+      ]);
+    }
+    if(!HOME_DOC||!window.__firebaseSetDoc)throw new Error('Firebase 준비 안 됨');
+
+    await window.__firebaseSetDoc(HOME_DOC,data);
+    document.getElementById('homeMsg').textContent='홈 저장 완료! / Saved!';
   }catch(e){
     console.error('Home save failed:',e);
-    document.getElementById('homeMsg').textContent='홈은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.';
+    document.getElementById('homeMsg').textContent='기기 저장 완료 / 서버 저장 실패';
   }
 }
+
+async function loadHome(){
+  // 화면 진입 시에는 우선 현재 저장본을 즉시 보여줍니다.
+  const local=homeDataLocal();
+  renderHome(local);
+
+  try{
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise){
+      await Promise.race([
+        firebaseInitPromise,
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase 초기화 시간 초과')),5000))
+      ]);
+    }
+    if(!HOME_DOC||!window.__firebaseGetDoc)return;
+
+    const snap=await Promise.race([
+      window.__firebaseGetDoc(HOME_DOC),
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firestore 읽기 시간 초과')),5000))
+    ]);
+
+    if(!snap.exists()){
+      document.getElementById('homeMsg').textContent='현재 저장본을 표시합니다.';
+      return;
+    }
+
+    const server=snap.data()||{};
+    const localTime=Number(local._updatedAt||0);
+    const serverTime=Number(server._updatedAt||0);
+
+    if(localTime>serverTime){
+      // 이 기기에서 더 최근에 저장했다면 오래된 서버값으로 덮어쓰지 않습니다.
+      await window.__firebaseSetDoc(HOME_DOC,local);
+      renderHome(local);
+      document.getElementById('homeMsg').textContent='최신 저장본을 유지했습니다.';
+    }else{
+      localStorage.setItem('kor1816_home_v1',JSON.stringify(server));
+      renderHome(server);
+      document.getElementById('homeMsg').textContent='최신 홈 내용을 불러왔습니다.';
+    }
+  }catch(e){
+    console.error('Home load failed:',e);
+    renderHome(local);
+    document.getElementById('homeMsg').textContent='서버 연결 지연 — 현재 저장본을 표시합니다.';
+  }
+}
+
 let CASTLE_DOC=null;
 let BEAR_DOC=null;
 let RULES_DOC=null;
