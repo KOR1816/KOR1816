@@ -850,12 +850,30 @@ async function refreshTeams(){
   const btn=document.querySelector('[onclick="refreshTeams()"]');
   if(btn){btn.disabled=true;btn.textContent='🔄 불러오는 중...';}
   try{
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
-    await loadSharedTeams();
+    // Firebase 초기화가 멈춰 있어도 버튼이 영원히 '불러오는 중...'에
+    // 갇히지 않도록 5초 제한을 둡니다.
+    const local=getLocalTeams();
+    sharedTeams=local;
+    const localExtra=getLocalExtra();
+    if(localExtra.length) sharedTeams.extra=localExtra;
+    renderTeams();
+
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise){
+      await Promise.race([
+        firebaseInitPromise,
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase init timeout')),5000))
+      ]);
+    }
+    if(TEAM_DOC&&window.__firebaseGetDocFromServer){
+      await Promise.race([
+        loadSharedTeams(),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firestore read timeout')),5000))
+      ]);
+    }
     showSaveResult('최신 성검쟁탈 팀편성을 불러왔습니다.');
   }catch(e){
     console.error('Teams refresh failed:',e);
-    showSaveResult('성검쟁탈 새로고침에 실패했습니다.');
+    showSaveResult('서버 응답 지연 — 현재 저장본을 표시합니다.');
   }finally{
     if(btn){btn.disabled=false;btn.textContent='🔄 새로고침';}
   }
