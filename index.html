@@ -486,32 +486,36 @@ let rulesAdmin=false;
 function setRulesAdminMode(){document.getElementById('rulesView').style.display=rulesAdmin?'none':'block';document.getElementById('rulesEdit').style.display=rulesAdmin?'block':'none';document.getElementById('rulesAdminBtn').textContent=rulesAdmin?'🔒 수정 종료':'🔐 관리자 수정';document.getElementById('rulesAdminNote').textContent=rulesAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.'}
 function toggleRulesAdmin(){if(rulesAdmin){rulesAdmin=false;setRulesAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){rulesAdmin=true;setRulesAdminMode();document.getElementById('rulesMsg').textContent='규칙 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
 async function loadRules(){
-  // 운영 안내는 새 본문을 우선 사용하고, 기존 저장 데이터가 남아 있으면 즉시 교체합니다.
-  renderRules(RULES_DEFAULT);
-  localStorage.setItem('kor1816_rules_v1',JSON.stringify(RULES_DEFAULT));
-  if(!window.__firebaseGetDoc||!RULES_DOC)return;
+  renderRules(rulesDataLocal());
+  if(!window.__firebaseGetDoc)return;
   try{
-    const snap=await window.__firebaseGetDoc(RULES_DOC);
-    if(snap.exists()){
-      const d=snap.data()||{};
-      const old=String(d.text||'');
-      if(old.includes('본부(HQ) 첫영웅 고든')||old.includes('공지사항을 먼저 확인해주세요.')||old.includes('### 🛡️ 바이킹 안내')||!old.includes('[KOR]༺༒༽Pham༼༒༻')){
-        await window.__firebaseSetDoc(RULES_DOC,RULES_DEFAULT);
-        localStorage.setItem('kor1816_rules_v1',JSON.stringify(RULES_DEFAULT));
-        renderRules(RULES_DEFAULT);
-      }else{
+    if(VIKING_DOC){
+      const vs=await window.__firebaseGetDoc(VIKING_DOC);
+      if(vs.exists()){
+        const vd=vs.data()||{};
+        if(Array.isArray(vd.titles)&&vd.titles.length>3){
+          localStorage.setItem('kor1816_viking_guide_v1',JSON.stringify({title:vd.titles[0],text:(vd.texts||[])[0]||''}));
+          vd.titles=vd.titles.slice(1,4);
+          vd.texts=(vd.texts||[]).slice(1,4);
+          localStorage.setItem('kor1816_viking_v1',JSON.stringify(vd));
+        }
+      }
+    }
+    if(RULES_DOC){
+      const snap=await window.__firebaseGetDoc(RULES_DOC);
+      if(snap.exists()){
+        let d=snap.data()||{};\n        if(!d.text || String(d.text).includes('본부(HQ) 첫영웅 고든') || String(d.text).includes('공지사항을 먼저 확인해주세요.') || !String(d.text).includes('[KOR]༺༒༽Pham༼༒༻')){\n          d={...d,text:RULES_DEFAULT.text};\n          if(window.__firebaseSetDoc) await window.__firebaseSetDoc(RULES_DOC,d);\n        }
         localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));
         renderRules(d);
+        document.getElementById('rulesMsg').textContent='최신 규칙을 불러왔습니다.';
+      }else{
+        renderRules(rulesDataLocal());
       }
-      document.getElementById('rulesMsg').textContent='최신 운영 안내를 불러왔습니다.';
-    }else{
-      await window.__firebaseSetDoc(RULES_DOC,RULES_DEFAULT);
-      renderRules(RULES_DEFAULT);
     }
   }catch(e){
-    console.error('Rules load failed:',e);
-    renderRules(RULES_DEFAULT);
-    document.getElementById('rulesMsg').textContent='서버 새로고침 실패 — 최신 운영 안내를 표시합니다.';
+    console.error(e);
+    renderRules(rulesDataLocal());
+    document.getElementById('rulesMsg').textContent='서버 새로고침 실패 — 저장된 규칙을 표시합니다.';
   }
 }
 async function saveRules(){if(!rulesAdmin)return;const d={text:document.getElementById('rulesTextInput').value.trim()};localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));renderRules(d);try{if(RULES_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(RULES_DOC,d);document.getElementById('rulesMsg').textContent='규칙 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('rulesMsg').textContent='규칙은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
