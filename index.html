@@ -251,9 +251,11 @@ document.addEventListener('DOMContentLoaded',function(){
 <script>
 let db=null;
 let TEAM_DOC=null;
+let EXTRA_DOC=null;
 let firebaseReady=false;
 let sharedTeams={};
 const LOCAL_KEY='kor1816_teams_v2';
+const EXTRA_LOCAL_KEY='kor1816_teams_extra_v1';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_7Uk6QkCQAt6LyWMVuQNARaXD78WdlZQ",
@@ -271,6 +273,12 @@ function getLocalTeams(){
 }
 function saveLocalTeams(){
   localStorage.setItem(LOCAL_KEY, JSON.stringify(sharedTeams||{}));
+}
+function getLocalExtra(){
+  try{return JSON.parse(localStorage.getItem(EXTRA_LOCAL_KEY)||'[]')||[]}catch(e){return []}
+}
+function saveLocalExtra(extra){
+  localStorage.setItem(EXTRA_LOCAL_KEY, JSON.stringify(Array.isArray(extra)?extra:[]));
 }
 
 async function initFirebase(){
@@ -298,6 +306,7 @@ async function initFirebase(){
     }
     db=fsMod.getFirestore(firebaseApp);
     TEAM_DOC=fsMod.doc(db,'siteData','teams');
+    EXTRA_DOC=fsMod.doc(db,'siteData','teamsExtra');
     HOME_DOC=fsMod.doc(db,'siteData','home');
     VIKING_DOC=fsMod.doc(db,'siteData','viking');
     ALLIANCE_DOC=fsMod.doc(db,'siteData','alliance');
@@ -305,6 +314,7 @@ async function initFirebase(){
     BEAR_DOC=fsMod.doc(db,'siteData','bear');
     RULES_DOC=fsMod.doc(db,'siteData','rules');
     window.__firebaseGetDoc=fsMod.getDoc;
+    window.__firebaseGetDocFromServer=fsMod.getDocFromServer;
     window.__firebaseSetDoc=fsMod.setDoc;
     renderHome(homeDataLocal());
     renderViking(vikingDataLocal());
@@ -322,43 +332,49 @@ async function initFirebase(){
 }
 
 async function loadSharedTeams(){
-  // 성검쟁탈은 서버를 기준으로 하되, 이 기기에 방금 저장한 최신 데이터가
-  // 서버의 오래된 데이터 때문에 다시 사라지지 않도록 시간순으로 병합합니다.
   const local=getLocalTeams();
   sharedTeams=local;
+  const localExtra=getLocalExtra();
+  if(localExtra.length){
+    sharedTeams={...sharedTeams,extra:localExtra};
+  }
   renderTeams();
 
-  if(!TEAM_DOC || !window.__firebaseGetDoc) return;
+  if(!TEAM_DOC || !window.__firebaseGetDocFromServer)return;
 
   try{
-    const snap=await window.__firebaseGetDoc(TEAM_DOC);
-    if(!snap.exists()){
-      // 서버 문서가 아직 없으면 이 기기의 최신 저장본을 서버에 올립니다.
-      if(Object.keys(local).length && window.__firebaseSetDoc){
+    const snap=await window.__firebaseGetDocFromServer(TEAM_DOC);
+    if(snap.exists()){
+      const server=snap.data()||{};
+      const localTime=Number(local._updatedAt||0);
+      const serverTime=Number(server._updatedAt||0);
+      if(serverTime>localTime){
+        sharedTeams=server;
+        saveLocalTeams();
+        renderTeams();
+      }else if(localTime>serverTime && window.__firebaseSetDoc){
         await window.__firebaseSetDoc(TEAM_DOC,local);
       }
-      return;
+    }else if(Object.keys(local).length && window.__firebaseSetDoc){
+      await window.__firebaseSetDoc(TEAM_DOC,local);
     }
 
-    const server=snap.data()||{};
-    const localTime=Number(local._updatedAt||0);
-    const serverTime=Number(server._updatedAt||0);
-
-    if(localTime>serverTime){
-      sharedTeams={...server,...local};
-      sharedTeams._updatedAt=localTime;
-      renderTeams();
-      await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
-      saveLocalTeams();
-    }else{
-      sharedTeams=server;
-      saveLocalTeams();
-      renderTeams();
+    // 개돌조는 별도 문서로 관리해 다른 팀 저장/로드에 의해 덮어쓰이지 않게 합니다.
+    if(EXTRA_DOC){
+      const extraSnap=await window.__firebaseGetDocFromServer(EXTRA_DOC);
+      if(extraSnap.exists()){
+        const extraData=extraSnap.data()||{};
+        const extra=Array.isArray(extraData.extra)?extraData.extra:[];
+        sharedTeams={...(sharedTeams||{}),extra};
+        saveLocalExtra(extra);
+        renderTeams();
+      }else if(localExtra.length && window.__firebaseSetDoc){
+        await window.__firebaseSetDoc(EXTRA_DOC,{extra:localExtra,_updatedAt:Date.now()});
+      }
     }
   }catch(e){
     console.error('Firestore read failed:',e);
-    // 서버 읽기가 실패해도 로컬 저장본은 그대로 유지합니다.
-    sharedTeams=local;
+    sharedTeams={...(sharedTeams||{}),extra:localExtra};
     renderTeams();
     const m=document.getElementById('teamMsg');
     if(m) m.textContent='공용 서버 연결 실패 — 이 기기의 저장본을 표시합니다.';
@@ -366,30 +382,26 @@ async function loadSharedTeams(){
 }
 
 async function saveSharedTeams(){
-  // 저장 시각을 먼저 기록하고, 로컬 + Firestore 양쪽에 저장합니다.
   const data={...(sharedTeams||{}),_updatedAt:Date.now()};
   sharedTeams=data;
   saveLocalTeams();
 
-  // Firebase 초기화가 아직 끝나지 않았다면 완료될 때까지 기다립니다.
-  if(typeof firebaseInitPromise!=='undefined' && firebaseInitPromise){
-    await firebaseInitPromise;
-  }
-
-  // 기존 코드는 Firebase가 준비되지 않아도 "저장 완료"를 표시할 수 있었습니다.
-  // 이제는 실제 서버 저장이 가능한 상태인지 먼저 확인합니다.
+  // Firebase 초기화 중인 순간에는 자기 자신(firebaseInitPromise)을 기다리면
+  // initFirebase -> loadSharedTeams -> saveSharedTeams가 서로 기다리는 교착이 생길 수 있습니다.
+  // 초기화가 끝난 뒤에 서버 저장을 시도하도록 합니다.
   if(!TEAM_DOC || !window.__firebaseSetDoc){
+    if(typeof firebaseReady!=='undefined' && !firebaseReady){
+      return;
+    }
     throw new Error('Firestore가 초기화되지 않았습니다.');
   }
 
   await window.__firebaseSetDoc(TEAM_DOC,data);
 
-  // 실제 Firestore에 기록된 값을 다시 읽어 저장 성공을 확인합니다.
-  if(window.__firebaseGetDoc){
-    const verify=await window.__firebaseGetDoc(TEAM_DOC);
-    const saved=verify.exists() ? (verify.data()||{}) : {};
-    const savedTime=Number(saved._updatedAt||0);
-    if(savedTime!==Number(data._updatedAt)){
+  if(window.__firebaseGetDocFromServer){
+    const verify=await window.__firebaseGetDocFromServer(TEAM_DOC);
+    const saved=verify.exists()?(verify.data()||{}):{};
+    if(Number(saved._updatedAt||0)!==Number(data._updatedAt)){
       throw new Error('Firestore 저장 검증 실패');
     }
   }
@@ -754,18 +766,28 @@ async function saveTeam(team){
 
 async function saveExtra(){
   if(!isAdmin)return;
-  const data=getTeams();
-  data.extra=[
+  const extra=[
     document.getElementById('extra-1').value.trim(),
     document.getElementById('extra-2').value.trim()
   ];
-  sharedTeams=data;
+  sharedTeams={...(sharedTeams||{}),extra};
+  saveLocalExtra(extra);
+  saveLocalTeams();
+
   try{
-    await saveSharedTeams();
+    if(!EXTRA_DOC || !window.__firebaseSetDoc) throw new Error('개돌조 Firestore가 초기화되지 않았습니다.');
+    const payload={extra,_updatedAt:Date.now()};
+    await window.__firebaseSetDoc(EXTRA_DOC,payload);
+    if(window.__firebaseGetDocFromServer){
+      const verify=await window.__firebaseGetDocFromServer(EXTRA_DOC);
+      const saved=verify.exists()?(verify.data()||{}):{};
+      const savedExtra=Array.isArray(saved.extra)?saved.extra:[];
+      if(JSON.stringify(savedExtra)!==JSON.stringify(extra)) throw new Error('개돌조 서버 저장 검증 실패');
+    }
     showSaveResult('개돌조 저장 완료! / Saved!');
   }catch(e){
-    console.error(e);
-    showSaveResult('개돌조는 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.');
+    console.error('Extra Firebase save failed:',e);
+    showSaveResult('개돌조는 이 기기에 저장되었습니다. 공용 서버 저장 실패: '+(e?.code||e?.message||'unknown'));
   }
 }
 
