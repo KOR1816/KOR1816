@@ -471,12 +471,60 @@ async function saveBear(){if(!bearAdmin)return;const d={text:document.getElement
 
 const RULES_DEFAULT={text:'### 📋 KOR1816 운영진 및 안내\\n\\n[KOR]༺༒༽Pham༼༒༻ - 총대장 / 정신적지주\\n\\n[KOR]Nemesis - 집결장 / 외교, 이민 / 유적쟁탈 /\\n\\n[KOR]Agaresᴷᴼᴿ - 전체적인 벨런스(에이스)\\n\\n[KOR]༺༒༽LJ༼༒༻ - 거점총사령관\\n\\n[KOR]샌디에이고 - 집결장 / 댕댕이전문가\\n\\n[KOR]momo - 캐슬전 통솔자 / 모모찡엄마\\n\\n[KOR]Rarara - SIN연맹장 / 천사의마음씨\\n\\n[KOR]Aimée - 분위기메이커 / 태그담당자\\n\\n[KOR]GGGz需要起床 - 히어로 / 너무바쁘다 / 영어.중국어가능\\n\\n[KOR]DAWN - 침묵의왕자 / 그저조용하다\\n\\n[KOR]KOREAN MONSTER - 동물의숲\\n\\n[KOR]Hair loss beam - 탈모를원하는가?'};
 function rulesDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_rules_v1')||'null')||RULES_DEFAULT}catch(e){return RULES_DEFAULT}}
-function renderRules(data){data=data||rulesDataLocal();const v=document.getElementById('rulesText'),i=document.getElementById('rulesTextInput');if(v)v.innerHTML=escapeHome(data.text||'').replace(/\\n/g,'<br>');if(i)i.value=data.text||''}
+function renderRules(data){
+  data=data||rulesDataLocal();
+  const v=document.getElementById('rulesText'),i=document.getElementById('rulesTextInput');
+  const text=String(data.text||'').replace(/\\n/g,'\n');
+  if(v)v.innerHTML=escapeHome(text).replace(/\n/g,'<br>');
+  if(i)i.value=text;
+}
 let rulesAdmin=false;
-function setRulesAdminMode(){const v=document.getElementById('rulesView'),e=document.getElementById('rulesEdit'),btn=document.getElementById('rulesAdminBtn');if(v)v.style.display=rulesAdmin?'none':'block';if(e)e.style.display=rulesAdmin?'block':'none';if(btn)btn.textContent=rulesAdmin?'🔒 수정 종료':'🔐 관리자 수정'}
-function toggleRulesAdmin(){if(rulesAdmin){rulesAdmin=false;setRulesAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){rulesAdmin=true;setRulesAdminMode();document.getElementById('rulesMsg').textContent='규칙 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
-async function loadRules(){renderRules(rulesDataLocal());}
-async function saveRules(){if(!rulesAdmin)return;const input=document.getElementById('rulesTextInput');const d={text:input?input.value.trim():''};localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));renderRules(d);document.getElementById('rulesMsg').textContent='규칙 저장 완료! / Saved!';}
+function setRulesAdminMode(){
+  const v=document.getElementById('rulesView'),e=document.getElementById('rulesEdit'),btn=document.getElementById('rulesAdminBtn'),n=document.getElementById('rulesAdminNote');
+  if(v)v.style.display=rulesAdmin?'none':'block';
+  if(e)e.style.display=rulesAdmin?'block':'none';
+  if(btn)btn.textContent=rulesAdmin?'🔒 수정 종료':'🔐 관리자 수정';
+  if(n)n.textContent=rulesAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';
+}
+function toggleRulesAdmin(){
+  if(rulesAdmin){rulesAdmin=false;setRulesAdminMode();return}
+  const pw=prompt('관리자 비밀번호를 입력하세요.');
+  if(pw===ADMIN_PASSWORD){
+    rulesAdmin=true;
+    setRulesAdminMode();
+    const m=document.getElementById('rulesMsg');if(m)m.textContent='규칙 관리자 수정 모드입니다.';
+  }else if(pw!==null)alert('비밀번호가 올바르지 않습니다.');
+}
+async function loadRules(){
+  renderRules(rulesDataLocal());
+  if(!RULES_DOC||!window.__firebaseGetDoc)return;
+  try{
+    const snap=await window.__firebaseGetDoc(RULES_DOC);
+    if(snap.exists()){
+      const d=snap.data()||{};
+      localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));
+      renderRules(d);
+      const m=document.getElementById('rulesMsg');if(m)m.textContent='최신 규칙 내용을 불러왔습니다.';
+    }
+  }catch(e){
+    console.error('Rules read failed:',e);
+    const m=document.getElementById('rulesMsg');if(m)m.textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.';
+  }
+}
+async function saveRules(){
+  if(!rulesAdmin)return;
+  const input=document.getElementById('rulesTextInput');
+  const d={text:input?input.value.trim():''};
+  localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));
+  renderRules(d);
+  try{
+    if(RULES_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(RULES_DOC,d);
+    const m=document.getElementById('rulesMsg');if(m)m.textContent='규칙 저장 완료! / Saved!';
+  }catch(e){
+    console.error('Rules save failed:',e);
+    const m=document.getElementById('rulesMsg');if(m)m.textContent='규칙은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.';
+  }
+}
 let isAdmin=false;
 const ADMIN_PASSWORD='0001';
 
