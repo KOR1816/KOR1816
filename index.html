@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="version" content="20260919-refresh2"><title>KOR1816 | Kingdom 1816</title>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="version" content="20260919-recovery1"><title>KOR1816 | Kingdom 1816</title>
 <style>*{box-sizing:border-box}body{margin:0;font-family:Arial,"Malgun Gothic",sans-serif;background:#0b1020;color:#eef2ff}header{padding:28px 20px;background:linear-gradient(135deg,#111a35,#1d315c);text-align:center}h1{margin:0;font-size:34px}.sub{opacity:.8;margin-top:8px}nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:14px;background:#11172a;position:sticky;top:0;z-index:5}nav button{border:0;border-radius:10px;padding:10px 15px;background:#263354;color:#fff;cursor:pointer}nav button:hover{background:#3b4f7d}.wrap{max-width:1050px;margin:auto;padding:20px}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px}.card{background:#151d34;border:1px solid #283555;border-radius:16px;padding:20px;box-shadow:0 8px 25px #0003}.card h2{margin-top:0}.tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#314675;font-size:12px;margin-bottom:10px}.notice{border-left:4px solid #7195ff;padding-left:14px;margin:15px 0}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid #2b3655;text-align:left}footer{text-align:center;padding:35px;opacity:.55}.big{font-size:22px;font-weight:bold}.msg{min-height:22px;margin-top:12px}.team-table-wrap{overflow-x:auto;margin-top:15px}.team-table{width:100%;min-width:760px;border-collapse:collapse}.team-table th,.team-table td{border:1px solid #2b3655;padding:10px;text-align:center}.team-table th{background:#202c4b}.team-table td:first-child{font-weight:bold;white-space:nowrap;background:#18233e}.team-table input{width:100%;padding:11px;border-radius:8px;border:1px solid #3b4f7d;background:#0f1730;color:#fff;text-align:center}.team-table button{padding:9px 12px;border:0;border-radius:8px;background:#4f6fb8;color:#fff;font-weight:bold;cursor:pointer}.team-columns-wrap{overflow-x:auto;margin-top:12px}.team-columns{display:grid;grid-template-columns:repeat(6,minmax(125px,1fr));gap:10px;min-width:860px;align-items:start}.team-column{background:#101a31;border:1px solid #2b3b61;border-radius:14px;padding:10px}.team-title{text-align:center;font-weight:bold;font-size:16px;padding:10px 4px;margin-bottom:7px;background:#202f52;border-radius:10px}.slot{display:flex;align-items:center;gap:5px;margin:6px 0}.slot span{width:20px;text-align:center;font-size:12px;opacity:.75}.slot input{min-width:0;width:100%;padding:9px 6px;border-radius:7px;border:1px solid #3b4f7d;background:#0b1328;color:#fff;text-align:center;font-size:12px}.team-column button{width:100%;margin-top:7px;padding:9px 4px;border:0;border-radius:8px;background:#4f6fb8;color:#fff;font-weight:bold;cursor:pointer}.special .team-title{background:#493b68}.subs .team-title{background:#3d4b3b}.subs .slot span{width:24px}.subs input{font-size:11px}.admin-bar{display:flex;justify-content:flex-end;gap:8px;margin:10px 0;position:fixed;right:20px;bottom:20px;z-index:20;padding:8px;background:rgba(8,13,24,.88);border:1px solid #3c5b88;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(6px)}.home-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:0}.home-welcome-admin{position:static!important;grid-column:3;justify-content:flex-end!important;margin:10px 0 0!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;padding:0!important}.admin-btn{border:1px solid #3b4f7d;border-radius:9px;padding:8px 12px;background:#1b2745;color:#fff;cursor:pointer}.readonly .slot input{background:#0b1328;color:#cbd5e1;cursor:default}.readonly .team-column button{display:none}.admin-note{font-size:12px;opacity:.7;margin:6px 0 12px;text-align:center}@media(max-width:900px){.team-columns{grid-template-columns:repeat(6,minmax(125px,1fr))}}.sword-image-wrap{text-align:center;margin:12px 0 18px}.sword-image{display:block;width:auto;max-width:100%;height:auto;margin:0 auto;border-radius:12px;border:1px solid #2b3b61}.lang-switch{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:10px 10px 0;background:#11172a}.lang-switch button{border:1px solid #3b4f7d;border-radius:999px;padding:7px 12px;background:#1b2745;color:#fff;cursor:pointer}.lang-switch button:hover{background:#3b4f7d}
 @media (max-width: 600px){
   .team-column{color:#fff}
@@ -209,6 +209,21 @@ const LOCAL_KEY='kor1816_teams_v2';
 const EXTRA_LOCAL_KEY='kor1816_teams_extra_v1';
 const TEAM_LOCAL_TIME_KEY='kor1816_teams_local_time_v1';
 const TEAM_SLOT_BACKUP_KEY='kor1816_team_slots_v3';
+// Recovery snapshot: last confirmed Holy Sword formation before the refresh issue.
+const TEAM_RECOVERY_SNAPSHOT={
+  A:['샌디에이고','','','','','',''],
+  B:['Leo ll','DAWN','SsungBi','Sant Jordl','Krungkrung','ROKA','LJ'],
+  C:['Nemesis','momo','Momsaid','hhHa','Lekum','Agares','LSJ'],
+  D:['Jinno','GGGz','bossi','Pika','lan','S ssh','Rarara'],
+  extra:['1',''],
+  subs:['ㅇ','','','','','','','','',''],
+  _updatedAt:1789759180458
+};
+function hasFullTeamData(data){
+  return data && ['A','B','C','D'].every(k=>Array.isArray(data[k])&&data[k].length>=7)
+    && Array.isArray(data.extra)&&Array.isArray(data.subs);
+}
+
 function getSlotBackup(){try{return JSON.parse(localStorage.getItem(TEAM_SLOT_BACKUP_KEY)||'{}')||{}}catch(e){return {}}}
 function saveSlotBackup(team,values){try{const all=getSlotBackup();all[team]=values;localStorage.setItem(TEAM_SLOT_BACKUP_KEY,JSON.stringify(all));}catch(e){console.error('local slot backup failed',e)}}
 
@@ -303,7 +318,13 @@ async function loadSharedTeams(){
     ]);
     if(!snap.exists())throw new Error('Team document not found');
 
-    const server=snap.data()||{};
+    let server=snap.data()||{};
+    // If the shared document was accidentally replaced by an incomplete snapshot,
+    // restore the last confirmed formation immediately.
+    if(!hasFullTeamData(server)){
+      server={...TEAM_RECOVERY_SNAPSHOT};
+      await window.__firebaseSetDoc(TEAM_DOC,server);
+    }
     sharedTeams=server;
     saveLocalTeams();
     if(Array.isArray(server.extra))saveLocalExtra(server.extra);
