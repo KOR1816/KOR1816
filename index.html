@@ -764,7 +764,7 @@ function showSaveResult(message){
   if(m) m.textContent=message;
 }
 
-async async function saveTeam(team){
+async function saveTeam(team){
   if(!isAdmin)return;
   const data={...(getTeams()||{})};
   data[team]=[1,2,3,4,5,6,7].map(n=>document.getElementById('team-'+team+'-'+n).value.trim());
