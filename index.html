@@ -289,7 +289,12 @@ async function initFirebase(){
       const auth=authMod.getAuth(firebaseApp);
       await authMod.signInAnonymously(auth);
     }catch(authError){
-      console.warn('Anonymous auth failed; continuing to Firestore:',authError);
+      console.error('Anonymous auth failed:',authError);
+      const authCode=authError?.code||'unknown';
+      const authMsg=authError?.message||String(authError);
+      console.warn('Anonymous auth failed; continuing to Firestore:',authCode,authMsg);
+      const m=document.getElementById('teamMsg');
+      if(m) m.textContent='Firebase 인증 실패: '+authCode;
     }
     db=fsMod.getFirestore(firebaseApp);
     TEAM_DOC=fsMod.doc(db,'siteData','teams');
