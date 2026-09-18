@@ -862,10 +862,18 @@ async function refreshTeams(){
     if(btn){btn.disabled=false;btn.textContent='🔄 새로고침';}
   }
 }
+const PAGE_STATE_KEY='kor1816_current_page_v1';
+const VALID_PAGES=['home','viking','teams','alliance','castle','bear','rules'];
+
 function show(id,updateUrl=true){
+  if(!VALID_PAGES.includes(id)) id='home';
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   const el=document.getElementById(id);
   if(el)el.classList.add('active');
+
+  // URL hash + localStorage 이중 저장: 새로고침 시에도 현재 페이지 유지
+  try{localStorage.setItem(PAGE_STATE_KEY,id)}catch(e){}
+
   if(id==='home')loadHome();
   if(id==='viking')loadViking();
   if(id==='alliance')loadAlliance();
@@ -873,6 +881,7 @@ function show(id,updateUrl=true){
   if(id==='castle')loadCastle();
   if(id==='bear')loadBear();
   if(id==='rules')loadRules();
+
   if(updateUrl){
     const nextHash='#'+id;
     if(location.hash!==nextHash) history.replaceState(null,'',nextHash);
@@ -881,9 +890,13 @@ function show(id,updateUrl=true){
 }
 
 function restorePageFromUrl(){
-  const id=(location.hash||'#home').slice(1);
-  const valid=['home','viking','teams','alliance','castle','bear','rules'];
-  show(valid.includes(id)?id:'home',false);
+  let id=(location.hash||'').slice(1);
+  if(!VALID_PAGES.includes(id)){
+    try{id=localStorage.getItem(PAGE_STATE_KEY)||'home'}catch(e){id='home'}
+  }
+  if(!VALID_PAGES.includes(id)) id='home';
+  show(id,false);
+  if(location.hash!=='#'+id) history.replaceState(null,'','#'+id);
 }
 
 let firebaseInitPromise=initFirebase().catch(e=>console.error('Firebase init failed:',e));
