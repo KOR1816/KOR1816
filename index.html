@@ -283,8 +283,14 @@ async function initFirebase(){
     const fsMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
     const authMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js");
     const firebaseApp=appMod.initializeApp(firebaseConfig);
-    const auth=authMod.getAuth(firebaseApp);
-    await authMod.signInAnonymously(auth);
+    // 익명 로그인 실패가 Firestore 초기화 전체를 막지 않도록 합니다.
+    // 현재 Firestore 보안 규칙이 허용하는 경우 로그인 없이도 읽기/쓰기를 시도합니다.
+    try{
+      const auth=authMod.getAuth(firebaseApp);
+      await authMod.signInAnonymously(auth);
+    }catch(authError){
+      console.warn('Anonymous auth failed; continuing to Firestore:',authError);
+    }
     db=fsMod.getFirestore(firebaseApp);
     TEAM_DOC=fsMod.doc(db,'siteData','teams');
     HOME_DOC=fsMod.doc(db,'siteData','home');
