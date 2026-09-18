@@ -590,9 +590,7 @@ window.addEventListener('load',function(){
       '팀 편성은 이벤트별 공지를 기준으로 합니다.':'La formación de equipos se basa en el aviso de cada evento.',
       '공지사항을 먼저 확인해주세요.':'Consulta primero los avisos.','곰 1트랩':'Trampa de oso 1','곰 2트랩':'Trampa de oso 2',
       '2첸코':'2 Chenko','첸코':'Chenko','2아마':'2 Amade','아마':'Amade','아마네':'Amane','파드':'Fad','2살로':'2 Salo','살로':'Salo',
-      '2힐데':'2 Hilde','4힐데':'4 Hilde','1살로':'1 Salo','힐데':'Hilde','알카':'Alka','퀸':'Queen','고든':'Gordon','마르고':'Margo','예거':'Jäger'
-'페라':'Fera','로사':'Rosa','Amade데':'Amade / Fera / Rosa','상대가 강하면':'Si el rival es fuerte, considera a Jäger','상대ve 강하면':'Si el rival es fuerte, considera a Jäger','고려':'considera','알카':'Alka','마르고':'Margo','살로':'Salo','Jäger 고려':'considera a Jäger','505 / 55.5.40 / 514 / 415 / 406':'505 / 55.5.40 / 514 / 415 / 406'
-'9.19 radar cuando termine 출발하세요!!':'¡Salgan cuando termine el radar a las 9:19!','9.19 radar cuando termine 출발하세요!':'¡Salgan cuando termine el radar a las 9:19!','Amade데 / 페라 / 로사':'Amade / Fera / Rosa','상대ve 강하면 Jäger 고려':'Si el rival es fuerte, considera a Jäger','출발하세요':'¡Salgan!','페라':'Fera','로사':'Rosa','상대ve':'Si el rival es fuerte','상대가 강하면':'Si el rival es fuerte','Jäger 고려':'considera a Jäger','고려':'considera'
+      '2힐데':'2 Hilde','4힐데':'4 Hilde','1살로':'1 Salo','힐데':'Hilde','알카':'Alka','퀸':'Queen','고든':'Gordon','마르고':'Margo','예거':'Jäger','페라':'Fera','로사':'Rosa','Amade데':'Amade / Fera / Rosa','상대가 강하면':'Si el rival es fuerte, considera a Jäger','상대ve 강하면':'Si el rival es fuerte, considera a Jäger','고려':'considera','알카':'Alka','마르고':'Margo','살로':'Salo','Jäger 고려':'considera a Jäger','505 / 55.5.40 / 514 / 415 / 406':'505 / 55.5.40 / 514 / 415 / 406','9.19 radar cuando termine 출발하세요!!':'¡Salgan cuando termine el radar a las 9:19!','9.19 radar cuando termine 출발하세요!':'¡Salgan cuando termine el radar a las 9:19!','Amade데 / 페라 / 로사':'Amade / Fera / Rosa','상대ve 강하면 Jäger 고려':'Si el rival es fuerte, considera a Jäger','출발하세요':'¡Salgan!','페라':'Fera','로사':'Rosa','상대ve':'Si el rival es fuerte','상대가 강하면':'Si el rival es fuerte','Jäger 고려':'considera a Jäger','고려':'considera'
     },it:{
       '성검쟁탈':'Contesa della Spada Sacra','3대연맹전':'Guerra delle Tre Alleanze','공성전':'Assedio del Castello','곰사냥':'Caccia all’Orso','곰 사냥':'Caccia all’Orso','집결장':'Capo della spedizione','집결원':'Membro della spedizione','개돌조':'Squadra d’assalto','대체자':'Sostituto','비율':'Rapporto truppe','1열':'Fila 1','2열':'Fila 2','3열':'Fila 3','4열':'Fila 4','수성':'Difesa','집결':'Spedizione','공격':'Attacco','연습':'Allenamento','공지':'Avviso','공지 일정':'Programma','새로고침':'Aggiorna','관리자 수정':'Modifica amministratore','저장':'Salva','바이킹':'Vichinghi','편성':'Formazione','규칙':'Regole','안내':'Guida','진행':'Svolgimento','소통':'Comunicazione','협력':'Collaborazione','성장':'Crescita'
     },
@@ -617,7 +615,7 @@ window.addEventListener('load',function(){
     Object.keys(dict).sort((a,b)=>b.length-a.length).forEach(k=>{out=out.split(k).join(dict[k])});
     return out;
   }
-  const CACHE_KEY='kor1816_i18n_cache_v2';
+  const CACHE_KEY='kor1816_i18n_cache_v3';
   let cache={};
   try{cache=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}catch(e){cache={}}
   function cacheKey(text,lang){return lang+'::'+text}
