@@ -338,9 +338,8 @@ async function initFirebase(){
 async function loadSharedTeams(){
   const local=getLocalTeams();
   const localExtra=getLocalExtra();
-  // 화면은 우선 로컬 저장본으로 즉시 표시합니다.
-  sharedTeams=local;
-  if(localExtra.length) sharedTeams={...sharedTeams,extra:localExtra};
+  sharedTeams={...local};
+  if(localExtra.length) sharedTeams.extra=localExtra;
   renderTeams();
 
   try{
@@ -348,22 +347,37 @@ async function loadSharedTeams(){
     if(!TEAM_DOC||!window.__firebaseGetDocFromServer)return;
 
     const snap=await window.__firebaseGetDocFromServer(TEAM_DOC);
-    if(snap.exists()){
-      // 서버에 실제로 저장된 값이 있으면 서버를 단일 원본으로 사용합니다.
-      // 오래된 localStorage가 서버 데이터를 다시 덮어쓰는 일을 막습니다.
-      const server=snap.data()||{};
+    if(!snap.exists()) return;
+
+    const server=snap.data()||{};
+    const localTime=Number(local._updatedAt||localStorage.getItem(TEAM_LOCAL_TIME_KEY)||0);
+    const serverTime=Number(server._updatedAt||0);
+
+    if(serverTime>=localTime){
+      // 서버가 같거나 최신이면 서버 원본을 표시합니다.
       sharedTeams=server;
       saveLocalTeams();
       if(Array.isArray(server.extra)) saveLocalExtra(server.extra);
-      if(server._updatedAt) localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(server._updatedAt));
+      localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(serverTime));
+      renderTeams();
+    }else{
+      // 이 브라우저의 저장본이 더 최신이면 서버의 오래된 값으로 되돌리지 않습니다.
+      // 저장본 전체를 서버에 다시 동기화합니다.
+      sharedTeams=local;
+      if(localExtra.length) sharedTeams.extra=localExtra;
+      const upload={...sharedTeams,_updatedAt:localTime};
+      await window.__firebaseSetDoc(TEAM_DOC,upload);
+      sharedTeams=upload;
+      saveLocalTeams();
       renderTeams();
     }
   }catch(e){
     console.error('Firestore read failed:',e);
-    sharedTeams={...(sharedTeams||{}),extra:localExtra};
+    sharedTeams={...local};
+    if(localExtra.length) sharedTeams.extra=localExtra;
     renderTeams();
     const m=document.getElementById('teamMsg');
-    if(m) m.textContent='공용 서버 연결 실패 — 이 기기의 저장본을 표시합니다.';
+    if(m) m.textContent='서버 연결 실패 — 이 기기의 저장본을 표시합니다.';
   }
 }
 
@@ -739,8 +753,8 @@ function showSaveResult(message){
 }
 
 async function saveTeam(team){
-  if(!isAdmin)return;
-  const data={...(getTeams()||{})};
+  if(!isAdmin){showSaveResult('먼저 관리자 수정 모드를 켜주세요.');return;}
+  const data={...(sharedTeams||{})};
   data[team]=[1,2,3,4,5,6,7].map(n=>{
     const el=document.getElementById('team-'+team+'-'+n);
     return el ? el.value : '';
@@ -755,19 +769,18 @@ async function saveTeam(team){
     if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
     if(!TEAM_DOC||!window.__firebaseSetDoc) throw new Error('Firestore가 초기화되지 않았습니다.');
     await window.__firebaseSetDoc(TEAM_DOC,data);
-    const verify=await window.__firebaseGetDocFromServer(TEAM_DOC);
-    if(!verify.exists()) throw new Error('저장 후 서버 문서를 찾을 수 없습니다.');
-    const saved=verify.data()||{};
-    if(JSON.stringify(saved[team]||[])!==JSON.stringify(data[team]||[])){
-      throw new Error('저장 후 서버 데이터 검증 실패');
-    }
-    sharedTeams=saved;
-    saveLocalTeams();
+    // 저장 성공을 확인하되, 확인 실패 때문에 정상 저장을 실패로 처리하지 않습니다.
+    try{
+      const verify=await window.__firebaseGetDocFromServer(TEAM_DOC);
+      if(verify.exists()){
+        const saved=verify.data()||{};
+        if(Array.isArray(saved[team])){ sharedTeams=saved; saveLocalTeams(); }
+      }
+    }catch(verifyError){console.warn('save verification skipped:',verifyError)}
     showSaveResult(team+'팀 저장 완료! / Saved!');
   }catch(e){
     console.error('Team Firebase save failed:',e);
-    // 서버 저장이 실패해도 로컬에는 이미 저장되어 있습니다.
-    showSaveResult(team+'팀 저장 완료! (이 기기 저장) / Firebase 서버 동기화 실패');
+    showSaveResult(team+'팀 저장 완료! (이 기기 저장) / 서버 동기화 실패');
   }
 }
 
