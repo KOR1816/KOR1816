@@ -159,21 +159,7 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
   <div class="card" style="grid-column:1/-1"><button class="admin-btn" onclick="saveHome()">💾 홈 저장</button></div>
 </div>
 </section>
-<section id="viking" class="page">
 
-<div id="vikingMsg" class="msg"></div>
-<div id="vikingView" class="grid">
-<div class="card"><h2 id="vikingTitle1">🛡️ 바이킹 안내</h2><div id="vikingText1"></div></div>
-<div class="card"><h2 id="vikingTitle2">⚔️ 바이킹 진행</h2><div id="vikingText2"></div></div>
-<div class="card"><h2 id="vikingTitle3">👥 바이킹 편성</h2><div id="vikingText3"></div></div>
-</div>
-<div class="admin-bar page-admin"><button class="admin-btn" onclick="loadViking()">🔄 새로고침</button><button class="admin-btn" id="vikingAdminBtn" onclick="toggleVikingAdmin()">🔐 관리자 수정</button></div><div id="vikingEdit" class="grid" style="display:none">
-<div class="card"><label>1번 칸 제목</label><input id="vikingTitleInput1" class="home-input"><label>내용</label><textarea id="vikingTextInput1" class="home-input home-area"></textarea></div>
-<div class="card"><label>2번 칸 제목</label><input id="vikingTitleInput2" class="home-input"><label>내용</label><textarea id="vikingTextInput2" class="home-input home-area"></textarea></div>
-<div class="card"><label>3번 칸 제목</label><input id="vikingTitleInput3" class="home-input"><label>내용</label><textarea id="vikingTextInput3" class="home-input home-area"></textarea></div>
-<div class="card" style="grid-column:1/-1"><button class="admin-btn" onclick="saveViking()">💾 바이킹 저장</button></div>
-</div>
-</section>
 <section id="alliance" class="page"><div class="card"><h2>⚔️ 3대연맹전</h2><div class="sword-image-wrap"><img src="333.jpg" alt="3대연맹전" class="sword-image"></div>
 
 <div id="allianceMsg" class="msg"></div>
@@ -201,44 +187,9 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 <div class="team-column special"><div class="team-title">💥 개돌조</div><div class="slot"><span>1</span><input id="extra-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="extra-2" placeholder="Player ID"></div><button onclick="saveExtra()">💾 저장</button></div>
 <div class="team-column subs"><div class="team-title">🔄 대체자</div><div class="slot"><span>1</span><input id="sub-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="sub-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="sub-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="sub-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="sub-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="sub-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="sub-7" placeholder="Player ID"></div><div class="slot"><span>8</span><input id="sub-8" placeholder="Player ID"></div><div class="slot"><span>9</span><input id="sub-9" placeholder="Player ID"></div><div class="slot"><span>10</span><input id="sub-10" placeholder="Player ID"></div><button onclick="saveSubs()">💾 저장</button></div>
 </div></div></div><div class="admin-bar page-admin"><button class="admin-btn" onclick="refreshTeams()">🔄 새로고침</button><button class="admin-btn" id="adminBtn" onclick="toggleAdmin()">🔐 관리자 수정</button></div></section>
-<section id="castle" class="page">
 
-<div id="castleMsg" class="msg"></div>
-<div id="castleView" class="grid">
-<div class="card"><h2 id="castleTitle1">⚔️ 집결장 공격</h2><div id="castleText1"></div></div>
-<div class="card"><h2 id="castleTitle2">🛡️ 수성</h2><div id="castleText2"></div></div>
-<div class="card"><h2 id="castleTitle3">👥 집결원 공격</h2><div id="castleText3"></div></div>
-<div class="card"><h2 id="castleTitle4">👥 집결원 수성</h2><div id="castleText4"></div></div>
-</div>
-<div class="admin-bar page-admin"><button class="admin-btn" onclick="loadCastle()">🔄 새로고침</button><button class="admin-btn" id="castleAdminBtn" onclick="toggleCastleAdmin()">🔐 관리자 수정</button></div><div id="castleEdit" class="grid" style="display:none">
-<div class="card"><label>1번 칸 제목</label><input id="castleTitleInput1" class="home-input"><label>내용</label><textarea id="castleTextInput1" class="home-input home-area"></textarea></div>
-<div class="card"><label>2번 칸 제목</label><input id="castleTitleInput2" class="home-input"><label>내용</label><textarea id="castleTextInput2" class="home-input home-area"></textarea></div>
-<div class="card"><label>3번 칸 제목</label><input id="castleTitleInput3" class="home-input"><label>내용</label><textarea id="castleTextInput3" class="home-input home-area"></textarea></div>
-<div class="card"><label>4번 칸 제목</label><input id="castleTitleInput4" class="home-input"><label>내용</label><textarea id="castleTextInput4" class="home-input home-area"></textarea></div>
-<div class="card" style="grid-column:1/-1"><button class="admin-btn" onclick="saveCastle()">💾 공성전 저장</button></div>
-</div></section>
-<section id="bear" class="page">
-<div id="bearMsg" class="msg"></div>
-<h1 class="bear-page-title">🐻 곰친자 명단</h1>
-<div class="bear-image-wrap"><img src="./bear.png?v=1" alt="곰친자 명단" class="bear-image"></div>
-<div id="bearView" class="grid">
-  <div class="card"><h2 id="bearTitle">🐻 곰 사냥</h2><div id="bearText"></div></div>
-  <div class="card"><h2 id="bearHeroTitle">🐻 곰 영웅</h2><div id="bearHeroes"></div></div>
-  <div class="card bear-ratio-card"><h2>📊 비율</h2><div class="bear-ratio-text">10/10/80 비율 (대중적인 범용 메타)<br>1/10/89 비율 (극강의 딜러 메타)<br>1 / 9 / 90 비율 (정석 궁병 올인 메타)</div></div>
-</div>
-<div class="admin-bar page-admin"><button class="admin-btn" onclick="loadBear()">🔄 새로고침</button><button class="admin-btn" id="bearAdminBtn" onclick="toggleBearAdmin()">🔐 관리자 수정</button></div>
-<div id="bearEdit" class="grid" style="display:none">
-  <div class="card"><label>곰 사냥 내용</label><textarea id="bearTextInput" class="home-input home-area"></textarea></div>
-  <div class="card"><label>곰 영웅</label><textarea id="bearHeroesInput" class="home-input home-area"></textarea></div>
-  <div class="card" style="grid-column:1/-1"><button class="admin-btn" onclick="saveBear()">💾 곰사냥 저장</button></div>
-</div>
-</section>
-<section id="rules" class="page">
 
-<div id="rulesMsg" class="msg"></div>
-<div id="rulesView" class="card"><h2>📋 KOR1816 운영진 및 안내</h2><div id="rulesText" class="rules-text-full"></div></div>
-<div class="admin-bar page-admin"><button class="admin-btn" onclick="loadRules()">🔄 새로고침</button><button class="admin-btn" id="rulesAdminBtn" onclick="toggleRulesAdmin()">🔐 관리자 수정</button></div><div id="rulesEdit" class="card" style="display:none"><label>운영 안내 내용</label><textarea id="rulesTextInput" class="home-input home-area"></textarea><button class="admin-btn" onclick="saveRules()">💾 규칙 저장</button></div>
-</section>
+
 </main><footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
 <script>
 /* force current Holy Sword team labels */
