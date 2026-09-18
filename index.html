@@ -817,17 +817,26 @@ function getTeams(){return sharedTeams||{}}
 
 function renderTeams(){
   const data={...(getTeams()||{})};
+  // 서버에서 읽어온 최신 팀편성을 로컬 백업이 덮어쓰지 않도록 합니다.
+  // 백업은 서버 데이터가 없는 경우에만 보조 자료로 사용합니다.
   const backup=getSlotBackup();
-  ['A','B','C','D'].forEach(team=>{if(Array.isArray(backup[team])) data[team]=backup[team].slice(0,7)});
+  ['A','B','C','D'].forEach(team=>{
+    if(!Array.isArray(data[team]) && Array.isArray(backup[team])){
+      data[team]=backup[team].slice(0,7);
+    }
+  });
   ['A','B','C','D'].forEach(team=>[1,2,3,4,5,6,7].forEach(n=>{
     const el=document.getElementById('team-'+team+'-'+n);
     if(el)el.value=(data[team]&&data[team][n-1])||'';
   }));
-  document.getElementById('extra-1').value=(data.extra&&data.extra[0])||'';
-  document.getElementById('extra-2').value=(data.extra&&data.extra[1])||'';
+  const extra=data.extra||[];
+  const subs=data.subs||[];
+  const e1=document.getElementById('extra-1'),e2=document.getElementById('extra-2');
+  if(e1)e1.value=extra[0]||'';
+  if(e2)e2.value=extra[1]||'';
   for(let n=1;n<=10;n++){
     const el=document.getElementById('sub-'+n);
-    if(el)el.value=(data.subs&&data.subs[n-1])||'';
+    if(el)el.value=subs[n-1]||'';
   }
 }
 async function refreshTeams(){
