@@ -322,24 +322,34 @@ async function initFirebase(){
 }
 
 async function loadSharedTeams(){
-  // 성검쟁탈은 로컬 저장본과 서버 저장본 중 더 최근 것을 사용합니다.
-  // 다른 페이지의 저장 로직은 건드리지 않습니다.
+  // 성검쟁탈은 서버를 기준으로 하되, 이 기기에 방금 저장한 최신 데이터가
+  // 서버의 오래된 데이터 때문에 다시 사라지지 않도록 시간순으로 병합합니다.
   const local=getLocalTeams();
   sharedTeams=local;
   renderTeams();
+
   if(!TEAM_DOC || !window.__firebaseGetDoc) return;
+
   try{
     const snap=await window.__firebaseGetDoc(TEAM_DOC);
-    if(!snap.exists()) return;
+    if(!snap.exists()){
+      // 서버 문서가 아직 없으면 이 기기의 최신 저장본을 서버에 올립니다.
+      if(Object.keys(local).length && window.__firebaseSetDoc){
+        await window.__firebaseSetDoc(TEAM_DOC,local);
+      }
+      return;
+    }
+
     const server=snap.data()||{};
     const localTime=Number(local._updatedAt||0);
     const serverTime=Number(server._updatedAt||0);
 
     if(localTime>serverTime){
-      // 이 기기에서 더 최근에 저장된 편성이 서버의 오래된 값으로 덮어써지지 않게 합니다.
-      sharedTeams=local;
+      sharedTeams={...server,...local};
+      sharedTeams._updatedAt=localTime;
       renderTeams();
-      if(window.__firebaseSetDoc) await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
+      await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
+      saveLocalTeams();
     }else{
       sharedTeams=server;
       saveLocalTeams();
@@ -347,18 +357,42 @@ async function loadSharedTeams(){
     }
   }catch(e){
     console.error('Firestore read failed:',e);
+    // 서버 읽기가 실패해도 로컬 저장본은 그대로 유지합니다.
+    sharedTeams=local;
+    renderTeams();
     const m=document.getElementById('teamMsg');
-    if(m) m.textContent='공용 서버를 읽지 못했습니다. 이 기기의 저장본을 표시합니다.';
+    if(m) m.textContent='공용 서버 연결 실패 — 이 기기의 저장본을 표시합니다.';
   }
 }
 
 async function saveSharedTeams(){
-  // 저장할 때마다 성검쟁탈 데이터의 최신 시각을 기록합니다.
-  sharedTeams={...(sharedTeams||{}),_updatedAt:Date.now()};
+  // 저장 시각을 먼저 기록하고, 로컬 + Firestore 양쪽에 저장합니다.
+  const data={...(sharedTeams||{}),_updatedAt:Date.now()};
+  sharedTeams=data;
   saveLocalTeams();
-  if(typeof firebaseInitPromise!=='undefined' && firebaseInitPromise) await firebaseInitPromise;
-  if(!TEAM_DOC || !window.__firebaseSetDoc) return;
-  await window.__firebaseSetDoc(TEAM_DOC,sharedTeams);
+
+  // Firebase 초기화가 아직 끝나지 않았다면 완료될 때까지 기다립니다.
+  if(typeof firebaseInitPromise!=='undefined' && firebaseInitPromise){
+    await firebaseInitPromise;
+  }
+
+  // 기존 코드는 Firebase가 준비되지 않아도 "저장 완료"를 표시할 수 있었습니다.
+  // 이제는 실제 서버 저장이 가능한 상태인지 먼저 확인합니다.
+  if(!TEAM_DOC || !window.__firebaseSetDoc){
+    throw new Error('Firestore가 초기화되지 않았습니다.');
+  }
+
+  await window.__firebaseSetDoc(TEAM_DOC,data);
+
+  // 실제 Firestore에 기록된 값을 다시 읽어 저장 성공을 확인합니다.
+  if(window.__firebaseGetDoc){
+    const verify=await window.__firebaseGetDoc(TEAM_DOC);
+    const saved=verify.exists() ? (verify.data()||{}) : {};
+    const savedTime=Number(saved._updatedAt||0);
+    if(savedTime!==Number(data._updatedAt)){
+      throw new Error('Firestore 저장 검증 실패');
+    }
+  }
 }
 
 let homeAdmin=false;
