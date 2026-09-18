@@ -337,42 +337,27 @@ async function initFirebase(){
 
 async function loadSharedTeams(){
   const local=getLocalTeams();
-  sharedTeams=local;
   const localExtra=getLocalExtra();
-  if(localExtra.length){
-    sharedTeams={...sharedTeams,extra:localExtra};
-  }
+  // 화면은 우선 로컬 저장본으로 즉시 표시합니다.
+  sharedTeams=local;
+  if(localExtra.length) sharedTeams={...sharedTeams,extra:localExtra};
   renderTeams();
 
-  if(!TEAM_DOC || !window.__firebaseGetDocFromServer)return;
-
   try{
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
+    if(!TEAM_DOC||!window.__firebaseGetDocFromServer)return;
+
     const snap=await window.__firebaseGetDocFromServer(TEAM_DOC);
     if(snap.exists()){
+      // 서버에 실제로 저장된 값이 있으면 서버를 단일 원본으로 사용합니다.
+      // 오래된 localStorage가 서버 데이터를 다시 덮어쓰는 일을 막습니다.
       const server=snap.data()||{};
-      const localTime=Math.max(
-        Number(local._updatedAt||0),
-        Number(localStorage.getItem(TEAM_LOCAL_TIME_KEY)||0)
-      );
-      const serverTime=Number(server._updatedAt||0);
-      if(serverTime>localTime){
-        sharedTeams=server;
-        saveLocalTeams();
-        localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(serverTime));
-        renderTeams();
-      }else if(localTime>=serverTime && window.__firebaseSetDoc){
-        // 이 브라우저에서 더 최근에 등록한 팀은 서버의 오래된 값으로 덮어쓰지 않습니다.
-        const upload={...(local||{}),_updatedAt:localTime};
-        sharedTeams=upload;
-        await window.__firebaseSetDoc(TEAM_DOC,upload);
-        saveLocalTeams();
-      }
-    }else if(Object.keys(local).length && window.__firebaseSetDoc){
-      await window.__firebaseSetDoc(TEAM_DOC,local);
+      sharedTeams=server;
+      saveLocalTeams();
+      if(Array.isArray(server.extra)) saveLocalExtra(server.extra);
+      if(server._updatedAt) localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(server._updatedAt));
+      renderTeams();
     }
-
-    // 개돌조(extra)는 siteData/teams 한 곳만 진실의 원본으로 사용합니다.
-    // 별도 teamsExtra 문서가 오래된 빈 값을 가지고 있어도 팀 화면을 덮어쓰지 않습니다.
   }catch(e){
     console.error('Firestore read failed:',e);
     sharedTeams={...(sharedTeams||{}),extra:localExtra};
@@ -756,31 +741,32 @@ function showSaveResult(message){
 async function saveTeam(team){
   if(!isAdmin)return;
   const data={...(getTeams()||{})};
-  data[team]=[1,2,3,4,5,6,7].map(n=>document.getElementById('team-'+team+'-'+n).value.trim());
-  const localTime=Date.now();
-  data._updatedAt=localTime;
+  data[team]=[1,2,3,4,5,6,7].map(n=>{
+    const el=document.getElementById('team-'+team+'-'+n);
+    return el ? el.value : '';
+  });
+  data._updatedAt=Date.now();
   sharedTeams=data;
-
-  // 팀 등록은 먼저 이 브라우저에 확실히 기록합니다.
-  // Firebase가 느리거나 인증/규칙 오류가 있어도 F5 후 입력값이 사라지지 않습니다.
   saveLocalTeams();
   saveSlotBackup(team,data[team]);
-  localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(localTime));
-  showSaveResult(team+'팀 저장 완료! / Saved!');
+  localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(data._updatedAt));
 
-  // 서버 저장은 백그라운드에서 진행합니다.
   try{
     if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise) await firebaseInitPromise;
     if(!TEAM_DOC||!window.__firebaseSetDoc) throw new Error('Firestore가 초기화되지 않았습니다.');
     await window.__firebaseSetDoc(TEAM_DOC,data);
-    if(window.__firebaseGetDocFromServer){
-      const verify=await window.__firebaseGetDocFromServer(TEAM_DOC);
-      const saved=verify.exists()?(verify.data()||{}):{};
-      if(Number(saved._updatedAt||0)!==localTime) throw new Error('서버 저장 검증 실패');
+    const verify=await window.__firebaseGetDocFromServer(TEAM_DOC);
+    if(!verify.exists()) throw new Error('저장 후 서버 문서를 찾을 수 없습니다.');
+    const saved=verify.data()||{};
+    if(JSON.stringify(saved[team]||[])!==JSON.stringify(data[team]||[])){
+      throw new Error('저장 후 서버 데이터 검증 실패');
     }
+    sharedTeams=saved;
+    saveLocalTeams();
+    showSaveResult(team+'팀 저장 완료! / Saved!');
   }catch(e){
     console.error('Team Firebase save failed:',e);
-    // 로컬 저장은 이미 완료됐으므로 등록 자체는 유지합니다.
+    // 서버 저장이 실패해도 로컬에는 이미 저장되어 있습니다.
     showSaveResult(team+'팀 저장 완료! (이 기기 저장) / Firebase 서버 동기화 실패');
   }
 }
