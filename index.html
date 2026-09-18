@@ -561,15 +561,38 @@ window.addEventListener('load',function(){
   try{renderBear(bearDataLocal());setBearAdminMode();}catch(e){console.error(e)}
   try{renderRules(rulesDataLocal());setRulesAdminMode();}catch(e){console.error(e)}
 });
-</script><script>
-window.kor1816SetLang=function(lang){
-  try{
-    if(window.setLang){window.setLang(lang);return false;}
-    localStorage.setItem('kor1816_lang',lang);
-    window.location.reload();
-  }catch(e){console.error(e)}
-  return false;
-};
+</script><script id="language-bridge">
+(function(){
+  const NAV={
+    ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
+    en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
+    ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
+    zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
+    de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],
+    es:['🏠 Inicio','🛡️ Vikingos','⚔️ Disputa de la Espada Sagrada','⚔️ Guerra de las Tres Alianzas','🏰 Asedio del Castillo','🐻 Caza del Oso','📋 Reglas'],
+    it:['🏠 Home','🛡️ Vichinghi','⚔️ Contesa della Spada Sacra','⚔️ Guerra delle Tre Alleanze','🏰 Assedio del Castello','🐻 Caccia all’Orso','📋 Regole']
+  };
+  const langs=['ko','en','ja','zh','de','es','it'];
+  window.kor1816SetLang=function(lang){
+    if(!NAV[lang]) return false;
+    try{
+      localStorage.setItem('kor1816_lang',lang);
+      document.documentElement.lang=lang;
+      document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
+      document.querySelectorAll('.lang-switch button').forEach((b,i)=>b.classList.toggle('active',langs[i]===lang));
+      if(typeof window.setLang==='function') window.setLang(lang);
+      else window.dispatchEvent(new CustomEvent('kor1816-lang',{detail:lang}));
+    }catch(e){console.error('KOR1816 language switch failed:',e)}
+    return false;
+  };
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('.lang-switch button').forEach((b,i)=>{
+      b.onclick=function(e){e.preventDefault();window.kor1816SetLang(langs[i]);return false};
+    });
+    const saved=localStorage.getItem('kor1816_lang')||'ko';
+    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[saved]&&NAV[saved][i])b.textContent=NAV[saved][i]});
+  });
+})();
 </script><script id="full-i18n">
 (function(){
 const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de',es:'es',it:'it'};
