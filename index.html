@@ -100,7 +100,7 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #homeSchedule{display:flex!important;flex-direction:column!important;gap:10px!important;padding-top:4px!important}
 #homeSchedule p{margin:0!important;padding:10px 14px!important;line-height:1.35!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:10px!important;background:rgba(255,255,255,.035)!important}
 @media(max-width:600px){#homeSchedule{gap:8px!important}#homeSchedule p{padding:9px 11px!important;font-size:14px!important}}
-</style></head><body>
+</style><style id="bear-layout-final">#bearView,#bearEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}#bearView .card,#bearEdit .card{min-width:0}#bearView #bearHeroes{line-height:1.9;font-size:16px}@media(max-width:700px){#bearView,#bearEdit{grid-template-columns:1fr!important}}</style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
 <main class="wrap">
@@ -180,8 +180,16 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 <section id="bear" class="page">
 
 <div id="bearMsg" class="msg"></div>
-<div id="bearView" class="card"><h2>🐻 곰 사냥</h2><div id="bearText"></div></div>
-<div class="admin-bar page-admin"><button class="admin-btn" onclick="loadBear()">🔄 새로고침</button><button class="admin-btn" id="bearAdminBtn" onclick="toggleBearAdmin()">🔐 관리자 수정</button></div><div id="bearEdit" class="card" style="display:none"><label>곰 사냥 내용</label><textarea id="bearTextInput" class="home-input home-area"></textarea><button class="admin-btn" onclick="saveBear()">💾 곰사냥 저장</button></div>
+<div id="bearView" class="grid">
+  <div class="card"><h2 id="bearTitle">🐻 곰 사냥</h2><div id="bearText"></div></div>
+  <div class="card"><h2 id="bearHeroTitle">🐻 곰 영웅</h2><div id="bearHeroes"></div></div>
+</div>
+<div class="admin-bar page-admin"><button class="admin-btn" onclick="loadBear()">🔄 새로고침</button><button class="admin-btn" id="bearAdminBtn" onclick="toggleBearAdmin()">🔐 관리자 수정</button></div>
+<div id="bearEdit" class="grid" style="display:none">
+  <div class="card"><label>곰 사냥 내용</label><textarea id="bearTextInput" class="home-input home-area"></textarea></div>
+  <div class="card"><label>곰 영웅</label><textarea id="bearHeroesInput" class="home-input home-area"></textarea></div>
+  <div class="card" style="grid-column:1/-1"><button class="admin-btn" onclick="saveBear()">💾 곰사냥 저장</button></div>
+</div>
 </section>
 <section id="rules" class="page">
 
@@ -460,14 +468,43 @@ function toggleCastleAdmin(){if(castleAdmin){castleAdmin=false;setCastleAdminMod
 async function loadCastle(){renderCastle(castleDataLocal());if(!CASTLE_DOC||!window.__firebaseGetDoc)return;try{const snap=await window.__firebaseGetDoc(CASTLE_DOC);if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_castle_v1',JSON.stringify(d));renderCastle(d);document.getElementById('castleMsg').textContent='최신 공성전 내용을 불러왔습니다.'}}catch(e){console.error(e);document.getElementById('castleMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}}
 async function saveCastle(){if(!castleAdmin)return;const d={titles:[],texts:[]};for(let i=1;i<=4;i++){d.titles.push(document.getElementById('castleTitleInput'+i).value.trim());d.texts.push(document.getElementById('castleTextInput'+i).value.trim())}localStorage.setItem('kor1816_castle_v1',JSON.stringify(d));renderCastle(d);try{if(CASTLE_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(CASTLE_DOC,d);document.getElementById('castleMsg').textContent='공성전 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('castleMsg').textContent='공성전은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
 
-const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10'};
-function bearDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_bear_v1')||'null')||BEAR_DEFAULT}catch(e){return BEAR_DEFAULT}}
-function renderBear(data){data=data||bearDataLocal();document.getElementById('bearText').innerHTML=escapeHome(data.text||'').replace(/\n/g,'<br>');document.getElementById('bearTextInput').value=data.text||''}
+const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10',heroes:'아마데우스\n첸코\n연우\n마르고\n아마네'};
+function bearDataLocal(){
+  try{
+    const d=JSON.parse(localStorage.getItem('kor1816_bear_v1')||'null');
+    if(d){if(!d.heroes)d.heroes=BEAR_DEFAULT.heroes;return d;}
+    return BEAR_DEFAULT;
+  }catch(e){return BEAR_DEFAULT}
+}
+function renderBear(data){
+  data=data||bearDataLocal();
+  const text=String(data.text||BEAR_DEFAULT.text).replace(/\\n/g,'\n');
+  const heroes=String(data.heroes||BEAR_DEFAULT.heroes).replace(/\\n/g,'\n');
+  const t=document.getElementById('bearText'),h=document.getElementById('bearHeroes');
+  const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
+  if(t)t.innerHTML=escapeHome(text).replace(/\n/g,'<br>');
+  if(h)h.innerHTML=escapeHome(heroes).replace(/\n/g,'<br>');
+  if(ti)ti.value=text;
+  if(hi)hi.value=heroes;
+}
 let bearAdmin=false;
 function setBearAdminMode(){const v=document.getElementById('bearView'),e=document.getElementById('bearEdit'),b=document.getElementById('bearAdminBtn'),n=document.getElementById('bearAdminNote');if(v)v.style.display=bearAdmin?'none':'block';if(e)e.style.display=bearAdmin?'block':'none';if(b)b.textContent=bearAdmin?'🔒 수정 종료':'🔐 관리자 수정';if(n)n.textContent=bearAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';}
 function toggleBearAdmin(){if(bearAdmin){bearAdmin=false;setBearAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){bearAdmin=true;setBearAdminMode();document.getElementById('bearMsg').textContent='곰사냥 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
 async function loadBear(){renderBear(bearDataLocal());if(!BEAR_DOC||!window.__firebaseGetDoc)return;try{const snap=await window.__firebaseGetDoc(BEAR_DOC);if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));renderBear(d);document.getElementById('bearMsg').textContent='최신 곰사냥 내용을 불러왔습니다.'}}catch(e){console.error(e);document.getElementById('bearMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}}
-async function saveBear(){if(!bearAdmin)return;const d={text:document.getElementById('bearTextInput').value.trim()};localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));renderBear(d);try{if(BEAR_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(BEAR_DOC,d);document.getElementById('bearMsg').textContent='곰사냥 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('bearMsg').textContent='곰사냥은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
+async function saveBear(){
+  if(!bearAdmin)return;
+  const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
+  const d={text:ti?ti.value.trim():'',heroes:hi?hi.value.trim():''};
+  localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));
+  renderBear(d);
+  try{
+    if(BEAR_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(BEAR_DOC,d);
+    const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥 저장 완료! / Saved!';
+  }catch(e){
+    console.error(e);
+    const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.';
+  }
+}
 
 const RULES_DEFAULT={text:'### 📋 KOR1816 운영진 및 안내\\n\\n[KOR]༺༒༽Pham༼༒༻ - 총대장 / 정신적지주\\n\\n[KOR]Nemesis - 집결장 / 외교, 이민 / 유적쟁탈 /\\n\\n[KOR]Agaresᴷᴼᴿ - 전체적인 벨런스(에이스)\\n\\n[KOR]༺༒༽LJ༼༒༻ - 거점총사령관\\n\\n[KOR]샌디에이고 - 집결장 / 댕댕이전문가\\n\\n[KOR]momo - 캐슬전 통솔자 / 모모찡엄마\\n\\n[KOR]Rarara - SIN연맹장 / 천사의마음씨\\n\\n[KOR]Aimée - 분위기메이커 / 태그담당자\\n\\n[KOR]GGGz需要起床 - 히어로 / 너무바쁘다 / 영어.중국어가능\\n\\n[KOR]DAWN - 침묵의왕자 / 그저조용하다\\n\\n[KOR]KOREAN MONSTER - 동물의숲\\n\\n[KOR]Hair loss beam - 탈모를원하는가?'};
 function rulesDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_rules_v1')||'null')||RULES_DEFAULT}catch(e){return RULES_DEFAULT}}
