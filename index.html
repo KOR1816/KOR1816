@@ -511,20 +511,21 @@ async function loadCastle(){renderCastle(castleDataLocal());if(!CASTLE_DOC||!win
 async function saveCastle(){if(!castleAdmin)return;const d={titles:[],texts:[]};for(let i=1;i<=4;i++){d.titles.push(document.getElementById('castleTitleInput'+i).value.trim());d.texts.push(document.getElementById('castleTextInput'+i).value.trim())}localStorage.setItem('kor1816_castle_v1',JSON.stringify(d));renderCastle(d);try{if(CASTLE_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(CASTLE_DOC,d);document.getElementById('castleMsg').textContent='공성전 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('castleMsg').textContent='공성전은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
 
 const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10',heroes:'아마데우스\n첸코\n연우\n마르고(4성🙏)\n아마네\n영웅없이'};
-const BEAR_LOCAL_KEY='kor1816_bear_saved_v2';
+const BEAR_LOCAL_KEY='kor1816_bear_saved_v3';
 function bearDataLocal(){
   try{
     const d=JSON.parse(localStorage.getItem(BEAR_LOCAL_KEY)||'null');
-    if(d&&typeof d==='object')return d;
-    const old=JSON.parse(localStorage.getItem('kor1816_bear_v1')||'null');
-    if(old&&typeof old==='object')return old;
-  }catch(e){console.error('Bear local read failed:',e)}
-  return BEAR_DEFAULT;
+    return d&&typeof d==='object'?d:BEAR_DEFAULT;
+  }catch(e){return BEAR_DEFAULT}
+}
+function bearSaveLocal(d){
+  try{localStorage.setItem(BEAR_LOCAL_KEY,JSON.stringify(d));return true}
+  catch(e){console.error('Bear local save failed:',e);return false}
 }
 function renderBear(data){
-  data=data||bearDataLocal();
-  const text=String(data.text||BEAR_DEFAULT.text).replace(/\\n/g,'\n');
-  const heroes=String(data.heroes||BEAR_DEFAULT.heroes).replace(/\\n/g,'\n');
+  data=data||BEAR_DEFAULT;
+  const text=String(data.text||'').replace(/\\n/g,'\n');
+  const heroes=String(data.heroes||'').replace(/\\n/g,'\n');
   const t=document.getElementById('bearText'),h=document.getElementById('bearHeroes');
   const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
   if(t)t.innerHTML=escapeHome(text).replace(/\n/g,'<br>');
@@ -543,52 +544,50 @@ function setBearAdminMode(){
 function toggleBearAdmin(){
   if(bearAdmin){bearAdmin=false;setBearAdminMode();return}
   const pw=prompt('관리자 비밀번호를 입력하세요.');
-  if(pw===ADMIN_PASSWORD){
-    bearAdmin=true;
-    setBearAdminMode();
-    const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥 관리자 수정 모드입니다.';
-  }else if(pw!==null)alert('비밀번호가 올바르지 않습니다.');
+  if(pw===ADMIN_PASSWORD){bearAdmin=true;setBearAdminMode();const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥 관리자 수정 모드입니다.'}
+  else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')
 }
 async function loadBear(){
-  const local=bearDataLocal();
-  renderBear(local);
-  if(!BEAR_DOC||!window.__firebaseGetDoc)return;
   try{
-    const snap=await window.__firebaseGetDoc(BEAR_DOC);
-    if(snap.exists()){
-      const remote=snap.data()||{};
-      const localTime=Number(local&&local._updatedAt||0);
-      const remoteTime=Number(remote&&remote._updatedAt||0);
-      const hasSaved=!!localStorage.getItem(BEAR_LOCAL_KEY);
-      const d=hasSaved?local:(localTime>remoteTime?local:remote);
-      if(!hasSaved)localStorage.setItem(BEAR_LOCAL_KEY,JSON.stringify(d));
-      renderBear(d);
-      const m=document.getElementById('bearMsg');if(m)m.textContent=hasSaved?'저장된 곰사냥 내용을 불러왔습니다.':'최신 곰사냥 내용을 불러왔습니다.';
-    }
-  }catch(e){
-    console.error('Bear read failed:',e);
-    const m=document.getElementById('bearMsg');if(m)m.textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.';
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise)await firebaseInitPromise;
+  }catch(e){}
+  if(BEAR_DOC&&window.__firebaseGetDoc){
+    try{
+      const snap=await window.__firebaseGetDoc(BEAR_DOC);
+      if(snap.exists()){
+        const d=snap.data()||BEAR_DEFAULT;
+        bearSaveLocal(d);
+        renderBear(d);
+        const m=document.getElementById('bearMsg');if(m)m.textContent='최신 곰사냥 내용을 불러왔습니다.';
+        return;
+      }
+    }catch(e){console.error('Bear Firebase read failed:',e)}
   }
+  const d=bearDataLocal();
+  renderBear(d);
+  const m=document.getElementById('bearMsg');if(m)m.textContent='이 기기의 저장본을 불러왔습니다.';
 }
 async function saveBear(){
   if(!bearAdmin)return;
   const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
-  const d={text:ti?ti.value.trim():'',heroes:hi?hi.value.trim():'',_updatedAt:Date.now()};
+  const d={text:ti?ti.value.trim():'',heroes:hi?hi.value.trim():''};
   try{
-    localStorage.setItem(BEAR_LOCAL_KEY,JSON.stringify(d));
-    localStorage.setItem('kor1816_bear_v1',JSON.stringify(d));
-    renderBear(d);
-  }catch(e){
-    console.error('Bear local save failed:',e);
-    alert('브라우저 저장에 실패했습니다. 사이트 저장공간 권한을 확인해주세요.');
-    return;
+    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise)await firebaseInitPromise;
+  }catch(e){}
+  if(BEAR_DOC&&window.__firebaseSetDoc){
+    try{
+      await window.__firebaseSetDoc(BEAR_DOC,d);
+      bearSaveLocal(d);
+      renderBear(d);
+      const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥 저장 완료! / Saved!';
+      return;
+    }catch(e){console.error('Bear Firebase save failed:',e)}
   }
-  try{
-    if(BEAR_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(BEAR_DOC,d);
-    const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥 저장 완료! / Saved!';
-  }catch(e){
-    console.error('Bear Firebase save failed:',e);
-    const m=document.getElementById('bearMsg');if(m)m.textContent='이 기기에는 저장 완료했습니다. 공용 서버 저장은 실패했습니다.';
+  if(bearSaveLocal(d)){
+    renderBear(d);
+    const m=document.getElementById('bearMsg');if(m)m.textContent='이 기기에 저장 완료했습니다. (공용 서버 연결 실패)';
+  }else{
+    alert('저장에 실패했습니다. 브라우저 저장공간을 확인해주세요.');
   }
 }
 
@@ -760,14 +759,14 @@ function show(id){
   if(id==='rules')loadRules();
   window.scrollTo(0,0);
 }
-initFirebase().catch(e=>console.error('Firebase init failed:',e));
+let firebaseInitPromise=initFirebase().catch(e=>console.error('Firebase init failed:',e));
 
 window.addEventListener('load',function(){
   try{renderHome(homeDataLocal());setHomeAdminMode();}catch(e){console.error(e)}
   try{renderViking(vikingDataLocal());setVikingAdminMode();}catch(e){console.error(e)}
   try{renderAlliance(allianceDataLocal());setAllianceAdminMode();}catch(e){console.error(e)}
   try{renderCastle(castleDataLocal());setCastleAdminMode();}catch(e){console.error(e)}
-  try{renderBear(bearDataLocal());setBearAdminMode();}catch(e){console.error(e)}
+  try{setBearAdminMode();}catch(e){console.error(e)}
   try{renderRules(rulesDataLocal());setRulesAdminMode();}catch(e){console.error(e)}
 });
 </script><script id="full-i18n">
