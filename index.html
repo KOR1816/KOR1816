@@ -106,6 +106,13 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #bearView #bearHeroes{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
 #bearView .bear-hero-item{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;white-space:nowrap!important}
 @media(max-width:700px){#bearView,#bearEdit{grid-template-columns:1fr!important}#bearView #bearHeroes{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+</style><style id="bear-castle-card-exact">
+#bearView{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
+#bearView .card{min-width:0!important}
+#bearView .card h2{margin-bottom:14px!important}
+#bearView #bearText,#bearView #bearHeroes{line-height:1.8!important;text-align:left!important}
+#bearView #bearHeroes{display:block!important}
+@media(max-width:700px){#bearView{grid-template-columns:1fr!important}}
 </style></head><body>
 <div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
@@ -488,7 +495,7 @@ function renderBear(data){
   const t=document.getElementById('bearText'),h=document.getElementById('bearHeroes');
   const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
   if(t)t.innerHTML=escapeHome(text).replace(/\n/g,'<br>');
-  if(h)h.innerHTML=heroes.split(/\n+/).filter(Boolean).map(x=>'<span class="bear-hero-item">'+escapeHome(x.trim())+'</span>').join('');
+  if(h)h.innerHTML=heroes.split(/\n+/).filter(Boolean).map(x=>escapeHome(x.trim())).join('<br>');
   if(ti)ti.value=text;
   if(hi)hi.value=heroes;
 }
