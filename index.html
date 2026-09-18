@@ -23,7 +23,7 @@ footer{text-align:center;padding:35px;opacity:.55}.big{font-size:22px;font-weigh
 <header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav>
 <button onclick="show('home')">🏠 홈</button><button onclick="show('notice')">📢 공지</button>
-<button onclick="show('sword')">⚔️ 성검쟁탈</button><button onclick="show('castle')">🏰 공성전</button>
+<button onclick="show('sword')">⚔️ 성검쟁탈</button><button onclick="show('attendance')">📝 참가 신청 / Attendance</button><button onclick="show('castle')">🏰 공성전</button>
 <button onclick="show('bear')">🐻 곰 사냥</button><button onclick="show('rules')">📋 규칙</button>
 </nav>
 <main class="wrap">
@@ -41,8 +41,10 @@ footer{text-align:center;padding:35px;opacity:.55}.big{font-size:22px;font-weigh
 
 <section id="sword" class="page"><div class="card"><h2>⚔️ 성검쟁탈 팀 편성</h2>
 <p class="big">1군 30명 + 대체 10명</p>
-<table><tr><th>구분</th><th>인원</th><th>비고</th></tr>
-<tr><td>1군</td><td>30명</td><td>주전</td></tr><td>대체</td><td>10명</td><td>로테이션</td></tr><td>2군</td><td>참석 체크</td><td>30명 초과 시 대체 가능</td></tr></table>
+<table><tr><th>구분 / Group</th><th>인원 / Members</th><th>비고 / Note</th></tr>
+<tr><td>1군 / Group 1</td><td>30명</td><td>주전 / Main</td></tr>
+<tr><td>대체 / Substitute</td><td>10명</td><td>로테이션 / Rotation</td></tr>
+<tr><td>2군 / Group 2</td><td>참석 체크</td><td>30명 초과 시 대체 가능 / Substitute if over 30</td></tr></table>
 </div></section>
 
 <section id="castle" class="page"><div class="grid">
@@ -60,6 +62,37 @@ footer{text-align:center;padding:35px;opacity:.55}.big{font-size:22px;font-weigh
 </main>
 <footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
 <script>
-function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');scrollTo(0,0)}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='attendance')renderAttendance();scrollTo(0,0)}
+function getAttendance(){try{return JSON.parse(localStorage.getItem('kor1816_attendance')||'[]')}catch(e){return[]}}
+function saveAttendance(){
+  const nickname=document.getElementById('nickname').value.trim();
+  const selected=document.querySelector('input[name="group"]:checked');
+  const msg=document.getElementById('attendanceMsg');
+  if(!nickname){msg.textContent='닉네임을 입력해주세요. / Please enter your nickname.';return}
+  if(!selected){msg.textContent='1군 또는 2군을 선택해주세요. / Please select Group 1 or Group 2.';return}
+  let data=getAttendance();
+  const existing=data.find(x=>x.nickname.toLowerCase()===nickname.toLowerCase());
+  if(existing){existing.group=selected.value}
+  else{
+    if(selected.value==='1' && data.filter(x=>x.group==='1').length>=30){msg.textContent='1군은 30명까지입니다. / Group 1 is limited to 30.';return}
+    data.push({nickname:nickname,group:selected.value})
+  }
+  localStorage.setItem('kor1816_attendance',JSON.stringify(data));
+  msg.textContent='저장되었습니다! / Saved!';
+  document.getElementById('nickname').value='';
+  document.querySelectorAll('input[name="group"]').forEach(x=>x.checked=false);
+  renderAttendance();
+}
+function renderAttendance(){
+  const data=getAttendance();
+  const g1=data.filter(x=>x.group==='1');
+  const g2=data.filter(x=>x.group==='2');
+  document.getElementById('group1Count').textContent=g1.length;
+  document.getElementById('group2Count').textContent=g2.length;
+  document.getElementById('group1List').innerHTML=g1.length?g1.map(x=>'• '+escapeHtml(x.nickname)).join('<br>'):'아직 없습니다. / None yet.';
+  document.getElementById('group2List').innerHTML=g2.length?g2.map(x=>'• '+escapeHtml(x.nickname)).join('<br>'):'아직 없습니다. / None yet.';
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+renderAttendance();
 </script>
 </body></html>
