@@ -554,6 +554,21 @@ function show(id){
 }
 initFirebase().catch(e=>console.error('Firebase init failed:',e));
 
+const I18N={
+ko:{nav:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],refresh:'🔄 새로고침',edit:'🔐 관리자 수정',close:'🔒 수정 종료',save:'💾 저장',homeEdit:'💾 홈 저장',bearSave:'💾 곰사냥 저장',rulesSave:'💾 규칙 저장',castleSave:'💾 공성전 저장',vikingSave:'💾 바이킹 저장',allianceSave:'💾 3대연맹전 저장'},
+en:{nav:['🏠 Home','🛡️ Viking','⚔️ Holy Sword','⚔️ 3 Alliances','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],refresh:'🔄 Refresh',edit:'🔐 Admin Edit',close:'🔒 Exit Edit',save:'💾 Save',homeEdit:'💾 Save Home',bearSave:'💾 Save Bear Hunt',rulesSave:'💾 Save Rules',castleSave:'💾 Save Castle Siege',vikingSave:'💾 Save Viking',allianceSave:'💾 Save 3 Alliances'},
+ja:{nav:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],refresh:'🔄 更新',edit:'🔐 管理者編集',close:'🔒 編集終了',save:'💾 保存',homeEdit:'💾 ホーム保存',bearSave:'💾 熊狩り保存',rulesSave:'💾 ルール保存',castleSave:'💾 攻城戦保存',vikingSave:'💾 バイキング保存',allianceSave:'💾 3大連盟戦保存'},
+zh:{nav:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],refresh:'🔄 刷新',edit:'🔐 管理员编辑',close:'🔒 结束编辑',save:'💾 保存',homeEdit:'💾 保存首页',bearSave:'💾 保存猎熊',rulesSave:'💾 保存规则',castleSave:'💾 保存攻城战',vikingSave:'💾 保存维京',allianceSave:'💾 保存三大联盟'},
+de:{nav:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliger Schwertkampf','⚔️ 3 Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],refresh:'🔄 Aktualisieren',edit:'🔐 Admin bearbeiten',close:'🔒 Bearbeitung beenden',save:'💾 Speichern',homeEdit:'💾 Startseite speichern',bearSave:'💾 Bärenjagd speichern',rulesSave:'💾 Regeln speichern',castleSave:'💾 Belagerung speichern',vikingSave:'💾 Wikinger speichern',allianceSave:'💾 3 Allianzen speichern'}};
+function setLang(lang){
+  const t=I18N[lang]||I18N.ko; localStorage.setItem('kor1816_lang',lang); document.documentElement.lang=lang;
+  document.querySelectorAll('nav button').forEach((b,i)=>{if(t.nav[i])b.textContent=t.nav[i]});
+  document.querySelectorAll('.page-admin .admin-btn').forEach((b,i)=>b.textContent=i===0?t.refresh:(b.textContent.includes('🔒')?t.close:t.edit));
+  const saveMap={homeEdit:t.homeEdit,bearSave:t.bearSave,rulesSave:t.rulesSave,castleSave:t.castleSave,vikingSave:t.vikingSave,allianceSave:t.allianceSave};
+  Object.entries(saveMap).forEach(([id,val])=>{const e=document.querySelector('[onclick="saveHome()"]')&&id==='homeEdit'?document.querySelector('[onclick="saveHome()"]'):document.querySelector('[onclick="saveBear()"]')&&id==='bearSave'?document.querySelector('[onclick="saveBear()"]'):document.querySelector('[onclick="saveRules()"]')&&id==='rulesSave'?document.querySelector('[onclick="saveRules()"]'):document.querySelector('[onclick="saveCastle()"]')&&id==='castleSave'?document.querySelector('[onclick="saveCastle()"]'):document.querySelector('[onclick="saveViking()"]')&&id==='vikingSave'?document.querySelector('[onclick="saveViking()"]'):document.querySelector('[onclick="saveAlliance()"]')&&id==='allianceSave'?document.querySelector('[onclick="saveAlliance()"]'):null;if(e)e.textContent=val});
+  const teamBtns=document.querySelectorAll('#teams .team-column button'); teamBtns.forEach(b=>{if(b.textContent.includes('저장')||b.textContent.includes('Save')||b.textContent.includes('Speichern')||b.textContent.includes('保存'))b.textContent=t.save+(b.textContent.match(/[A-D]/)?.[0]?' '+b.textContent.match(/[A-D]/)[0]+'팀':'')});
+}
+function applySavedLang(){setLang(localStorage.getItem('kor1816_lang')||'ko')}
 window.addEventListener('load',function(){
   try{renderHome(homeDataLocal());setHomeAdminMode();}catch(e){console.error(e)}
   try{renderViking(vikingDataLocal());setVikingAdminMode();}catch(e){console.error(e)}
