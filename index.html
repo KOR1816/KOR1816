@@ -563,330 +563,51 @@ window.addEventListener('load',function(){
 });
 </script><script id="full-i18n">
 (function(){
-  const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de',es:'es',it:'it'};
-  const NAV={
-    ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
-    en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
-    ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
-    zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
-    de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],
-    es:['🏠 Inicio','🛡️ Vikingos','⚔️ Disputa de la Espada Sagrada','⚔️ Guerra de las Tres Alianzas','🏰 Asedio del Castillo','🐻 Caza del Oso','📋 Reglas'],
-    it:['🏠 Home','🛡️ Vichinghi','⚔️ Contesa della Spada Sacra','⚔️ Guerra delle Tre Alleanze','🏰 Assedio del Castello','🐻 Caccia all’Orso','📋 Regole']
-  };
-  const TERMS={
-    en:{'성검쟁탈':'Holy Sword Clash','3대연맹전':'Three Alliances War','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','집결장':'Rally Leader','집결원':'Rally Member','개돌조':'Charge Team','대체자':'Substitute','비율':'Troop Ratio','1열':'Row 1','2열':'Row 2','3열':'Row 3','4열':'Row 4','수성':'Defense','집결':'Rally','공격':'Attack','연습':'Practice','공지':'Notice','공지 일정':'Schedule','새로고침':'Refresh','관리자 수정':'Admin Edit','저장':'Save','바이킹':'Viking','편성':'Formation','규칙':'Rules','안내':'Guide','진행':'Progress','소통':'Communication','협력':'Cooperation','성장':'Growth'},
-    ja:{'성검쟁탈':'聖剣争奪','3대연맹전':'3大連盟戦','공성전':'攻城戦','곰사냥':'熊狩り','곰 사냥':'熊狩り','집결장':'集結リーダー','집결원':'集結メンバー','개돌조':'突撃隊','대체자':'交代要員','비율':'兵力比率','1열':'1列目','2열':'2列目','3열':'3列目','4열':'4列目','수성':'防衛','집결':'集結','공격':'攻撃','연습':'練習','공지':'お知らせ','공지 일정':'スケジュール','새로고침':'更新','관리자 수정':'管理者編集','저장':'保存','바이킹':'バイキング','편성':'編成','규칙':'ルール','안내':'案内','진행':'進行','소통':'コミュニケーション','협력':'協力','성장':'成長'},
-    zh:{'성검쟁탈':'圣剑争夺','3대연맹전':'三大联盟战','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','집결장':'集结队长','집결원':'集结成员','개돌조':'突击队','대체자':'替补','비율':'兵力比例','1열':'第1排','2열':'第2排','3열':'第3排','4열':'第4排','수성':'防守','집결':'集结','공격':'攻击','연습':'练习','공지':'公告','공지 일정':'日程','새로고침':'刷新','관리자 수정':'管理员编辑','저장':'保存','바이킹':'维京','편성':'编组','규칙':'规则','안내':'说明','진행':'进行','소통':'沟通','협력':'合作','성장':'成长'},
-    es:{'바이킹 안내':'Guía de Vikingos','바이킹 진행':'Desarrollo de Vikingos','바이킹 편성':'Formación de Vikingos','바이킹 규칙':'Reglas de Vikingos','출발하세요':'¡Salgan!','건들면 문다!':'¡Si lo tocas, muerde!','곰친자들의 모임!!':'¡La reunión de los amantes de los osos!','첫영웅 Gordon 70000 입니다.':'El primer héroe es Gordon con 70 000 tropas.','본부(HQ) 첫영웅 Gordon 70000 입니다.':'Cuartel General (HQ): el primer héroe es Gordon con 70 000 tropas.','9.19 레이더 끝나면 출발하세요!':'¡Salgan cuando termine el radar a las 9:19!',
-      '본부':'Cuartel General','첫영웅':'Primer héroe','입니다':'es','운영 안내':'Guía de operación','KOR1816 운영':'Operación de KOR1816',
-      '본부(HQ)':'Cuartel General (HQ)','Gordon':'Gordon','가세요':'vete','가':'ve','언제':'cuando','끝나면':'cuando termine','레이더':'radar',
-      '성검쟁탈':'Disputa de la Espada Sagrada','3대연맹전':'Guerra de las Tres Alianzas','공성전':'Asedio del Castillo','곰사냥':'Caza del Oso','곰 사냥':'Caza del Oso',
-      '집결장':'Líder de reunión','집결원':'Miembro de reunión','개돌조':'Equipo de asalto','대체자':'Suplente','비율':'Proporción de tropas',
-      '1열':'Fila 1','2열':'Fila 2','3열':'Fila 3','4열':'Fila 4','수성':'Defensa','집결':'Reunión','공격':'Ataque','연습':'Práctica',
-      '공지':'Aviso','공지 일정':'Horario','새로고침':'Actualizar','관리자 수정':'Editar como administrador','저장':'Guardar','바이킹':'Vikingos',
-      '편성':'Formación','규칙':'Reglas','안내':'Guía','진행':'Desarrollo','소통':'Comunicación','협력':'Cooperación','성장':'Crecimiento',
-      '공지사항':'Avisos','참석이 어려운 경우 미리 DM으로 알려주세요.':'Si no puedes asistir, avisa por DM con antelación.',
-      'KVK는 소통과 협력을 우선합니다.':'En KVK, la comunicación y la cooperación son la prioridad.',
-      '팀 편성은 이벤트별 공지를 기준으로 합니다.':'La formación de equipos se basa en el aviso de cada evento.',
-      '공지사항을 먼저 확인해주세요.':'Consulta primero los avisos.','곰 1트랩':'Trampa de oso 1','곰 2트랩':'Trampa de oso 2',
-      '2첸코':'2 Chenko','첸코':'Chenko','2아마':'2 Amade','아마':'Amade','아마네':'Amane','파드':'Fad','2살로':'2 Salo','살로':'Salo',
-      '2힐데':'2 Hilde','4힐데':'4 Hilde','1살로':'1 Salo','힐데':'Hilde','알카':'Alka','퀸':'Queen','고든':'Gordon','마르고':'Margo','예거':'Jäger','페라':'Fera','로사':'Rosa','Amade데':'Amade / Fera / Rosa','상대가 강하면':'Si el rival es fuerte, considera a Jäger','상대ve 강하면':'Si el rival es fuerte, considera a Jäger','고려':'considera','알카':'Alka','마르고':'Margo','살로':'Salo','Jäger 고려':'considera a Jäger','505 / 55.5.40 / 514 / 415 / 406':'505 / 55.5.40 / 514 / 415 / 406','9.19 radar cuando termine 출발하세요!!':'¡Salgan cuando termine el radar a las 9:19!','9.19 radar cuando termine 출발하세요!':'¡Salgan cuando termine el radar a las 9:19!','Amade데 / 페라 / 로사':'Amade / Fera / Rosa','상대ve 강하면 Jäger 고려':'Si el rival es fuerte, considera a Jäger','출발하세요':'¡Salgan!','페라':'Fera','로사':'Rosa','상대ve':'Si el rival es fuerte','상대가 강하면':'Si el rival es fuerte','Jäger 고려':'considera a Jäger','고려':'considera'
-    },it:{
-      '성검쟁탈':'Contesa della Spada Sacra','3대연맹전':'Guerra delle Tre Alleanze','공성전':'Assedio del Castello','곰사냥':'Caccia all’Orso','곰 사냥':'Caccia all’Orso','집결장':'Capo della spedizione','집결원':'Membro della spedizione','개돌조':'Squadra d’assalto','대체자':'Sostituto','비율':'Rapporto truppe','1열':'Fila 1','2열':'Fila 2','3열':'Fila 3','4열':'Fila 4','수성':'Difesa','집결':'Spedizione','공격':'Attacco','연습':'Allenamento','공지':'Avviso','공지 일정':'Programma','새로고침':'Aggiorna','관리자 수정':'Modifica amministratore','저장':'Salva','바이킹':'Vichinghi','편성':'Formazione','규칙':'Regole','안내':'Guida','진행':'Svolgimento','소통':'Comunicazione','협력':'Collaborazione','성장':'Crescita'
-    },
-    de:{'성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','개돌조':'Sturmtrupp','대체자':'Ersatz','비율':'Truppenverhältnis','1열':'Reihe 1','2열':'Reihe 2','3열':'Reihe 3','4열':'Reihe 4','수성':'Verteidigung','집결':'Versammlung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','공지 일정':'Zeitplan','새로고침':'Aktualisieren','관리자 수정':'Admin bearbeiten','저장':'Speichern','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf','소통':'Kommunikation','협력':'Zusammenarbeit','성장':'Wachstum'}
-  };
-  const TARGETS=['#homeView','#vikingView','#teams > .card > h2','#teams .team-columns-wrap','#alliance > .card > h2','#alliance > .card > h2 + .sword-image-wrap','#allianceView','#castle > .card > h2','#castleView','#bear > .card > h2','#bearView','#rules > .card > h2','#rulesView'];
-  let token=0;
-
-  function hasKo(s){return /[\uac00-\ud7a3]/.test(s||'')}
-  function restore(){
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
-      if(el.dataset.kor1816Source!==undefined)el.innerHTML=el.dataset.kor1816Source;
-    }));
-    document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV.ko[i]||b.textContent);
-  }
-  function capture(){
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.dataset.kor1816Source=el.innerHTML));
-  }
-  function terms(text,lang){
-    let out=text;
-    const dict=TERMS[lang]||{};
-    Object.keys(dict).sort((a,b)=>b.length-a.length).forEach(k=>{out=out.split(k).join(dict[k])});
-    return out;
-  }
-  const CACHE_KEY='kor1816_i18n_cache_v3';
-  let cache={};
-  try{cache=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}catch(e){cache={}}
-  function cacheKey(text,lang){return lang+'::'+text}
-  async function tr(text,lang){
-    if(!hasKo(text)||!text.trim())return text;
-    const masked=terms(text,lang);
-    if(!hasKo(masked))return masked;
-    const key=cacheKey(masked,lang);
-    if(cache[key])return cache[key];
-    try{
-      const u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(masked)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]);
-      const r=await fetch(u);if(!r.ok)throw 0;
-      const d=await r.json();
-      const out=d&&d.responseData&&d.responseData.translatedText?d.responseData.translatedText:masked;
-      cache[key]=out;
-      try{localStorage.setItem(CACHE_KEY,JSON.stringify(cache))}catch(e){}
-      return out;
-    }catch(e){return masked}
-  }
-  async function translateElement(el,lang,my){
-    const src=el.dataset.kor1816Source||el.innerHTML;
-    const box=document.createElement('div');box.innerHTML=src;
-    const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
-    const nodes=[];let n;
-    while(n=walker.nextNode()){
-      const p=n.parentElement;
-      if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button'))continue;
-      if(hasKo(n.nodeValue)&&n.nodeValue.trim())nodes.push(n);
-    }
-    // Parallelize a small number of requests; glossary handles fixed terms.
-    for(let i=0;i<nodes.length;i+=8){
-      if(my!==token)return null;
-      const batch=nodes.slice(i,i+8);
-      const outs=await Promise.all(batch.map(x=>tr(x.nodeValue,lang)));
-      batch.forEach((x,j)=>x.nodeValue=outs[j]);
-      if(i+8<nodes.length) await new Promise(r=>setTimeout(r,0));
-    }
-    return box.innerHTML;
-  }
-  async function apply(){
-    const my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';
-    restore();if(lang==='ko')return;
-    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
-    // Show glossary translations immediately; API fills the remaining sentences.
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
-      const src=el.dataset.kor1816Source||el.innerHTML;
-      const box=document.createElement('div');box.innerHTML=src;
-      const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
-      let n;
-      while(n=walker.nextNode()){
-        const p=n.parentElement;
-        if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button'))continue;
-        if(hasKo(n.nodeValue)&&n.nodeValue.trim())n.nodeValue=terms(n.nodeValue,lang);
-      }
-      el.innerHTML=box.innerHTML;
-    }));
-    for(const sel of TARGETS){
-      for(const el of document.querySelectorAll(sel)){
-        if(my!==token)return;
-        const out=await translateElement(el,lang,my);
-        if(out!==null)el.innerHTML=out;
-      }
-    }
-    // Final pass: translate any remaining Korean text nodes in the visible page.
-    // This catches dynamic names/sentences that are not covered by section selectors.
-    const root=document.body;
-    const box=document.createElement('div');
-    box.innerHTML=root.innerHTML;
-    const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
-    const rest=[];let rn;
-    while(rn=walker.nextNode()){
-      const p=rn.parentElement;
-      if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button,input,textarea,select'))continue;
-      if(hasKo(rn.nodeValue)&&rn.nodeValue.trim())rest.push(rn);
-    }
-    for(let i=0;i<rest.length;i+=8){
-      if(my!==token)return;
-      const batch=rest.slice(i,i+8);
-      const outs=await Promise.all(batch.map(x=>tr(x.nodeValue,lang)));
-      batch.forEach((x,j)=>x.nodeValue=outs[j]);
-    }
-    root.innerHTML=box.innerHTML;
-  }
-  window.setLang=function(lang){
-    if(!['ko','en','ja','zh','de','es','it'].includes(lang))return;
-    localStorage.setItem('kor1816_lang',lang);token++;restore();
-    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang]&&NAV[lang][i])b.textContent=NAV[lang][i]});
-    if(lang!=='ko')setTimeout(apply,0);
-  };
-  // Re-capture dynamic Firebase-rendered content. Viking/Castle bodies are
-  // populated by render functions after page load, so an early snapshot is empty.
-  function refreshAfterRender(){
-    restore();
-    capture();
-    const saved=localStorage.getItem('kor1816_lang')||'ko';
-    if(saved!=='ko')setTimeout(apply,0);
-  }
-  function hookRender(name){
-    const fn=window[name];
-    if(typeof fn!=='function')return;
-    window[name]=function(){
-      const out=fn.apply(this,arguments);
-      setTimeout(refreshAfterRender,0);
-      return out;
-    };
-  }
-  hookRender('renderViking');
-  hookRender('renderCastle');
-  hookRender('renderHome');
-  hookRender('renderBear');
-  hookRender('renderRules');
-  hookRender('renderAlliance');
-  hookRender('renderTeams');
-
-  // IMPORTANT: capture is refreshed after Firebase renders its data.
-  // Hook the existing render functions without changing their behavior.
-  window.addEventListener('load',function(){
-    setTimeout(function(){
-      capture();
-      const saved=localStorage.getItem('kor1816_lang')||'ko';
-      if(saved!=='ko')setTimeout(apply,150);
-    },500);
-  });
-})();
-</script it:{
-      '성검쟁탈':'Contesa della Spada Sacra','3대연맹전':'Guerra delle Tre Alleanze','공성전':'Assedio del Castello','곰사냥':'Caccia all’Orso','곰 사냥':'Caccia all’Orso','집결장':'Capo della spedizione','집결원':'Membro della spedizione','개돌조':'Squadra d’assalto','대체자':'Sostituto','비율':'Rapporto truppe','1열':'Fila 1','2열':'Fila 2','3열':'Fila 3','4열':'Fila 4','수성':'Difesa','집결':'Spedizione','공격':'Attacco','연습':'Allenamento','공지':'Avviso','공지 일정':'Programma','새로고침':'Aggiorna','관리자 수정':'Modifica amministratore','저장':'Salva','바이킹':'Vichinghi','편성':'Formazione','규칙':'Regole','안내':'Guida','진행':'Svolgimento','소통':'Comunicazione','협력':'Collaborazione','성장':'Crescita'
-    },
-    de:{'성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','개돌조':'Sturmtrupp','대체자':'Ersatz','비율':'Truppenverhältnis','1열':'Reihe 1','2열':'Reihe 2','3열':'Reihe 3','4열':'Reihe 4','수성':'Verteidigung','집결':'Versammlung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','공지 일정':'Zeitplan','새로고침':'Aktualisieren','관리자 수정':'Admin bearbeiten','저장':'Speichern','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf','소통':'Kommunikation','협력':'Zusammenarbeit','성장':'Wachstum'}
-  };
-  const TARGETS=['#homeView','#vikingView','#teams > .card > h2','#teams .team-columns-wrap','#alliance > .card > h2','#alliance > .card > h2 + .sword-image-wrap','#allianceView','#castle > .card > h2','#castleView','#bear > .card > h2','#bearView','#rules > .card > h2','#rulesView'];
-  let token=0;
-
-  function hasKo(s){return /[\uac00-\ud7a3]/.test(s||'')}
-  function restore(){
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
-      if(el.dataset.kor1816Source!==undefined)el.innerHTML=el.dataset.kor1816Source;
-    }));
-    document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV.ko[i]||b.textContent);
-  }
-  function capture(){
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.dataset.kor1816Source=el.innerHTML));
-  }
-  function terms(text,lang){
-    let out=text;
-    const dict=TERMS[lang]||{};
-    Object.keys(dict).sort((a,b)=>b.length-a.length).forEach(k=>{out=out.split(k).join(dict[k])});
-    return out;
-  }
-  const CACHE_KEY='kor1816_i18n_cache_v2';
-  let cache={};
-  try{cache=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}catch(e){cache={}}
-  function cacheKey(text,lang){return lang+'::'+text}
-  async function tr(text,lang){
-    if(!hasKo(text)||!text.trim())return text;
-    const masked=terms(text,lang);
-    if(!hasKo(masked))return masked;
-    const key=cacheKey(masked,lang);
-    if(cache[key])return cache[key];
-    try{
-      const u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(masked)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]);
-      const r=await fetch(u);if(!r.ok)throw 0;
-      const d=await r.json();
-      const out=d&&d.responseData&&d.responseData.translatedText?d.responseData.translatedText:masked;
-      cache[key]=out;
-      try{localStorage.setItem(CACHE_KEY,JSON.stringify(cache))}catch(e){}
-      return out;
-    }catch(e){return masked}
-  }
-  async function translateElement(el,lang,my){
-    const src=el.dataset.kor1816Source||el.innerHTML;
-    const box=document.createElement('div');box.innerHTML=src;
-    const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
-    const nodes=[];let n;
-    while(n=walker.nextNode()){
-      const p=n.parentElement;
-      if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button'))continue;
-      if(hasKo(n.nodeValue)&&n.nodeValue.trim())nodes.push(n);
-    }
-    // Parallelize a small number of requests; glossary handles fixed terms.
-    for(let i=0;i<nodes.length;i+=8){
-      if(my!==token)return null;
-      const batch=nodes.slice(i,i+8);
-      const outs=await Promise.all(batch.map(x=>tr(x.nodeValue,lang)));
-      batch.forEach((x,j)=>x.nodeValue=outs[j]);
-      if(i+8<nodes.length) await new Promise(r=>setTimeout(r,0));
-    }
-    return box.innerHTML;
-  }
-  async function apply(){
-    const my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';
-    restore();if(lang==='ko')return;
-    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
-    // Show glossary translations immediately; API fills the remaining sentences.
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
-      const src=el.dataset.kor1816Source||el.innerHTML;
-      const box=document.createElement('div');box.innerHTML=src;
-      const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
-      let n;
-      while(n=walker.nextNode()){
-        const p=n.parentElement;
-        if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button'))continue;
-        if(hasKo(n.nodeValue)&&n.nodeValue.trim())n.nodeValue=terms(n.nodeValue,lang);
-      }
-      el.innerHTML=box.innerHTML;
-    }));
-    for(const sel of TARGETS){
-      for(const el of document.querySelectorAll(sel)){
-        if(my!==token)return;
-        const out=await translateElement(el,lang,my);
-        if(out!==null)el.innerHTML=out;
-      }
-    }
-    // Final pass: translate any remaining Korean text nodes in the visible page.
-    // This catches dynamic names/sentences that are not covered by section selectors.
-    const root=document.body;
-    const box=document.createElement('div');
-    box.innerHTML=root.innerHTML;
-    const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
-    const rest=[];let rn;
-    while(rn=walker.nextNode()){
-      const p=rn.parentElement;
-      if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button,input,textarea,select'))continue;
-      if(hasKo(rn.nodeValue)&&rn.nodeValue.trim())rest.push(rn);
-    }
-    for(let i=0;i<rest.length;i+=8){
-      if(my!==token)return;
-      const batch=rest.slice(i,i+8);
-      const outs=await Promise.all(batch.map(x=>tr(x.nodeValue,lang)));
-      batch.forEach((x,j)=>x.nodeValue=outs[j]);
-    }
-    root.innerHTML=box.innerHTML;
-  }
-  window.setLang=function(lang){
-    if(!['ko','en','ja','zh','de','es','it'].includes(lang))return;
-    localStorage.setItem('kor1816_lang',lang);token++;restore();
-    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang]&&NAV[lang][i])b.textContent=NAV[lang][i]});
-    if(lang!=='ko')setTimeout(apply,0);
-  };
-  // Re-capture dynamic Firebase-rendered content. Viking/Castle bodies are
-  // populated by render functions after page load, so an early snapshot is empty.
-  function refreshAfterRender(){
-    restore();
-    capture();
-    const saved=localStorage.getItem('kor1816_lang')||'ko';
-    if(saved!=='ko')setTimeout(apply,0);
-  }
-  function hookRender(name){
-    const fn=window[name];
-    if(typeof fn!=='function')return;
-    window[name]=function(){
-      const out=fn.apply(this,arguments);
-      setTimeout(refreshAfterRender,0);
-      return out;
-    };
-  }
-  hookRender('renderViking');
-  hookRender('renderCastle');
-  hookRender('renderHome');
-  hookRender('renderBear');
-  hookRender('renderRules');
-  hookRender('renderAlliance');
-  hookRender('renderTeams');
-
-  // IMPORTANT: capture is refreshed after Firebase renders its data.
-  // Hook the existing render functions without changing their behavior.
-  window.addEventListener('load',function(){
-    setTimeout(function(){
-      capture();
-      const saved=localStorage.getItem('kor1816_lang')||'ko';
-      if(saved!=='ko')setTimeout(apply,150);
-    },500);
-  });
+const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de',es:'es',it:'it'};
+const NAV={
+ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
+en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
+ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
+zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
+de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],
+es:['🏠 Inicio','🛡️ Vikingos','⚔️ Disputa de la Espada Sagrada','⚔️ Guerra de las Tres Alianzas','🏰 Asedio del Castillo','🐻 Caza del Oso','📋 Reglas'],
+it:['🏠 Home','🛡️ Vichinghi','⚔️ Contesa della Spada Sacra','⚔️ Guerra delle Tre Alleanze','🏰 Assedio del Castello','🐻 Caccia all’Orso','📋 Regole']
+};
+const T={
+en:{'성검쟁탈':'Holy Sword Clash','3대연맹전':'Three Alliances War','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','집결장':'Rally Leader','집결원':'Rally Member','비율':'Troop Ratio','수성':'Defense','공격':'Attack','연습':'Practice','공지':'Notice','공지 일정':'Schedule','바이킹':'Viking','편성':'Formation','규칙':'Rules','안내':'Guide','진행':'Progress'},
+ja:{'성검쟁탈':'聖剣争奪','3대연맹전':'3大連盟戦','공성전':'攻城戦','곰사냥':'熊狩り','곰 사냥':'熊狩り','집결장':'集結リーダー','집결원':'集結メンバー','비율':'兵力比率','수성':'防衛','공격':'攻撃','연습':'練習','공지':'お知らせ','공지 일정':'スケジュール','바이킹':'バイキング','편성':'編成','규칙':'ルール','안내':'案内','진행':'進行'},
+zh:{'성검쟁탈':'圣剑争夺','3대연맹전':'三大联盟战','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','집결장':'集结队长','집결원':'集结成员','비율':'兵力比例','수성':'防守','공격':'攻击','연습':'练习','공지':'公告','공지 일정':'日程','바이킹':'维京','편성':'编组','규칙':'规则','안내':'说明','진행':'进行'},
+de:{'성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','비율':'Truppenverhältnis','수성':'Verteidigung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','공지 일정':'Zeitplan','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf'},
+es:{
+'9.19 radar cuando termine 출발하세요!!':'¡Salgan cuando termine el radar a las 9:19!','9.19 radar cuando termine 출발하세요!':'¡Salgan cuando termine el radar a las 9:19!','9.19 레이더 끝나면 출발하세요!':'¡Salgan cuando termine el radar a las 9:19!','출발하세요':'¡Salgan!','Amade데 / 페라 / 로사':'Amade / Fera / Rosa','아마데 / 페라 / 로사':'Amade / Fera / Rosa','상대ve 강하면 Jäger 고려':'Si el rival es fuerte, considera a Jäger','상대가 강하면 Jäger 고려':'Si el rival es fuerte, considera a Jäger','상대가 강하면':'Si el rival es fuerte','Jäger 고려':'considera a Jäger','페라':'Fera','로사':'Rosa','알카':'Alka','마르고':'Margo','살로':'Salo','고든':'Gordon','예거':'Jäger','첸코':'Chenko','아마':'Amade','아마네':'Amane','파드':'Fad','살로':'Salo','힐데':'Hilde','퀸':'Queen','2첸코':'2 Chenko','2아마':'2 Amade','2살로':'2 Salo','2힐데':'2 Hilde','4힐데':'4 Hilde','1살로':'1 Salo','집결장':'Líder de reunión','집결원':'Miembro de reunión','비율':'Proporción de tropas','수성':'Defensa','공격':'Ataque','연습':'Práctica','성검쟁탈':'Disputa de la Espada Sagrada','3대연맹전':'Guerra de las Tres Alianzas','공성전':'Asedio del Castillo','곰사냥':'Caza del Oso','곰 사냥':'Caza del Oso','바이킹 안내':'Guía de Vikingos','바이킹 진행':'Desarrollo de Vikingos','바이킹 편성':'Formación de Vikingos','바이킹 규칙':'Reglas de Vikingos','본부(HQ) 첫영웅 Gordon 70000 입니다.':'Cuartel General (HQ): el primer héroe es Gordon con 70 000 tropas.','건들면 문다!':'¡Si lo tocas, muerde!','곰친자들의 모임!!':'¡La reunión de los amantes de los osos!'
+},
+it:{
+'출발하세요':'Partite!','아마데 / 페라 / 로사':'Amade / Fera / Rosa','상대가 강하면':'Se il rivale è forte','Jäger 고려':'considera Jäger','페라':'Fera','로사':'Rosa','알카':'Alka','마르고':'Margo','살로':'Salo','성검쟁탈':'Contesa della Spada Sacra','3대연맹전':'Guerra delle Tre Alleanze','공성전':'Assedio del Castello','곰사냥':'Caccia all’Orso','곰 사냥':'Caccia all’Orso','집결장':'Capo della spedizione','집결원':'Membro della spedizione','비율':'Rapporto truppe','수성':'Difesa','공격':'Attacco','연습':'Allenamento','바이킹 안내':'Guida dei Vichinghi','바이킹 진행':'Svolgimento dei Vichinghi','바이킹 편성':'Formazione dei Vichinghi','바이킹 규칙':'Regole dei Vichinghi'}
+}
+};
+const TARGETS=['#homeView','#vikingView','#teams > .card > h2','#teams .team-columns-wrap','#alliance > .card > h2','#allianceView','#castle > .card > h2','#castleView','#bear > .card > h2','#bearView','#rules > .card > h2','#rulesView'];
+let token=0;
+const hasKo=s=>/[\uac00-\ud7a3]/.test(s||'');
+function dictText(s,lang){let x=s,d=T[lang]||{};Object.keys(d).sort((a,b)=>b.length-a.length).forEach(k=>x=x.split(k).join(d[k]));return x}
+function restore(){TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{if(el.dataset.kor1816Source!==undefined)el.innerHTML=el.dataset.kor1816Source}));document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV.ko[i]||b.textContent)}
+function capture(){TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.dataset.kor1816Source=el.innerHTML))}
+const CACHE='kor1816_i18n_cache_v4';let cache={};try{cache=JSON.parse(localStorage.getItem(CACHE)||'{}')||{}}catch(e){}
+async function tr(s,lang){
+ let x=dictText(s,lang);if(!hasKo(x)||!x.trim())return x;
+ let key=lang+'::'+x;if(cache[key])return cache[key];
+ try{let u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(x)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]);let r=await fetch(u);let d=await r.json();let o=d?.responseData?.translatedText||x;cache[key]=o;try{localStorage.setItem(CACHE,JSON.stringify(cache))}catch(e){}return o}catch(e){return x}
+}
+async function translateRoot(root,lang,my){
+ const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),a=[];let n;
+ while(n=w.nextNode()){let p=n.parentElement;if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button,input,textarea,select'))continue;if(hasKo(n.nodeValue)&&n.nodeValue.trim())a.push(n)}
+ for(let i=0;i<a.length;i+=8){if(my!==token)return false;let b=a.slice(i,i+8),o=await Promise.all(b.map(n=>tr(n.nodeValue,lang)));b.forEach((n,j)=>n.nodeValue=o[j])}
+ return true
+}
+async function apply(){let my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';restore();if(lang==='ko')return;document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV[lang]?.[i]||b.textContent);for(const sel of TARGETS){for(const el of document.querySelectorAll(sel)){if(my!==token)return;let box=document.createElement('div');box.innerHTML=el.dataset.kor1816Source||el.innerHTML;await translateRoot(box,lang,my);if(my!==token)return;el.innerHTML=box.innerHTML}}let box=document.createElement('div');box.innerHTML=document.body.innerHTML;await translateRoot(box,lang,my);if(my===token)document.body.innerHTML=box.innerHTML}
+window.setLang=function(lang){if(!['ko','en','ja','zh','de','es','it'].includes(lang))return;localStorage.setItem('kor1816_lang',lang);token++;restore();if(lang!=='ko')setTimeout(apply,0)};
+function refresh(){restore();capture();if((localStorage.getItem('kor1816_lang')||'ko')!=='ko')setTimeout(apply,0)}
+function hook(name){const f=window[name];if(typeof f!=='function')return;window[name]=function(){let r=f.apply(this,arguments);setTimeout(refresh,0);return r}}
+['renderViking','renderCastle','renderHome','renderBear','renderRules','renderAlliance','renderTeams'].forEach(hook);
+window.addEventListener('load',()=>setTimeout(refresh,500));
 })();
 </script></body></html>
