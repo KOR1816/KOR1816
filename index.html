@@ -504,11 +504,7 @@ async function loadRules(){
     if(RULES_DOC){
       const snap=await window.__firebaseGetDoc(RULES_DOC);
       if(snap.exists()){
-        let d=snap.data()||{};
-        if(!d.text || String(d.text).includes('본부(HQ) 첫영웅 고든') || String(d.text).includes('공지사항을 먼저 확인해주세요.') || !String(d.text).includes('[KOR]༺༒༽Pham༼༒༻')){
-          d={...d,text:RULES_DEFAULT.text};
-          if(window.__firebaseSetDoc) await window.__firebaseSetDoc(RULES_DOC,d);
-        }
+        let d=snap.data()||{};\n        if(!d.text || String(d.text).includes('본부(HQ) 첫영웅 고든') || String(d.text).includes('공지사항을 먼저 확인해주세요.') || !String(d.text).includes('[KOR]༺༒༽Pham༼༒༻')){\n          d={...d,text:RULES_DEFAULT.text};\n          if(window.__firebaseSetDoc) await window.__firebaseSetDoc(RULES_DOC,d);\n        }
         localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));
         renderRules(d);
         document.getElementById('rulesMsg').textContent='최신 규칙을 불러왔습니다.';
