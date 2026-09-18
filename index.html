@@ -357,8 +357,6 @@ async function loadSharedTeams(){
       const serverTime=Number(server._updatedAt||0);
       if(serverTime>localTime){
         sharedTeams=server;
-        const backups=getSlotBackup();
-        ['A','B','C','D'].forEach(team=>{if(Array.isArray(backups[team])) sharedTeams[team]=backups[team].slice(0,7)});
         saveLocalTeams();
         localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(serverTime));
         renderTeams();
