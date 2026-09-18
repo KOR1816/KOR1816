@@ -98,7 +98,7 @@ footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid
 #castleEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media(max-width:700px){#castleView,#castleEdit{grid-template-columns:1fr!important}}
 </style></head><body>
-<div class="lang-switch"><button type="button" data-lang="ko" onclick="window.kor1816SetLang('ko');return false;">🇰🇷 한국어</button><button type="button" data-lang="en" onclick="window.kor1816SetLang('en');return false;">🇺🇸 English</button><button type="button" data-lang="ja" onclick="window.kor1816SetLang('ja');return false;">🇯🇵 日本語</button><button type="button" data-lang="zh" onclick="window.kor1816SetLang('zh');return false;">🇨🇳 中文</button><button type="button" data-lang="de" onclick="window.kor1816SetLang('de');return false;">🇩🇪 Deutsch</button><button type="button" data-lang="es" onclick="window.kor1816SetLang('es');return false;">🇪🇸 Español</button><button type="button" data-lang="it" onclick="window.kor1816SetLang('it');return false;">🇮🇹 Italiano</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
+<div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
 <nav><button onclick="show('home')">🏠 홈</button><button onclick="show('viking')">🛡️ 바이킹</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button><button onclick="show('castle')">🏰 공성전</button><button onclick="show('bear')">🐻 곰사냥</button><button onclick="show('rules')">📋 규칙</button></nav>
 <main class="wrap">
 <section id="home" class="page active"><div class="sword-image-wrap"><img src="./1816.jpg?v=2" alt="KOR1816" class="sword-image"></div>
@@ -561,157 +561,145 @@ window.addEventListener('load',function(){
   try{renderBear(bearDataLocal());setBearAdminMode();}catch(e){console.error(e)}
   try{renderRules(rulesDataLocal());setRulesAdminMode();}catch(e){console.error(e)}
 });
-</script><script id="language-bridge">
+</script><script id="full-i18n">
 (function(){
+  const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de'};
   const NAV={
     ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
     en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
     ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
     zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
-    de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],
-    es:['🏠 Inicio','🛡️ Vikingos','⚔️ Disputa de la Espada Sagrada','⚔️ Guerra de las Tres Alianzas','🏰 Asedio del Castillo','🐻 Caza del Oso','📋 Reglas'],
-    it:['🏠 Home','🛡️ Vichinghi','⚔️ Contesa della Spada Sacra','⚔️ Guerra delle Tre Alleanze','🏰 Assedio del Castello','🐻 Caccia all’Orso','📋 Regole']
+    de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln']
   };
-  const langs=['ko','en','ja','zh','de','es','it'];
-  window.kor1816SetLang=function(lang){
-    if(!NAV[lang]) return false;
-    try{
-      localStorage.setItem('kor1816_lang',lang);
-      document.documentElement.lang=lang;
-      document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
-      document.querySelectorAll('.lang-switch button').forEach((b,i)=>b.classList.toggle('active',langs[i]===lang));
-      if(typeof window.setLang==='function') window.setLang(lang);
-      else window.dispatchEvent(new CustomEvent('kor1816-lang',{detail:lang}));
-    }catch(e){console.error('KOR1816 language switch failed:',e)}
-    return false;
+  const TERMS={
+    en:{'성검쟁탈':'Holy Sword Clash','3대연맹전':'Three Alliances War','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','집결장':'Rally Leader','집결원':'Rally Member','개돌조':'Charge Team','대체자':'Substitute','비율':'Troop Ratio','1열':'Row 1','2열':'Row 2','3열':'Row 3','4열':'Row 4','수성':'Defense','집결':'Rally','공격':'Attack','연습':'Practice','공지':'Notice','공지 일정':'Schedule','새로고침':'Refresh','관리자 수정':'Admin Edit','저장':'Save','바이킹':'Viking','편성':'Formation','규칙':'Rules','안내':'Guide','진행':'Progress','소통':'Communication','협력':'Cooperation','성장':'Growth'},
+    ja:{'성검쟁탈':'聖剣争奪','3대연맹전':'3大連盟戦','공성전':'攻城戦','곰사냥':'熊狩り','곰 사냥':'熊狩り','집결장':'集結リーダー','집결원':'集結メンバー','개돌조':'突撃隊','대체자':'交代要員','비율':'兵力比率','1열':'1列目','2열':'2列目','3열':'3列目','4열':'4列目','수성':'防衛','집결':'集結','공격':'攻撃','연습':'練習','공지':'お知らせ','공지 일정':'スケジュール','새로고침':'更新','관리자 수정':'管理者編集','저장':'保存','바이킹':'バイキング','편성':'編成','규칙':'ルール','안내':'案内','진행':'進行','소통':'コミュニケーション','협력':'協力','성장':'成長'},
+    zh:{'성검쟁탈':'圣剑争夺','3대연맹전':'三大联盟战','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','집결장':'集结队长','집결원':'集结成员','개돌조':'突击队','대체자':'替补','비율':'兵力比例','1열':'第1排','2열':'第2排','3열':'第3排','4열':'第4排','수성':'防守','집결':'集结','공격':'攻击','연습':'练习','공지':'公告','공지 일정':'日程','새로고침':'刷新','관리자 수정':'管理员编辑','저장':'保存','바이킹':'维京','편성':'编组','규칙':'规则','안내':'说明','진행':'进行','소통':'沟通','협력':'合作','성장':'成长'},
+    de:{'성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','개돌조':'Sturmtrupp','대체자':'Ersatz','비율':'Truppenverhältnis','1열':'Reihe 1','2열':'Reihe 2','3열':'Reihe 3','4열':'Reihe 4','수성':'Verteidigung','집결':'Versammlung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','공지 일정':'Zeitplan','새로고침':'Aktualisieren','관리자 수정':'Admin bearbeiten','저장':'Speichern','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf','소통':'Kommunikation','협력':'Zusammenarbeit','성장':'Wachstum'}
   };
-  document.addEventListener('DOMContentLoaded',function(){
-    document.querySelectorAll('.lang-switch button').forEach((b,i)=>{
-      b.onclick=function(e){e.preventDefault();window.kor1816SetLang(langs[i]);return false};
-    });
-    const saved=localStorage.getItem('kor1816_lang')||'ko';
-    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[saved]&&NAV[saved][i])b.textContent=NAV[saved][i]});
-  });
-})();
-</script><script id="full-i18n">
-(function(){
-const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de',es:'es',it:'it'};
-/* language bridge: install the global click handler before any translation work */
-window.setLang=function(lang){
- if(!['ko','en','ja','zh','de','es','it'].includes(lang)) return;
- localStorage.setItem('kor1816_lang',lang);
- const navs={
-  ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
-  en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
-  ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
-  zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
-  de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],
-  es:['🏠 Inicio','🛡️ Vikingos','⚔️ Disputa de la Espada Sagrada','⚔️ Guerra de las Tres Alianzas','🏰 Asedio del Castillo','🐻 Caza del Oso','📋 Reglas'],
-  it:['🏠 Home','🛡️ Vichinghi','⚔️ Contesa della Spada Sacra','⚔️ Guerra delle Tre Alleanze','🏰 Assedio del Castello','🐻 Caccia all’Orso','📋 Regole']
- };
- const names=['ko','en','ja','zh','de','es','it'];
- document.querySelectorAll('.lang-switch button').forEach((b,i)=>{b.textContent=navs[lang][i];b.onclick=function(e){e.preventDefault();window.setLang(names[i]);}});
- if(typeof token!=='undefined') token++;
- if(typeof restore==='function') restore();
- document.querySelectorAll('nav button').forEach((b,i)=>{b.textContent=(navs[lang]&&navs[lang][i])||b.textContent;});
- if(lang!=='ko' && typeof apply==='function') setTimeout(apply,0);
-};
+  const TARGETS=['#homeView','#vikingView','#teams > .card > h2','#teams .team-columns-wrap','#alliance > .card > h2','#alliance > .card > h2 + .sword-image-wrap','#allianceView','#castle > .card > h2','#castleView','#bear > .card > h2','#bearView','#rules > .card > h2','#rulesView'];
+  let token=0;
 
-const NAV={
-ko:['🏠 홈','🛡️ 바이킹','⚔️ 성검쟁탈','⚔️ 3대연맹전','🏰 공성전','🐻 곰사냥','📋 규칙'],
-en:['🏠 Home','🛡️ Viking','⚔️ Holy Sword Clash','⚔️ Three Alliances War','🏰 Castle Siege','🐻 Bear Hunt','📋 Rules'],
-ja:['🏠 ホーム','🛡️ バイキング','⚔️ 聖剣争奪','⚔️ 3大連盟戦','🏰 攻城戦','🐻 熊狩り','📋 ルール'],
-zh:['🏠 首页','🛡️ 维京','⚔️ 圣剑争夺','⚔️ 三大联盟战','🏰 攻城战','🐻 猎熊','📋 规则'],
-de:['🏠 Startseite','🛡️ Wikinger','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen','🏰 Belagerung','🐻 Bärenjagd','📋 Regeln'],
-es:['🏠 Inicio','🛡️ Vikingos','⚔️ Disputa de la Espada Sagrada','⚔️ Guerra de las Tres Alianzas','🏰 Asedio del Castillo','🐻 Caza del Oso','📋 Reglas'],
-it:['🏠 Home','🛡️ Vichinghi','⚔️ Contesa della Spada Sacra','⚔️ Guerra delle Tre Alleanze','🏰 Assedio del Castello','🐻 Caccia all’Orso','📋 Regole']
-};
-const T={
-en:{'성검쟁탈':'Holy Sword Clash','3대연맹전':'Three Alliances War','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','집결장':'Rally Leader','집결원':'Rally Member','비율':'Troop Ratio','수성':'Defense','공격':'Attack','연습':'Practice','공지':'Notice','공지 일정':'Schedule','바이킹':'Viking','편성':'Formation','규칙':'Rules','안내':'Guide','진행':'Progress'},
-ja:{'성검쟁탈':'聖剣争奪','3대연맹전':'3大連盟戦','공성전':'攻城戦','곰사냥':'熊狩り','곰 사냥':'熊狩り','집결장':'集結リーダー','집결원':'集結メンバー','비율':'兵力比率','수성':'防衛','공격':'攻撃','연습':'練習','공지':'お知らせ','공지 일정':'スケジュール','바이킹':'バイキング','편성':'編成','규칙':'ルール','안내':'案内','진행':'進行'},
-zh:{'성검쟁탈':'圣剑争夺','3대연맹전':'三大联盟战','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','집결장':'集结队长','집결원':'集结成员','비율':'兵力比例','수성':'防守','공격':'攻击','연습':'练习','공지':'公告','공지 일정':'日程','바이킹':'维京','편성':'编组','규칙':'规则','안내':'说明','진행':'进行'},
-de:{'성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','비율':'Truppenverhältnis','수성':'Verteidigung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','공지 일정':'Zeitplan','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf'},
-es:{
-'9.19 radar cuando termine 출발하세요!!':'¡Salgan cuando termine el radar a las 9:19!','9.19 radar cuando termine 출발하세요!':'¡Salgan cuando termine el radar a las 9:19!','9.19 레이더 끝나면 출발하세요!':'¡Salgan cuando termine el radar a las 9:19!','출발하세요':'¡Salgan!','Amade데 / 페라 / 로사':'Amade / Fera / Rosa','아마데 / 페라 / 로사':'Amade / Fera / Rosa','상대ve 강하면 Jäger 고려':'Si el rival es fuerte, considera a Jäger','상대가 강하면 Jäger 고려':'Si el rival es fuerte, considera a Jäger','상대가 강하면':'Si el rival es fuerte','Jäger 고려':'considera a Jäger','페라':'Fera','로사':'Rosa','알카':'Alka','마르고':'Margo','살로':'Salo','고든':'Gordon','예거':'Jäger','첸코':'Chenko','아마':'Amade','아마네':'Amane','파드':'Fad','살로':'Salo','힐데':'Hilde','퀸':'Queen','2첸코':'2 Chenko','2아마':'2 Amade','2살로':'2 Salo','2힐데':'2 Hilde','4힐데':'4 Hilde','1살로':'1 Salo','집결장':'Líder de reunión','집결원':'Miembro de reunión','비율':'Proporción de tropas','수성':'Defensa','공격':'Ataque','연습':'Práctica','성검쟁탈':'Disputa de la Espada Sagrada','3대연맹전':'Guerra de las Tres Alianzas','공성전':'Asedio del Castillo','곰사냥':'Caza del Oso','곰 사냥':'Caza del Oso','바이킹 안내':'Guía de Vikingos','바이킹 진행':'Desarrollo de Vikingos','바이킹 편성':'Formación de Vikingos','바이킹 규칙':'Reglas de Vikingos','본부(HQ) 첫영웅 Gordon 70000 입니다.':'Cuartel General (HQ): el primer héroe es Gordon con 70 000 tropas.','건들면 문다!':'¡Si lo tocas, muerde!','곰친자들의 모임!!':'¡La reunión de los amantes de los osos!'
-},
-it:{
-'출발하세요':'Partite!','아마데 / 페라 / 로사':'Amade / Fera / Rosa','상대가 강하면':'Se il rivale è forte','Jäger 고려':'considera Jäger','페라':'Fera','로사':'Rosa','알카':'Alka','마르고':'Margo','살로':'Salo','성검쟁탈':'Contesa della Spada Sacra','3대연맹전':'Guerra delle Tre Alleanze','공성전':'Assedio del Castello','곰사냥':'Caccia all’Orso','곰 사냥':'Caccia all’Orso','집결장':'Capo della spedizione','집결원':'Membro della spedizione','비율':'Rapporto truppe','수성':'Difesa','공격':'Attacco','연습':'Allenamento','바이킹 안내':'Guida dei Vichinghi','바이킹 진행':'Svolgimento dei Vichinghi','바이킹 편성':'Formazione dei Vichinghi','바이킹 규칙':'Regole dei Vichinghi'}
-}
-};
-const TARGETS=['header','.sub','nav','#homeView','#vikingView','#teams','#alliance','#castle','#bear','#rules'];
-let token=0;
-const hasKo=s=>/[\uac00-\ud7a3]/.test(s||'');
-function dictText(s,lang){let x=s,d=T[lang]||{};Object.keys(d).sort((a,b)=>b.length-a.length).forEach(k=>x=x.split(k).join(d[k]));return x}
-function restore(){TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{if(el.dataset.kor1816Source!==undefined)el.innerHTML=el.dataset.kor1816Source}));document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV.ko[i]||b.textContent)}
-function capture(){TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.dataset.kor1816Source=el.innerHTML))}
-const CACHE='kor1816_i18n_mymemory_v2';let cache={};try{cache=JSON.parse(localStorage.getItem(CACHE)||'{}')||{}}catch(e){}
-function saveCache(){try{localStorage.setItem(CACHE,JSON.stringify(cache))}catch(e){}}
-const LOCAL={
-en:{'🏰 KOR1816':'🏰 KOR1816','건들면 문다!':'If you touch it, it bites!','곰친자들의 모임!!':'Bear Lovers’ Gathering!!','📢 공지':'📢 Notice','📅 공지 일정':'📅 Schedule','🌍 Kingdom 1816':'🌍 Kingdom 1816','소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.':'Communication · Cooperation · Growth · We work together with strong KVK coordination.','🛡️ 바이킹 안내':'🛡️ Viking Guide','⚔️ 바이킹 진행':'⚔️ Viking Progress','👥 바이킹 편성':'👥 Viking Formation','📋 바이킹 규칙':'📋 Viking Rules','⚔️ 집결장 공격':'⚔️ Rally Leader Attack','🛡️ 수성':'🛡️ Defense','👥 집결원 공격':'👥 Rally Member Attack','👥 집결원 수성':'👥 Rally Member Defense','🐻 곰 사냥':'🐻 Bear Hunt','📋 KOR1816 운영 안내':'📋 KOR1816 Operations Guide','공지사항을 먼저 확인해주세요.':'Please check the notices first.','참석이 어려운 경우 미리 DM으로 알려주세요.':'If you cannot attend, please let us know by DM in advance.','KVK는 소통과 협력을 우선합니다.':'KVK prioritizes communication and cooperation.','팀 편성은 이벤트별 공지를 기준으로 합니다.':'Team formation follows the notice for each event.'},
-ja:{'건들면 문다!':'触ると噛みつく！','곰친자들의 모임!!':'熊好きの集まり!!','📢 공지':'📢 お知らせ','📅 공지 일정':'📅 スケジュール','🛡️ 바이킹 안내':'🛡️ バイキング案内','⚔️ 바이킹 진행':'⚔️ バイキング進行','👥 바이킹 편성':'👥 バイキング編成','📋 바이킹 규칙':'📋 バイキングルール','⚔️ 집결장 공격':'⚔️ 集結リーダー攻撃','🛡️ 수성':'🛡️ 防衛','👥 집결원 공격':'👥 集結メンバー攻撃','👥 집결원 수성':'👥 集結メンバー防衛','🐻 곰 사냥':'🐻 熊狩り','📋 KOR1816 운영 안내':'📋 KOR1816運営案内'},
-zh:{'건들면 문다!':'碰它就咬！','곰친자들의 모임!!':'熊爱好者集合!!','📢 공지':'📢 公告','📅 공지 일정':'📅 日程','🛡️ 바이킹 안내':'🛡️ 维京说明','⚔️ 바이킹 진행':'⚔️ 维京进行','👥 바이킹 편성':'👥 维京编组','📋 바이킹 규칙':'📋 维京规则','⚔️ 집결장 공격':'⚔️ 集结队长攻击','🛡️ 수성':'🛡️ 防守','👥 집결원 공격':'👥 集结成员攻击','👥 집결원 수성':'👥 集结成员防守','🐻 곰 사냥':'🐻 猎熊','📋 KOR1816 운영 안내':'📋 KOR1816运营说明'},
-de:{'건들면 문다!':'Nicht anfassen – es beißt!','곰친자들의 모임!!':'Treffen der Bärenliebhaber!!','📢 공지':'📢 Ankündigung','📅 공지 일정':'📅 Zeitplan','🛡️ 바이킹 안내':'🛡️ Wikinger-Anleitung','⚔️ 바이킹 진행':'⚔️ Wikinger-Ablauf','👥 바이킹 편성':'👥 Wikinger-Aufstellung','📋 바이킹 규칙':'📋 Wikinger-Regeln','⚔️ 집결장 공격':'⚔️ Angriff des Versammlungsleiters','🛡️ 수성':'🛡️ Verteidigung','👥 집결원 공격':'👥 Angriff der Versammlungsmitglieder','👥 집결원 수성':'👥 Verteidigung der Versammlungsmitglieder','🐻 곰 사냥':'🐻 Bärenjagd','📋 KOR1816 운영 안내':'📋 KOR1816-Betriebsanleitung'},
-es:{'건들면 문다!':'¡Si lo tocas, muerde!','곰친자들의 모임!!':'¡Reunión de los amantes de los osos!','📢 공지':'📢 Avisos','📅 공지 일정':'📅 Horario','🛡️ 바이킹 안내':'🛡️ Guía de Vikingos','⚔️ 바이킹 진행':'⚔️ Desarrollo de Vikingos','👥 바이킹 편성':'👥 Formación de Vikingos','📋 바이킹 규칙':'📋 Reglas de Vikingos','⚔️ 집결장 공격':'⚔️ Ataque del líder de reunión','🛡️ 수성':'🛡️ Defensa','👥 집결원 공격':'👥 Ataque de miembros de reunión','👥 집결원 수성':'👥 Defensa de miembros de reunión','🐻 곰 사냥':'🐻 Caza del Oso','📋 KOR1816 운영 안내':'📋 Guía de operaciones KOR1816'},
-it:{'건들면 문다!':'Se lo tocchi, morde!','곰친자들의 모임!!':'Riunione degli amanti degli orsi!!','📢 공지':'📢 Avvisi','📅 공지 일정':'📅 Programma','🛡️ 바이킹 안내':'🛡️ Guida dei Vichinghi','⚔️ 바이킹 진행':'⚔️ Svolgimento dei Vichinghi','👥 바이킹 편성':'👥 Formazione dei Vichinghi','📋 바이킹 규칙':'📋 Regole dei Vichinghi','⚔️ 집결장 공격':'⚔️ Attacco del capo della spedizione','🛡️ 수성':'🛡️ Difesa','👥 집결원 공격':'👥 Attacco dei membri della spedizione','👥 집결원 수성':'👥 Difesa dei membri della spedizione','🐻 곰 사냥':'🐻 Caccia all’Orso','📋 KOR1816 운영 안내':'📋 Guida operativa KOR1816'}
-};
-function localTranslate(x,lang){
- let y=dictText(x,lang),d=LOCAL[lang]||{};
- Object.keys(d).sort((a,b)=>b.length-a.length).forEach(k=>{y=y.split(k).join(d[k])});
- return y;
-}
-async function tr(s,lang){
- let x=localTranslate(s,lang);
- if(!hasKo(x)||!x.trim())return x;
- let key=lang+'::'+x;
- if(cache[key])return cache[key];
- const urls=[
-  'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl='+encodeURIComponent(LANGS[lang])+'&dt=t&q='+encodeURIComponent(x),
-  'https://api.mymemory.translated.net/get?q='+encodeURIComponent(x)+'&langpair=ko|'+encodeURIComponent(LANGS[lang])
- ];
- for(const u of urls){
-  try{
-   const r=await fetch(u,{mode:'cors'});
-   if(!r.ok)continue;
-   const d=await r.json();
-   const o=Array.isArray(d)&&Array.isArray(d[0])?d[0].map(v=>v&&v[0]||'').join(''):d&&d.responseData&&d.responseData.translatedText;
-   if(o&&o.trim()&&o!==x&&!hasKo(o)){cache[key]=o;saveCache();return o}
-  }catch(e){}
- }
- return x;
-}
-async function translateRoot(root,lang,my){
- const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),a=[];let n;
- while(n=w.nextNode()){let p=n.parentElement;if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button,input,textarea,select'))continue;if(hasKo(n.nodeValue)&&n.nodeValue.trim())a.push(n)}
- for(let i=0;i<a.length;i+=8){if(my!==token)return false;let b=a.slice(i,i+8),o=await Promise.all(b.map(n=>tr(n.nodeValue,lang)));b.forEach((n,j)=>n.nodeValue=o[j])}
- return true
-}
-async function apply(){let my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';restore();if(lang==='ko')return;document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV[lang]?.[i]||b.textContent);for(const sel of TARGETS){for(const el of document.querySelectorAll(sel)){if(my!==token)return;let box=document.createElement('div');box.innerHTML=el.dataset.kor1816Source||el.innerHTML;await translateRoot(box,lang,my);if(my!==token)return;el.innerHTML=box.innerHTML}}if(!await translateRoot(document.body,lang,my))return;}
-/* legacy setLang replaced by the early global bridge */
-function bindLanguageButtons(){
- const langs=['ko','en','ja','zh','de','es','it'];
- document.querySelectorAll('.lang-switch button').forEach((b,i)=>{
-   b.onclick=function(ev){ev.preventDefault();window.setLang(langs[i]);};
- });
-}
-bindLanguageButtons();
-let refreshTimer=0;
-function refresh(){
- clearTimeout(refreshTimer);
- refreshTimer=setTimeout(()=>{
-   restore();capture();
-   if((localStorage.getItem('kor1816_lang')||'ko')!=='ko')setTimeout(apply,50);
- },800);
-}
-function hook(name){
- const f=window[name];
- if(typeof f!=='function')return;
- window[name]=function(){
-   let r=f.apply(this,arguments);
-   refresh();
-   return r;
- }
-}
-['renderViking','renderCastle','renderHome','renderBear','renderRules','renderAlliance','renderTeams'].forEach(hook);
-window.addEventListener('load',()=>setTimeout(refresh,1200));
+  function hasKo(s){return /[\uac00-\ud7a3]/.test(s||'')}
+  function restore(){
+    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
+      if(el.dataset.kor1816Source!==undefined)el.innerHTML=el.dataset.kor1816Source;
+    }));
+    document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV.ko[i]||b.textContent);
+  }
+  function capture(){
+    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.dataset.kor1816Source=el.innerHTML));
+  }
+  function terms(text,lang){
+    let out=text;
+    const dict=TERMS[lang]||{};
+    Object.keys(dict).sort((a,b)=>b.length-a.length).forEach(k=>{out=out.split(k).join(dict[k])});
+    return out;
+  }
+  const CACHE_KEY='kor1816_i18n_cache_v2';
+  let cache={};
+  try{cache=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}catch(e){cache={}}
+  function cacheKey(text,lang){return lang+'::'+text}
+  async function tr(text,lang){
+    if(!hasKo(text)||!text.trim())return text;
+    const masked=terms(text,lang);
+    if(!hasKo(masked))return masked;
+    const key=cacheKey(masked,lang);
+    if(cache[key])return cache[key];
+    try{
+      const u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(masked)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]);
+      const r=await fetch(u);if(!r.ok)throw 0;
+      const d=await r.json();
+      const out=d&&d.responseData&&d.responseData.translatedText?d.responseData.translatedText:masked;
+      cache[key]=out;
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify(cache))}catch(e){}
+      return out;
+    }catch(e){return masked}
+  }
+  async function translateElement(el,lang,my){
+    const src=el.dataset.kor1816Source||el.innerHTML;
+    const box=document.createElement('div');box.innerHTML=src;
+    const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
+    const nodes=[];let n;
+    while(n=walker.nextNode()){
+      const p=n.parentElement;
+      if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button'))continue;
+      if(hasKo(n.nodeValue)&&n.nodeValue.trim())nodes.push(n);
+    }
+    // Parallelize a small number of requests; glossary handles fixed terms.
+    for(let i=0;i<nodes.length;i+=8){
+      if(my!==token)return null;
+      const batch=nodes.slice(i,i+8);
+      const outs=await Promise.all(batch.map(x=>tr(x.nodeValue,lang)));
+      batch.forEach((x,j)=>x.nodeValue=outs[j]);
+      if(i+8<nodes.length) await new Promise(r=>setTimeout(r,0));
+    }
+    return box.innerHTML;
+  }
+  async function apply(){
+    const my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';
+    restore();if(lang==='ko')return;
+    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
+    // Show glossary translations immediately; API fills the remaining sentences.
+    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
+      const src=el.dataset.kor1816Source||el.innerHTML;
+      const box=document.createElement('div');box.innerHTML=src;
+      const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
+      let n;
+      while(n=walker.nextNode()){
+        const p=n.parentElement;
+        if(!p||['SCRIPT','STYLE'].includes(p.tagName)||p.closest('button'))continue;
+        if(hasKo(n.nodeValue)&&n.nodeValue.trim())n.nodeValue=terms(n.nodeValue,lang);
+      }
+      el.innerHTML=box.innerHTML;
+    }));
+    for(const sel of TARGETS){
+      for(const el of document.querySelectorAll(sel)){
+        if(my!==token)return;
+        const out=await translateElement(el,lang,my);
+        if(out!==null)el.innerHTML=out;
+      }
+    }
+  }
+  window.setLang=function(lang){
+    if(!['ko','en','ja','zh','de'].includes(lang))return;
+    localStorage.setItem('kor1816_lang',lang);token++;restore();
+    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang]&&NAV[lang][i])b.textContent=NAV[lang][i]});
+    if(lang!=='ko')setTimeout(apply,0);
+  };
+  // Re-capture dynamic Firebase-rendered content. Viking/Castle bodies are
+  // populated by render functions after page load, so an early snapshot is empty.
+  function refreshAfterRender(){
+    restore();
+    capture();
+    const saved=localStorage.getItem('kor1816_lang')||'ko';
+    if(saved!=='ko')setTimeout(apply,0);
+  }
+  function hookRender(name){
+    const fn=window[name];
+    if(typeof fn!=='function')return;
+    window[name]=function(){
+      const out=fn.apply(this,arguments);
+      setTimeout(refreshAfterRender,0);
+      return out;
+    };
+  }
+  hookRender('renderViking');
+  hookRender('renderCastle');
+  hookRender('renderHome');
+  hookRender('renderBear');
+  hookRender('renderRules');
+  hookRender('renderAlliance');
+  hookRender('renderTeams');
+
+  // IMPORTANT: capture is refreshed after Firebase renders its data.
+  // Hook the existing render functions without changing their behavior.
+  window.addEventListener('load',function(){
+    setTimeout(function(){
+      capture();
+      const saved=localStorage.getItem('kor1816_lang')||'ko';
+      if(saved!=='ko')setTimeout(apply,150);
+    },500);
+  });
 })();
 </script></body></html>
