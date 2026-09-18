@@ -645,6 +645,31 @@ window.addEventListener('load',function(){
     document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang]&&NAV[lang][i])b.textContent=NAV[lang][i]});
     if(lang!=='ko')setTimeout(apply,0);
   };
+  // Re-capture dynamic Firebase-rendered content. Viking/Castle bodies are
+  // populated by render functions after page load, so an early snapshot is empty.
+  function refreshAfterRender(){
+    restore();
+    capture();
+    const saved=localStorage.getItem('kor1816_lang')||'ko';
+    if(saved!=='ko')setTimeout(apply,0);
+  }
+  function hookRender(name){
+    const fn=window[name];
+    if(typeof fn!=='function')return;
+    window[name]=function(){
+      const out=fn.apply(this,arguments);
+      setTimeout(refreshAfterRender,0);
+      return out;
+    };
+  }
+  hookRender('renderViking');
+  hookRender('renderCastle');
+  hookRender('renderHome');
+  hookRender('renderBear');
+  hookRender('renderRules');
+  hookRender('renderAlliance');
+  hookRender('renderTeams');
+
   // IMPORTANT: capture is refreshed after Firebase renders its data.
   // Hook the existing render functions without changing their behavior.
   window.addEventListener('load',function(){
