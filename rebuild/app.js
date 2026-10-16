@@ -539,13 +539,15 @@ async function loadNotices(){
  try{
   let cloud=await readCloud("notices");
   if(!cloud){const legacy=await getDoc(legacyDoc("notices"));cloud=legacy.exists()?legacy.data():null;}
-  if(cloud?.noticesV1){
-   const saved=cloud.noticesV1;
+  const directNoticeKeys=Object.keys(NOTICE_DEFAULTS);
+  const saved=cloud?.noticesV1&&typeof cloud.noticesV1==="object"?cloud.noticesV1:
+   (cloud&&directNoticeKeys.some(key=>typeof cloud[key]==="string")?cloud:null);
+  if(saved){
    const translated={};
    for(const lang of LANGS.slice(1))translated[lang]={...(NOTICE_TRANSLATIONS[lang]||{}),...(saved.translations?.[lang]||{})};
    const koreanSaved={};
-   for(const key of Object.keys(NOTICE_DEFAULTS))koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
-   noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,updatedAt:saved.updatedAt||cloud.updatedAt||0};
+   for(const key of directNoticeKeys)koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
+   noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,updatedAt:saved.updatedAt||cloud?.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
   noticeEditLang="ko";
   renderNotices();setMsg("notice-status",message("load"));
