@@ -669,6 +669,41 @@ async function toggleNewCastleAdmin(){
  setAdminButton(b,adminModes.castlewar1);
  renderCastleWar();
 }
+const CASTLE_CARD_TEXT={
+ ko:{leader:"집결장",tierA:"A등급",tierB:"B등급",tierC:"C등급",tierNone:"등급 없음",salo:"살로",hilde:"힐데",choose:"닉네임 선택",empty:"—"},
+ en:{leader:"Rally leader",tierA:"Tier A",tierB:"Tier B",tierC:"Tier C",tierNone:"No tier",salo:"Salo",hilde:"Hilde",choose:"Choose nickname",empty:"—"},
+ ja:{leader:"集結長",tierA:"Aランク",tierB:"Bランク",tierC:"Cランク",tierNone:"ランクなし",salo:"サロ",hilde:"ヒルデ",choose:"ニックネームを選択",empty:"—"},
+ zh:{leader:"集结队长",tierA:"A级",tierB:"B级",tierC:"C级",tierNone:"无等级",salo:"萨洛",hilde:"希尔德",choose:"选择昵称",empty:"—"},
+ de:{leader:"Sammelführer",tierA:"Rang A",tierB:"Rang B",tierC:"Rang C",tierNone:"Ohne Rang",salo:"Salo",hilde:"Hilde",choose:"Spitznamen wählen",empty:"—"},
+ it:{leader:"Capo raduno",tierA:"Grado A",tierB:"Grado B",tierC:"Grado C",tierNone:"Senza grado",salo:"Salo",hilde:"Hilde",choose:"Scegli nickname",empty:"—"},
+ es:{leader:"Líder de reunión",tierA:"Rango A",tierB:"Rango B",tierC:"Rango C",tierNone:"Sin rango",salo:"Salo",hilde:"Hilde",choose:"Elegir apodo",empty:"—"},
+ tr:{leader:"Toplanma lideri",tierA:"A kademesi",tierB:"B kademesi",tierC:"C kademesi",tierNone:"Kademesiz",salo:"Salo",hilde:"Hilde",choose:"Takma ad seç",empty:"—"}
+};
+function castleCardText(key){return (CASTLE_CARD_TEXT[currentLang]||CASTLE_CARD_TEXT.ko)[key]||key;}
+function castleAvatar(name){
+ const style=vikingSpriteStyle(name);
+ return '<span class="castle-avatar" '+(style?'style="'+style+'"':"")+'>'+(style?"":'<span>?</span>')+'</span>';
+}
+function castleParticipantCard(p){
+ if(!p||!p.nickname)return '<div class="castle-person-empty">—</div>';
+ const name=p.nickname,fixed=FIXED_LEADERS.includes(name),hasTier=["A","B","C"].includes(p.tier),tier=fixed?"S":hasTier?p.tier:"😭";
+ const barracks=fixed?castleCardText("leader"):castleCardText(p.tier==="A"?"tierA":p.tier==="B"?"tierB":p.tier==="C"?"tierC":"tierNone");
+ const skills=[];
+ if(p.salo)skills.push(castleCardText("salo")+" O");
+ if(p.hilde)skills.push(castleCardText("hilde")+" O");
+ return '<div class="castle-person-card"><strong class="castle-rank'+(hasTier||fixed?"":" castle-rank-none")+'">'+tier+'</strong>'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong>'+esc(name)+'</strong><span>('+esc(barracks)+')</span></div><small>'+esc(skills.join(" · "))+'</small></div></div>';
+}
+function castleMemberCard(name,meta){
+ if(!name)return '<div class="castle-person-empty">—</div>';
+ const p=participants.find(x=>x.nickname===name);
+ if(p)return castleParticipantCard(p);
+ if(FIXED_LEADERS.includes(name))return castleParticipantCard({nickname:name,tier:"S",salo:false,hilde:false});
+ return '<div class="castle-person-card">'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong>'+esc(name)+'</strong></div><small>'+esc(meta||"")+'</small></div></div>';
+}
+function castleWarSelect(value){
+ const names=[...new Set([...FIXED_LEADERS,...participants.map(p=>p.nickname)])];
+ return '<option value="">'+esc(castleCardText("choose"))+'</option>'+names.map(n=>{const p=participants.find(x=>x.nickname===n),tier=FIXED_LEADERS.includes(n)?"S":p&&["A","B","C"].includes(p.tier)?p.tier:"—";return '<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(tier+" · "+n)+'</option>';}).join("");
+}
 function castleParticipantMeta(name){const p=participants.find(x=>x.nickname===name);if(!name)return "";if(FIXED_LEADERS.includes(name))return "S · 집결장";if(!p)return "";return (p.tier||"—")+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X");}
 function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
@@ -677,10 +712,10 @@ function renderCastleWar(){
  const turretGroups=[["north","Leo li","북측포탑"],["west","Jinno","서측포탑"],["reserve","SsungBi","포탑 (예비)"]];
  const names=[...new Set([...FIXED_LEADERS,...participants.map(p=>p.nickname)])];
  const optionList=(value)=>'<option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(n)+'</option>').join("");
- const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+optionList(name)+'</select>':'<div class="war-name"><strong>'+esc(name||"—")+'</strong><small>'+esc(castleParticipantMeta(name))+'</small></div>';
- const leaderCell=(key)=>adminModes.castlewar1?'<select data-war-leader="'+key+'">'+optionList(castleWarData.warLeaders[key]||"")+'</select>':'<div class="war-name">'+esc(castleWarData.warLeaders[key]||"—")+'</div>';
+ const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+castleWarSelect(name)+'</select>':castleMemberCard(name,castleParticipantMeta(name));
+ const leaderCell=(key)=>adminModes.castlewar1?'<select data-war-leader="'+key+'">'+castleWarSelect(castleWarData.warLeaders[key]||"")+'</select>':castleMemberCard(castleWarData.warLeaders[key]||"",castleCardText("leader"));
  const renderAttack=([key,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b>'+leaderCell(key)+'</div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
- const renderTurret=([key,leader,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b><div class="war-name">'+esc(leader)+'</div></div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
+ const renderTurret=([key,leader,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>'+esc(castleCardText("leader"))+'</b>'+castleMemberCard(leader,castleCardText("leader"))+'</div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
  if(attack)attack.innerHTML=groups.map(renderAttack).join("");
  if(turrets)turrets.innerHTML=turretGroups.map(renderTurret).join("");
  const waiting=$("#ncWarWaiting",root);
