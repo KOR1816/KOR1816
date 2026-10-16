@@ -191,10 +191,10 @@ function applyLanguage(lang){
  translateCommonControls();
  translateStatic();
  if(activePage==="home")renderHome();
- if(activePage==="seating")setMsg("seatingLatestMsg",latestBanner("seating"));
- if(activePage==="castlewar1")setMsg("ncWarMsg",latestBanner("castlewar1"));
- if(activePage==="castlelayout1")setMsg("castleLayout1Msg",latestBanner("castlelayout1"));
- if(activePage==="battleJoin")setMsg("ncJoinMsg",latestBanner("battleJoin"));
+ if(activePage==="seating")refreshTranslatedBanner("seating","seatingLatestMsg");
+ if(activePage==="castlewar1")refreshTranslatedBanner("castlewar1","ncWarMsg");
+ if(activePage==="castlelayout1")refreshTranslatedBanner("castlelayout1","castleLayout1Msg");
+ if(activePage==="battleJoin")refreshTranslatedBanner("battleJoin","ncJoinMsg");
  document.dispatchEvent(new CustomEvent("kor1816:languagechange",{detail:{language:currentLang}}));
 }
 const ORIGINAL_TEXT = new WeakMap();
@@ -246,6 +246,10 @@ function translateStatic(){
   const translated=translations[langIndex()];
   node.nodeValue=original.replace(trim,translated||trim);
  }
+}
+function refreshTranslatedBanner(pageId,targetId){
+ const el=$("#"+targetId),value=el?.textContent||"";
+ if(!value||/최신|Latest|latest|最新|已加载|Aktuelle|Ultima|Se ha cargado|En güncel/i.test(value))setMsg(targetId,latestBanner(pageId));
 }
 function latestBanner(id){
  const labels={
