@@ -750,7 +750,8 @@ async function loadNewCastleFeatures(){
    participants=normalizeParticipants(data||{});
    renderParticipants();setMsg("ncJoinMsg",latestBanner("battleJoin"));
   }else{
-   await loadParticipantRoster();
+   // Participant roster is auxiliary; its read failure must not block loading Castle War's own data.
+   try{await loadParticipantRoster();}catch(rosterError){console.warn("Participant roster unavailable for Castle War",rosterError);participants=[];}
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("castlewar1"));if(old.exists())data=old.data();}
    const war=data?.war||data?.castleWar||{};
@@ -894,7 +895,8 @@ async function saveNewCastleFeatures(){
 /* Castle Layout — its own document; never writes to the war or participant record. */
 async function loadCastleLayout1(){
  try{
-  await loadParticipantRoster();
+  // The saved layout must remain readable even when the separate participant roster is unavailable.
+  try{await loadParticipantRoster();}catch(rosterError){console.warn("Participant roster unavailable for Castle Layout",rosterError);participants=[];}
   const own=await readCloud("castlelayout1");
   if(own&&Array.isArray(own.slots))castleLayoutData={slots:own.slots.slice(0,28),updatedAt:own.updatedAt||0};
   else{
