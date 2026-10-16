@@ -127,3 +127,5 @@ label{display:block;min-width:0;color:#dbe5f7}
 .viking-member{display:flex;align-items:center;gap:7px;min-width:0}.viking-avatar{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border-radius:50%;overflow:hidden;background:#203253;color:#d8e4f7}.viking-avatar img{width:100%;height:100%;object-fit:cover}.viking-no-photo{font-size:12px}.viking-member-name{min-width:0;flex:1;overflow-wrap:anywhere}.viking-photo-button{padding:4px 6px;border-radius:6px;font-size:12px}.viking-empty{padding:8px 0;color:#8497b5;font-size:12px}
 
 .viking-sprite{display:block;width:32px;height:32px;flex:0 0 32px;background-repeat:no-repeat}
+
+button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;background:#15243e;color:var(--text);padding:9px 12px;font-weight:700}button:hover,.admin-btn:hover{border-color:#d9b85d;background:#1d3153}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #e5b84b;outline-offset:2px}button[hidden]{display:none!important}
