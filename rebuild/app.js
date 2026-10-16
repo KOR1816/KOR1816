@@ -743,7 +743,7 @@ function renderCastleWar(){
  if(turrets)turrets.innerHTML=turretGroups.map(renderTurret).join("");
  const waiting=$("#ncWarWaiting",root);
  if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
- const saveButton=$$("[data-newcastle='save']",root);
+ const saveButton=$("[data-newcastle='save']",root);
  if(saveButton)saveButton.style.display=adminModes.castlewar1?"inline-flex":"none";
  translateStatic();
 }
