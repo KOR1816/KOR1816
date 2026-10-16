@@ -1,6 +1,6 @@
 # KOR1816 rebuild — work in progress
 
-Development branch: `rebuild/full-rebuild-2026-10-17`
+Review branch: `rebuild/final-review-2026-10-17`
 
 This folder is an isolated development scaffold. It is not deployed and is not yet a finished replacement.
 
