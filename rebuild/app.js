@@ -231,7 +231,7 @@ function translateStatic(){
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
  for(const node of nodes){
   const parent=node.parentElement;if(!parent)continue;
-  if(parent.closest("button,.content,.notice,.msg,.participant-line,.seating-row,.castle-layout1-content,.viking-member,input,textarea,script,style"))continue;
+  if(parent.closest("button,.content,.notice,.msg,.participant-line,.seating-row,.castle-layout1-content,.war-name,.viking-member,input,textarea,script,style"))continue;
   if(!ORIGINAL_TEXT.has(node))ORIGINAL_TEXT.set(node,node.nodeValue);
   const original=ORIGINAL_TEXT.get(node),trim=original.trim();
   const translations=STATIC_TRANSLATIONS[trim];
@@ -640,6 +640,7 @@ async function toggleNewCastleAdmin(){
  if(b)b.textContent=adminModes.castlewar1?"🔒 수정 종료":"🔐 관리자 수정";
  renderCastleWar();
 }
+function castleParticipantMeta(name){const p=participants.find(x=>x.nickname===name);if(!name)return "";if(FIXED_LEADERS.includes(name))return "S · 집결장";if(!p)return "";return (p.tier||"—")+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X");}
 function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
  const attack=$("#ncWarAttack",root),turrets=$("#ncWarTurrets",root);
