@@ -120,6 +120,43 @@ function mergeData(raw){
 }
 function currentData(){return homeData.translations[currentLang]||DEFAULTS[currentLang]}
 function safeText(value){return String(value??"")}
+async function translateDynamicText(text,lang){
+ if(!text||lang==="ko")return text||"";
+ const targetLang=lang==="zh"?"zh-CN":lang;
+ const services=[
+  "https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=ko|"+encodeURIComponent(targetLang),
+  "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl="+encodeURIComponent(targetLang)+"&dt=t&q="+encodeURIComponent(text)
+ ];
+ for(const url of services){
+  try{
+   const response=await fetch(url,{mode:"cors",cache:"no-store"});
+   if(!response.ok)continue;
+   const data=await response.json();
+   const translated=data?.responseData?.translatedText|| (Array.isArray(data?.[0])?data[0].map(part=>part?.[0]||"").join(""):"");
+   if(translated&&translated!==text)return translated;
+  }catch(error){console.warn("Translation service unavailable",error)}
+ }
+ return text;
+}
+async function translateHomeDynamic(lang){
+ if(lang==="ko"||!homeData?.translations)return;
+ const source=homeData.translations.ko||DEFAULTS.ko;
+ const target={...(homeData.translations[lang]||DEFAULTS[lang])};
+ const fields=["latestTitle","latestBody","schedule","welcome"];
+ for(const field of fields){
+  const sourceText=String(source[field]??"");
+  const defaultSource=String(DEFAULTS.ko[field]??"");
+  const targetText=String(target[field]??"");
+  const defaultTarget=String(DEFAULTS[lang][field]??"");
+  if(sourceText && sourceText!==defaultSource && (!targetText||targetText===defaultTarget)){
+   const translated=await translateDynamicText(sourceText,lang);
+   if(currentLang!==lang)return;
+   if(translated&&translated!==sourceText)target[field]=translated;
+  }
+ }
+ homeData.translations[lang]=target;
+ renderHome();
+}
 function renderHome(){
  const d=currentData(),ui=UI[currentLang];
  el("homeLatestTitle").textContent="📢 "+(d.latestTitle||ui.latest.replace(/^📢\s*/,""));
@@ -177,6 +214,7 @@ el("languageSelect").addEventListener("change",event=>{
  currentLang=event.target.value;
  try{localStorage.setItem("kor1816_lang",currentLang)}catch{}
  renderHome();setMessage("");
+ void translateHomeDynamic(currentLang);
 });
 el("homeRefreshBtn").addEventListener("click",refreshHome);
 el("homeAdminBtn").addEventListener("click",async()=>{
