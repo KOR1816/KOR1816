@@ -278,7 +278,15 @@ async function saveHome(){
  try{homeData=await saveCloud("home",homeData);renderHome();setMsg("homeMsg",message("saved"));}
  catch(e){console.error(e);setMsg("homeMsg",message("failed"));}
 }
-async function toggleHomeAdmin(){await togglePageAdmin("home","homeAdminBtn","homeSaveBtn");}
+async function toggleHomeAdmin(){
+ const root=$("#home");if(!root)return;
+ if(!adminModes.home&&!await ensureGoogleAdmin())return;
+ adminModes.home=!adminModes.home;
+ const view=$("#homeView",root),edit=$("#homeEdit",root),button=$("#homeAdminBtn",root);
+ if(view)view.style.display=adminModes.home?"none":"grid";
+ if(edit)edit.style.display=adminModes.home?"grid":"none";
+ if(button)button.textContent=adminModes.home?"🔒 수정 종료":"🔐 관리자 수정";
+}
 
 /* Notices: Korean source and prewritten translations. */
 let noticeAdmin=false;
@@ -331,18 +339,26 @@ async function loadTeams(){
  const r=await loadData("teams",teamData);teamData={...teamData,...r.data};
  const root=$("#teams");
  for(const group of ["A","B","C","D"]){(teamData[group]||[]).forEach((v,i)=>{const el=$("#team-"+group+"-"+(i+1),root);if(el)el.value=v||"";});}
- (teamData.extra||[]).forEach((v,i)=>{const el=$("#team-extra-"+(i+1),root);if(el)el.value=v||"";});
+ (teamData.extra||[]).forEach((v,i)=>{const el=$("#extra-"+(i+1),root);if(el)el.value=v||"";});
  (teamData.subs||[]).forEach((v,i)=>{const el=$("#team-sub-"+(i+1),root)||$("#team-subs-"+(i+1),root);if(el)el.value=v||"";});
  setTeamsInputsEnabled(Boolean(adminModes.teams));
  if(r.source==="unavailable")setMsg("teamMsg",message("fallback"));else setMsg("teamMsg",message("load"));
 }
-async function toggleTeamsAdmin(){await togglePageAdmin("teams","teamAdminBtn","teamSaveBtn");}
+async function toggleTeamsAdmin(){
+ const root=$("#teams");if(!root)return;
+ if(!adminModes.teams&&!await ensureGoogleAdmin())return;
+ adminModes.teams=!adminModes.teams;
+ setTeamsInputsEnabled(adminModes.teams);
+ const b=$("#teamsAdminBtn",root),save=$("#teamsSaveBtn",root);
+ if(b)b.textContent=adminModes.teams?"🔒 수정 종료":"🔐 관리자 수정";
+ if(save)save.style.display=adminModes.teams?"inline-flex":"none";
+}
 async function saveAllTeams(){
  if(!adminModes.teams){alert(message("admin"));return;}
  const root=$("#teams"),next={A:[],B:[],C:[],D:[],extra:[],subs:[]};
  for(const g of ["A","B","C","D"])for(let i=1;i<=7;i++)next[g].push($("#team-"+g+"-"+i,root)?.value.trim()||"");
- for(let i=1;i<=2;i++)next.extra.push($("#team-extra-"+i,root)?.value.trim()||"");
- for(let i=1;i<=10;i++)next.subs.push($("#team-sub-"+i,root)?.value.trim()||$("#team-subs-"+i,root)?.value.trim()||"");
+ for(let i=1;i<=2;i++)next.extra.push($("#extra-"+i,root)?.value.trim()||"");
+ for(let i=1;i<=10;i++)next.subs.push($("#sub-"+i,root)?.value.trim()||"");
  try{teamData=await saveCloud("teams",next);setMsg("teamMsg",message("saved"));}
  catch(e){console.error(e);setMsg("teamMsg",message("failed"));}
 }
@@ -359,7 +375,15 @@ async function loadAlliance(){
  setInputsEnabled(root,Boolean(adminModes.alliance));
  setMsg("allianceMsg",r.source==="unavailable"?message("fallback"):message("load"));
 }
-async function toggleAllianceAdmin(){await togglePageAdmin("alliance","allianceAdminBtn","allianceSaveBtn");}
+async function toggleAllianceAdmin(){
+ const root=$("#alliance");if(!root)return;
+ if(!adminModes.alliance&&!await ensureGoogleAdmin())return;
+ adminModes.alliance=!adminModes.alliance;
+ const view=$("#allianceView",root),edit=$("#allianceEdit",root),b=$("#allianceAdminBtn",root);
+ if(view)view.style.display=adminModes.alliance?"none":"block";
+ if(edit)edit.style.display=adminModes.alliance?"block":"none";
+ if(b)b.textContent=adminModes.alliance?"🔒 수정 종료":"🔐 관리자 수정";
+}
 async function saveAlliance(){
  if(!adminModes.alliance){alert(message("admin"));return;}
  const root=$("#alliance"),next={names:{}};
@@ -367,7 +391,7 @@ async function saveAlliance(){
   next.names[t]={};
   for(let g=1;g<=(t<=2?2:1);g++){
    next.names[t]["g"+g]=["","",""];
-   for(let k=3;k<=7;k++)next.names[t]["g"+g].push($("#alliance-"+t+"-"+g+"-"+k,root)?.value.trim()||"");
+   for(let k=3;k<=7;k++)next.names[t]["g"+g].push($("#ae-"+t+"-"+g+"-"+k,root)?.value.trim()||"");
   }
  }
  try{allianceData=await saveCloud("alliance",next);setMsg("allianceMsg",message("saved"));}
@@ -434,7 +458,7 @@ function renderParticipants(){
   const old=sel.value;sel.innerHTML='<option value="">닉네임 선택</option>'+[...new Set(participants.map(p=>p.nickname))].sort((a,b)=>a.localeCompare(b)).map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
   if([...sel.options].some(o=>o.value===old))sel.value=old;
  }
- const list=$("#ncParticipantList",root);
+ const list=$("#ncParticipants",root);
  if(list)list.innerHTML=participants.map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(p.status)+ '</span><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">등록된 참전 정보가 없습니다.</p>';
 }
 async function loadNewCastleFeatures(){
@@ -445,7 +469,7 @@ async function loadNewCastleFeatures(){
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("battleJoin"));if(old.exists())data=old.data();}
    participants=normalizeParticipants(data||{});
-   renderParticipants();setMsg("ncMsg",message("load"));
+   renderParticipants();setMsg("ncJoinMsg",message("load"));
   }else{
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("castlewar1"));if(old.exists())data=old.data();}
@@ -453,7 +477,7 @@ async function loadNewCastleFeatures(){
    castleWarData={war:{...castleWarData.war,...war,substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:data?.warLeaders||castleWarData.warLeaders,updatedAt:data?.updatedAt||0};
    renderCastleWar();setMsg("ncWarMsg",message("load"));
   }
- }catch(e){console.error(e);if(activePage==="battleJoin")setMsg("ncMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
+ }catch(e){console.error(e);if(activePage==="battleJoin")setMsg("ncJoinMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
 }
 function updateNewCastleJoinFields(){
  const root=$("#battleJoin"),sel=$("#ncNick",root),custom=$("#ncCustomNickname",root);
@@ -470,17 +494,17 @@ function filterNewCastleNicknames(){
 async function submitNewCastleParticipation(){
  const root=$("#battleJoin"),sel=$("#ncNick",root);
  let nickname=sel?.value==="__custom__"?($("#ncCustomNickname",root)?.value||"").trim():(sel?.value||"").trim();
- if(!nickname){setMsg("ncMsg","닉네임을 선택하거나 입력하세요.");return;}
- if(nickname.length>80){setMsg("ncMsg","닉네임은 80자 이내로 입력하세요.");return;}
+ if(!nickname){setMsg("ncJoinMsg","닉네임을 선택하거나 입력하세요.");return;}
+ if(nickname.length>80){setMsg("ncJoinMsg","닉네임은 80자 이내로 입력하세요.");return;}
  const item={nickname,status:$("#ncStatus",root)?.value||"yes",tier:$("#ncTier",root)?.value||"A",salo:Boolean($("#ncSalo",root)?.checked),hilde:Boolean($("#ncHilde",root)?.checked),updatedAt:Date.now()};
  const idx=participants.findIndex(p=>p.nickname.toLowerCase()===nickname.toLowerCase());
  if(idx>=0)participants[idx]=item;else participants.push(item);
- try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncMsg",message("saved"));}
- catch(e){console.error(e);setMsg("ncMsg",message("failed"));}
+ try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function cancelNewCastleParticipation(){
  const root=$("#battleJoin"),sel=$("#ncNick",root),nickname=sel?.value||"";
- if(!nickname||nickname==="__custom__"){setMsg("ncMsg","삭제할 닉네임을 선택하세요.");return;}
+ if(!nickname||nickname==="__custom__"){setMsg("ncJoinMsg","삭제할 닉네임을 선택하세요.");return;}
  if(!confirm(nickname+"님의 참전 정보를 취소할까요?"))return;
  participants=participants.filter(p=>p.nickname.toLowerCase()!==nickname.toLowerCase());
  try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncMsg",message("saved"));}
@@ -557,7 +581,7 @@ function renderViking(){
  if(count)count.textContent=Object.values(vikingData.teams||{}).reduce((n,a)=>n+(a?.length||0),0)+" / 100";
  if(list)list.innerHTML=Array.from({length:25},(_,i)=>{const a=vikingData.teams?.[i+1]||[];return '<div class="viking-team"><h3>Team '+(i+1)+' ('+a.length+'/4)</h3>'+Array.from({length:4},(_,j)=>'<div class="viking-member">'+esc(a[j]||"—")+'</div>').join("")+'</div>';}).join("");
 }
-function toggleVikingCustomNick(){const sel=$("#vikingNickname"),custom=$("#vikingCustomNickname");if(!sel||!custom)return;custom.hidden=sel.value!=="__custom__";}
+function toggleVikingCustomNick(){const sel=$("#vikingNickname"),custom=$("#vikingCustomNickname");if(!sel||!custom)return;custom.style.display=sel.value==="__custom__"?"block":"none";}
 function getVikingSelectedNick(){return $("#vikingNickname")?.value==="__custom__"?($("#vikingCustomNickname")?.value||"").trim():($("#vikingNickname")?.value||"").trim();}
 async function loadViking(){
  const r=await loadData("viking",vikingData);
