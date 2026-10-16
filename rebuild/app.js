@@ -514,6 +514,19 @@ function renderNotices(){
   }
  }
  const admin=$("#notice-admin",root),save=$("#notice-save",root),languageWrap=$("#notice-edit-language-wrap",root),languageSelect=$("#notice-edit-language",root),help=$("#notice-translation-help",root);
+ const editorText={
+  ko:["편집 언어","언어를 선택해 각 공지의 번역을 수정한 뒤 저장하세요. 자동 번역은 사용하지 않습니다."],
+  en:["Edit language","Choose a language, edit each notice translation, and save. No automatic translation is used."],
+  ja:["編集言語","言語を選び、各お知らせの翻訳を編集して保存してください。自動翻訳は使用しません。"],
+  zh:["编辑语言","选择语言，编辑各条公告的翻译后保存。不会使用自动翻译。"],
+  de:["Bearbeitungssprache","Sprache auswählen, Übersetzungen bearbeiten und speichern. Es wird keine automatische Übersetzung verwendet."],
+  it:["Lingua di modifica","Scegli una lingua, modifica le traduzioni degli avvisi e salva. Non viene usata la traduzione automatica."],
+  es:["Idioma de edición","Elige un idioma, edita las traducciones de los avisos y guarda. No se usa traducción automática."],
+  tr:["Düzenleme dili","Bir dil seçin, duyuru çevirilerini düzenleyin ve kaydedin. Otomatik çeviri kullanılmaz."]
+ }[currentLang]||["Edit language","Edit notice translations and save."];
+ const editorLabel=$("#notice-edit-language-wrap span",root);
+ if(editorLabel)editorLabel.textContent=editorText[0];
+ if(help)help.textContent=editorText[1];
  root.classList.toggle("editing",noticeAdmin);
  setAdminButton(admin,noticeAdmin);
  if(save)save.hidden=!noticeAdmin;
