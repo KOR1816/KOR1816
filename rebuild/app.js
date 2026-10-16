@@ -5,8 +5,8 @@ const PAGES = [
   {id:"teams", icon:"⚔️", labels:{ko:"성검쟁탈",en:"Holy Sword",ja:"聖剣争奪",zh:"圣剑争夺",de:"Heiliges Schwert",it:"Spada Sacra",es:"Espada Sagrada",tr:"Kutsal Kılıç"}},
   {id:"alliance", icon:"🗡️", labels:{ko:"3대연맹전",en:"Alliance War",ja:"三大連盟戦",zh:"三大联盟战",de:"Allianzkrieg",it:"Guerra tra Alleanze",es:"Guerra de Alianzas",tr:"İttifak Savaşı"}},
   {id:"battleJoin", icon:"⚔️", labels:{ko:"캐슬참전",en:"Castle Participation",ja:"城参加",zh:"城堡参战",de:"Burgteilnahme",it:"Partecipazione al Castello",es:"Participación en el Castillo",tr:"Kale Katılımı"}},
-  {id:"castlewar", icon:"🔱", labels:{ko:"캐슬전",en:"Castle War",ja:"城戦",zh:"城堡战",de:"Burgkrieg",it:"Guerra del Castello",es:"Guerra del Castillo",tr:"Kale Savaşı"}},
-  {id:"castlelayout", icon:"🏰", labels:{ko:"캐슬배치",en:"Castle Layout",ja:"城配置",zh:"城堡布阵",de:"Burgaufstellung",it:"Disposizione del Castello",es:"Formación del Castillo",tr:"Kale Dizilimi"}},
+  {id:"castlewar1", icon:"🔱", labels:{ko:"캐슬전",en:"Castle War",ja:"城戦",zh:"城堡战",de:"Burgkrieg",it:"Guerra del Castello",es:"Guerra del Castillo",tr:"Kale Savaşı"}},
+  {id:"castlelayout1", icon:"🏰", labels:{ko:"캐슬배치",en:"Castle Layout",ja:"城配置",zh:"城堡布阵",de:"Burgaufstellung",it:"Disposizione del Castello",es:"Formación del Castillo",tr:"Kale Dizilimi"}},
   {id:"seating", icon:"🪑", labels:{ko:"자리배치",en:"Seating",ja:"配置表",zh:"座位安排",de:"Platzierung",it:"Disposizione",es:"Distribución",tr:"Yerleşim"}},
   {id:"viking", icon:"🪓", labels:{ko:"바이킹",en:"Viking",ja:"バイキング",zh:"维京",de:"Wikinger",it:"Vichinghi",es:"Vikingos",tr:"Viking"}},
   {id:"glory", icon:"🏆", labels:{ko:"영광의순간들",en:"Moments of Glory",ja:"栄光の瞬間",zh:"荣耀时刻",de:"Ruhmreiche Momente",it:"Momenti di Gloria",es:"Momentos de Gloria",tr:"Zafer Anları"}}
