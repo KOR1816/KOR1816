@@ -729,10 +729,12 @@ function renderParticipants(){
  translateStatic();
 }
 async function loadNewCastleFeatures(){
- const root=$("#"+(activePage==="battleJoin"?"battleJoin":"castlewar1"));
+ // Capture the route before awaiting Firestore so a quick page switch cannot mix page state.
+ const pageId=activePage==="battleJoin"?"battleJoin":"castlewar1";
+ const root=$("#"+pageId);
  try{
-  const own=await readCloud(activePage==="battleJoin"?"battleJoin":"castlewar1");
-  if(activePage==="battleJoin"){
+  const own=await readCloud(pageId);
+  if(pageId==="battleJoin"){
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("battleJoin"));if(old.exists())data=old.data();}
    participants=normalizeParticipants(data||{});
@@ -745,7 +747,7 @@ async function loadNewCastleFeatures(){
    castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:10},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:10},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:10},(_,i)=>war.finish?.[i]||""),north:Array.from({length:10},(_,i)=>war.north?.[i]||""),west:Array.from({length:10},(_,i)=>war.west?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:data?.warLeaders?.rush||"Pham",finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
    renderCastleWar();setMsg("ncWarMsg",latestBanner("castlewar1"));
   }
- }catch(e){console.error(e);if(activePage==="battleJoin")setMsg("ncJoinMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
+ }catch(e){console.error(e);if(pageId==="battleJoin")setMsg("ncJoinMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
 }
 function updateNewCastleJoinFields(){
  const root=$("#battleJoin"),sel=$("#ncNick",root),search=$("#ncIdSearch",root),box=$("#ncNickSearchResults",root);
