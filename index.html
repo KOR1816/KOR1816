@@ -1,1141 +1,212 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="version" content="20260919-restore-nav2"><title>KOR1816 | Kingdom 1816</title>
-<style>*{box-sizing:border-box}body{margin:0;font-family:Arial,"Malgun Gothic",sans-serif;background:#0b1020;color:#eef2ff}header{padding:28px 20px;background:linear-gradient(135deg,#111a35,#1d315c);text-align:center}h1{margin:0;font-size:34px}.sub{opacity:.8;margin-top:8px}nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:14px;background:#11172a;position:sticky;top:0;z-index:5}nav button{border:0;border-radius:10px;padding:10px 15px;background:#263354;color:#fff;cursor:pointer}nav button:hover{background:#3b4f7d}.wrap{max-width:1050px;margin:auto;padding:20px}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px}.card{background:#151d34;border:1px solid #283555;border-radius:16px;padding:20px;box-shadow:0 8px 25px #0003}.card h2{margin-top:0}.tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#314675;font-size:12px;margin-bottom:10px}.notice{border-left:4px solid #7195ff;padding-left:14px;margin:15px 0}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid #2b3655;text-align:left}footer{text-align:center;padding:35px;opacity:.55}.big{font-size:22px;font-weight:bold}.msg{min-height:22px;margin-top:12px}.team-table-wrap{overflow-x:auto;margin-top:15px}.team-table{width:100%;min-width:760px;border-collapse:collapse}.team-table th,.team-table td{border:1px solid #2b3655;padding:10px;text-align:center}.team-table th{background:#202c4b}.team-table td:first-child{font-weight:bold;white-space:nowrap;background:#18233e}.team-table input{width:100%;padding:11px;border-radius:8px;border:1px solid #3b4f7d;background:#0f1730;color:#fff;text-align:center}.team-table button{padding:9px 12px;border:0;border-radius:8px;background:#4f6fb8;color:#fff;font-weight:bold;cursor:pointer}.team-columns-wrap{overflow-x:auto;margin-top:12px}.team-columns{display:grid;grid-template-columns:repeat(6,minmax(125px,1fr));gap:10px;min-width:860px;align-items:start}.team-column{background:#101a31;border:1px solid #2b3b61;border-radius:14px;padding:10px}.team-title{text-align:center;font-weight:bold;font-size:16px;padding:10px 4px;margin-bottom:7px;background:#202f52;border-radius:10px}.slot{display:flex;align-items:center;gap:5px;margin:6px 0}.slot span{width:20px;text-align:center;font-size:12px;opacity:.75}.slot input{min-width:0;width:100%;padding:9px 6px;border-radius:7px;border:1px solid #3b4f7d;background:#0b1328;color:#fff;text-align:center;font-size:12px}.team-column button{width:100%;margin-top:7px;padding:9px 4px;border:0;border-radius:8px;background:#4f6fb8;color:#fff;font-weight:bold;cursor:pointer}.special .team-title{background:#493b68}.subs .team-title{background:#3d4b3b}.subs .slot span{width:24px}.subs input{font-size:11px}.admin-bar{display:flex;justify-content:flex-end;gap:8px;margin:10px 0;position:fixed;right:20px;bottom:20px;z-index:20;padding:8px;background:rgba(8,13,24,.88);border:1px solid #3c5b88;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(6px)}.home-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:0}.home-welcome-admin{position:static!important;grid-column:3;justify-content:flex-end!important;margin:10px 0 0!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;padding:0!important}.admin-btn{border:1px solid #3b4f7d;border-radius:9px;padding:8px 12px;background:#1b2745;color:#fff;cursor:pointer}.readonly .slot input{background:#0b1328;color:#cbd5e1;cursor:default}.readonly .team-column button{display:none}.admin-note{font-size:12px;opacity:.7;margin:6px 0 12px;text-align:center}@media(max-width:900px){.team-columns{grid-template-columns:repeat(6,minmax(125px,1fr))}}.sword-image-wrap{text-align:center;margin:12px 0 18px}.sword-image{display:block;width:auto;max-width:100%;height:auto;margin:0 auto;border-radius:12px;border:1px solid #2b3b61}.lang-switch{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:10px 10px 0;background:#11172a}.lang-switch button{border:1px solid #3b4f7d;border-radius:999px;padding:7px 12px;background:#1b2745;color:#fff;cursor:pointer}.lang-switch button:hover{background:#3b4f7d}
-@media (max-width: 600px){
-  .team-column{color:#fff}
-  .team-title{color:#fff;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.45)}
-  .slot span{color:#fff;font-weight:700;opacity:1}
-  .slot input{color:#fff;background:#0b1328;border-color:#52699d;font-weight:600;-webkit-text-fill-color:#fff;opacity:1}
-  .slot input::placeholder{color:#cbd5e1;opacity:1}
-  .team-column button{color:#fff;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.35)}
-  .admin-btn{color:#fff;font-weight:800}
-  .admin-note{color:#e2e8f0;opacity:1}
-}
-
-@media (max-width: 600px){
-  .team-column{color:#fff}
-  .team-title{color:#fff;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.45)}
-  .slot span{color:#fff;font-weight:700;opacity:1}
-  .slot input{color:#fff;background:#0b1328;border-color:#52699d;font-weight:600;-webkit-text-fill-color:#fff;opacity:1}
-  .slot input::placeholder{color:#cbd5e1;opacity:1}
-  .team-column button{color:#fff;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.35)}
-  .admin-btn{color:#fff;font-weight:800}
-  .admin-note{color:#e2e8f0;opacity:1}
-}
-.home-input{width:100%;padding:11px;border-radius:8px;border:1px solid #3b4f7d;background:#0f1730;color:#fff;margin:6px 0 14px;font-family:inherit;font-size:15px}.home-area{min-height:120px;resize:vertical}.home-input:focus{outline:none;border-color:#7195ff}.card label{display:block;font-size:13px;opacity:.8;margin-top:4px}.msg{color:#a7f3d0;font-weight:700;text-align:center}.readonly input{user-select:none}.alliance-teams{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.alliance-team{background:#151d34;border:1px solid #283555;border-radius:16px;padding:16px}.alliance-team-title{text-align:center;font-size:22px;font-weight:bold;padding:10px;background:#202f52;border-radius:10px;margin-bottom:12px}.alliance-group{display:grid;grid-template-columns:48px 1fr;gap:7px;margin-bottom:12px}.alliance-group input{width:100%;padding:9px;border-radius:7px;border:1px solid #3b4f7d;background:#0b1328;color:#fff;text-align:center}.alliance-label{font-weight:bold;display:flex;align-items:center;justify-content:center}.alliance-bottom{text-align:center;font-size:20px;font-weight:bold;margin:18px 0;line-height:2.4}.alliance-edit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.editrow{display:grid;grid-template-columns:42px 1fr;gap:7px;margin:8px 0}.editrow input{width:100%;padding:10px;border-radius:8px;border:1px solid #3b4f7d;background:#0f1730;color:#fff}.alliance-edit-grid .card h3{text-align:center}@media(max-width:700px){.alliance-teams,.alliance-edit-grid{grid-template-columns:1fr}}.alliance-merged{display:block!important;margin-bottom:28px!important;padding:10px 12px 12px;border:2px solid #3b4f7d;border-radius:12px;background:#101a31;box-sizing:border-box}.alliance-merged-label{width:100%;box-sizing:border-box;background:#202f52;border-radius:8px;padding:9px 10px;margin-bottom:9px;font-size:16px;font-weight:700;text-align:center;letter-spacing:1px}.alliance-names{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:0!important;border:1px solid #3b4f7d;border-radius:8px;overflow:hidden}.alliance-names input{width:100%;min-width:0;box-sizing:border-box;padding:10px 6px;border:0!important;border-right:1px solid #3b4f7d!important;border-radius:0!important;background:#0b1328;color:#fff;text-align:center}.alliance-names input:last-child{border-right:0!important}.alliance-team{padding:16px!important}.alliance-team>.alliance-group{margin-bottom:34px!important}.alliance-team>.alliance-group:last-child{margin-bottom:8px!important}.alliance-team-title{margin-bottom:18px!important}.alliance-edit-names{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:0!important;border:1px solid #3b4f7d;border-radius:8px;overflow:hidden}.alliance-edit-names input{min-width:0!important;box-sizing:border-box;border:0!important;border-right:1px solid #3b4f7d!important;border-radius:0!important}.alliance-edit-names input:last-child{border-right:0!important}@media(max-width:700px){.alliance-names,.alliance-edit-names{grid-template-columns:1fr}.alliance-names input,.alliance-edit-names input{border-right:0!important;border-bottom:1px solid #3b4f7d!important}.alliance-names input:last-child,.alliance-edit-names input:last-child{border-bottom:0!important}}.rules-text-full{white-space:pre-wrap;overflow:visible;min-height:420px;max-height:none!important;height:auto!important;line-height:1.7}
-/* KOR1816 color refresh */
-:root{--bg:#080d18;--panel:#101a2e;--panel2:#16233d;--line:#2e4672;--gold:#e5b84b;--gold2:#ffd978;--text:#f4f7ff;--muted:#aebbd3;--blue:#58a6ff;--cyan:#55d6c2;--purple:#a78bfa;--orange:#f59e52;--bear:#d39a55}
-body{background:radial-gradient(circle at 50% -10%,#1b2d4f 0,#0b1222 42%,#070b14 100%)!important;color:var(--text)}
-header{background:linear-gradient(135deg,#101d35,#172b4e 55%,#251d32)!important;border-bottom:1px solid #3d527c!important}
-header h1{color:#fff;text-shadow:0 2px 12px #000!important}
-nav{background:rgba(7,12,23,.94)!important;border-bottom:1px solid #263b60!important}
-nav button{background:linear-gradient(180deg,#243a61,#172946)!important;border:1px solid #39557f!important;box-shadow:0 3px 10px rgba(0,0,0,.25)!important}
-nav button:hover{background:linear-gradient(180deg,#3a5785,#243c63)!important;border-color:var(--gold)!important;color:#fff}
-.card{background:linear-gradient(145deg,rgba(20,32,55,.97),rgba(12,20,36,.97))!important;border:1px solid #30496f!important;box-shadow:0 8px 24px rgba(0,0,0,.25)!important}
-h2{color:#f7d77a!important}
-h3{color:#bcd6ff!important}
-.admin-bar{border-bottom-color:#2b4167!important}
-.admin-btn{background:linear-gradient(180deg,#2c4c78,#1b3155)!important;border:1px solid #49688f!important;color:#fff!important}
-.admin-btn:hover{border-color:var(--gold)!important;box-shadow:0 0 12px rgba(229,184,75,.2)!important}
-input,textarea,select{background:#0b1426!important;color:#fff!important;border-color:#38547d!important}
-input:focus,textarea:focus{border-color:var(--gold)!important;box-shadow:0 0 0 2px rgba(229,184,75,.15)!important}
-.tag{background:#59471d!important;color:#ffe28a!important;border:1px solid #8b7132!important}
-.notice{background:transparent!important;border-left:0!important}
-.msg{color:#7fe6d5!important}
-.home-input,.home-area{border-color:#3b5b88!important}
-.alliance-team{background:linear-gradient(145deg,#121f37,#0d172a)!important;border-color:#365783!important}
-.alliance-team-title{color:#f6d77a!important}
-.alliance-team>.alliance-group.alliance-merged{background:#111c32!important;border-color:#496da2!important}
-.alliance-merged-label{background:linear-gradient(180deg,#263c63,#1b2e4f)!important;color:#e7f0ff!important}
-.alliance-names{border-color:#496da2!important}
-.alliance-names input{background:#0c172a!important}
-.sword-image-wrap{background:linear-gradient(145deg,#172846,#0d1525)!important;border-color:#3c5b88!important;box-shadow:0 8px 25px rgba(0,0,0,.35)!important}
-footer{background:#070b14!important;color:#8394b2!important;border-top:1px solid #223654!important}
-#home h2{color:#f7d77a!important}
-#viking h2{color:#55d6c2!important}
-#teams h2{color:#a78bfa!important}
-#alliance h2{color:#ffd166!important}
-#castle h2{color:#f59e52!important}
-#bear h2{color:#d9a15b!important}
-#rules h2{color:#70c7ff!important}
-#viking .card{border-top:2px solid rgba(85,214,194,.45)!important}
-#teams .card{border-top:2px solid rgba(167,139,250,.45)!important}
-#alliance .card{border-top:2px solid rgba(255,209,102,.45)!important}
-#castle .card{border-top:2px solid rgba(245,158,82,.45)!important}
-#bear .card{border-top:2px solid rgba(211,154,85,.45)!important}
-#rules .card{border-top:2px solid rgba(112,199,255,.45)!important}
-.rules-text-full{background:#0b1425;border:1px solid #2f4a73;border-radius:10px;padding:18px;min-height:420px}
-
-#homeView .notice,#homeView #homeSchedule,#homeView #homeWelcome{min-height:105px!important;white-space:pre-wrap;line-height:1.7;overflow:visible!important}
-.page-admin{position:static!important;justify-content:flex-end!important;margin:10px 0 0!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;padding:0!important}.page-admin+.admin-note{display:none!important}@media(max-width:600px){.page-admin{margin-top:8px!important}}</style>
-
-<style id="alliance-layout-fix">
-.alliance-teams{column-gap:28px!important;row-gap:28px!important}
-.alliance-team{padding:16px!important;background:#111a30!important;border:2px solid #283f70!important;border-radius:16px!important}.alliance-team:nth-child(1){border-color:#ef4444!important}.alliance-team:nth-child(1) .alliance-team-title{background:#b91c1c!important;color:#fff!important}.alliance-team:nth-child(2){border-color:#3b82f6!important}.alliance-team:nth-child(2) .alliance-team-title{background:#1d4ed8!important;color:#fff!important}.alliance-team:nth-child(3){border-color:#22c55e!important}.alliance-team:nth-child(3) .alliance-team-title{background:#15803d!important;color:#fff!important}.alliance-team:nth-child(4){border-color:#a855f7!important}.alliance-team:nth-child(4) .alliance-team-title{background:#7e22ce!important;color:#fff!important}
-.alliance-team>.alliance-group.alliance-merged{display:block!important;width:auto!important;margin:0 0 38px!important;padding:10px 12px 12px!important;border:2px solid #5270ad!important;border-radius:12px!important;background:#101a31!important}
-.alliance-team>.alliance-group.alliance-merged:last-child{margin-bottom:4px!important}
-.alliance-merged-label{display:flex!important;width:100%!important;min-height:40px;align-items:center;justify-content:center;margin:0 0 10px!important;padding:9px!important;border-radius:8px!important;background:#202f52!important;font-weight:800!important}
-.alliance-names{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;width:100%!important;border:2px solid #5270ad!important;border-radius:9px!important;overflow:hidden!important}
-.alliance-names input{border:0!important;border-right:1px solid #5270ad!important;border-radius:0!important}
-.alliance-names input:last-child{border-right:0!important}
-.alliance-team-title{margin-bottom:20px!important}
-@media(max-width:700px){
-.alliance-teams{row-gap:24px!important}
-.alliance-team>.alliance-group.alliance-merged{margin-bottom:28px!important}
-.alliance-names{grid-template-columns:1fr!important}
-.alliance-names input{border-right:0!important;border-bottom:1px solid #5270ad!important}
-.alliance-names input:last-child{border-bottom:0!important}
-}
-@media(max-width:600px){.admin-bar{right:10px;bottom:10px;gap:6px;padding:6px}.admin-btn{padding:7px 9px;font-size:12px}.home-controls{grid-template-columns:1fr!important}.home-welcome-admin{grid-column:1!important;margin-top:8px!important}}\n</style><style id="admin-layout-final">
-.page-admin{position:static!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:8px!important;width:100%!important;margin:10px 0 0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}
-#viking .page-admin,#castle .page-admin{margin-top:10px!important}
-#teams .page-admin,#alliance .page-admin,#bear .page-admin,#rules .page-admin{margin-top:10px!important}
-#teams>.card{overflow:visible!important}
-#teams .team-columns-wrap{overflow-x:auto!important;overflow-y:visible!important}
-@media(max-width:600px){.page-admin{gap:6px!important;margin-top:8px!important}.admin-btn{padding:7px 9px!important;font-size:12px!important}}
-</style><style id="castle-2x2">
-#castleView{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-#castleEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-@media(max-width:700px){#castleView,#castleEdit{grid-template-columns:1fr!important}}
-#homeSchedule{display:flex!important;flex-direction:column!important;gap:10px!important;padding-top:4px!important}
-#homeSchedule p{margin:0!important;padding:10px 14px!important;line-height:1.35!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:10px!important;background:rgba(255,255,255,.035)!important}
-@media(max-width:600px){#homeSchedule{gap:8px!important}#homeSchedule p{padding:9px 11px!important;font-size:14px!important}}
-</style><style id="bear-use-castle-cards">
-#bearView{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-#bearEdit{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-#bearView #bearHeroes{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
-#bearView .bear-hero-item{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;white-space:nowrap!important}
-@media(max-width:700px){#bearView,#bearEdit{grid-template-columns:1fr!important}#bearView #bearHeroes{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-</style><style id="bear-castle-card-exact">
-#bearView{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
-#bearView .card{min-width:0!important}
-#bearView .card h2{margin-bottom:14px!important}
-#bearView #bearText,#bearView #bearHeroes{line-height:1.8!important;text-align:left!important}
-#bearView #bearHeroes{display:block!important}
-@media(max-width:700px){#bearView{grid-template-columns:1fr!important}}
-</style><style id="bear-heroes-horizontal-final">
-#bearView #bearHeroes{display:block!important;white-space:nowrap!important;overflow-x:auto!important;text-align:center!important;line-height:1.8!important}
-</style><style id="bear-two-cards-final">
-.bear-page-title{text-align:center;font-size:32px;font-weight:900;margin:8px 0 18px;color:#f7d77a!important;text-shadow:0 2px 10px rgba(0,0,0,.35)}
-.bear-image-wrap{text-align:center;margin:0 0 20px}
-.bear-image{display:block;width:auto;max-width:100%;height:auto;max-height:420px;margin:0 auto;border-radius:14px;border:2px solid #3c5b88;box-shadow:0 8px 25px rgba(0,0,0,.35)}
-#bearView{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px!important}
-#bearView .card{min-width:0!important}
-#bearView #bearText,#bearView #bearHeroes{display:block!important;white-space:normal!important;overflow:visible!important;text-align:center!important;line-height:1.8!important}
-@media(max-width:700px){.bear-page-title{font-size:27px;margin-bottom:14px}.bear-image-wrap{margin-bottom:16px}#bearView{grid-template-columns:1fr!important}}
-</style></style><style id="bear-page-final">
-.bear-page-title{text-align:center;font-size:44px!important;font-weight:900;margin:8px 0 18px;color:#f7d77a!important;text-shadow:0 2px 10px rgba(0,0,0,.35)}
-.bear-image-wrap{text-align:center;margin:0 0 20px!important}
-.bear-image{display:block!important;width:auto!important;max-width:100%!important;height:auto!important;max-height:420px!important;margin:0 auto!important;border-radius:14px;border:2px solid #3c5b88;box-shadow:0 8px 25px rgba(0,0,0,.35)}
-#bearView{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px!important}
-#bearView .card{min-width:0!important}
-#bearView #bearText,#bearView #bearHeroes{display:block!important;white-space:normal!important;overflow:visible!important;text-align:center!important;line-height:1.8!important}
-@media(max-width:700px){.bear-page-title{font-size:34px!important;margin-bottom:14px}.bear-image-wrap{margin-bottom:16px}#bearView{grid-template-columns:1fr!important}}
-</style><style id="bear-image-size-final">
-.bear-image{width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important}
-.bear-image-wrap{width:100%!important}
-</style><style id="bear-image-full-final">
-#bear .bear-image-wrap{width:100%!important;margin:0 0 20px!important;text-align:center!important}
-#bear .bear-image{display:block!important;width:70%!important;max-width:70%!important;height:auto!important;max-height:none!important;object-fit:contain!important;margin:0 auto!important;border-radius:14px!important}
-#bear .bear-ratio-card{grid-column:1!important}
-#bear .bear-ratio-text{text-align:center!important;line-height:2!important;white-space:normal!important}
-@media(max-width:700px){#bear .bear-image{width:80%!important;max-width:80%!important}.bear-ratio-card{grid-column:1!important}}
-</style></head><body>
-<div class="lang-switch"><button onclick="setLang('ko')">🇰🇷 한국어</button><button onclick="setLang('en')">🇺🇸 English</button><button onclick="setLang('ja')">🇯🇵 日本語</button><button onclick="setLang('zh')">🇨🇳 中文</button><button onclick="setLang('de')">🇩🇪 Deutsch</button></div><header><h1>🏰 KOR1816</h1><div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div></header>
-<nav id="mainNav"><button onclick="show('home')">🏠 홈</button><button onclick="show('teams')">⚔️ 성검쟁탈</button><button onclick="show('alliance')">⚔️ 3대연맹전</button></nav>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="version" content="20261017-home-language-phase1">
+<title>KOR1816 | Kingdom 1816</title>
+<style>
+:root{color-scheme:dark;--bg:#080d18;--panel:#101a2e;--panel2:#16233d;--line:#30496f;--gold:#e5b84b;--orange:#f59e52;--text:#f4f7ff;--muted:#aebbd3}
+*{box-sizing:border-box}
+html{min-height:100%;scrollbar-gutter:stable}
+body{margin:0;min-height:100vh;font-family:Arial,"Malgun Gothic",sans-serif;background:radial-gradient(circle at 50% -10%,#1b2d4f 0,#0b1222 42%,#070b14 100%);color:var(--text)}
+header{position:relative;padding:28px 20px;background:linear-gradient(135deg,#101d35,#172b4e 55%,#251d32);border-bottom:1px solid #3d527c;text-align:center}
+h1{margin:0;color:#fff;font-size:34px;text-shadow:0 2px 12px #000}
+.sub{margin-top:8px;color:#d3def1;opacity:.85}
+.kor-lang{position:absolute;top:10px;right:14px;display:flex;align-items:center;gap:6px;z-index:10}
+.kor-lang label{font-size:12px;opacity:.85}
+.kor-lang select{max-width:100%;padding:7px 28px 7px 9px;border-radius:9px;border:1px solid #49688f;background:#1b2745;color:#fff;font-family:inherit;font-weight:700;cursor:pointer}
+.kor-lang select:focus{outline:none;border-color:var(--gold)}
+nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:14px;background:rgba(7,12,23,.94);border-bottom:1px solid #263b60;position:sticky;top:0;z-index:5}
+nav button{border:1px solid #39557f;border-radius:10px;padding:10px 15px;background:linear-gradient(180deg,#243a61,#172946);color:#fff;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700}
+nav button:hover{background:linear-gradient(180deg,#3a5785,#243c63);border-color:var(--gold)}
+nav button.active{background:linear-gradient(180deg,#f9a45c,#d97732);border:1px solid #ffd19b;color:#201306;box-shadow:0 0 0 1px #f59e52,0 4px 14px #f59e5238}
+.wrap{max-width:1050px;margin:auto;padding:20px}
+.home-main-image{text-align:center;margin:0 0 18px}
+.sword-image{display:block;width:auto;max-width:100%;height:auto;margin:0 auto;border-radius:12px;border:1px solid #3c5b88;box-shadow:0 8px 25px #0005}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:15px}
+.card{min-width:0;padding:20px;border-radius:16px;background:linear-gradient(145deg,rgba(20,32,55,.97),rgba(12,20,36,.97));border:1px solid #30496f;box-shadow:0 8px 24px #0004}
+.card h2{margin:0 0 14px;color:#f7d77a;font-size:22px}
+.tag{display:inline-block;margin-bottom:10px;padding:5px 9px;border-radius:999px;background:#59471d;border:1px solid #8b7132;color:#ffe28a;font-size:12px}
+.notice{margin:0;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+#homeSchedule{display:flex;flex-direction:column;gap:10px;padding-top:4px;white-space:pre-wrap;line-height:1.5}
+#homeSchedule p{margin:0;padding:10px 14px;border:1px solid #ffffff14;border-radius:10px;background:#ffffff09}
+#homeWelcome{margin:0;min-height:105px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.home-discord-link{display:inline-block;color:#9bc4ff;overflow-wrap:anywhere}
+.home-controls{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin:12px 0}
+.admin-btn{border:1px solid #49688f;border-radius:9px;padding:8px 12px;background:linear-gradient(180deg,#2c4c78,#1b3155);color:#fff;font:700 13px Arial,"Malgun Gothic",sans-serif;cursor:pointer}
+.admin-btn:hover{border-color:var(--gold)}
+.home-edit{display:none;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:15px}
+.home-edit.active{display:grid}
+.home-input{display:block;width:100%;margin:7px 0 14px;padding:11px;border:1px solid #38547d;border-radius:8px;background:#0b1426;color:#fff;font:15px Arial,"Malgun Gothic",sans-serif}
+.home-area{min-height:120px;resize:vertical;white-space:pre-wrap}
+.card label{display:block;margin-top:4px;font-size:13px;color:#dbe7ff}
+.msg{min-height:22px;margin:8px 0;text-align:center;color:#7fe6d5;font-weight:700;white-space:pre-wrap}
+footer{padding:28px 15px;border-top:1px solid #223654;background:#070b14;color:#8394b2;text-align:center}
+@media(max-width:600px){header{padding:52px 14px 20px}h1{font-size:29px}.kor-lang{top:9px;right:10px}.wrap{padding:14px}.card{padding:15px}.card h2{font-size:20px}#homeSchedule{gap:8px}#homeSchedule p{padding:9px 11px;font-size:14px}nav{padding:9px;gap:7px}nav button{padding:9px 15px;font-size:13px}.home-controls{justify-content:stretch}.home-controls .admin-btn{flex:1}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🏰 KOR1816</h1>
+  <div class="sub">Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!</div>
+  <div class="kor-lang"><label for="languageSelect" id="languageLabel">언어</label><select id="languageSelect" aria-label="Language">
+    <option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="es">Español</option><option value="tr">Türkçe</option>
+  </select></div>
+</header>
+<nav id="mainNav" aria-label="Main navigation"><button id="nav-home" class="active" type="button">🏠 홈</button></nav>
 <main class="wrap">
-<section id="home" class="page active"><div class="sword-image-wrap"><img src="./1816.jpg?v=2" alt="KOR1816" class="sword-image"></div>
-<div id="homeMsg" class="msg"></div>
-<div id="homeView" class="grid">
-  <div class="card"><span class="tag">LATEST</span><h2 id="homeLatestTitle">📢 공지</h2><div class="notice" id="homeLatest"></div></div>
-  <div class="card"><span class="tag">SCHEDULE</span><h2 id="homeScheduleTitle">📅 이벤트 일정</h2><div id="homeSchedule"></div></div>
-  <div class="card"><span class="tag">WELCOME</span><h2 id="homeWelcomeTitle">🌍 Kingdom 1816</h2><p id="homeWelcome"></p></div>
-</div>
-<div class="home-controls"><div class="admin-bar home-welcome-admin"><button class="admin-btn" onclick="loadHome()">🔄 새로고침</button><button class="admin-btn" id="homeAdminBtn" onclick="toggleHomeAdmin()">🔐 관리자 수정</button></div></div>
-<div id="homeEdit" class="grid" style="display:none">
-  <div class="card"><span class="tag">LATEST</span><h2>📢 최신 공지</h2><label>제목</label><input id="homeLatestInput" class="home-input" placeholder="최신 공지"><label>내용</label><textarea id="homeLatestBody" class="home-input home-area" placeholder="공지 내용을 입력하세요."></textarea></div>
-  <div class="card"><span class="tag">SCHEDULE</span><h2>📅 주요 일정</h2><textarea id="homeScheduleInput" class="home-input home-area" placeholder="한 줄에 일정 하나씩 입력"></textarea></div>
-  <div class="card"><span class="tag">WELCOME</span><h2>🌍 Kingdom 1816</h2><textarea id="homeWelcomeInput" class="home-input home-area" placeholder="홈 환영 문구"></textarea></div>
-  <div class="card" style="grid-column:1/-1"><button class="admin-btn" onclick="saveHome()">💾 홈 저장</button></div>
-</div>
-</section>
+  <section id="home" aria-labelledby="homeTitle">
+    <div class="home-main-image"><img src="./1816.jpg" alt="KOR1816" class="sword-image"></div>
+    <div id="homeMsg" class="msg" role="status" aria-live="polite"></div>
+    <div id="homeView" class="grid">
+      <div class="card"><span class="tag">LATEST</span><h2 id="homeLatestTitle">📢 공지</h2><p id="homeLatest" class="notice"></p></div>
+      <div class="card"><span class="tag">SCHEDULE</span><h2 id="homeScheduleTitle">📅 이벤트 일정</h2><div id="homeSchedule"></div></div>
+      <div class="card"><span class="tag">WELCOME</span><h2 id="homeWelcomeTitle">🌍 Kingdom 1816</h2><p id="homeWelcome"></p></div>
+      <div class="card"><span class="tag" data-no-translate="true">COMMUNITY</span><h2 data-no-translate="true">💬 Discord</h2><p id="discordDescription">공식 디스코드 서버에 입장하세요.</p><a class="home-discord-link" href="https://discord.gg/XssRBBKR9" target="_blank" rel="noopener noreferrer">discord.gg/XssRBBKR9 ↗</a></div>
+    </div>
+    <div class="home-controls">
+      <button class="admin-btn" id="homeRefreshBtn" type="button">🔄 새로고침</button>
+      <button class="admin-btn" id="homeAdminBtn" type="button">🔐 관리자 수정</button>
+      <button class="admin-btn" id="homeSaveBtn" type="button" hidden>💾 홈 저장</button>
+    </div>
+    <div id="homeEdit" class="home-edit">
+      <div class="card"><span class="tag">LATEST</span><h2 id="editLatestHeading">📢 최신 공지</h2><label id="latestTitleLabel" for="homeLatestInput">제목</label><input id="homeLatestInput" class="home-input"><label id="latestBodyLabel" for="homeLatestBody">내용</label><textarea id="homeLatestBody" class="home-input home-area"></textarea></div>
+      <div class="card"><span class="tag">SCHEDULE</span><h2 id="editScheduleHeading">📅 주요 일정</h2><label id="scheduleLabel" for="homeScheduleInput">일정</label><textarea id="homeScheduleInput" class="home-input home-area"></textarea></div>
+      <div class="card"><span class="tag">WELCOME</span><h2 id="editWelcomeHeading">🌍 Kingdom 1816</h2><label id="welcomeLabel" for="homeWelcomeInput">환영 문구</label><textarea id="homeWelcomeInput" class="home-input home-area"></textarea></div>
+    </div>
+  </section>
+</main>
+<footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-<section id="alliance" class="page"><div class="card"><h2>⚔️ 3대연맹전</h2><div class="sword-image-wrap"><img src="333.jpg" alt="3대연맹전" class="sword-image"></div>
-
-<div id="allianceMsg" class="msg"></div>
-<div id="allianceView"><div class="alliance-teams">
-<div class="alliance-team"><div class="alliance-team-title">1팀</div>
-<div class="alliance-group alliance-merged"><div class="alliance-label alliance-merged-label">A30　B30　C30</div><div class="alliance-names"><input id="alliance-1-1-3" placeholder="닉네임"><input id="alliance-1-1-4" placeholder="닉네임"><input id="alliance-1-1-5" placeholder="닉네임"><input id="alliance-1-1-6" placeholder="닉네임"><input id="alliance-1-1-7" placeholder="닉네임"></div></div>
-<div class="alliance-group alliance-merged"><div class="alliance-label alliance-merged-label">A28　B28　C28</div><div class="alliance-names"><input id="alliance-1-2-3" placeholder="닉네임"><input id="alliance-1-2-4" placeholder="닉네임"><input id="alliance-1-2-5" placeholder="닉네임"><input id="alliance-1-2-6" placeholder="닉네임"><input id="alliance-1-2-7" placeholder="닉네임"></div></div></div>
-<div class="alliance-team"><div class="alliance-team-title">2팀</div>
-<div class="alliance-group alliance-merged"><div class="alliance-label alliance-merged-label">A31　B31　C31</div><div class="alliance-names"><input id="alliance-2-1-3" placeholder="닉네임"><input id="alliance-2-1-4" placeholder="닉네임"><input id="alliance-2-1-5" placeholder="닉네임"><input id="alliance-2-1-6" placeholder="닉네임"><input id="alliance-2-1-7" placeholder="닉네임"></div></div>
-<div class="alliance-group alliance-merged"><div class="alliance-label alliance-merged-label">A27　B27　C27</div><div class="alliance-names"><input id="alliance-2-2-3" placeholder="닉네임"><input id="alliance-2-2-4" placeholder="닉네임"><input id="alliance-2-2-5" placeholder="닉네임"><input id="alliance-2-2-6" placeholder="닉네임"><input id="alliance-2-2-7" placeholder="닉네임"></div></div></div>
-<div class="alliance-team"><div class="alliance-team-title">3팀</div>
-<div class="alliance-group alliance-merged"><div class="alliance-label alliance-merged-label">A19　B19　C19</div><div class="alliance-names"><input id="alliance-3-1-3" placeholder="닉네임"><input id="alliance-3-1-4" placeholder="닉네임"><input id="alliance-3-1-5" placeholder="닉네임"><input id="alliance-3-1-6" placeholder="닉네임"><input id="alliance-3-1-7" placeholder="닉네임"></div></div></div>
-<div class="alliance-team"><div class="alliance-team-title">4팀</div>
-<div class="alliance-group alliance-merged"><div class="alliance-label alliance-merged-label">A18　B18　C18</div><div class="alliance-names"><input id="alliance-4-1-3" placeholder="닉네임"><input id="alliance-4-1-4" placeholder="닉네임"><input id="alliance-4-1-5" placeholder="닉네임"><input id="alliance-4-1-6" placeholder="닉네임"><input id="alliance-4-1-7" placeholder="닉네임"></div></div></div>
-</div></div>
-<div class="admin-bar page-admin"><button class="admin-btn" onclick="loadAlliance()">🔄 새로고침</button><button class="admin-btn" id="allianceAdminBtn" onclick="toggleAllianceAdmin()">🔐 관리자 수정</button></div><div id="allianceEdit" style="display:none"><div class="alliance-edit-grid">
-<div class="card"><h3>1팀</h3><h4>A30　B30　C30 + 5명</h4><div class="editrow alliance-edit-names"><input id="ae-1-1-3" placeholder="닉네임"><input id="ae-1-1-4" placeholder="닉네임"><input id="ae-1-1-5" placeholder="닉네임"><input id="ae-1-1-6" placeholder="닉네임"><input id="ae-1-1-7" placeholder="닉네임"></div><h4>A28　B28　C28 + 5명</h4><div class="editrow alliance-edit-names"><input id="ae-1-2-3" placeholder="닉네임"><input id="ae-1-2-4" placeholder="닉네임"><input id="ae-1-2-5" placeholder="닉네임"><input id="ae-1-2-6" placeholder="닉네임"><input id="ae-1-2-7" placeholder="닉네임"></div></div>
-<div class="card"><h3>2팀</h3><h4>A31　B31　C31 + 5명</h4><div class="editrow alliance-edit-names"><input id="ae-2-1-3" placeholder="닉네임"><input id="ae-2-1-4" placeholder="닉네임"><input id="ae-2-1-5" placeholder="닉네임"><input id="ae-2-1-6" placeholder="닉네임"><input id="ae-2-1-7" placeholder="닉네임"></div><h4>A27　B27　C27 + 5명</h4><div class="editrow alliance-edit-names"><input id="ae-2-2-3" placeholder="닉네임"><input id="ae-2-2-4" placeholder="닉네임"><input id="ae-2-2-5" placeholder="닉네임"><input id="ae-2-2-6" placeholder="닉네임"><input id="ae-2-2-7" placeholder="닉네임"></div></div>
-<div class="card"><h3>3팀</h3><h4>A19　B19　C19 + 5명</h4><div class="editrow alliance-edit-names"><input id="ae-3-1-3" placeholder="닉네임"><input id="ae-3-1-4" placeholder="닉네임"><input id="ae-3-1-5" placeholder="닉네임"><input id="ae-3-1-6" placeholder="닉네임"><input id="ae-3-1-7" placeholder="닉네임"></div></div>
-<div class="card"><h3>4팀</h3><h4>A18　B18　C18 + 5명</h4><div class="editrow alliance-edit-names"><input id="ae-4-1-3" placeholder="닉네임"><input id="ae-4-1-4" placeholder="닉네임"><input id="ae-4-1-5" placeholder="닉네임"><input id="ae-4-1-6" placeholder="닉네임"><input id="ae-4-1-7" placeholder="닉네임"></div></div>
-</div><div class="card"><button class="admin-btn" onclick="saveAlliance()">💾 3대연맹전 저장</button></div></div>
-</section>
-<section id="teams" class="page"><div class="card"><h2>⚔️ 성검쟁탈</h2><div class="sword-image-wrap"><img src="holy_sword1.png" alt="Holy Sword Clash" class="sword-image"></div><div id="teamMsg" class="msg"></div><div class="team-columns-wrap"><div class="team-columns">
-<div class="team-column"><div class="team-title">A1</div><div class="slot"><span>1</span><input id="team-A-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="team-A-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="team-A-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="team-A-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="team-A-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="team-A-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="team-A-7" placeholder="Player ID"></div></div><div class="team-column"><div class="team-title">A2</div><div class="slot"><span>1</span><input id="team-B-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="team-B-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="team-B-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="team-B-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="team-B-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="team-B-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="team-B-7" placeholder="Player ID"></div></div><div class="team-column"><div class="team-title">D1</div><div class="slot"><span>1</span><input id="team-C-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="team-C-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="team-C-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="team-C-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="team-C-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="team-C-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="team-C-7" placeholder="Player ID"></div></div><div class="team-column"><div class="team-title">D2</div><div class="slot"><span>1</span><input id="team-D-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="team-D-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="team-D-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="team-D-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="team-D-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="team-D-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="team-D-7" placeholder="Player ID"></div></div>
-<div class="team-column special"><div class="team-title">💥 개돌조</div><div class="slot"><span>1</span><input id="extra-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="extra-2" placeholder="Player ID"></div></div>
-<div class="team-column subs"><div class="team-title">🔄 대체자</div><div class="slot"><span>1</span><input id="sub-1" placeholder="Player ID"></div><div class="slot"><span>2</span><input id="sub-2" placeholder="Player ID"></div><div class="slot"><span>3</span><input id="sub-3" placeholder="Player ID"></div><div class="slot"><span>4</span><input id="sub-4" placeholder="Player ID"></div><div class="slot"><span>5</span><input id="sub-5" placeholder="Player ID"></div><div class="slot"><span>6</span><input id="sub-6" placeholder="Player ID"></div><div class="slot"><span>7</span><input id="sub-7" placeholder="Player ID"></div><div class="slot"><span>8</span><input id="sub-8" placeholder="Player ID"></div><div class="slot"><span>9</span><input id="sub-9" placeholder="Player ID"></div><div class="slot"><span>10</span><input id="sub-10" placeholder="Player ID"></div></div>
-</div></div></div><div class="admin-bar page-admin"><button class="admin-btn" onclick="saveAllTeams()">💾 전체 저장</button><button class="admin-btn" onclick="refreshTeams()">🔄 새로고침</button></div></section>
-
-
-
-</main><footer>KOR1816 — Together, We Grow Stronger! ❤️</footer>
-<script>
-/* force current Holy Sword team labels */
-document.addEventListener('DOMContentLoaded',function(){
-  const labels=['A1','A2','D1','D2'];
-  const cols=document.querySelectorAll('#teams .team-column');
-  cols.forEach((col,i)=>{ if(i<4){ const t=col.querySelector('.team-title'); if(t)t.textContent=labels[i]; }});
-});
-</script>
-<script>
-let db=null;
-let TEAM_DOC=null;
-let EXTRA_DOC=null;
-let firebaseReady=false;
-let sharedTeams={};
-const LOCAL_KEY='kor1816_teams_v2';
-const EXTRA_LOCAL_KEY='kor1816_teams_extra_v1';
-const TEAM_LOCAL_TIME_KEY='kor1816_teams_local_time_v1';
-const TEAM_SLOT_BACKUP_KEY='kor1816_team_slots_v3';
-// Recovery snapshot: last confirmed Holy Sword formation before the refresh issue.
-const TEAM_RECOVERY_SNAPSHOT={
-  A:['샌디에이고','','','','','',''],
-  B:['Leo ll','DAWN','SsungBi','Sant Jordl','Krungkrung','ROKA','LJ'],
-  C:['Nemesis','momo','Momsaid','hhHa','Lekum','Agares','LSJ'],
-  D:['Jinno','GGGz','bossi','Pika','lan','S ssh','Rarara'],
-  extra:['1',''],
-  subs:['ㅇ','','','','','','','','',''],
-  _updatedAt:1789759180458
+const firebaseConfig={apiKey:"AIzaSyB_7Uk6QkCQAt6LyWMVuQNARaXD78WdlZQ",authDomain:"kor1816.firebaseapp.com",projectId:"kor1816",storageBucket:"kor1816.firebasestorage.app",messagingSenderId:"838991083698",appId:"1:838991083698:web:de37c21f443386d902b1ab",measurementId:"G-SZ2ZX729BT"};
+const ADMIN_EMAILS=["to1ggi8410@gmail.com","to1ggi8403@gmail.com","a3135a@naver.com","yunsungbin913@gmail.com"];
+const HOME_KEY="kor1816_home_v1";
+const DEFAULTS={
+ko:{latestTitle:"",latestBody:"당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.\n기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.",schedule:"⚔️ 성검쟁탈1군 · 23:00 (UTC 14:00)\n⚔️ 성검쟁탈2군 · 21:00 (UTC 12:00)\n🪓 바이킹 · 23:00 (UTC 14:00)\n🐻 곰 1트랩 · 23:00 (UTC 14:00)\n🐻 곰 2트랩 · 21:00 (UTC 12:00)",welcome:"소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다."},
+en:{latestTitle:"",latestBody:"For the time being, rewards from fort and sanc will mainly be distributed to immigrants who came at the cost of sacrificing troops.\nWe respectfully ask for the understanding of existing KOR alliance members.",schedule:"⚔️ Holy Sword Clash 1st Team · 23:00 (UTC 14:00)\n⚔️ Holy Sword Clash 2nd Team · 21:00 (UTC 12:00)\n🪓 Viking · 23:00 (UTC 14:00)\n🐻 Bear Trap 1 · 23:00 (UTC 14:00)\n🐻 Bear Trap 2 · 21:00 (UTC 12:00)",welcome:"We are working together around communication, cooperation, growth, and KVK organization."},
+ja:{latestTitle:"",latestBody:"当面の間、fortとsancの報酬は、兵力を犠牲にして移民してきた方々を中心に分配する予定です。\n既存のKOR連盟メンバーの皆様には、何卒ご理解をお願いいたします。",schedule:"⚔️ 聖剣争奪1軍 · 23:00 (UTC 14:00)\n⚔️ 聖剣争奪2軍 · 21:00 (UTC 12:00)\n🪓 バイキング · 23:00 (UTC 14:00)\n🐻 ベアトラップ1 · 23:00 (UTC 14:00)\n🐻 ベアトラップ2 · 21:00 (UTC 12:00)",welcome:"コミュニケーション・協力・成長・KVKの組織力を大切に、一緒に活動しています。"},
+zh:{latestTitle:"",latestBody:"暂时，fort和sanc的奖励将主要分配给那些牺牲兵力前来移民的成员。\n也恳请KOR现有联盟成员谅解。",schedule:"⚔️ 圣剑争夺一队 · 23:00 (UTC 14:00)\n⚔️ 圣剑争夺二队 · 21:00 (UTC 12:00)\n🪓 维京 · 23:00 (UTC 14:00)\n🐻 熊陷阱1 · 23:00 (UTC 14:00)\n🐻 熊陷阱2 · 21:00 (UTC 12:00)",welcome:"我们以沟通、合作、成长以及KVK组织力为核心，一起努力。"},
+de:{latestTitle:"",latestBody:"Vorerst sollen die Belohnungen von fort und sanc hauptsächlich an Einwanderer verteilt werden, die unter Einsatz eigener Truppen zu uns gekommen sind.\nWir bitten die bestehenden KOR-Allianzmitglieder höflich um Verständnis.",schedule:"⚔️ Heiliges Schwertduell 1. Team · 23:00 (UTC 14:00)\n⚔️ Heiliges Schwertduell 2. Team · 21:00 (UTC 12:00)\n🪓 Wikinger · 23:00 (UTC 14:00)\n🐻 Bärenfalle 1 · 23:00 (UTC 14:00)\n🐻 Bärenfalle 2 · 21:00 (UTC 12:00)",welcome:"Wir setzen gemeinsam auf Kommunikation, Zusammenarbeit, Wachstum und starke KVK-Organisation."},
+it:{latestTitle:"",latestBody:"Per il momento, le ricompense di fort e sanc saranno distribuite principalmente agli immigrati che sono arrivati sacrificando le proprie truppe.\nChiediamo gentilmente la comprensione dei membri esistenti dell'alleanza KOR.",schedule:"⚔️ Duello della Spada Sacra 1ª squadra · 23:00 (UTC 14:00)\n⚔️ Duello della Spada Sacra 2ª squadra · 21:00 (UTC 12:00)\n🪓 Vichinghi · 23:00 (UTC 14:00)\n🐻 Trappola dell'Orso 1 · 23:00 (UTC 14:00)\n🐻 Trappola dell'Orso 2 · 21:00 (UTC 12:00)",welcome:"Lavoriamo insieme puntando su comunicazione, collaborazione, crescita e organizzazione KVK."},
+es:{latestTitle:"",latestBody:"Por ahora, las recompensas de fort y sanc se distribuirán principalmente a los inmigrantes que llegaron sacrificando tropas.\nPedimos respetuosamente la comprensión de los miembros actuales de la alianza KOR.",schedule:"⚔️ Duelo de la Espada Sagrada 1.er equipo · 23:00 (UTC 14:00)\n⚔️ Duelo de la Espada Sagrada 2.º equipo · 21:00 (UTC 12:00)\n🪓 Vikingos · 23:00 (UTC 14:00)\n🐻 Trampa del Oso 1 · 23:00 (UTC 14:00)\n🐻 Trampa del Oso 2 · 21:00 (UTC 12:00)",welcome:"Trabajamos juntos basándonos en la comunicación, la cooperación, el crecimiento y la organización KVK."},
+tr:{latestTitle:"",latestBody:"Şimdilik fort ve sanc ödülleri, askerlerinden fedakârlık ederek göç eden oyunculara öncelikli olarak dağıtılacaktır.\nMevcut KOR ittifakı üyelerinden anlayış rica ediyoruz.",schedule:"⚔️ Kutsal Kılıç Savaşı 1. Takım · 23:00 (UTC 14:00)\n⚔️ Kutsal Kılıç Savaşı 2. Takım · 21:00 (UTC 12:00)\n🪓 Vikingler · 23:00 (UTC 14:00)\n🐻 Ayı Tuzağı 1 · 23:00 (UTC 14:00)\n🐻 Ayı Tuzağı 2 · 21:00 (UTC 12:00)",welcome:"İletişim, iş birliği, gelişim ve güçlü KVK organizasyonuyla birlikte çalışıyoruz."}
 };
-function hasFullTeamData(data){
-  return data && ['A','B','C','D'].every(k=>Array.isArray(data[k])&&data[k].length>=7)
-    && Array.isArray(data.extra)&&Array.isArray(data.subs);
-}
-
-function getSlotBackup(){try{return JSON.parse(localStorage.getItem(TEAM_SLOT_BACKUP_KEY)||'{}')||{}}catch(e){return {}}}
-function saveSlotBackup(team,values){try{const all=getSlotBackup();all[team]=values;localStorage.setItem(TEAM_SLOT_BACKUP_KEY,JSON.stringify(all));}catch(e){console.error('local slot backup failed',e)}}
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB_7Uk6QkCQAt6LyWMVuQNARaXD78WdlZQ",
-  authDomain: "kor1816.firebaseapp.com",
-  projectId: "kor1816",
-  storageBucket: "kor1816.firebasestorage.app",
-  messagingSenderId: "838991083698",
-  appId: "1:838991083698:web:de37c21f443386d902b1ab",
-  measurementId: "G-SZ2ZX729BT"
+const UI={
+ko:{lang:"언어",latest:"📢 공지",schedule:"📅 이벤트 일정",welcome:"🌍 Kingdom 1816",refresh:"🔄 새로고침",admin:"🔐 관리자 수정",close:"🔒 수정 종료",save:"💾 홈 저장",editLatest:"📢 최신 공지",editSchedule:"📅 주요 일정",title:"제목",content:"내용",scheduleLabel:"일정",welcomeLabel:"환영 문구",discord:"공식 디스코드 서버에 입장하세요.",loaded:"최신 홈 내용을 불러왔습니다.",saved:"홈 저장 완료!",localOnly:"공용 서버 연결에 실패했습니다. 이 브라우저에 임시 저장했습니다.",login:"등록된 운영자 Google 계정으로 로그인해 주세요.",denied:"운영자로 등록되지 않은 Google 계정입니다."},
+en:{lang:"Language",latest:"📢 Notice",schedule:"📅 Event Schedule",welcome:"🌍 Kingdom 1816",refresh:"🔄 Refresh",admin:"🔐 Admin Edit",close:"🔒 Close Edit",save:"💾 Save Home",editLatest:"📢 Latest Notice",editSchedule:"📅 Main Schedule",title:"Title",content:"Content",scheduleLabel:"Schedule",welcomeLabel:"Welcome message",discord:"Join the official Discord server.",loaded:"Latest home information loaded.",saved:"Home saved!",localOnly:"Could not connect to the shared server. Saved temporarily in this browser.",login:"Please sign in with an authorized admin Google account.",denied:"This Google account is not registered as an administrator."},
+ja:{lang:"言語",latest:"📢 お知らせ",schedule:"📅 イベント予定",welcome:"🌍 Kingdom 1816",refresh:"🔄 更新",admin:"🔐 管理者編集",close:"🔒 編集終了",save:"💾 ホーム保存",editLatest:"📢 最新のお知らせ",editSchedule:"📅 主な予定",title:"タイトル",content:"内容",scheduleLabel:"予定",welcomeLabel:"歓迎メッセージ",discord:"公式Discordサーバーに参加してください。",loaded:"最新のホーム情報を読み込みました。",saved:"ホームを保存しました！",localOnly:"共有サーバーに接続できません。ブラウザーに一時保存しました。",login:"登録済みの管理者Googleアカウントでログインしてください。",denied:"このGoogleアカウントは管理者として登録されていません。"},
+zh:{lang:"语言",latest:"📢 公告",schedule:"📅 活动日程",welcome:"🌍 Kingdom 1816",refresh:"🔄 刷新",admin:"🔐 管理员编辑",close:"🔒 结束编辑",save:"💾 保存首页",editLatest:"📢 最新公告",editSchedule:"📅 主要日程",title:"标题",content:"内容",scheduleLabel:"日程",welcomeLabel:"欢迎语",discord:"加入官方 Discord 服务器。",loaded:"已加载最新首页内容。",saved:"首页已保存！",localOnly:"无法连接共享服务器，已暂时保存在此浏览器中。",login:"请使用已授权的管理员 Google 账号登录。",denied:"此 Google 账号未登记为管理员。"},
+de:{lang:"Sprache",latest:"📢 Hinweis",schedule:"📅 Ereignisplan",welcome:"🌍 Kingdom 1816",refresh:"🔄 Aktualisieren",admin:"🔐 Admin-Bearbeitung",close:"🔒 Bearbeitung schließen",save:"💾 Startseite speichern",editLatest:"📢 Neuester Hinweis",editSchedule:"📅 Hauptzeitplan",title:"Titel",content:"Inhalt",scheduleLabel:"Zeitplan",welcomeLabel:"Willkommensnachricht",discord:"Tritt dem offiziellen Discord-Server bei.",loaded:"Neueste Startseiteninformationen geladen.",saved:"Startseite gespeichert!",localOnly:"Keine Verbindung zum gemeinsamen Server. Vorübergehend in diesem Browser gespeichert.",login:"Bitte mit einem zugelassenen Admin-Google-Konto anmelden.",denied:"Dieses Google-Konto ist nicht als Administrator registriert."},
+it:{lang:"Lingua",latest:"📢 Avviso",schedule:"📅 Calendario eventi",welcome:"🌍 Kingdom 1816",refresh:"🔄 Aggiorna",admin:"🔐 Modifica admin",close:"🔒 Chiudi modifica",save:"💾 Salva home",editLatest:"📢 Ultimo avviso",editSchedule:"📅 Programma principale",title:"Titolo",content:"Contenuto",scheduleLabel:"Programma",welcomeLabel:"Messaggio di benvenuto",discord:"Entra nel server Discord ufficiale.",loaded:"Caricati i dati più recenti della home.",saved:"Home salvata!",localOnly:"Impossibile collegarsi al server condiviso. Salvato temporaneamente in questo browser.",login:"Accedi con un account Google amministratore autorizzato.",denied:"Questo account Google non è registrato come amministratore."},
+es:{lang:"Idioma",latest:"📢 Aviso",schedule:"📅 Calendario de eventos",welcome:"🌍 Kingdom 1816",refresh:"🔄 Actualizar",admin:"🔐 Editar como admin",close:"🔒 Cerrar edición",save:"💾 Guardar inicio",editLatest:"📢 Último aviso",editSchedule:"📅 Calendario principal",title:"Título",content:"Contenido",scheduleLabel:"Horario",welcomeLabel:"Mensaje de bienvenida",discord:"Únete al servidor oficial de Discord.",loaded:"Se cargó la información más reciente de inicio.",saved:"¡Inicio guardado!",localOnly:"No se pudo conectar al servidor compartido. Guardado temporalmente en este navegador.",login:"Inicia sesión con una cuenta Google de administrador autorizada.",denied:"Esta cuenta Google no está registrada como administradora."},
+tr:{lang:"Dil",latest:"📢 Duyuru",schedule:"📅 Etkinlik Takvimi",welcome:"🌍 Kingdom 1816",refresh:"🔄 Yenile",admin:"🔐 Yönetici Düzenlemesi",close:"🔒 Düzenlemeyi Kapat",save:"💾 Ana Sayfayı Kaydet",editLatest:"📢 Son Duyuru",editSchedule:"📅 Ana Takvim",title:"Başlık",content:"İçerik",scheduleLabel:"Takvim",welcomeLabel:"Karşılama mesajı",discord:"Resmî Discord sunucusuna katılın.",loaded:"En güncel ana sayfa bilgileri yüklendi.",saved:"Ana sayfa kaydedildi!",localOnly:"Paylaşılan sunucuya bağlanılamadı. Bu tarayıcıya geçici olarak kaydedildi.",login:"Lütfen yetkili bir yönetici Google hesabıyla giriş yapın.",denied:"Bu Google hesabı yönetici olarak kayıtlı değil."}
 };
-
-function getLocalTeams(){
-  try { return JSON.parse(localStorage.getItem(LOCAL_KEY)||'{}') || {}; }
-  catch(e){ return {}; }
+let currentLang="ko",homeData=structuredClone(DEFAULTS.ko),homeAdmin=false,db=null,auth=null,homeDoc=null;
+const el=id=>document.getElementById(id);
+const localRead=()=>{try{return JSON.parse(localStorage.getItem(HOME_KEY)||"null")}catch{return null}};
+const localWrite=d=>{try{localStorage.setItem(HOME_KEY,JSON.stringify({...d,_updatedAt:Date.now()}))}catch{}};
+function mergeData(raw){
+ const out={...structuredClone(DEFAULTS.ko),...(raw||{})};
+ out.translations={};
+ for(const lang of Object.keys(DEFAULTS))out.translations[lang]={...DEFAULTS[lang],...((raw&&raw.translations&&raw.translations[lang])||{})};
+ if(raw&&raw.translations&&raw.translations.ko)Object.assign(out,raw.translations.ko);
+ else if(raw&&raw.latestBody!==undefined)Object.assign(out,{latestTitle:raw.latestTitle||"",latestBody:raw.latestBody||"",schedule:raw.schedule||DEFAULTS.ko.schedule,welcome:raw.welcome||DEFAULTS.ko.welcome});
+ return out;
 }
-function saveLocalTeams(){
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(sharedTeams||{}));
+function currentData(){return homeData.translations[currentLang]||DEFAULTS[currentLang]}
+function safeText(value){return String(value??"")}
+function renderHome(){
+ const d=currentData(),ui=UI[currentLang];
+ el("homeLatestTitle").textContent="📢 "+(d.latestTitle||ui.latest.replace(/^📢\s*/,""));
+ el("homeLatest").textContent=d.latestBody||"";
+ el("homeScheduleTitle").textContent=ui.schedule;
+ el("homeSchedule").replaceChildren(...safeText(d.schedule).split("\n").map(line=>{const p=document.createElement("p");p.textContent=line;return p}));
+ el("homeWelcomeTitle").textContent=ui.welcome;
+ el("homeWelcome").textContent=d.welcome||"";
+ el("languageLabel").textContent=ui.lang;
+ el("homeRefreshBtn").textContent=ui.refresh;
+ el("homeAdminBtn").textContent=homeAdmin?ui.close:ui.admin;
+ el("homeSaveBtn").textContent=ui.save;
+ el("editLatestHeading").textContent=ui.editLatest;
+ el("editScheduleHeading").textContent=ui.editSchedule;
+ el("latestTitleLabel").textContent=ui.title;
+ el("latestBodyLabel").textContent=ui.content;
+ el("scheduleLabel").textContent=ui.scheduleLabel;
+ el("welcomeLabel").textContent=ui.welcomeLabel;
+ el("discordDescription").textContent=ui.discord;
+ el("homeLatestInput").value=d.latestTitle||"";
+ el("homeLatestBody").value=d.latestBody||"";
+ el("homeScheduleInput").value=d.schedule||"";
+ el("homeWelcomeInput").value=d.welcome||"";
+ document.documentElement.lang=currentLang==="zh"?"zh-CN":currentLang;
 }
-function getLocalExtra(){
-  try{return JSON.parse(localStorage.getItem(EXTRA_LOCAL_KEY)||'[]')||[]}catch(e){return []}
+function setMessage(key){el("homeMsg").textContent=UI[currentLang][key]||""}
+async function refreshHome(){
+ const local=localRead();
+ if(local)homeData=mergeData(local);
+ renderHome();
+ try{
+   if(!homeDoc)throw new Error("Firestore not ready");
+   const snap=await getDoc(homeDoc);
+   if(snap.exists()){
+     const cloud=snap.data()||{},localStamp=Number(local&&local._updatedAt)||0,cloudStamp=Number(cloud.updatedAt)||0;
+     if(localStamp>cloudStamp){await setDoc(homeDoc,{...homeData,updatedAt:localStamp});}
+     else{homeData=mergeData(cloud);localWrite({...homeData,_updatedAt:cloudStamp});}
+   }else if(!local){await setDoc(homeDoc,{...homeData,updatedAt:Date.now()});}
+   renderHome();setMessage("loaded");
+ }catch(err){console.warn("Home refresh:",err);setMessage("");}
 }
-function saveLocalExtra(extra){
-  localStorage.setItem(EXTRA_LOCAL_KEY, JSON.stringify(Array.isArray(extra)?extra:[]));
-}
-
-let homeAdmin=false;
-const HOME_DEFAULT={latestTitle:'',latestBody:'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.\n기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.',schedule:'⚔️ 성검쟁탈 · 23:00 (UTC 14:00)\n🛡️ 바이킹 · 23:00 (UTC 14:00)\n🐻 곰 1트랩 · 23:00 (UTC 14:00)\n🐻 곰 2트랩 · 09:10 (UTC 00:10)',welcome:'소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.'};
-let HOME_DOC=null;
-let VIKING_DOC=null;
-let ALLIANCE_DOC=null;
-let allianceAdmin=false;
-const ALLIANCE_DEFAULT={names:{
-  1:{g1:['','','','','','','',''],g2:['','','','','','','','']},
-  2:{g1:['','','','','','','',''],g2:['','','','','','','','']},
-  3:{g1:['','','','','','','','']},
-  4:{g1:['','','','','','','','']}
-}};
-function allianceDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_alliance_v1')||'null')||ALLIANCE_DEFAULT}catch(e){return ALLIANCE_DEFAULT}}
-function setAllianceAdminMode(){const v=document.getElementById('allianceView'),e=document.getElementById('allianceEdit'),b=document.getElementById('allianceAdminBtn'),n=document.getElementById('allianceAdminNote');if(v)v.style.display=allianceAdmin?'none':'block';if(e)e.style.display=allianceAdmin?'block':'none';if(b)b.textContent=allianceAdmin?'🔒 수정 종료':'🔐 관리자 수정';if(n)n.textContent=allianceAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다. 관리자만 수정할 수 있습니다.'}
-function toggleAllianceAdmin(){if(allianceAdmin){allianceAdmin=false;setAllianceAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){allianceAdmin=true;setAllianceAdminMode();const m=document.getElementById('allianceMsg');if(m)m.textContent='3대연맹전 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
-function renderAlliance(data){data=data||allianceDataLocal();for(let t=1;t<=4;t++){const groups=(data.names&&data.names[t])||{};for(let g=1;g<=(t<=2?2:1);g++){const vals=groups['g'+g]||[];for(let k=3;k<8;k++){const v=vals[k]||'';const a=document.getElementById('alliance-'+t+'-'+g+'-'+k),e=document.getElementById('ae-'+t+'-'+g+'-'+k);if(a)a.value=v;if(e)e.value=v}}}}
-async function loadAlliance(){renderAlliance(allianceDataLocal());if(!ALLIANCE_DOC||!window.__firebaseGetDoc)return;try{const snap=await window.__firebaseGetDoc(ALLIANCE_DOC);if(snap.exists()){const data=snap.data()||{};localStorage.setItem('kor1816_alliance_v1',JSON.stringify(data));renderAlliance(data);const m=document.getElementById('allianceMsg');if(m)m.textContent='최신 3대연맹전 내용을 불러왔습니다.'}}catch(e){console.error(e);const m=document.getElementById('allianceMsg');if(m)m.textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}}
-async function saveAlliance(){if(!allianceAdmin)return;const data={names:{}};for(let t=1;t<=4;t++){data.names[t]={};for(let g=1;g<=(t<=2?2:1);g++){data.names[t]['g'+g]=[];for(let k=0;k<3;k++)data.names[t]['g'+g].push('');for(let k=3;k<8;k++){const el=document.getElementById('ae-'+t+'-'+g+'-'+k);data.names[t]['g'+g].push(el?el.value.trim():'')}}}localStorage.setItem('kor1816_alliance_v1',JSON.stringify(data));renderAlliance(data);try{if(ALLIANCE_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(ALLIANCE_DOC,data);const m=document.getElementById('allianceMsg');if(m)m.textContent='3대연맹전 저장 완료! / Saved!'}catch(e){console.error(e);const m=document.getElementById('allianceMsg');if(m)m.textContent='3대연맹전은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
-let vikingAdmin=false;
-const VIKING_DEFAULT={
-  titles:['🛡️ 바이킹 진행','👥 바이킹 편성','📋 바이킹 규칙'],
-  texts:['바이킹 진행 내용을 입력하세요.','바이킹 편성 내용을 입력하세요.','바이킹 규칙을 입력하세요.']
-};
-function vikingDataLocal(){
-  try{
-    const raw=JSON.parse(localStorage.getItem('kor1816_viking_v1')||'null');
-    if(raw && Array.isArray(raw.titles) && raw.titles.length>3){
-      localStorage.setItem('kor1816_viking_guide_v1',JSON.stringify({title:raw.titles[0],text:(raw.texts||[])[0]||''}));
-      raw.titles=raw.titles.slice(1,4);
-      raw.texts=(raw.texts||[]).slice(1,4);
-      localStorage.setItem('kor1816_viking_v1',JSON.stringify(raw));
-    }
-    return raw||VIKING_DEFAULT;
-  }catch(e){return VIKING_DEFAULT}
-}
-function renderViking(data){
-  data=data||vikingDataLocal();
-  for(let i=1;i<=3;i++){
-    const title=(data.titles&&data.titles[i-1])||VIKING_DEFAULT.titles[i-1];
-    const body=(data.texts&&data.texts[i-1])||'';
-    document.getElementById('vikingTitle'+i).textContent=title;
-    document.getElementById('vikingText'+i).innerHTML=escapeHome(body).replace(/\n/g,'<br>');
-    document.getElementById('vikingTitleInput'+i).value=title;
-    document.getElementById('vikingTextInput'+i).value=body;
-  }
-}
-function setVikingAdminMode(){const v=document.getElementById('vikingView'),e=document.getElementById('vikingEdit'),b=document.getElementById('vikingAdminBtn'),n=document.getElementById('vikingAdminNote');if(v)v.style.display=vikingAdmin?'none':'grid';if(e)e.style.display=vikingAdmin?'grid':'none';if(b)b.textContent=vikingAdmin?'🔒 수정 종료':'🔐 관리자 수정';if(n)n.textContent=vikingAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';}
-function toggleVikingAdmin(){
-  if(vikingAdmin){vikingAdmin=false;setVikingAdminMode();return}
-  const pw=prompt('관리자 비밀번호를 입력하세요.');
-  if(pw===ADMIN_PASSWORD){vikingAdmin=true;setVikingAdminMode();document.getElementById('vikingMsg').textContent='바이킹 관리자 수정 모드입니다.'}
-  else if(pw!==null) alert('비밀번호가 올바르지 않습니다.');
-}
-async function loadViking(){
-  const local=vikingDataLocal(); renderViking(local);
-  if(!VIKING_DOC || !window.__firebaseGetDoc)return;
-  try{
-    const snap=await window.__firebaseGetDoc(VIKING_DOC);
-    if(snap.exists()){
-      const data=snap.data()||{};
-      if(Array.isArray(data.titles)&&data.titles.length>3){
-        localStorage.setItem('kor1816_viking_guide_v1',JSON.stringify({title:data.titles[0],text:(data.texts||[])[0]||''}));
-        data.titles=data.titles.slice(1,4);
-        data.texts=(data.texts||[]).slice(1,4);
-      }
-      localStorage.setItem('kor1816_viking_v1',JSON.stringify(data));
-      renderViking(data);
-      renderRules(rulesDataLocal());
-      document.getElementById('vikingMsg').textContent='최신 바이킹 내용을 불러왔습니다.'
-    }
-  }catch(e){console.error('Viking read failed:',e);document.getElementById('vikingMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}
-}
-async function saveViking(){
-  if(!vikingAdmin)return;
-  const data={titles:[],texts:[]};
-  for(let i=1;i<=3;i++){data.titles.push(document.getElementById('vikingTitleInput'+i).value.trim());data.texts.push(document.getElementById('vikingTextInput'+i).value.trim())}
-  localStorage.setItem('kor1816_viking_v1',JSON.stringify(data)); renderViking(data);
-  try{
-    if(VIKING_DOC && window.__firebaseSetDoc) await window.__firebaseSetDoc(VIKING_DOC,data);
-    document.getElementById('vikingMsg').textContent='바이킹 저장 완료! / Saved!';
-  }catch(e){console.error('Viking save failed:',e);document.getElementById('vikingMsg').textContent='바이킹은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}
-}
-function homeDataLocal(){
-  try{
-    const raw=localStorage.getItem('kor1816_home_v1');
-    if(!raw)return {...HOME_DEFAULT};
-    const d=JSON.parse(raw);
-    return d&&typeof d==='object'?d:{...HOME_DEFAULT};
-  }catch(e){
-    return {...HOME_DEFAULT};
-  }
-}
-
-function renderHome(data){
-  const d=data||homeDataLocal();
-  const latestTitle=String(d.latestTitle||'');
-  const latestBody=String(d.latestBody||'');
-  const schedule=String(d.schedule||'');
-  const welcome=String(d.welcome||'');
-
-  const latest=document.getElementById('homeLatest');
-  const scheduleEl=document.getElementById('homeSchedule');
-  const welcomeEl=document.getElementById('homeWelcome');
-
-  if(latest)latest.innerHTML='<b>'+escapeHome(latestTitle)+'</b>'+
-    ((latestTitle&&latestBody)?'<br><br>':'')+
-    escapeHome(latestBody).replace(/\n/g,'<br>');
-  if(scheduleEl)scheduleEl.innerHTML=escapeHome(schedule).split('\n').filter(Boolean).map(x=>'<p>'+x+'</p>').join('');
-  if(welcomeEl)welcomeEl.textContent=welcome;
-
-  const a=document.getElementById('homeLatestInput');
-  const b=document.getElementById('homeLatestBody');
-  const c=document.getElementById('homeScheduleInput');
-  const dEl=document.getElementById('homeWelcomeInput');
-  if(a)a.value=latestTitle;
-  if(b)b.value=latestBody;
-  if(c)c.value=schedule;
-  if(dEl)dEl.value=welcome;
-}
-
-function escapeHome(s){
-  return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-}
-
-function toggleHomeAdmin(){
-  if(homeAdmin){
-    homeAdmin=false;
-    setHomeAdminMode();
-    renderHome(homeDataLocal());
-    return;
-  }
-  const pw=prompt('관리자 비밀번호를 입력하세요.');
-  if(pw===ADMIN_PASSWORD){
-    homeAdmin=true;
-    setHomeAdminMode();
-    renderHome(homeDataLocal());
-    document.getElementById('homeMsg').textContent='홈 관리자 수정 모드입니다.';
-  }else if(pw!==null){
-    alert('비밀번호가 올바르지 않습니다.');
-  }
-}
-
-function setHomeAdminMode(){
-  const view=document.getElementById('homeView');
-  const edit=document.getElementById('homeEdit');
-  const btn=document.getElementById('homeAdminBtn');
-  if(view)view.style.display=homeAdmin?'none':'grid';
-  if(edit)edit.style.display=homeAdmin?'grid':'none';
-  if(btn)btn.textContent=homeAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-}
-
-function homeSaveData(){
-  return {
-    latestTitle:document.getElementById('homeLatestInput')?.value||'',
-    latestBody:document.getElementById('homeLatestBody')?.value||'',
-    schedule:document.getElementById('homeScheduleInput')?.value||'',
-    welcome:document.getElementById('homeWelcomeInput')?.value||'',
-    _updatedAt:Date.now()
-  };
-}
-
-async function saveHome(){
-  if(!homeAdmin)return;
-
-  const data=homeSaveData();
-
-  // 저장 버튼을 누르는 즉시 이 브라우저에 먼저 보관합니다.
-  localStorage.setItem('kor1816_home_v1',JSON.stringify(data));
-  renderHome(data);
-  document.getElementById('homeMsg').textContent='저장 중...';
-
-  try{
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise){
-      await Promise.race([
-        firebaseInitPromise,
-        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase 초기화 시간 초과')),5000))
-      ]);
-    }
-    if(!HOME_DOC||!window.__firebaseSetDoc)throw new Error('Firebase 준비 안 됨');
-
-    await window.__firebaseSetDoc(HOME_DOC,data);
-    document.getElementById('homeMsg').textContent='홈 저장 완료! / Saved!';
-  }catch(e){
-    console.error('Home save failed:',e);
-    document.getElementById('homeMsg').textContent='기기 저장 완료 / 서버 저장 실패';
-  }
-}
-
-async function loadHome(){
-  // 화면 진입 시에는 우선 현재 저장본을 즉시 보여줍니다.
-  const local=homeDataLocal();
-  renderHome(local);
-
-  try{
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise){
-      await Promise.race([
-        firebaseInitPromise,
-        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase 초기화 시간 초과')),5000))
-      ]);
-    }
-    if(!HOME_DOC||!window.__firebaseGetDoc)return;
-
-    const snap=await Promise.race([
-      window.__firebaseGetDoc(HOME_DOC),
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firestore 읽기 시간 초과')),5000))
-    ]);
-
-    if(!snap.exists()){
-      document.getElementById('homeMsg').textContent='현재 저장본을 표시합니다.';
-      return;
-    }
-
-    const server=snap.data()||{};
-    const localTime=Number(local._updatedAt||0);
-    const serverTime=Number(server._updatedAt||0);
-
-    if(localTime>serverTime){
-      // 이 기기에서 더 최근에 저장했다면 오래된 서버값으로 덮어쓰지 않습니다.
-      await window.__firebaseSetDoc(HOME_DOC,local);
-      renderHome(local);
-      document.getElementById('homeMsg').textContent='최신 저장본을 유지했습니다.';
-    }else{
-      localStorage.setItem('kor1816_home_v1',JSON.stringify(server));
-      renderHome(server);
-      document.getElementById('homeMsg').textContent='최신 홈 내용을 불러왔습니다.';
-    }
-  }catch(e){
-    console.error('Home load failed:',e);
-    renderHome(local);
-    document.getElementById('homeMsg').textContent='서버 연결 지연 — 현재 저장본을 표시합니다.';
-  }
-}
-
-let CASTLE_DOC=null;
-let BEAR_DOC=null;
-let RULES_DOC=null;
-
-const CASTLE_DEFAULT={
-  titles:['⚔️ 집결장 공격','🛡️ 수성','👥 집결원 공격','👥 집결원 수성'],
-  texts:[
-    '아마데 / 페라 / 로사\n비율: 505 / 55.5.40 / 514 / 415 / 406',
-    '알카 / 마르고 / 살로\n상대가 강하면 예거 고려\n연습: 집결장 631 · 집결원 640',
-    '1열: 2첸코 / 2아마\n2열: 2첸코 / 아마네 / 파드\n3열: 2살로 / 첸코 / 아마네\n4열: 2힐데 / 살로 / 첸코',
-    '1열: 2힐데 / 살로 / 첸코\n2열: 4힐데\n3열: 2힐데 / 살로 / 고든'
-  ]
-};
-function castleDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_castle_v1')||'null')||CASTLE_DEFAULT}catch(e){return CASTLE_DEFAULT}}
-function renderCastle(data){
-  data=data||castleDataLocal();
-  for(let i=1;i<=4;i++){
-    const title=(data.titles&&data.titles[i-1])||CASTLE_DEFAULT.titles[i-1];
-    const body=(data.texts&&data.texts[i-1])||'';
-    document.getElementById('castleTitle'+i).textContent=title;
-    document.getElementById('castleText'+i).innerHTML=escapeHome(body).replace(/\n/g,'<br>');
-    document.getElementById('castleTitleInput'+i).value=title;
-    document.getElementById('castleTextInput'+i).value=body;
-  }
-}
-function setCastleAdminMode(){
-  document.getElementById('castleView').style.display=castleAdmin?'none':'grid';
-  document.getElementById('castleEdit').style.display=castleAdmin?'grid':'none';
-  document.getElementById('castleAdminBtn').textContent=castleAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  const n=document.getElementById('castleAdminNote');if(n)n.textContent=castleAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'';
-}
-let castleAdmin=false;
-function toggleCastleAdmin(){if(castleAdmin){castleAdmin=false;setCastleAdminMode();return}const pw=prompt('관리자 비밀번호를 입력하세요.');if(pw===ADMIN_PASSWORD){castleAdmin=true;setCastleAdminMode();document.getElementById('castleMsg').textContent='공성전 관리자 수정 모드입니다.'}else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')}
-async function loadCastle(){renderCastle(castleDataLocal());if(!CASTLE_DOC||!window.__firebaseGetDoc)return;try{const snap=await window.__firebaseGetDoc(CASTLE_DOC);if(snap.exists()){const d=snap.data()||{};localStorage.setItem('kor1816_castle_v1',JSON.stringify(d));renderCastle(d);document.getElementById('castleMsg').textContent='최신 공성전 내용을 불러왔습니다.'}}catch(e){console.error(e);document.getElementById('castleMsg').textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.'}}
-async function saveCastle(){if(!castleAdmin)return;const d={titles:[],texts:[]};for(let i=1;i<=4;i++){d.titles.push(document.getElementById('castleTitleInput'+i).value.trim());d.texts.push(document.getElementById('castleTextInput'+i).value.trim())}localStorage.setItem('kor1816_castle_v1',JSON.stringify(d));renderCastle(d);try{if(CASTLE_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(CASTLE_DOC,d);document.getElementById('castleMsg').textContent='공성전 저장 완료! / Saved!'}catch(e){console.error(e);document.getElementById('castleMsg').textContent='공성전은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.'}}
-
-const BEAR_DEFAULT={text:'곰 1트랩: 23:00\n곰 2트랩: 09:10',heroes:'아마데우스\n첸코\n연우\n마르고(4성🙏)\n아마네\n영웅없이'};
-const BEAR_LOCAL_KEY='kor1816_bear_saved_v3';
-function bearDataLocal(){
-  try{
-    const d=JSON.parse(localStorage.getItem(BEAR_LOCAL_KEY)||'null');
-    return d&&typeof d==='object'?d:BEAR_DEFAULT;
-  }catch(e){return BEAR_DEFAULT}
-}
-function bearSaveLocal(d){
-  try{localStorage.setItem(BEAR_LOCAL_KEY,JSON.stringify(d));return true}
-  catch(e){console.error('Bear local save failed:',e);return false}
-}
-function renderBear(data){
-  data=data||BEAR_DEFAULT;
-  const text=String(data.text||'').replace(/\\n/g,'\n');
-  const heroes=String(data.heroes||'').replace(/\\n/g,'\n');
-  const t=document.getElementById('bearText'),h=document.getElementById('bearHeroes');
-  const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
-  if(t)t.innerHTML=escapeHome(text).replace(/\n/g,'<br>');
-  if(h)h.innerHTML=heroes.split(/\n+/).filter(Boolean).map(x=>escapeHome(x.trim())).join('<br>');
-  if(ti)ti.value=text;
-  if(hi)hi.value=heroes;
-}
-let bearAdmin=false;
-function setBearAdminMode(){
-  const v=document.getElementById('bearView'),e=document.getElementById('bearEdit'),btn=document.getElementById('bearAdminBtn'),n=document.getElementById('bearAdminNote');
-  if(v)v.style.display=bearAdmin?'none':'block';
-  if(e)e.style.display=bearAdmin?'block':'none';
-  if(btn)btn.textContent=bearAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  if(n)n.textContent=bearAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';
-}
-function toggleBearAdmin(){
-  if(bearAdmin){bearAdmin=false;setBearAdminMode();return}
-  const pw=prompt('관리자 비밀번호를 입력하세요.');
-  if(pw===ADMIN_PASSWORD){bearAdmin=true;setBearAdminMode();const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥 관리자 수정 모드입니다.'}
-  else if(pw!==null)alert('비밀번호가 올바르지 않습니다.')
-}
-async function loadBear(){
-  try{
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise)await firebaseInitPromise;
-  }catch(e){}
-  if(BEAR_DOC&&window.__firebaseGetDoc){
-    try{
-      const snap=await window.__firebaseGetDoc(BEAR_DOC);
-      if(snap.exists()){
-        const d=snap.data()||BEAR_DEFAULT;
-        bearSaveLocal(d);
-        renderBear(d);
-        const m=document.getElementById('bearMsg');if(m)m.textContent='최신 곰사냥 내용을 불러왔습니다.';
-        return;
-      }
-    }catch(e){console.error('Bear Firebase read failed:',e)}
-  }
-  const d=bearDataLocal();
-  renderBear(d);
-  const m=document.getElementById('bearMsg');if(m)m.textContent='이 기기의 저장본을 불러왔습니다.';
-}
-async function saveBear(){
-  if(!bearAdmin)return;
-  const ti=document.getElementById('bearTextInput'),hi=document.getElementById('bearHeroesInput');
-  const d={text:ti?ti.value.trim():'',heroes:hi?hi.value.trim():''};
-  try{
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise)await firebaseInitPromise;
-  }catch(e){}
-  if(BEAR_DOC&&window.__firebaseSetDoc){
-    try{
-      await window.__firebaseSetDoc(BEAR_DOC,d);
-      bearSaveLocal(d);
-      renderBear(d);
-      const m=document.getElementById('bearMsg');if(m)m.textContent='곰사냥 저장 완료! / Saved!';
-      return;
-    }catch(e){console.error('Bear Firebase save failed:',e)}
-  }
-  if(bearSaveLocal(d)){
-    renderBear(d);
-    const m=document.getElementById('bearMsg');if(m)m.textContent='이 기기에 저장 완료했습니다. (공용 서버 연결 실패)';
-  }else{
-    alert('저장에 실패했습니다. 브라우저 저장공간을 확인해주세요.');
-  }
-}
-
-const RULES_DEFAULT={text:'### 📋 KOR1816 운영진 및 안내\\n\\n[KOR]༺༒༽Pham༼༒༻ - 총대장 / 정신적지주\\n\\n[KOR]Nemesis - 집결장 / 외교, 이민 / 유적쟁탈 /\\n\\n[KOR]Agaresᴷᴼᴿ - 전체적인 벨런스(에이스)\\n\\n[KOR]༺༒༽LJ༼༒༻ - 거점총사령관\\n\\n[KOR]샌디에이고 - 집결장 / 댕댕이전문가\\n\\n[KOR]momo - 캐슬전 통솔자 / 모모찡엄마\\n\\n[KOR]Rarara - SIN연맹장 / 천사의마음씨\\n\\n[KOR]Aimée - 분위기메이커 / 태그담당자\\n\\n[KOR]GGGz需要起床 - 히어로 / 너무바쁘다 / 영어.중국어가능\\n\\n[KOR]DAWN - 침묵의왕자 / 그저조용하다\\n\\n[KOR]KOREAN MONSTER - 동물의숲\\n\\n[KOR]Hair loss beam - 탈모를원하는가?'};
-function rulesDataLocal(){try{return JSON.parse(localStorage.getItem('kor1816_rules_v1')||'null')||RULES_DEFAULT}catch(e){return RULES_DEFAULT}}
-function renderRules(data){
-  data=data||rulesDataLocal();
-  const v=document.getElementById('rulesText'),i=document.getElementById('rulesTextInput');
-  const text=String(data.text||'').replace(/\\n/g,'\n');
-  if(v)v.innerHTML=escapeHome(text).replace(/\n/g,'<br>');
-  if(i)i.value=text;
-}
-let rulesAdmin=false;
-function setRulesAdminMode(){
-  const v=document.getElementById('rulesView'),e=document.getElementById('rulesEdit'),btn=document.getElementById('rulesAdminBtn'),n=document.getElementById('rulesAdminNote');
-  if(v)v.style.display=rulesAdmin?'none':'block';
-  if(e)e.style.display=rulesAdmin?'block':'none';
-  if(btn)btn.textContent=rulesAdmin?'🔒 수정 종료':'🔐 관리자 수정';
-  if(n)n.textContent=rulesAdmin?'관리자 수정 모드입니다. 저장 버튼을 누르면 즉시 저장됩니다.':'현재 보기 전용입니다.';
-}
-function toggleRulesAdmin(){
-  if(rulesAdmin){rulesAdmin=false;setRulesAdminMode();return}
-  const pw=prompt('관리자 비밀번호를 입력하세요.');
-  if(pw===ADMIN_PASSWORD){
-    rulesAdmin=true;
-    setRulesAdminMode();
-    const m=document.getElementById('rulesMsg');if(m)m.textContent='규칙 관리자 수정 모드입니다.';
-  }else if(pw!==null)alert('비밀번호가 올바르지 않습니다.');
-}
-async function loadRules(){
-  renderRules(rulesDataLocal());
-  if(!RULES_DOC||!window.__firebaseGetDoc)return;
-  try{
-    const snap=await window.__firebaseGetDoc(RULES_DOC);
-    if(snap.exists()){
-      const d=snap.data()||{};
-      localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));
-      renderRules(d);
-      const m=document.getElementById('rulesMsg');if(m)m.textContent='최신 규칙 내용을 불러왔습니다.';
-    }
-  }catch(e){
-    console.error('Rules read failed:',e);
-    const m=document.getElementById('rulesMsg');if(m)m.textContent='서버 새로고침 실패 — 이 기기의 저장본을 표시합니다.';
-  }
-}
-async function saveRules(){
-  if(!rulesAdmin)return;
-  const input=document.getElementById('rulesTextInput');
-  const d={text:input?input.value.trim():''};
-  localStorage.setItem('kor1816_rules_v1',JSON.stringify(d));
-  renderRules(d);
-  try{
-    if(RULES_DOC&&window.__firebaseSetDoc)await window.__firebaseSetDoc(RULES_DOC,d);
-    const m=document.getElementById('rulesMsg');if(m)m.textContent='규칙 저장 완료! / Saved!';
-  }catch(e){
-    console.error('Rules save failed:',e);
-    const m=document.getElementById('rulesMsg');if(m)m.textContent='규칙은 이 브라우저에 저장되었습니다. 공용 서버 저장은 실패했습니다.';
-  }
-}
-const ADMIN_PASSWORD='0001';
-let isAdmin=true;
-
-// 성검쟁탈은 누구나 입력할 수 있고,
-// 실제 서버 저장을 누를 때만 관리자 비밀번호를 확인합니다.
-function checkSavePassword(){
-  const pw=prompt('저장 비밀번호를 입력하세요.');
-  return pw===ADMIN_PASSWORD;
-}
-
-function setAdminMode(){
-  const sec=document.getElementById('teams');
-  if(sec)sec.querySelectorAll('input').forEach(x=>x.readOnly=false);
-}
-
-function showSaveResult(message){
-  const m=document.getElementById('teamMsg');
-  if(m)m.textContent=message;
-}
-
-function collectTeamData(){
-  const data={...(sharedTeams||{})};
-  ['A','B','C','D'].forEach(team=>{
-    data[team]=[1,2,3,4,5,6,7].map(n=>document.getElementById('team-'+team+'-'+n)?.value||'');
-  });
-  data.extra=[
-    document.getElementById('extra-1')?.value||'',
-    document.getElementById('extra-2')?.value||''
-  ];
-  data.subs=[1,2,3,4,5,6,7,8,9,10].map(n=>document.getElementById('sub-'+n)?.value||'');
-  data._updatedAt=Date.now();
-  return data;
-}
-
-async function saveAllTeams(){
-  if(!checkSavePassword())return;
-  const data=collectTeamData();
-
-  sharedTeams=data;
-  saveLocalTeams();
-  saveLocalExtra(data.extra);
-  ['A','B','C','D'].forEach(team=>saveSlotBackup(team,data[team]));
-  localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(data._updatedAt));
-  showSaveResult('저장 중...');
-
-  try{
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise){
-      await Promise.race([
-        firebaseInitPromise,
-        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase 초기화 시간 초과')),7000))
-      ]);
-    }
-    if(!TEAM_DOC||!window.__firebaseSetDoc)throw new Error('Firestore 준비 안 됨');
-    await window.__firebaseSetDoc(TEAM_DOC,data);
-
-    const verify=window.__firebaseGetDocFromServer
-      ? await window.__firebaseGetDocFromServer(TEAM_DOC)
-      : null;
-    if(verify && (!verify.exists() || Number((verify.data()||{})._updatedAt||0)!==Number(data._updatedAt))){
-      throw new Error('서버 저장 검증 실패');
-    }
-    showSaveResult('저장 완료!');
-  }catch(e){
-    console.error('Holy Sword save failed:',e);
-    showSaveResult('기기 저장 완료 / 서버 저장 실패');
-  }
-}
-
-async function saveTeam(){ return saveAllTeams(); }
-async function saveExtra(){ return saveAllTeams(); }
-async function saveSubs(){ return saveAllTeams(); }
-
-function getTeams(){return sharedTeams||{}}
-
-function renderTeams(){
-  const data={...(getTeams()||{})};
-  // 서버에서 읽어온 최신 팀편성을 로컬 백업이 덮어쓰지 않도록 합니다.
-  // 백업은 서버 데이터가 없는 경우에만 보조 자료로 사용합니다.
-  const backup=getSlotBackup();
-  ['A','B','C','D'].forEach(team=>{
-    if(!Array.isArray(data[team]) && Array.isArray(backup[team])){
-      data[team]=backup[team].slice(0,7);
-    }
-  });
-  ['A','B','C','D'].forEach(team=>[1,2,3,4,5,6,7].forEach(n=>{
-    const el=document.getElementById('team-'+team+'-'+n);
-    if(el)el.value=(data[team]&&data[team][n-1])||'';
-  }));
-  const extra=data.extra||[];
-  const subs=data.subs||[];
-  const e1=document.getElementById('extra-1'),e2=document.getElementById('extra-2');
-  if(e1)e1.value=extra[0]||'';
-  if(e2)e2.value=extra[1]||'';
-  for(let n=1;n<=10;n++){
-    const el=document.getElementById('sub-'+n);
-    if(el)el.value=subs[n-1]||'';
-  }
-}
-async function refreshTeams(){
-  const btn=document.querySelector('[onclick="refreshTeams()"]');
-  if(btn){btn.disabled=true;btn.textContent='🔄 불러오는 중...';}
-  try{
-    // Firebase 초기화가 멈춰 있어도 버튼이 영원히 '불러오는 중...'에
-    // 갇히지 않도록 5초 제한을 둡니다.
-    const local=getLocalTeams();
-    sharedTeams=local;
-    const localExtra=getLocalExtra();
-    if(localExtra.length) sharedTeams.extra=localExtra;
-    renderTeams();
-
-    if(typeof firebaseInitPromise!=='undefined'&&firebaseInitPromise){
-      await Promise.race([
-        firebaseInitPromise,
-        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase init timeout')),5000))
-      ]);
-    }
-    if(TEAM_DOC&&window.__firebaseGetDocFromServer){
-      await Promise.race([
-        loadSharedTeams(),
-        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firestore read timeout')),5000))
-      ]);
-    }
-    showSaveResult('최신 성검쟁탈 팀편성을 불러왔습니다.');
-  }catch(e){
-    console.error('Teams refresh failed:',e);
-    showSaveResult('서버 응답 지연 — 현재 저장본을 표시합니다.');
-  }finally{
-    if(btn){btn.disabled=false;btn.textContent='🔄 새로고침';}
-  }
-}
-
-
-async function initFirebase(){
-  // Local storage is always enabled, so refreshes never erase edits.
-  sharedTeams=getLocalTeams();
-  renderTeams();
-
-  try{
-    const appMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js");
-    const fsMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
-    const authMod=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js");
-    const firebaseApp=appMod.initializeApp(firebaseConfig);
-    // 익명 로그인 실패가 Firestore 초기화 전체를 막지 않도록 합니다.
-    // 현재 Firestore 보안 규칙이 허용하는 경우 로그인 없이도 읽기/쓰기를 시도합니다.
-    try{
-      const auth=authMod.getAuth(firebaseApp);
-      await authMod.signInAnonymously(auth);
-    }catch(authError){
-      console.error('Anonymous auth failed:',authError);
-      const authCode=authError?.code||'unknown';
-      const authMsg=authError?.message||String(authError);
-      console.warn('Anonymous auth failed; continuing to Firestore:',authCode,authMsg);
-      const m=document.getElementById('teamMsg');
-      if(m) m.textContent='Firebase 인증 실패: '+authCode;
-    }
-    db=fsMod.getFirestore(firebaseApp);
-    TEAM_DOC=fsMod.doc(db,'siteData','teams');
-    EXTRA_DOC=fsMod.doc(db,'siteData','teamsExtra');
-    HOME_DOC=fsMod.doc(db,'siteData','home');
-    VIKING_DOC=fsMod.doc(db,'siteData','viking');
-    ALLIANCE_DOC=fsMod.doc(db,'siteData','alliance');
-    CASTLE_DOC=fsMod.doc(db,'siteData','castle');
-    BEAR_DOC=fsMod.doc(db,'siteData','bear');
-    RULES_DOC=fsMod.doc(db,'siteData','rules');
-    window.__firebaseGetDoc=fsMod.getDoc;
-    window.__firebaseGetDocFromServer=fsMod.getDocFromServer;
-    window.__firebaseSetDoc=fsMod.setDoc;
-    renderHome(homeDataLocal());
-    renderViking(vikingDataLocal());
-    renderAlliance(allianceDataLocal());
-    setHomeAdminMode();
-    setVikingAdminMode();
-    setAllianceAdminMode();
-    firebaseReady=true;
-    await loadSharedTeams(true);
-  }catch(e){
-    console.warn('Firebase unavailable; using browser backup:',e);
-    const m=document.getElementById('teamMsg');
-    if(m && isAdmin) m.textContent='공용 서버 연결이 안 되어 현재 이 브라우저에 안전하게 임시 저장됩니다.';
-  }
-}
-
-async function loadSharedTeams(skipInitWait=false){
-  // Firebase만 서버 원본으로 사용합니다. 먼저 localStorage를 화면에 그리지 않습니다.
-  try{
-    if(!skipInitWait && typeof firebaseInitPromise!=='undefined' && !firebaseReady){
-      await Promise.race([
-        firebaseInitPromise,
-        new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase init timeout')),7000))
-      ]);
-    }
-    if(!TEAM_DOC||!window.__firebaseGetDocFromServer)throw new Error('Firestore not ready');
-
-    const snap=await Promise.race([
-      window.__firebaseGetDocFromServer(TEAM_DOC),
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firestore read timeout')),7000))
-    ]);
-    if(!snap.exists())throw new Error('Team document not found');
-
-    let server=snap.data()||{};
-    // If the shared document was accidentally replaced by an incomplete snapshot,
-    // restore the last confirmed formation immediately.
-    if(!hasFullTeamData(server)){
-      server={...TEAM_RECOVERY_SNAPSHOT};
-      await window.__firebaseSetDoc(TEAM_DOC,server);
-    }
-    sharedTeams=server;
-    saveLocalTeams();
-    if(Array.isArray(server.extra))saveLocalExtra(server.extra);
-    localStorage.setItem(TEAM_LOCAL_TIME_KEY,String(Number(server._updatedAt||Date.now())));
-    ['A','B','C','D'].forEach(team=>{
-      if(Array.isArray(server[team]))saveSlotBackup(team,server[team].slice(0,7));
-    });
-    renderTeams();
-    return true;
-  }catch(e){
-    console.error('Firestore read failed:',e);
-    // 서버를 읽지 못한 경우에만 이 기기의 백업을 사용합니다.
-    sharedTeams=getLocalTeams();
-    const localExtra=getLocalExtra();
-    if(localExtra.length)sharedTeams.extra=localExtra;
-    renderTeams();
-    const m=document.getElementById('teamMsg');
-    if(m)m.textContent='서버 연결 실패 — 이 기기의 저장본을 표시합니다.';
+async function ensureAdmin(){
+ try{
+  let user=auth?.currentUser;
+  if(!user||!user.email){const result=await signInWithPopup(auth,new GoogleAuthProvider());user=result.user}
+  if(!user?.email||!ADMIN_EMAILS.includes(user.email.toLowerCase())){
+    alert(UI[currentLang].denied);
+    try{await signOut(auth);await signInAnonymously(auth)}catch{}
     return false;
   }
+  return true;
+ }catch(err){console.warn("Admin sign-in:",err);alert(UI[currentLang].login);return false}
 }
-async function refreshTeams(){
-  const btn=document.querySelector('[onclick="refreshTeams()"]');
-  if(btn){btn.disabled=true;btn.textContent='🔄 불러오는 중...';}
-  try{
-    const ok=await loadSharedTeams();
-    showSaveResult(ok?'최신 성검쟁탈 팀편성을 불러왔습니다.':'서버 연결 실패 — 이 기기의 저장본을 표시합니다.');
-  }finally{
-    if(btn){btn.disabled=false;btn.textContent='🔄 새로고침';}
-  }
-}
-const PAGE_STATE_KEY='kor1816_current_page_v1';
-const VALID_PAGES=['home','teams','alliance'];
-
-function show(id,updateUrl=true){
-  if(!VALID_PAGES.includes(id)) id='home';
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  const el=document.getElementById(id);
-  if(el)el.classList.add('active');
-
-  // URL hash + localStorage 이중 저장: 새로고침 시에도 현재 페이지 유지
-  try{localStorage.setItem(PAGE_STATE_KEY,id)}catch(e){}
-
-  if(id==='home')loadHome();
-  
-  if(id==='alliance')loadAlliance();
-  if(id==='teams')renderTeams();
-  
-  
-  
-
-  if(updateUrl){
-    const nextHash='#'+id;
-    if(location.hash!==nextHash) history.replaceState(null,'',nextHash);
-  }
-  window.scrollTo(0,0);
-}
-
-function restorePageFromUrl(){
-  let id=(location.hash||'').slice(1);
-  if(!VALID_PAGES.includes(id)){
-    try{id=localStorage.getItem(PAGE_STATE_KEY)||'home'}catch(e){id='home'}
-  }
-  if(!VALID_PAGES.includes(id)) id='home';
-  show(id,false);
-  if(location.hash!=='#'+id) history.replaceState(null,'','#'+id);
-}
-
-let firebaseInitPromise=initFirebase().catch(e=>console.error('Firebase init failed:',e));
-
-window.addEventListener('hashchange',restorePageFromUrl);
-window.addEventListener('load',function(){
-  try{renderHome(homeDataLocal());setHomeAdminMode();}catch(e){console.error(e)}
-  try{renderViking(vikingDataLocal());setVikingAdminMode();}catch(e){console.error(e)}
-  try{renderAlliance(allianceDataLocal());setAllianceAdminMode();}catch(e){console.error(e)}
-  try{renderCastle(castleDataLocal());setCastleAdminMode();}catch(e){console.error(e)}
-  try{setBearAdminMode();}catch(e){console.error(e)}
-  try{renderRules(rulesDataLocal());setRulesAdminMode();}catch(e){console.error(e)}
-  restorePageFromUrl();
+el("languageSelect").addEventListener("change",event=>{
+ currentLang=event.target.value;
+ try{localStorage.setItem("kor1816_lang",currentLang)}catch{}
+ renderHome();setMessage("");
 });
-</script><script id="full-i18n">
-(function(){
-  const LANGS={en:'en',ja:'ja',zh:'zh-CN',de:'de'};
-  const NAV={
-    ko:['🏠 홈','⚔️ 성검쟁탈','⚔️ 3대연맹전'],
-    en:['🏠 Home','⚔️ Holy Sword Clash','⚔️ Three Alliances War'],
-    ja:['🏠 ホーム','⚔️ 聖剣争奪','⚔️ 3大連盟戦'],
-    zh:['🏠 首页','⚔️ 圣剑争夺','⚔️ 三大联盟战'],
-    de:['🏠 Startseite','⚔️ Heiliges Schwertduell','⚔️ Krieg der drei Allianzen']
-  };
-  const TERMS={
-    en:{'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.':'For the time being, rewards from Fort and Sanc will be distributed primarily to immigrants who came here after making troop sacrifices.','기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.':'We respectfully ask our existing KOR alliance members for their understanding.','성검쟁탈':'Holy Sword Clash','3대연맹전':'Three Alliances War','공성전':'Castle Siege','곰사냥':'Bear Hunt','곰 사냥':'Bear Hunt','집결장':'Rally Leader','집결원':'Rally Member','개돌조':'Charge Team','대체자':'Substitute','비율':'Troop Ratio','1열':'Row 1','2열':'Row 2','3열':'Row 3','4열':'Row 4','수성':'Defense','집결':'Rally','공격':'Attack','연습':'Practice','공지':'Notice','이벤트 일정':'Schedule','새로고침':'Refresh','관리자 수정':'Admin Edit','저장':'Save','바이킹':'Viking','편성':'Formation','규칙':'Rules','안내':'Guide','진행':'Progress','소통':'Communication','협력':'Cooperation','성장':'Growth'},
-    ja:{'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.':'当面、FortとSancの報酬は、兵力を犠牲にして移民してきた方々を中心に分配する予定です。','기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.':'既存のKOR連盟員の皆様には、何卒ご理解いただきますようお願いいたします。','성검쟁탈':'聖剣争奪','3대연맹전':'3大連盟戦','공성전':'攻城戦','곰사냥':'熊狩り','곰 사냥':'熊狩り','집결장':'集結リーダー','집결원':'集結メンバー','개돌조':'突撃隊','대체자':'交代要員','비율':'兵力比率','1열':'1列目','2열':'2列目','3열':'3列目','4열':'4列目','수성':'防衛','집결':'集結','공격':'攻撃','연습':'練習','공지':'お知らせ','이벤트 일정':'スケジュール','새로고침':'更新','관리자 수정':'管理者編集','저장':'保存','바이킹':'バイキング','편성':'編成','규칙':'ルール','안내':'案内','진행':'進行','소통':'コミュニケーション','협력':'協力','성장':'成長'},
-    zh:{'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.':'暂时，Fort和Sanc的奖励计划优先分配给那些牺牲兵力来到这里的移民。','기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.':'也请原有的KOR联盟成员予以理解。','성검쟁탈':'圣剑争夺','3대연맹전':'三大联盟战','공성전':'攻城战','곰사냥':'猎熊','곰 사냥':'猎熊','집결장':'集结队长','집결원':'集结成员','개돌조':'突击队','대체자':'替补','비율':'兵力比例','1열':'第1排','2열':'第2排','3열':'第3排','4열':'第4排','수성':'防守','집결':'集结','공격':'攻击','연습':'练习','공지':'公告','이벤트 일정':'日程','새로고침':'刷新','관리자 수정':'管理员编辑','저장':'保存','바이킹':'维京','편성':'编组','규칙':'规则','안내':'说明','진행':'进行','소통':'沟通','협력':'合作','성장':'成长'},
-    de:{'당분간 fort와 sanc의 보상은 병력을 희생하고 오신 이민자들 위주로 분배할 계획입니다.':'Vorerst sollen die Belohnungen für Fort und Sanc hauptsächlich an Einwanderer verteilt werden, die unter Einsatz ihrer Truppen hierher gekommen sind.','기존의 KOR연맹원 분들에게 정중한 양해를 구합니다.':'Wir bitten die bisherigen KOR-Allianzmitglieder höflich um ihr Verständnis.','성검쟁탈':'Heiliges Schwertduell','3대연맹전':'Krieg der drei Allianzen','공성전':'Belagerung','곰사냥':'Bärenjagd','곰 사냥':'Bärenjagd','집결장':'Versammlungsleiter','집결원':'Versammlungsmitglied','개돌조':'Sturmtrupp','대체자':'Ersatz','비율':'Truppenverhältnis','1열':'Reihe 1','2열':'Reihe 2','3열':'Reihe 3','4열':'Reihe 4','수성':'Verteidigung','집결':'Versammlung','공격':'Angriff','연습':'Übung','공지':'Ankündigung','이벤트 일정':'Zeitplan','새로고침':'Aktualisieren','관리자 수정':'Admin bearbeiten','저장':'Speichern','바이킹':'Wikinger','편성':'Aufstellung','규칙':'Regeln','안내':'Anleitung','진행':'Ablauf','소통':'Kommunikation','협력':'Zusammenarbeit','성장':'Wachstum'}
-  };
-  const TARGETS=['main .page:not(#teams)'];
-  let token=0;
-
-  function hasKo(s){return /[\uac00-\ud7a3]/.test(s||'')}
-  function restore(){
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
-      if(el.dataset.kor1816Source!==undefined)el.innerHTML=el.dataset.kor1816Source;
-    }));
-    document.querySelectorAll('nav button').forEach((b,i)=>b.textContent=NAV.ko[i]||b.textContent);
-  }
-  function capture(){
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.dataset.kor1816Source=el.innerHTML));
-  }
-  function terms(text,lang){
-    let out=text;
-    const dict=TERMS[lang]||{};
-    Object.keys(dict).sort((a,b)=>b.length-a.length).forEach(k=>{out=out.split(k).join(dict[k])});
-    return out;
-  }
-  const CACHE_KEY='kor1816_i18n_cache_v2';
-  let cache={};
-  try{cache=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')||{}}catch(e){cache={}}
-  function cacheKey(text,lang){return lang+'::'+text}
-  async function tr(text,lang){
-    if(!hasKo(text)||!text.trim())return text;
-    const masked=terms(text,lang);
-    if(!hasKo(masked))return masked;
-    const key=cacheKey(masked,lang);
-    if(cache[key])return cache[key];
-    try{
-      const u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(masked)+'&langpair=ko|'+encodeURIComponent(LANGS[lang]);
-      const r=await fetch(u);if(!r.ok)throw 0;
-      const d=await r.json();
-      const out=d&&d.responseData&&d.responseData.translatedText?d.responseData.translatedText:masked;
-      cache[key]=out;
-      try{localStorage.setItem(CACHE_KEY,JSON.stringify(cache))}catch(e){}
-      return out;
-    }catch(e){return masked}
-  }
-  async function translateElement(el,lang,my){
-    const src=el.dataset.kor1816Source||el.innerHTML;
-    const box=document.createElement('div');box.innerHTML=src;
-    const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
-    const nodes=[];let n;
-    while(n=walker.nextNode()){
-      const p=n.parentElement;
-      if(!p||['SCRIPT','STYLE'].includes(p.tagName))continue;
-      if(hasKo(n.nodeValue)&&n.nodeValue.trim())nodes.push(n);
-    }
-    // Parallelize a small number of requests; glossary handles fixed terms.
-    for(let i=0;i<nodes.length;i+=8){
-      if(my!==token)return null;
-      const batch=nodes.slice(i,i+8);
-      const outs=await Promise.all(batch.map(x=>tr(x.nodeValue,lang)));
-      batch.forEach((x,j)=>x.nodeValue=outs[j]);
-      if(i+8<nodes.length) await new Promise(r=>setTimeout(r,0));
-    }
-    return box.innerHTML;
-  }
-  async function apply(){
-    const my=++token,lang=localStorage.getItem('kor1816_lang')||'ko';
-    restore();if(lang==='ko')return;
-    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang][i])b.textContent=NAV[lang][i]});
-    // Show glossary translations immediately; API fills the remaining sentences.
-    TARGETS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
-      const src=el.dataset.kor1816Source||el.innerHTML;
-      const box=document.createElement('div');box.innerHTML=src;
-      const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT);
-      let n;
-      while(n=walker.nextNode()){
-        const p=n.parentElement;
-        if(!p||['SCRIPT','STYLE'].includes(p.tagName))continue;
-        if(hasKo(n.nodeValue)&&n.nodeValue.trim())n.nodeValue=terms(n.nodeValue,lang);
-      }
-      el.innerHTML=box.innerHTML;
-    }));
-    for(const sel of TARGETS){
-      for(const el of document.querySelectorAll(sel)){
-        if(my!==token)return;
-        const out=await translateElement(el,lang,my);
-        if(out!==null)el.innerHTML=out;
-      }
-    }
-  }
-  window.setLang=function(lang){
-    if(!['ko','en','ja','zh','de'].includes(lang))return;
-    localStorage.setItem('kor1816_lang',lang);token++;restore();
-    document.querySelectorAll('nav button').forEach((b,i)=>{if(NAV[lang]&&NAV[lang][i])b.textContent=NAV[lang][i]});
-    if(lang!=='ko')setTimeout(apply,0);
-  };
-  // Re-capture every page after Firebase/local data renders so all user-editable
-  // sections and newly added Korean text are translated automatically.
-  function refreshAfterRender(){
-    restore();
-    capture();
-    const saved=localStorage.getItem('kor1816_lang')||'ko';
-    if(saved!=='ko')setTimeout(apply,0);
-  }
-  function hookRender(name){
-    const fn=window[name];
-    if(typeof fn!=='function')return;
-    window[name]=function(){
-      const out=fn.apply(this,arguments);
-      setTimeout(refreshAfterRender,0);
-      return out;
-    };
-  }
-  hookRender('renderHome');
-  hookRender('renderAlliance');
-
-  // IMPORTANT: capture is refreshed after Firebase renders its data.
-  // Hook the existing render functions without changing their behavior.
-  window.addEventListener('load',function(){
-    setTimeout(function(){
-      capture();
-      const saved=localStorage.getItem('kor1816_lang')||'ko';
-      if(saved!=='ko')setTimeout(apply,150);
-    },500);
-  });
-})();
+el("homeRefreshBtn").addEventListener("click",refreshHome);
+el("homeAdminBtn").addEventListener("click",async()=>{
+ if(!homeAdmin){if(!await ensureAdmin())return;homeAdmin=true}
+ else homeAdmin=false;
+ el("homeView").hidden=homeAdmin;
+ el("homeEdit").classList.toggle("active",homeAdmin);
+ el("homeSaveBtn").hidden=!homeAdmin;
+ renderHome();
+});
+el("homeSaveBtn").addEventListener("click",async()=>{
+ const edited={latestTitle:el("homeLatestInput").value.trim(),latestBody:el("homeLatestBody").value,schedule:el("homeScheduleInput").value,welcome:el("homeWelcomeInput").value};
+ homeData=mergeData(homeData);homeData.translations[currentLang]={...homeData.translations[currentLang],...edited};
+ if(currentLang==="ko")Object.assign(homeData,edited);
+ localWrite(homeData);renderHome();
+ try{
+  if(!homeDoc)throw new Error("Firestore not ready");
+  await setDoc(homeDoc,{...homeData,updatedAt:Date.now()});
+  setMessage("saved");
+ }catch(err){console.error("Home save:",err);setMessage("localOnly")}
+});
+try{
+ const savedLang=localStorage.getItem("kor1816_lang");
+ if(savedLang&&UI[savedLang])currentLang=savedLang;
+ el("languageSelect").value=currentLang;
+ const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);homeDoc=doc(db,"siteData","home");
+ try{await signInAnonymously(auth)}catch(err){console.warn("Anonymous auth:",err)}
+}catch(err){console.error("Firebase init:",err)}
+await refreshHome();
+renderHome();
 </script>
-<script id="mobile-pull-refresh">
-(function(){
-  let startY=0, pulling=false, triggered=false;
-  const threshold=75;
-  const indicator=()=>document.getElementById('pullRefreshIndicator');
-  document.addEventListener('touchstart',function(e){
-    if(window.scrollY>0||e.touches.length!==1)return;
-    startY=e.touches[0].clientY; pulling=true; triggered=false;
-  },{passive:true});
-  document.addEventListener('touchmove',function(e){
-    if(!pulling||window.scrollY>0||e.touches.length!==1)return;
-    const dy=e.touches[0].clientY-startY;
-    if(dy<=0)return;
-    const el=indicator();
-    if(el){
-      el.textContent=dy>=threshold?'↻ 놓으면 최신 내용 불러오기':'↓ 아래로 당겨서 최신 내용 불러오기';
-      el.classList.toggle('show',dy>=35);
-    }
-    if(dy>=threshold)triggered=true;
-  },{passive:true});
-  document.addEventListener('touchend',async function(){
-    if(!pulling)return;
-    pulling=false;
-    const el=indicator();
-    if(el)el.classList.remove('show');
-    if(!triggered)return;
-    triggered=false;
-    const active=document.querySelector('.page.active');
-    if(active&&active.id==='teams'&&typeof refreshTeams==='function'){
-      await refreshTeams();
-    }else{
-      location.reload();
-    }
-  },{passive:true});
-})();
-</script>
-<script id="nav-final-fix">
-(function(){
-  const labels=['🏠 홈','⚔️ 성검쟁탈','⚔️ 3대연맹전'];
-  function forceNav(){
-    const nav=document.getElementById('mainNav');
-    if(!nav)return;
-    const bs=nav.querySelectorAll('button');
-    labels.forEach((label,i)=>{if(bs[i])bs[i].textContent=label});
-    while(bs.length>3){
-      const b=bs[bs.length-1];
-      if(b)b.remove();
-    }
-  }
-  document.addEventListener('DOMContentLoaded',forceNav);
-  window.addEventListener('load',forceNav);
-  setTimeout(forceNav,500);
-  setTimeout(forceNav,1500);
-})();
-</script></body></html>
-<style id="bear-hunt-center-fix">
-#bear #bearText{text-align:center!important;line-height:2!important}
-#bear #bearText br{display:block}
-</style>
+</body>
+</html>
