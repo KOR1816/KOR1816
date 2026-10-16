@@ -30,6 +30,7 @@ const LEGACY = {
   home:"home", notices:"notices", teams:"teams", alliance:"alliance", seating:"seating_v4", viking:"viking_v1", glory:"glory_records",
   battleJoin:"castle_features_v1", castlewar1:"castle_features_v1", castlelayout1:"castle_layout1_v1"
 };
+const FIXED_NICKNAMES=["Nemesis","Pham","샌디에이고","Constant","SsungBi","Jinno","KOREAN MONSTER","hhHa","GeeGeeGeeZ","Jiwon","Aveline","DON QUIXOTE","Leo li","Aimee","yongi","moon","Chan Dam Bom","bebe","VIVIAN","Pika","Lekum","ImNotKorean","DDoro","Hani","miiiiia","bossi","Wilk","Krungkrung","Keith ape","OMEGA","Zidf","hajae","Mushi","Libby","LSJ","jennie","Nyctifer_v","Lager","GieZues","Sant Jordi","Eagle","Architect","El Elegido","LJ","Furball","AVA","AgaresKOR","coculim","Rarara","ROKA","Ian","다잘이 돌아왔다","backki","Commander 주","HIGH FIVE","Gideon","Dark Knight","Lady Anaiah","Korean","FlexMan","Dingdong","Alucard","S ssh","Hair loss beam","RESCENE Yaho","SUMMER","hun","themis1994","Sylvanas","RACruze","Kashish","Vista","HERA","Alchemist","DaddyEpstein","KOR","Rayan","ADIPATI KOR","Kuu Rawr","SAGAMI","KK Master","Solace","Bilal","The Warrior","Citykan","스타리아","Adanali Ibo","Hsun","benson627","Remember","Jshan","lolkillmeplz67","Pamuk","gozeromin","KOOK","Ojr","Mahecha","MG PRIME","MissCoco"];
 const FIXED_LEADERS = ["Nemesis","Pham","샌디에이고","Jinno","Leo li","SsungBi"];
 const NOTICE_DEFAULTS = {
   bearLeaders:"집결장: 알카 · 페라 · 로사",
@@ -538,15 +539,18 @@ function normalizeParticipants(raw){
 function participantRank(p){if(!p||p.status!=="yes")return "";const base={A:"A",B:"B",C:"C"}[p.tier];if(!base)return "";return base+(p.salo?"1":"2");}
 function renderParticipants(){
  const root=$("#battleJoin");if(!root)return;
- const sel=$("#ncNick",root);if(sel){
-  const old=sel.value;sel.innerHTML='<option value="">닉네임 선택</option>'+[...new Set(participants.map(p=>p.nickname))].sort((a,b)=>a.localeCompare(b)).map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
+ const sel=$("#ncNick",root);
+ if(sel){
+  const old=sel.value;
+  const names=[...new Set([...FIXED_NICKNAMES,...participants.map(p=>p.nickname)])];
+  sel.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
   if([...sel.options].some(o=>o.value===old))sel.value=old;
  }
  const list=$("#ncParticipants",root);
- if(list)list.innerHTML=participants.map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(p.status)+ '</span><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">등록된 참전 정보가 없습니다.</p>';
+ if(list)list.innerHTML=participants.map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(p.status)+'</span><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">등록된 참전 정보가 없습니다.</p>';
  const waiting=$("#ncWaiting",root);
  if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
-
+ translateStatic();
 }
 async function loadNewCastleFeatures(){
  const root=$("#"+(activePage==="battleJoin"?"battleJoin":"castlewar1"));
@@ -567,16 +571,32 @@ async function loadNewCastleFeatures(){
  }catch(e){console.error(e);if(activePage==="battleJoin")setMsg("ncJoinMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
 }
 function updateNewCastleJoinFields(){
- const root=$("#battleJoin"),sel=$("#ncNick",root),custom=$("#ncCustomNickname",root);
- if(custom)custom.hidden=sel?.value!=="__custom__";
+ const root=$("#battleJoin"),sel=$("#ncNick",root),search=$("#ncIdSearch",root),box=$("#ncNickSearchResults",root);
+ if(search&&sel?.value&&sel.value!=="__custom__")search.value=sel.value;
+ if(box){box.hidden=true;box.style.display="none";}
  const existing=participants.find(p=>p.nickname===sel?.value);
  if(existing){$("#ncStatus",root).value=existing.status;$("#ncTier",root).value=existing.tier;$("#ncSalo",root).value=existing.salo?"yes":"no";$("#ncHilde",root).value=existing.hilde?"yes":"no";}
 }
 function filterNewCastleNicknames(){
- const root=$("#battleJoin"),search=$("#ncIdSearch",root),sel=$("#ncNick",root);
- if(!search||!sel)return;
- const q=search.value.trim().toLowerCase();
- [...sel.options].forEach((o,i)=>{if(!o.value||o.value==="__custom__")return;o.hidden=Boolean(q)&&!o.textContent.toLowerCase().includes(q);});
+ const root=$("#battleJoin"),search=$("#ncIdSearch",root),box=$("#ncNickSearchResults",root);
+ if(!search||!box)return;
+ const q=search.value.trim().toLocaleLowerCase();
+ if(!q){box.innerHTML="";box.hidden=true;box.style.display="none";return;}
+ const names=[...new Set([...FIXED_NICKNAMES,...participants.map(p=>p.nickname)])];
+ const matches=names.filter(n=>n.toLocaleLowerCase().startsWith(q)).slice(0,30);
+ if(!matches.length){box.innerHTML='<div class="nc-nickname-no-results">검색 결과가 없습니다.</div>';box.hidden=false;box.style.display="block";return;}
+ box.innerHTML=matches.map(n=>'<button type="button" class="nc-nickname-result" data-nickname="'+esc(n)+'">'+esc(n+(participants.some(p=>p.nickname===n)?" ✓":""))+'</button>').join("");
+ box.hidden=false;box.style.display="block";
+ $$(".nc-nickname-result",box).forEach(button=>button.addEventListener("click",()=>chooseNewCastleNickname(button.dataset.nickname)));
+}
+function chooseNewCastleNickname(name){
+ const root=$("#battleJoin"),sel=$("#ncNick",root),search=$("#ncIdSearch",root),box=$("#ncNickSearchResults",root);
+ if(!sel||!name)return;
+ if(![...sel.options].some(o=>o.value===name)){sel.add(new Option(name,name));}
+ sel.value=name;
+ if(search)search.value=name;
+ if(box){box.hidden=true;box.style.display="none";}
+ updateNewCastleJoinFields();
 }
 async function submitNewCastleParticipation(){
  const root=$("#battleJoin"),sel=$("#ncNick",root);
@@ -745,7 +765,7 @@ async function deleteRecord(index){
 Object.assign(window,{
  loadHome,toggleHomeAdmin,saveHome,refreshTeams:loadTeams,toggleTeamsAdmin,saveAllTeams,
  loadAlliance,toggleAllianceAdmin,saveAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
- updateNewCastleJoinFields,filterNewCastleNicknames,submitNewCastleParticipation,cancelNewCastleParticipation,
+ updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
  loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,
  loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b)));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
  toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
