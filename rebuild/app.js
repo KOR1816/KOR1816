@@ -628,6 +628,7 @@ function renderCastleWar(){
  if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
  const saveButton=$("[data-newcastle='save']",root)[0];
  if(saveButton)saveButton.style.display=adminModes.castlewar1?"inline-flex":"none";
+ translateStatic();
 }
 async function saveNewCastleFeatures(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
@@ -667,6 +668,7 @@ function renderCastleLayout(){
  const b=$("#castleLayout1AdminBtn",root),s=$("#castleLayout1SaveBtn",root);
  if(b)b.textContent=adminModes.castlelayout1?"🔒 수정 종료":"🔐 관리자 수정";
  if(s)s.style.display=adminModes.castlelayout1?"inline-flex":"none";
+ translateStatic();
 }
 async function toggleCastleLayout1Admin(){await togglePageAdmin("castlelayout1","castleLayout1AdminBtn","castleLayout1SaveBtn");}
 async function saveCastleLayout1(){
