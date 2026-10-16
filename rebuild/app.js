@@ -693,7 +693,7 @@ async function loadCastleLayout1(){
 }
 function renderCastleLayout(){
  const root=$("#castlelayout1"),wrap=$("#castleLayout1Slots",root);if(!wrap)return;
- const names=[...new Set([...FIXED_LEADERS,...FIXED_NICKNAMES,...participants.map(p=>p.nickname)])];
+ const names=[...new Set([...FIXED_LEADERS,...participants.map(p=>p.nickname)])];
  wrap.innerHTML=Array.from({length:28},(_,i)=>{
   const name=castleLayoutData.slots[i]||"",isFixed=i<6,p=participants.find(x=>x.nickname===name);
   let inner;
