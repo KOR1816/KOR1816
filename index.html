@@ -113,10 +113,18 @@ const localRead=()=>{try{return JSON.parse(localStorage.getItem(HOME_KEY)||"null
 const localWrite=d=>{try{localStorage.setItem(HOME_KEY,JSON.stringify({...d,_updatedAt:Date.now()}))}catch{}};
 function mergeData(raw){
  const out={...structuredClone(DEFAULTS.ko),...(raw||{})};
+ const sourceKo={
+  latestTitle:raw?.translations?.ko?.latestTitle??raw?.latestTitle??DEFAULTS.ko.latestTitle,
+  latestBody:raw?.translations?.ko?.latestBody??raw?.latestBody??DEFAULTS.ko.latestBody,
+  schedule:raw?.translations?.ko?.schedule??raw?.schedule??DEFAULTS.ko.schedule,
+  welcome:raw?.translations?.ko?.welcome??raw?.welcome??DEFAULTS.ko.welcome
+ };
  out.translations={};
- for(const lang of Object.keys(DEFAULTS))out.translations[lang]={...DEFAULTS[lang],...((raw&&raw.translations&&raw.translations[lang])||{})};
- if(raw&&raw.translations&&raw.translations.ko)Object.assign(out,raw.translations.ko);
- else if(raw&&raw.latestBody!==undefined)Object.assign(out,{latestTitle:raw.latestTitle||"",latestBody:raw.latestBody||"",schedule:raw.schedule||DEFAULTS.ko.schedule,welcome:raw.welcome||DEFAULTS.ko.welcome});
+ for(const lang of Object.keys(DEFAULTS)){
+  out.translations[lang]={...DEFAULTS[lang],...((raw&&raw.translations&&raw.translations[lang])||{})};
+ }
+ out.translations.ko={...out.translations.ko,...sourceKo};
+ Object.assign(out,sourceKo);
  return out;
 }
 function currentData(){return homeData.translations[currentLang]||DEFAULTS[currentLang]}
