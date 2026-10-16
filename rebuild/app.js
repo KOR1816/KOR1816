@@ -253,6 +253,7 @@ function makeNav(){
  applyLanguage(currentLang);
 }
 function applyLanguage(lang){
+ if(noticeAdmin)captureNoticeEditor();
  currentLang=LANGS.includes(lang)?lang:"ko";
  document.documentElement.lang=currentLang;
  $("#language-select").value=currentLang;
