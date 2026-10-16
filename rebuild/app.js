@@ -128,6 +128,70 @@ function message(key){
   es:{saved:"Guardado en el servidor compartido.",load:"Contenido actualizado cargado.",failed:"No se pudo conectar al servidor. No se guardaron los cambios.",admin:"Se requiere iniciar sesión como administrador.",fallback:"Servidor no disponible; se muestra la copia temporal local."},
   tr:{saved:"Paylaşılan sunucuya kaydedildi.",load:"En güncel içerik yüklendi.",failed:"Paylaşılan sunucu bağlantısı başarısız. Değişiklikler kaydedilmedi.",admin:"Yönetici girişi gerekli.",fallback:"Sunucu kullanılamıyor; bu cihazdaki geçici içerik gösteriliyor."}
  };
+ Object.assign(values.ko,{
+  loginFailed:"Google 로그인에 실패했습니다. 다시 시도해 주세요.",adminDenied:"관리자 권한이 없는 Google 계정입니다.",
+  nicknameRequired:"닉네임을 선택하거나 입력하세요.",nicknameTooLong:"닉네임은 80자 이내로 입력하세요.",cancelNickRequired:"삭제할 닉네임을 선택하세요.",
+  cancelParticipation:"{nickname}님의 참전 정보를 취소할까요?",deleteAllParticipants:"참전 등록 명단을 모두 삭제할까요?",
+  fixedLeaderSlots:"1~6번 고정 집결장은 7~28번에 다시 배치할 수 없습니다.",duplicateLayout:"7~28번에는 중복 닉네임을 넣을 수 없습니다.",
+  imageOnly:"이미지 파일만 선택할 수 있습니다.",photoTooLarge:"사진은 12MB 이하로 선택해 주세요.",processingPhoto:"{nickname} 사진을 처리하는 중입니다.",
+  selectNicknameCancel:"취소할 닉네임을 선택하세요.",noVikingTeam:"등록된 팀이 없습니다.",gloryRequired:"날짜와 상대 왕국을 입력하세요.",deleteRecord:"이 기록을 삭제할까요?"
+ });
+ Object.assign(values.en,{
+  loginFailed:"Google sign-in failed. Please try again.",adminDenied:"This Google account is not authorized as an administrator.",
+  nicknameRequired:"Choose or enter a nickname.",nicknameTooLong:"Nicknames must be 80 characters or fewer.",cancelNickRequired:"Choose a nickname to remove.",
+  cancelParticipation:"Cancel participation for {nickname}?",deleteAllParticipants:"Delete all registered participants?",
+  fixedLeaderSlots:"Slots 1–6 are fixed rally leaders and cannot be assigned again to slots 7–28.",duplicateLayout:"Duplicate nicknames are not allowed in slots 7–28.",
+  imageOnly:"Please select an image file.",photoTooLarge:"Choose a photo no larger than 12 MB.",processingPhoto:"Processing the photo for {nickname}.",
+  selectNicknameCancel:"Choose a nickname to cancel.",noVikingTeam:"No team registration was found.",gloryRequired:"Enter the date and opposing kingdom.",deleteRecord:"Delete this record?"
+ });
+ Object.assign(values.ja,{
+  loginFailed:"Googleログインに失敗しました。もう一度お試しください。",adminDenied:"このGoogleアカウントには管理者権限がありません。",
+  nicknameRequired:"ニックネームを選択または入力してください。",nicknameTooLong:"ニックネームは80文字以内で入力してください。",cancelNickRequired:"削除するニックネームを選択してください。",
+  cancelParticipation:"{nickname}さんの参加登録を取り消しますか？",deleteAllParticipants:"登録済みの参加者をすべて削除しますか？",
+  fixedLeaderSlots:"1～6番は固定の集結長です。7～28番には配置できません。",duplicateLayout:"7～28番に同じニックネームは配置できません。",
+  imageOnly:"画像ファイルを選択してください。",photoTooLarge:"12MB以下の写真を選択してください。",processingPhoto:"{nickname}の写真を処理しています。",
+  selectNicknameCancel:"取り消すニックネームを選択してください。",noVikingTeam:"登録されたチームがありません。",gloryRequired:"日付と相手王国を入力してください。",deleteRecord:"この記録を削除しますか？"
+ });
+ Object.assign(values.zh,{
+  loginFailed:"Google 登录失败，请重试。",adminDenied:"此 Google 账号没有管理员权限。",
+  nicknameRequired:"请选择或输入昵称。",nicknameTooLong:"昵称不得超过80个字符。",cancelNickRequired:"请选择要删除的昵称。",
+  cancelParticipation:"要取消 {nickname} 的参战登记吗？",deleteAllParticipants:"要删除所有已登记的参战人员吗？",
+  fixedLeaderSlots:"1–6号是固定集结队长，不能再次放入7–28号位。",duplicateLayout:"7–28号位不能使用重复昵称。",
+  imageOnly:"请选择图片文件。",photoTooLarge:"请选择不超过12MB的照片。",processingPhoto:"正在处理 {nickname} 的照片。",
+  selectNicknameCancel:"请选择要取消的昵称。",noVikingTeam:"没有找到已登记的队伍。",gloryRequired:"请输入日期和对手王国。",deleteRecord:"要删除这条记录吗？"
+ });
+ Object.assign(values.de,{
+  loginFailed:"Google-Anmeldung fehlgeschlagen. Bitte erneut versuchen.",adminDenied:"Dieses Google-Konto hat keine Administratorrechte.",
+  nicknameRequired:"Bitte einen Spitznamen auswählen oder eingeben.",nicknameTooLong:"Spitznamen dürfen höchstens 80 Zeichen lang sein.",cancelNickRequired:"Bitte den zu löschenden Spitznamen auswählen.",
+  cancelParticipation:"Teilnahme von {nickname} stornieren?",deleteAllParticipants:"Alle registrierten Teilnehmer löschen?",
+  fixedLeaderSlots:"Plätze 1–6 sind feste Sammelführer und dürfen nicht erneut auf Plätze 7–28 gesetzt werden.",duplicateLayout:"Auf den Plätzen 7–28 sind doppelte Spitznamen nicht erlaubt.",
+  imageOnly:"Bitte eine Bilddatei auswählen.",photoTooLarge:"Bitte ein Foto mit höchstens 12 MB auswählen.",processingPhoto:"Foto von {nickname} wird verarbeitet.",
+  selectNicknameCancel:"Bitte einen Spitznamen zum Abbrechen auswählen.",noVikingTeam:"Keine Teamregistrierung gefunden.",gloryRequired:"Datum und gegnerisches Königreich eingeben.",deleteRecord:"Diesen Eintrag löschen?"
+ });
+ Object.assign(values.it,{
+  loginFailed:"Accesso Google non riuscito. Riprova.",adminDenied:"Questo account Google non dispone dei permessi di amministratore.",
+  nicknameRequired:"Seleziona o inserisci un nickname.",nicknameTooLong:"Il nickname non può superare 80 caratteri.",cancelNickRequired:"Seleziona il nickname da rimuovere.",
+  cancelParticipation:"Annullare la partecipazione di {nickname}?",deleteAllParticipants:"Eliminare tutti i partecipanti registrati?",
+  fixedLeaderSlots:"Gli slot 1–6 sono capi raduno fissi e non possono essere assegnati di nuovo agli slot 7–28.",duplicateLayout:"Gli slot 7–28 non possono contenere nickname duplicati.",
+  imageOnly:"Seleziona un file immagine.",photoTooLarge:"Seleziona una foto non superiore a 12 MB.",processingPhoto:"Elaborazione della foto di {nickname}.",
+  selectNicknameCancel:"Seleziona un nickname da annullare.",noVikingTeam:"Nessuna squadra registrata.",gloryRequired:"Inserisci la data e il regno avversario.",deleteRecord:"Eliminare questo record?"
+ });
+ Object.assign(values.es,{
+  loginFailed:"No se pudo iniciar sesión con Google. Inténtalo de nuevo.",adminDenied:"Esta cuenta de Google no tiene permisos de administrador.",
+  nicknameRequired:"Elige o introduce un apodo.",nicknameTooLong:"El apodo no puede superar los 80 caracteres.",cancelNickRequired:"Elige el apodo que deseas eliminar.",
+  cancelParticipation:"¿Cancelar la participación de {nickname}?",deleteAllParticipants:"¿Eliminar todos los participantes registrados?",
+  fixedLeaderSlots:"Las posiciones 1–6 son líderes fijos y no pueden asignarse de nuevo a las posiciones 7–28.",duplicateLayout:"No se permiten apodos duplicados en las posiciones 7–28.",
+  imageOnly:"Selecciona un archivo de imagen.",photoTooLarge:"Selecciona una foto de hasta 12 MB.",processingPhoto:"Procesando la foto de {nickname}.",
+  selectNicknameCancel:"Elige un apodo para cancelar.",noVikingTeam:"No hay ningún equipo registrado.",gloryRequired:"Introduce la fecha y el reino rival.",deleteRecord:"¿Eliminar este registro?"
+ });
+ Object.assign(values.tr,{
+  loginFailed:"Google girişi başarısız. Lütfen tekrar deneyin.",adminDenied:"Bu Google hesabının yönetici yetkisi yok.",
+  nicknameRequired:"Bir takma ad seçin veya girin.",nicknameTooLong:"Takma ad en fazla 80 karakter olabilir.",cancelNickRequired:"Silmek için bir takma ad seçin.",
+  cancelParticipation:"{nickname} katılımı iptal edilsin mi?",deleteAllParticipants:"Kayıtlı tüm katılımcılar silinsin mi?",
+  fixedLeaderSlots:"1–6 numaralı yerler sabit toplanma liderleridir; 7–28 arasına tekrar atanamaz.",duplicateLayout:"7–28 numaralı yerlerde aynı takma ad birden fazla kullanılamaz.",
+  imageOnly:"Lütfen bir resim dosyası seçin.",photoTooLarge:"12 MB veya daha küçük bir fotoğraf seçin.",processingPhoto:"{nickname} fotoğrafı işleniyor.",
+  selectNicknameCancel:"İptal etmek için bir takma ad seçin.",noVikingTeam:"Kayıtlı takım bulunamadı.",gloryRequired:"Tarih ve rakip krallığı girin.",deleteRecord:"Bu kayıt silinsin mi?"
+ });
  return values[currentLang]?.[key]||values.ko[key];
 }
 async function ensureReadSession(){
@@ -139,10 +203,10 @@ async function ensureGoogleAdmin(){
  let user=auth.currentUser;
  if(!user?.email){
   try{user=(await signInWithPopup(auth,new GoogleAuthProvider())).user;}
-  catch(e){if(e?.code!=="auth/popup-closed-by-user"&&e?.code!=="auth/cancelled-popup-request")alert("Google 로그인에 실패했습니다. 다시 시도해 주세요.");return false;}
+  catch(e){if(e?.code!=="auth/popup-closed-by-user"&&e?.code!=="auth/cancelled-popup-request")alert(message("loginFailed"));return false;}
  }
  if(!user?.email||!ADMIN_EMAILS.includes(user.email.toLowerCase())){
-  alert("관리자 권한이 없는 Google 계정입니다.");
+  alert(message("adminDenied"));
   try{await signOut(auth);await signInAnonymously(auth);}catch(e){console.warn(e);}
   return false;
  }
@@ -680,8 +744,8 @@ function chooseNewCastleNickname(name){
 async function submitNewCastleParticipation(){
  const root=$("#battleJoin"),sel=$("#ncNick",root);
  let nickname=sel?.value==="__custom__"?($("#ncIdSearch",root)?.value||"").trim():(sel?.value||"").trim();
- if(!nickname){setMsg("ncJoinMsg","닉네임을 선택하거나 입력하세요.");return;}
- if(nickname.length>80){setMsg("ncJoinMsg","닉네임은 80자 이내로 입력하세요.");return;}
+ if(!nickname){setMsg("ncJoinMsg",message("nicknameRequired"));return;}
+ if(nickname.length>80){setMsg("ncJoinMsg",message("nicknameTooLong"));return;}
  const item={nickname,status:$("#ncStatus",root)?.value||"yes",tier:$("#ncTier",root)?.value||"A",salo:$("#ncSalo",root)?.value==="yes",hilde:$("#ncHilde",root)?.value==="yes",updatedAt:Date.now()};
  const next=participants.slice(),idx=next.findIndex(p=>p.nickname.toLowerCase()===nickname.toLowerCase());
  if(idx>=0)next[idx]=item;else next.push(item);
@@ -690,14 +754,14 @@ async function submitNewCastleParticipation(){
 }
 async function cancelNewCastleParticipation(){
  const root=$("#battleJoin"),sel=$("#ncNick",root),nickname=sel?.value||"";
- if(!nickname||nickname==="__custom__"){setMsg("ncJoinMsg","삭제할 닉네임을 선택하세요.");return;}
- if(!confirm(nickname+"님의 참전 정보를 취소할까요?"))return;
+ if(!nickname||nickname==="__custom__"){setMsg("ncJoinMsg",message("cancelNickRequired"));return;}
+ if(!confirm(message("cancelParticipation").replace("{nickname}",nickname)))return;
  const next=participants.filter(p=>p.nickname.toLowerCase()!==nickname.toLowerCase());
  try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function deleteAllNewCastleParticipants(){
- if(!adminModes.battleJoin||!confirm("참전 등록 명단을 모두 삭제할까요?"))return;
+ if(!adminModes.battleJoin||!confirm(message("deleteAllParticipants")))return;
  try{await saveCloud("battleJoin",{participants:[]});participants=[];renderParticipants();setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
@@ -822,8 +886,8 @@ async function saveCastleLayout1(){
  $$("#castlelayout1 [data-layout-slot]").forEach(el=>castleLayoutData.slots[Number(el.dataset.layoutSlot)]=el.value);
  FIXED_LEADERS.forEach((n,i)=>castleLayoutData.slots[i]=n);
  const chosen=castleLayoutData.slots.slice(6).filter(Boolean);
- if(chosen.some(n=>FIXED_LEADERS.includes(n))){alert("1~6번 고정 집결장은 7~28번에 다시 배치할 수 없습니다.");return;}
- if(new Set(chosen).size!==chosen.length){alert("7~28번에는 중복 닉네임을 넣을 수 없습니다.");return;}
+ if(chosen.some(n=>FIXED_LEADERS.includes(n))){alert(message("fixedLeaderSlots"));return;}
+ if(new Set(chosen).size!==chosen.length){alert(message("duplicateLayout"));return;}
  try{castleLayoutData=await saveCloud("castlelayout1",castleLayoutData);renderCastleLayout();setMsg("castleLayout1Msg",message("saved"));}
  catch(e){console.error(e);setMsg("castleLayout1Msg",message("failed"));}
 }
@@ -899,8 +963,8 @@ async function triggerVikingPhoto(teamNo,nickname){
  const input=document.createElement("input");input.type="file";input.accept="image/*";
  input.addEventListener("change",async()=>{
   const file=input.files?.[0];if(!file)return;
-  if(!file.type.startsWith("image/")){alert("이미지 파일만 선택할 수 있습니다.");return;}
-  if(file.size>12*1024*1024){alert("사진은 12MB 이하로 선택해 주세요.");return;}
+  if(!file.type.startsWith("image/")){alert(message("imageOnly"));return;}
+  if(file.size>12*1024*1024){alert(message("photoTooLarge"));return;}
   try{
    setMsg("vikingMsg",nickname+" 사진을 처리하는 중입니다.");
    const dataUrl=await new Promise((resolve,reject)=>{
@@ -942,10 +1006,10 @@ async function joinVikingTeam(){
  const next=clone(vikingData);next.teams[team]=[...roster,name];await saveViking(next);
 }
 async function leaveVikingTeam(){
- const name=getVikingSelectedNick();if(!name){setMsg("vikingMsg","취소할 닉네임을 선택하세요.");return;}
+ const name=getVikingSelectedNick();if(!name){setMsg("vikingMsg",message("selectNicknameCancel"));return;}
  const next=clone(vikingData);let found=false;
  for(const [team,roster] of Object.entries(next.teams)){if(roster.some(n=>n.toLowerCase()===name.toLowerCase())){next.teams[team]=roster.filter(n=>n.toLowerCase()!==name.toLowerCase());found=true;}}
- if(!found){setMsg("vikingMsg","등록된 팀이 없습니다.");return;}await saveViking(next);
+ if(!found){setMsg("vikingMsg",message("noVikingTeam"));return;}await saveViking(next);
 }
 
 /* Glory records */
@@ -971,13 +1035,13 @@ function closeEditor(){$("#glory-editor").hidden=true;}
 async function saveRecord(){
  if(!adminModes.glory&&!await ensureGoogleAdmin())return;adminModes.glory=true;
  const date=$("#glory-date")?.value,opponent=Number($("#glory-opponent")?.value);
- if(!date||!opponent){setMsg("glory-editor-msg","날짜와 상대 왕국을 입력하세요.");return;}
+ if(!date||!opponent){setMsg("glory-editor-msg",message("gloryRequired"));return;}
  const next=[...gloryRecords,{date,opponent,prep:$("#glory-prep")?.value||"패",castle:$("#glory-castle")?.value||"패",memo:$("#glory-memo")?.value.trim()||""}];
  try{await saveCloud("glory",{records:next});gloryRecords=next;renderRecords();closeEditor();setMsg("glory-msg",message("saved"));}
  catch(e){console.error(e);setMsg("glory-msg",message("failed"));}
 }
 async function deleteRecord(index){
- if(!adminModes.glory||!confirm("이 기록을 삭제할까요?"))return;
+ if(!adminModes.glory||!confirm(message("deleteRecord")))return;
  const next=gloryRecords.filter((_,i)=>i!==index);
  try{await saveCloud("glory",{records:next});gloryRecords=next;renderRecords();setMsg("glory-msg",message("saved"));}
  catch(e){console.error(e);setMsg("glory-msg",message("failed"));}
