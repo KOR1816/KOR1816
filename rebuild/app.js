@@ -420,7 +420,7 @@ function setupTemplates(){
  if(n){
   $("#notice-refresh",n)?.addEventListener("click",loadNotices);
   $("#notice-admin",n)?.addEventListener("click",toggleNoticeAdmin);
-  $("#notice-save",n)?.addEventListener("click",saveNotices);
+  $("#notice-save",n)?.addEventListener("click",saveNotices);\n  $("#notice-edit-language",n)?.addEventListener("change",e=>{captureNoticeEditor();noticeEditLang=LANGS.includes(e.target.value)?e.target.value:"ko";renderNotices();});
  }
  // The source markup is content only; handlers below are shared, page-aware actions.
 }
@@ -489,10 +489,17 @@ async function toggleHomeAdmin(){
 
 /* Notices: Korean source and prewritten translations. */
 let noticeAdmin=false;
+let noticeEditLang="ko";
 function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"";}
-function koreanOnly(value){
- // Preserve the administrator's notice text verbatim; English-only lines may be intentional.
- return String(value??"").trim();
+function koreanOnly(value){return String(value??"").trim();}
+function captureNoticeEditor(){
+ const root=$("#notices");if(!root||!noticeAdmin)return;
+ if(noticeEditLang!=="ko")noticeData.translations[noticeEditLang]={...(noticeData.translations[noticeEditLang]||NOTICE_TRANSLATIONS[noticeEditLang]||{})};
+ for(const id of Object.keys(NOTICE_DEFAULTS)){
+  const edit=$("#e"+id[0].toUpperCase()+id.slice(1),root);if(!edit)continue;
+  if(noticeEditLang==="ko")noticeData[id]=edit.value;
+  else noticeData.translations[noticeEditLang][id]=edit.value;
+ }
 }
 function renderNotices(){
  const root=$("#notices");if(!root)return;
@@ -500,11 +507,17 @@ function renderNotices(){
  for(const id of ids){
   const view=$("#"+id,root),edit=$("#e"+id[0].toUpperCase()+id.slice(1),root);
   if(view)view.textContent=noticeValue(id);
-  if(edit){edit.value=noticeData[id]||NOTICE_DEFAULTS[id];edit.disabled=!noticeAdmin;}
+  if(edit){
+   edit.value=noticeEditLang==="ko"?(noticeData[id]??NOTICE_DEFAULTS[id]):(noticeData.translations?.[noticeEditLang]?.[id]??NOTICE_TRANSLATIONS[noticeEditLang]?.[id]??noticeData[id]??NOTICE_DEFAULTS[id]);
+   edit.disabled=!noticeAdmin;
+  }
  }
- const admin=$("#notice-admin",root),save=$("#notice-save",root);
+ const admin=$("#notice-admin",root),save=$("#notice-save",root),languageWrap=$("#notice-edit-language-wrap",root),languageSelect=$("#notice-edit-language",root),help=$("#notice-translation-help",root);
  setAdminButton(admin,noticeAdmin);
  if(save)save.hidden=!noticeAdmin;
+ if(languageWrap)languageWrap.hidden=!noticeAdmin;
+ if(help)help.hidden=!noticeAdmin;
+ if(languageSelect)languageSelect.value=noticeEditLang;
 }
 async function loadNotices(){
  const root=$("#notices");if(!root)return;
@@ -516,22 +529,21 @@ async function loadNotices(){
    const translated={};
    for(const lang of LANGS.slice(1))translated[lang]={...(NOTICE_TRANSLATIONS[lang]||{}),...(saved.translations?.[lang]||{})};
    const koreanSaved={};
-   for(const key of Object.keys(NOTICE_DEFAULTS))koreanSaved[key]=koreanOnly(saved[key]||NOTICE_DEFAULTS[key]);
+   for(const key of Object.keys(NOTICE_DEFAULTS))koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
    noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,updatedAt:saved.updatedAt||cloud.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
+  noticeEditLang="ko";
   renderNotices();setMsg("notice-status",message("load"));
  }catch(e){console.error(e);renderNotices();setMsg("notice-status",message("fallback"));}
 }
 async function toggleNoticeAdmin(){
  if(!noticeAdmin&&!await ensureGoogleAdmin())return;
+ if(noticeAdmin)captureNoticeEditor();
  noticeAdmin=!noticeAdmin;renderNotices();
 }
 async function saveNotices(){
  if(!noticeAdmin){alert(message("admin"));return;}
- const root=$("#notices");
- for(const id of Object.keys(NOTICE_DEFAULTS)){const el=$("#e"+id[0].toUpperCase()+id.slice(1),root);if(el)noticeData[id]=el.value.trim();}
- // Keep the prepared translations for the unchanged fixed notice phrases. If the Korean source is edited,
- // it is stored separately and the owner can update its corresponding translation strings in the document.
+ captureNoticeEditor();
  noticeData.updatedAt=Date.now();
  try{
   await setDoc(pageDoc("notices"),{noticesV1:noticeData,updatedAt:noticeData.updatedAt},{merge:true});
