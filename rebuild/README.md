@@ -43,5 +43,6 @@ This folder is an isolated development scaffold. It is not deployed and is not y
 - Production `index.html` is still unchanged.
 
 ## Still not verified
+- GitHub reported no CI status checks or workflow runs for the latest review commit; this is not a test pass. Browser and Firestore integration tests remain pending.
 - No real browser session has been run against this branch.
 - Google sign-in, Firestore write permissions for new document IDs, refresh persistence, and PC/mobile synchronization still require live testing. Do not deploy until these pass.
