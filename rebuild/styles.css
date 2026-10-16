@@ -21,3 +21,99 @@ select,button,input,textarea{font:inherit}
 .global-message:not(:empty){padding:10px 14px;border:1px solid #3b557c;border-radius:10px;background:#101a2e;box-shadow:0 8px 24px #0005}
 footer{padding:18px;text-align:center;color:#8295b5;font-size:12px}
 @media(max-width:760px){.site-header{align-items:flex-start;padding:14px 12px}.brand p{max-width:210px;line-height:1.4}.language-control{gap:5px;flex-direction:column;align-items:flex-end}.main-nav{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:10px;gap:7px}.main-nav button{flex:0 0 auto;white-space:nowrap;padding:9px 11px}.page-root{padding:12px}.page-grid{grid-template-columns:minmax(0,1fr)}.card{padding:13px}}
+
+/* Rebuilt page-specific layouts */
+button,.admin-btn{cursor:pointer}
+button:disabled,input:disabled,select:disabled,textarea:disabled{opacity:.82;cursor:default}
+input,textarea,select{max-width:100%;min-width:0;padding:9px 10px;border:1px solid #3a5278;border-radius:8px;background:#0b1425;color:var(--text)}
+textarea{min-height:90px;resize:vertical}
+label{display:block;min-width:0;color:#dbe5f7}
+.card img{max-width:100%;height:auto}
+.sword-image-wrap{width:100%;margin:12px auto 18px;padding:7px;border:1px solid #30496f;border-radius:13px;background:#0b1425;text-align:center}
+.sword-image{display:block;width:100%;max-height:580px;object-fit:contain;margin:0 auto;border-radius:8px}
+.msg{min-height:1.2em;margin:8px 0;color:#f5d47b;font-size:13px;white-space:pre-wrap}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.tag{display:inline-block;margin-bottom:8px;color:#e8c76a;font-size:11px;letter-spacing:.1em}
+.home-controls,.admin-bar,.seating-admin-actions,.castle-layout1-actions,.newcastle-actions,.actions,.tools{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:14px}
+.home-input{width:100%;margin:5px 0 12px}
+.home-area{min-height:130px}
+.team-columns-wrap,.castlewar-columns,.alliance-teams{width:100%;overflow-x:auto}
+.team-columns{display:grid;grid-template-columns:repeat(4,minmax(155px,1fr));gap:10px;min-width:650px}
+.team-column,.alliance-team,.war-column,.seating-row-card{border:1px solid #30496f;border-radius:12px;overflow:hidden;background:#0e182b}
+.team-title,.alliance-team-title,.war-column h3{margin:0;padding:11px;text-align:center;background:#203253;color:#f6d77b;font-weight:800}
+.slot{display:grid;grid-template-columns:32px minmax(0,1fr);gap:5px;align-items:center;padding:6px;border-top:1px solid #273b5d}
+.slot span{color:#aebbd3;text-align:center}
+.slot input{width:100%}
+.alliance-teams{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:12px}
+.alliance-group{padding:9px;border-top:1px solid #273b5d}
+.alliance-label{margin-bottom:8px;color:#e7cb78;font-weight:700}
+.alliance-names{display:grid;grid-template-columns:repeat(5,minmax(60px,1fr));gap:6px}
+.alliance-names input{width:100%;padding:8px 5px}
+.seating-map-image{max-height:650px}
+.seating-row-card{padding:12px}
+.seating-row-card h4{margin:0 0 10px;color:#f5d47b}
+.seating-two-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.seating-side{display:grid;gap:5px;align-content:start}
+.seating-entry{display:grid;grid-template-columns:30px minmax(0,1fr);gap:6px;align-items:center}
+.seating-entry span{color:#d7e1f2;text-align:center}
+.seating-entry input{width:100%;padding:7px}
+.seating-admin-panel{margin-top:12px}
+.newcastle-form{display:grid;grid-template-columns:minmax(130px,190px) minmax(0,1fr);gap:9px;align-items:center}
+.newcastle-form select,.newcastle-form input{width:100%}
+.nc-nickname-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.nc-participation-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+.newcastle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 18px}
+.participant-line{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:9px 10px;border:1px solid #2e4468;border-radius:8px;background:#0c1526}
+.nc-war-attack,.nc-war-turrets{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:10px;overflow-x:auto;margin:12px 0}
+.nc-war-turrets{grid-template-columns:repeat(2,minmax(180px,1fr))}
+.war-column{min-width:0}
+.war-slot{display:grid;grid-template-columns:34px minmax(0,1fr);gap:6px;padding:6px;border-top:1px solid #273b5d;align-items:center}
+.war-slot span{text-align:center;color:#dbe5f7}
+.war-slot input{width:100%}
+.castle-layout1-image{max-height:600px}
+.castle-layout1-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.castle-layout1-column{display:grid;align-content:start;gap:7px}
+.castle-layout1-slot{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:stretch;gap:8px;padding:8px;border:1px solid #30496f;border-radius:9px;background:#0d1729}
+.castle-layout1-number{display:grid;place-items:center;border-radius:7px;background:#203253;color:#f5d47b;font-weight:900}
+.castle-layout1-content{min-width:0;overflow-wrap:anywhere}
+.castle-layout1-content select{width:100%}
+.viking-register{display:grid;grid-template-columns:minmax(130px,1fr) minmax(150px,2fr);gap:8px;align-items:center}
+.viking-register button,.viking-toolbar button{justify-self:start}
+.viking-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:14px}
+.viking-team{padding:9px;border:1px solid #30496f;border-radius:10px;background:#0c1526;min-width:0}
+.viking-team h3{margin:0 0 7px;font-size:13px;color:#f5d47b}
+.viking-member{padding:5px 0;border-top:1px solid #243957;overflow-wrap:anywhere;font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cards>.card{margin:0;padding:14px}
+.cards h3{margin:0 0 12px;color:#f5d47b}
+.block{margin:9px 0;padding:10px;border:1px solid #2a4063;border-radius:9px;background:#0c1526}
+.block h4{margin:0 0 7px;font-size:14px;color:#dce7f9}
+.content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
+.edit-only{display:none}
+.editing .edit-only{display:block}
+.glory-page .hero{padding:14px;text-align:center;border:1px solid #30496f;border-radius:12px;background:#0b1425}
+.glory-page .hero img{display:block;width:100%;height:auto;max-height:430px;object-fit:contain;margin:10px auto;border-radius:9px}
+.glory-page .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.glory-page .form label{display:grid;gap:6px}
+.glory-page .form .wide,.glory-page .form-actions{grid-column:1/-1}
+.glory-page .form textarea{width:100%}
+.glory-records,.records{display:grid;gap:10px;margin-top:12px}
+.glory-record{padding:13px;border:1px solid #30496f;border-radius:10px;background:#0c1526}
+.glory-record header,.glory-results{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.glory-record header strong{color:#f5d47b}
+.glory-results{margin-top:10px}
+.sources{margin-top:16px}
+.sources a{color:#9ec8ff}
+@media(max-width:760px){
+ .grid,.cards{grid-template-columns:minmax(0,1fr)}
+ .alliance-teams{grid-template-columns:minmax(240px,1fr);min-width:260px}
+ .nc-war-attack{grid-template-columns:repeat(3,minmax(180px,1fr))}
+ .nc-war-turrets{grid-template-columns:repeat(2,minmax(180px,1fr))}
+ .castle-layout1-slots{grid-template-columns:minmax(0,1fr)}
+ .viking-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .newcastle-form{grid-template-columns:minmax(0,1fr)}
+ .nc-nickname-tools{grid-template-columns:minmax(0,1fr)}
+ .newcastle-list{grid-template-columns:minmax(0,1fr)}
+ .glory-page .form{grid-template-columns:minmax(0,1fr)}
+ .glory-page .form .wide,.glory-page .form-actions{grid-column:auto}
+}
