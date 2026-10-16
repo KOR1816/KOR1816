@@ -538,6 +538,12 @@ function normalizeParticipants(raw){
   tier:["A","B","C","none"].includes(x.tier)?x.tier:"A",salo:(x.salo===true||x.salo==="yes"||x.salo==="O"),hilde:(x.hilde===true||x.hilde==="yes"||x.hilde==="O"),updatedAt:Number(x.updatedAt)||0
  })).filter(x=>x.nickname);
 }
+async function loadParticipantRoster(){
+ let data=await readCloud("battleJoin");
+ if(!data){const legacy=await getDoc(doc(db,"siteData","castle_features_v1"));data=legacy.exists()?legacy.data():null;}
+ participants=normalizeParticipants(data||{});
+ return participants;
+}
 function participantRank(p){if(!p||p.status!=="yes")return "";const base={A:"A",B:"B",C:"C"}[p.tier];if(!base)return "";return base+(p.salo?"1":"2");}
 function renderParticipants(){
  const root=$("#battleJoin");if(!root)return;
@@ -564,6 +570,7 @@ async function loadNewCastleFeatures(){
    participants=normalizeParticipants(data||{});
    renderParticipants();setMsg("ncJoinMsg",latestBanner("battleJoin"));
   }else{
+   await loadParticipantRoster();
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("castlewar1"));if(old.exists())data=old.data();}
    const war=data?.war||data?.castleWar||{};
@@ -673,10 +680,7 @@ async function saveNewCastleFeatures(){
 /* Castle Layout — its own document; never writes to the war or participant record. */
 async function loadCastleLayout1(){
  try{
-  if(!participants.length){
-   const legacyRoster=await getDoc(doc(db,"siteData","castle_features_v1"));
-   if(legacyRoster.exists())participants=normalizeParticipants(legacyRoster.data());
-  }
+  if(!participants.length)await loadParticipantRoster();
   const own=await readCloud("castlelayout1");
   if(own&&Array.isArray(own.slots))castleLayoutData={slots:own.slots.slice(0,28),updatedAt:own.updatedAt||0};
   else{
