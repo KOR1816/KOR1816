@@ -21,3 +21,17 @@ This folder is an isolated development scaffold. It is not deployed and is not y
 - Check all 10 routes, browser back/forward, mobile horizontal scrolling, and all 8 languages.
 - Confirm no existing record in the reference site was modified by this rebuild.
 - Do not replace production `index.html` or deploy until tests pass and the site owner approves.
+
+## Latest static review (2026-10-17)
+- JavaScript syntax checks passed for `app.js` and `page-content.js`.
+- Verified all 10 route IDs have a matching page section and content template.
+- Verified all eight language options are present and all inline event-handler names resolve to declared/global functions.
+- Verified Castle War has five columns (Assault, Charge, Finish, North Turret, West Turret), ten numbered slots per column, the `ccc.png` image, and the three requested info panels.
+- Fixed the Castle Layout save button so it becomes visible while admin editing is enabled.
+- Verified the image filenames referenced by the rebuild exist in the source repository.
+- Confirmed all rebuild writes target separate rebuild documents; legacy documents are read-only migration sources.
+- Production `index.html` is still unchanged.
+
+## Still not verified
+- No real browser session has been run against this branch.
+- Google sign-in, Firestore write permissions for new document IDs, refresh persistence, and PC/mobile synchronization still require live testing. Do not deploy until these pass.
