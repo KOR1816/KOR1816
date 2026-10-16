@@ -586,6 +586,19 @@ async function saveSeating(){
 }
 
 /* Castle Participation roster: its document is independent from war and layout. */
+function participantStatusLabel(status){
+ const labels={
+  ko:{yes:"가능",no:"불가능",later:"나중에 참전 / 참전 중 휴식"},
+  en:{yes:"Available",no:"Unavailable",later:"Join later / rest during war"},
+  ja:{yes:"参加可能",no:"参加不可",later:"後で参加／戦闘中は休憩"},
+  zh:{yes:"可以参加",no:"无法参加",later:"稍后参战／战斗期间休息"},
+  de:{yes:"Verfügbar",no:"Nicht verfügbar",later:"Später teilnehmen / während des Kriegs pausieren"},
+  it:{yes:"Disponibile",no:"Non disponibile",later:"Parteciperò dopo / riposo durante la guerra"},
+  es:{yes:"Disponible",no:"No disponible",later:"Participar después / descansar durante la guerra"},
+  tr:{yes:"Katılabilir",no:"Katılamaz",later:"Daha sonra katıl / savaş sırasında dinlen"}
+ };
+ return labels[currentLang]?.[status]||labels.ko[status]||status;
+}
 function normalizeParticipants(raw){
  const list=Array.isArray(raw?.participants)?raw.participants:[];
  return list.filter(x=>x&&typeof x==="object").map(x=>({
@@ -610,7 +623,7 @@ function renderParticipants(){
   if([...sel.options].some(o=>o.value===old))sel.value=old;
  }
  const list=$("#ncParticipants",root);
- if(list)list.innerHTML=participants.map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(p.status)+'</span><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">등록된 참전 정보가 없습니다.</p>';
+ if(list)list.innerHTML=participants.map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantStatusLabel(p.status))+'</span><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">등록된 참전 정보가 없습니다.</p>';
  const waiting=$("#ncWaiting",root);
  if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
  translateStatic();
