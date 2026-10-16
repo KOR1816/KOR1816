@@ -877,7 +877,11 @@ async function loadRecords(){
 }
 function renderRecords(){
  const root=$("#glory-records");if(!root)return;
- root.innerHTML=gloryRecords.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).map((r,i)=>'<article class="glory-record"><header><strong>'+esc(r.date)+'</strong><span>상대 왕국 '+esc(r.opponent)+'</span></header><div class="glory-results"><span>준비기간: '+(r.prep==="승"?"🏆 승리":"⚔️ 패배")+'</span><span>전쟁기간: '+(r.castle==="승"?"🏆 승리":"⚔️ 패배")+'</span></div>'+(r.memo?'<p>'+esc(r.memo)+'</p>':"")+(adminModes.glory?'<button type="button" onclick="deleteRecord('+i+')">삭제</button>':"")+'</article>').join("")||'<p class="muted">기록이 없습니다.</p>';
+ const sorted=gloryRecords.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ root.innerHTML=sorted.map(r=>{
+  const originalIndex=gloryRecords.findIndex(x=>x.date===r.date&&x.opponent===r.opponent&&x.prep===r.prep&&x.castle===r.castle&&x.memo===r.memo);
+  return '<article class="glory-record"><header><strong>'+esc(r.date)+'</strong><span>상대 왕국 '+esc(r.opponent)+'</span></header><div class="glory-results"><span>준비기간: '+(r.prep==="승"?"🏆 승리":"⚔️ 패배")+'</span><span>전쟁기간: '+(r.castle==="승"?"🏆 승리":"⚔️ 패배")+'</span></div>'+(r.memo?'<p>'+esc(r.memo)+'</p>':"")+(adminModes.glory?'<button type="button" onclick="deleteRecord('+originalIndex+')">삭제</button>':"")+'</article>';
+ }).join("")||'<p class="muted">기록이 없습니다.</p>';
  translateStatic();
 }
 function openEditor(){if(!adminModes.glory){ensureGoogleAdmin().then(ok=>{if(ok){adminModes.glory=true;$("#glory-editor").hidden=false;renderRecords();}});return;}$("#glory-editor").hidden=false;}
