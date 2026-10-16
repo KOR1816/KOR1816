@@ -94,7 +94,7 @@ let seatingData = {rows:[
  {row:"Row 3",left:Array(26).fill(""),right:Array(16).fill("")}
 ]};
 let participants = [];
-let castleWarData = {war:{assault:Array(7).fill(""),rush:Array(7).fill(""),finish:Array(7).fill(""),north:Array(10).fill(""),west:Array(10).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"",rush:"",finish:""},updatedAt:0};
+let castleWarData = {war:{assault:Array(8).fill(""),rush:Array(8).fill(""),finish:Array(8).fill(""),north:Array(8).fill(""),west:Array(8).fill(""),reserve:Array(8).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"Nemesis",rush:"Pham",finish:"샌디에이고"},updatedAt:0};
 let castleLayoutData = {slots:Array(28).fill(""),updatedAt:0};
 let vikingData = {teams:Object.fromEntries(Array.from({length:25},(_,i)=>[i+1,[]])),updatedAt:0};
 let gloryRecords = [];
@@ -642,20 +642,27 @@ async function toggleNewCastleAdmin(){
 }
 function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
- const config=[["assault","돌격조",7],["rush","개돌조",7],["finish","마무리조",7],["north","북측포탑",10],["west","서측포탑",10]];
  const attack=$("#ncWarAttack",root),turrets=$("#ncWarTurrets",root);
- const renderColumn=([key,title,count])=>'<section class="war-column"><h3>'+title+'</h3>'+Array.from({length:count},(_,i)=>{const value=castleWarData.war[key]?.[i]||"";return '<label class="war-slot"><span>'+(i+1)+'</span><input '+(!adminModes.castlewar1?'disabled':'')+' data-war="'+key+'" data-index="'+i+'" value="'+esc(value)+'" maxlength="80"></label>';}).join("")+'</section>';
- if(attack)attack.innerHTML=config.slice(0,3).map(renderColumn).join("");
- if(turrets)turrets.innerHTML=config.slice(3).map(renderColumn).join("");
+ const groups=[["assault","돌격조"],["rush","개돌조"],["finish","마무리조"]];
+ const turretGroups=[["north","Leo li","북측포탑"],["west","Jinno","서측포탑"],["reserve","SsungBi","포탑 (예비)"]];
+ const names=[...new Set([...FIXED_NICKNAMES,...participants.map(p=>p.nickname)])];
+ const optionList=(value)=>'<option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(n)+'</option>').join("");
+ const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+optionList(name)+'</select>':'<div class="war-name">'+esc(name||"—")+'</div>';
+ const leaderCell=(key)=>adminModes.castlewar1?'<select data-war-leader="'+key+'">'+optionList(castleWarData.warLeaders[key]||"")+'</select>':'<div class="war-name">'+esc(castleWarData.warLeaders[key]||"—")+'</div>';
+ const renderAttack=([key,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b>'+leaderCell(key)+'</div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
+ const renderTurret=([key,leader,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b><div class="war-name">'+esc(leader)+'</div></div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
+ if(attack)attack.innerHTML=groups.map(renderAttack).join("");
+ if(turrets)turrets.innerHTML=turretGroups.map(renderTurret).join("");
  const waiting=$("#ncWarWaiting",root);
  if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
- const saveButton=$("[data-newcastle='save']",root)[0];
+ const saveButton=$$("[data-newcastle='save']",root)[0];
  if(saveButton)saveButton.style.display=adminModes.castlewar1?"inline-flex":"none";
  translateStatic();
 }
 async function saveNewCastleFeatures(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
- $$("#castlewar1 [data-war]").forEach(el=>{const key=el.dataset.war,i=Number(el.dataset.index);if(castleWarData.war[key])castleWarData.war[key][i]=el.value.trim();});
+ $("#castlewar1 [data-war]").forEach(el=>{const key=el.dataset.war,i=Number(el.dataset.index);if(castleWarData.war[key])castleWarData.war[key][i]=el.value.trim();});
+ $("#castlewar1 [data-war-leader]").forEach(el=>{castleWarData.warLeaders[el.dataset.warLeader]=el.value.trim();});
  try{castleWarData=await saveCloud("castlewar1",castleWarData);setMsg("ncWarMsg",message("saved"));renderCastleWar();}
  catch(e){console.error(e);setMsg("ncWarMsg",message("failed"));}
 }
