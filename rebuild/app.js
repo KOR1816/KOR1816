@@ -253,6 +253,7 @@ function makeNav(){
  applyLanguage(currentLang);
 }
 function applyLanguage(lang){
+ if(adminModes.home)captureHomeEditor();
  if(noticeAdmin)captureNoticeEditor();
  currentLang=LANGS.includes(lang)?lang:"ko";
  document.documentElement.lang=currentLang;
@@ -460,6 +461,12 @@ async function loadHome(){
  const r=await loadData("home",homeDefaults);homeData=r.data;
  renderHome();
  if(r.source==="unavailable")setMsg("homeMsg",message("fallback"));else setMsg("homeMsg",message("load"));
+}
+function captureHomeEditor(){
+ const root=$("#home");if(!root||!adminModes.home)return;
+ const edited={latestTitle:$("#homeLatestInput",root)?.value||"",latestBody:$("#homeLatestBody",root)?.value||"",schedule:$("#homeScheduleInput",root)?.value||"",welcome:$("#homeWelcomeInput",root)?.value||""};
+ homeData={...homeData,translations:{...(homeData.translations||{}),[currentLang]:edited}};
+ if(currentLang==="ko")homeData={...homeData,...edited};
 }
 function renderHome(){
  const d=homeData.translations?.[currentLang]||homeData.translations?.ko||homeData;
