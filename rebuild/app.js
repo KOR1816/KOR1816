@@ -513,6 +513,7 @@ function renderNotices(){
   }
  }
  const admin=$("#notice-admin",root),save=$("#notice-save",root),languageWrap=$("#notice-edit-language-wrap",root),languageSelect=$("#notice-edit-language",root),help=$("#notice-translation-help",root);
+ root.classList.toggle("editing",noticeAdmin);
  setAdminButton(admin,noticeAdmin);
  if(save)save.hidden=!noticeAdmin;
  if(languageWrap)languageWrap.hidden=!noticeAdmin;
