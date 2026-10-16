@@ -383,7 +383,7 @@ function translateCommonControls(){
   "취소":["취소","Cancel","キャンセル","取消","Abbrechen","Annulla","Cancelar","İptal"]
  };
  Object.assign(maps,EXTRA_BUTTON_TRANSLATIONS);
- $("button").forEach(b=>{
+ $$("button").forEach(b=>{
   if(b.dataset.adminState){setAdminButton(b,b.dataset.adminState==="on");return;}
   if(b.dataset.photoAdminState){setPhotoAdminButton(b.dataset.photoAdminState==="on");return;}
   if(b.dataset.keepLabel==="1")return;
@@ -845,8 +845,8 @@ function renderCastleWar(){
 }
 async function saveNewCastleFeatures(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
- $("#castlewar1 [data-war]").forEach(el=>{const key=el.dataset.war,i=Number(el.dataset.index);if(castleWarData.war[key])castleWarData.war[key][i]=el.value.trim();});
- $("#castlewar1 [data-war-leader]").forEach(el=>{castleWarData.warLeaders[el.dataset.warLeader]=el.value.trim();});
+ $$("#castlewar1 [data-war]").forEach(el=>{const key=el.dataset.war,i=Number(el.dataset.index);if(castleWarData.war[key])castleWarData.war[key][i]=el.value.trim();});
+ $$("#castlewar1 [data-war-leader]").forEach(el=>{castleWarData.warLeaders[el.dataset.warLeader]=el.value.trim();});
  try{castleWarData=await saveCloud("castlewar1",castleWarData);setMsg("ncWarMsg",message("saved"));renderCastleWar();}
  catch(e){console.error(e);setMsg("ncWarMsg",message("failed"));}
 }
