@@ -283,7 +283,9 @@ function renderHome(){
 async function saveHome(){
  if(!adminModes.home){alert(message("admin"));return;}
  const root=$("#home");
- homeData={...homeData,latestTitle:$("#homeLatestInput",root)?.value||"",latestBody:$("#homeLatestBody",root)?.value||"",schedule:$("#homeScheduleInput",root)?.value||"",welcome:$("#homeWelcomeInput",root)?.value||""};
+ const edited={latestTitle:$("#homeLatestInput",root)?.value||"",latestBody:$("#homeLatestBody",root)?.value||"",schedule:$("#homeScheduleInput",root)?.value||"",welcome:$("#homeWelcomeInput",root)?.value||""};
+ homeData={...homeData,translations:{...(homeData.translations||{}),[currentLang]:edited}};
+ if(currentLang==="ko")homeData={...homeData,...edited};
  try{homeData=await saveCloud("home",homeData);renderHome();setMsg("homeMsg",message("saved"));}
  catch(e){console.error(e);setMsg("homeMsg",message("failed"));}
 }
@@ -355,7 +357,7 @@ async function loadTeams(){
  const root=$("#teams");
  for(const group of ["A","B","C","D"]){(teamData[group]||[]).forEach((v,i)=>{const el=$("#team-"+group+"-"+(i+1),root);if(el)el.value=v||"";});}
  (teamData.extra||[]).forEach((v,i)=>{const el=$("#extra-"+(i+1),root);if(el)el.value=v||"";});
- (teamData.subs||[]).forEach((v,i)=>{const el=$("#team-sub-"+(i+1),root)||$("#team-subs-"+(i+1),root);if(el)el.value=v||"";});
+ (teamData.subs||[]).forEach((v,i)=>{const el=$("#sub-"+(i+1),root);if(el)el.value=v||"";});
  setTeamsInputsEnabled(Boolean(adminModes.teams));
  if(r.source==="unavailable")setMsg("teamMsg",message("fallback"));else setMsg("teamMsg",message("load"));
 }
@@ -598,7 +600,7 @@ function renderCastleLayout(){
  }).join("");
  const b=$("#castleLayout1AdminBtn",root),s=$("#castleLayout1SaveBtn",root);
  if(b)b.textContent=adminModes.castlelayout1?"🔒 수정 종료":"🔐 관리자 수정";
- if(s)s.hidden=!adminModes.castlelayout1;
+ if(s)s.style.display=adminModes.castlelayout1?"inline-flex":"none";
 }
 async function toggleCastleLayout1Admin(){await togglePageAdmin("castlelayout1","castleLayout1AdminBtn","castleLayout1SaveBtn");}
 async function saveCastleLayout1(){
@@ -643,7 +645,8 @@ async function leaveVikingTeam(){
 /* Glory records */
 async function loadRecords(){
  try{
-  const cloud=await readCloud("glory");
+  let cloud=await readCloud("glory");
+  if(!cloud){const legacy=await getDoc(legacyDoc("glory"));cloud=legacy.exists()?legacy.data():null;}
   gloryRecords=Array.isArray(cloud?.records)?cloud.records:clone(defaultGloryRecords);
   renderRecords();setMsg("glory-msg",message("load"));
  }catch(e){console.error(e);gloryRecords=clone(defaultGloryRecords);renderRecords();setMsg("glory-msg",message("fallback"));}
@@ -685,7 +688,6 @@ function boot(){
  setupTemplates();makeNav();
  $("#language-select").addEventListener("change",e=>applyLanguage(e.target.value));
  window.addEventListener("hashchange",restoreRoute);window.addEventListener("popstate",restoreRoute);
- ensureReadSession().catch(e=>console.warn("Read session unavailable",e));
- restoreRoute();
+ ensureReadSession().catch(e=>console.warn("Read session unavailable",e)).finally(()=>restoreRoute());
 }
 boot();
