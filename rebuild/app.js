@@ -309,7 +309,7 @@ function setupTemplates(){
  }
  // The source markup is content only; handlers below are shared, page-aware actions.
 }
-function updateMsgForPage(id,msg){const target={home:"homeMsg",teams:"teamMsg",alliance:"allianceMsg",seating:"seatingLatestMsg",battleJoin:"ncMsg",castlewar1:"ncWarMsg",castlelayout1:"castleLayout1Msg",viking:"vikingMsg"}[id];if(target)say(msg,target);else say(msg);}
+function updateMsgForPage(id,msg){const target={home:"homeMsg",teams:"teamMsg",alliance:"allianceMsg",seating:"seatingLatestMsg",battleJoin:"ncJoinMsg",castlewar1:"ncWarMsg",castlelayout1:"castleLayout1Msg",viking:"vikingMsg"}[id];if(target)say(msg,target);else say(msg);}
 function currentInputs(root){const out={};$$("input,textarea,select",root).forEach(el=>{if(!el.id||el.type==="button"||el.type==="submit")return;out[el.id]=el.value;});return out;}
 function fillInputs(root,values){for(const [id,value] of Object.entries(values||{})){const el=$("#"+CSS.escape(id),root);if(el&&"value" in el)el.value=value??"";}}
 function toggleButtonsForAdmin(root,on,buttonId,saveId){
@@ -643,8 +643,8 @@ async function cancelNewCastleParticipation(){
 async function deleteAllNewCastleParticipants(){
  if(!adminModes.battleJoin||!confirm("참전 등록 명단을 모두 삭제할까요?"))return;
  participants=[];
- try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncMsg",message("saved"));}
- catch(e){console.error(e);setMsg("ncMsg",message("failed"));}
+ try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function toggleNewCastleAdmin(){
  if(activePage==="battleJoin"){
