@@ -186,6 +186,8 @@ function applyLanguage(lang){
  try{localStorage.setItem("kor1816_rebuild_lang_v1",currentLang);localStorage.setItem("kor1816_lang",currentLang);}catch{}
  renderNotices();
  translateCommonControls();
+ translateStatic();
+ if(activePage==="home")renderHome();
  document.dispatchEvent(new CustomEvent("kor1816:languagechange",{detail:{language:currentLang}}));
 }
 const ORIGINAL_TEXT = new WeakMap();
