@@ -576,6 +576,8 @@ function updateNewCastleJoinFields(){
  const root=$("#battleJoin"),sel=$("#ncNick",root),search=$("#ncIdSearch",root),box=$("#ncNickSearchResults",root);
  if(search&&sel?.value&&sel.value!=="__custom__")search.value=sel.value;
  if(box){box.hidden=true;box.style.display="none";}
+ const special=FIXED_LEADERS.includes(sel?.value);
+ $("[data-nc-optional]",root).forEach(el=>{el.style.display=special?"none":"";});
  const existing=participants.find(p=>p.nickname===sel?.value);
  if(existing){$("#ncStatus",root).value=existing.status;$("#ncTier",root).value=existing.tier;$("#ncSalo",root).value=existing.salo?"yes":"no";$("#ncHilde",root).value=existing.hilde?"yes":"no";}
 }
