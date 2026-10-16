@@ -188,6 +188,61 @@ function applyLanguage(lang){
  translateCommonControls();
  document.dispatchEvent(new CustomEvent("kor1816:languagechange",{detail:{language:currentLang}}));
 }
+const ORIGINAL_TEXT = new WeakMap();
+const STATIC_TRANSLATIONS = {
+ "📢 최신 공지":["📢 최신 공지","📢 Latest Notice","📢 最新のお知らせ","📢 最新公告","📢 Neueste Mitteilung","📢 Ultimo avviso","📢 Aviso reciente","📢 Son Duyuru"],
+ "📅 주요 일정":["📅 주요 일정","📅 Schedule","📅 主な予定","📅 主要日程","📅 Zeitplan","📅 Programma","📅 Calendario","📅 Program"],
+ "🌍 Kingdom 1816":["🌍 Kingdom 1816","🌍 Kingdom 1816","🌍 Kingdom 1816","🌍 Kingdom 1816","🌍 Kingdom 1816","🌍 Kingdom 1816","🌍 Kingdom 1816","🌍 Kingdom 1816"],
+ "공식 디스코드 서버에 입장하세요.":["공식 디스코드 서버에 입장하세요.","Join our official Discord server.","公式Discordサーバーに参加してください。","加入我们的官方 Discord 服务器。","Tritt unserem offiziellen Discord-Server bei.","Entra nel nostro server Discord ufficiale.","Únete a nuestro servidor oficial de Discord.","Resmî Discord sunucumuza katılın."],
+ "📋 자리배치 목록":["📋 자리배치 목록","📋 Seating list","📋 配置一覧","📋 座位安排列表","📋 Sitzplan-Liste","📋 Elenco posti","📋 Lista de puestos","📋 Yerleşim listesi"],
+ "✏️ 자리배치 닉네임 수정":["✏️ 자리배치 닉네임 수정","✏️ Edit seating nicknames","✏️ 配置名を編集","✏️ 编辑座位昵称","✏️ Sitznamen bearbeiten","✏️ Modifica nomi","✏️ Editar nombres","✏️ Yerleşim takma adlarını düzenle"],
+ "⚔️ 성검쟁탈":["⚔️ 성검쟁탈","⚔️ Holy Sword Clash","⚔️ 聖剣争奪","⚔️ 圣剑争夺","⚔️ Heiliges Schwert","⚔️ Duello della Spada Sacra","⚔️ Duelo de la Espada Sagrada","⚔️ Kutsal Kılıç"],
+ "🗡️ 3대연맹전":["🗡️ 3대연맹전","🗡️ Three Alliances War","🗡️ 三大連盟戦","🗡️ 三大联盟战","🗡️ Krieg der drei Allianzen","🗡️ Guerra delle Tre Alleanze","🗡️ Guerra de las Tres Alianzas","🗡️ Üç İttifak Savaşı"],
+ "🪓 바이킹 팀 편성":["🪓 바이킹 팀 편성","🪓 Viking Team Formation","🪓 バイキング編成","🪓 维京队伍编排","🪓 Wikinger-Teamaufstellung","🪓 Formazione squadre vichinghe","🪓 Formación de equipos vikingos","🪓 Viking Takım Dizilimi"],
+ "팀 참가":["팀 참가","Join team","チーム参加","加入队伍","Team beitreten","Unisciti al team","Unirse al equipo","Takıma katıl"],
+ "참가 취소":["참가 취소","Cancel participation","参加を取り消す","取消参加","Teilnahme abbrechen","Annulla partecipazione","Cancelar participación","Katılımı iptal et"],
+ "게임 닉네임 선택":["게임 닉네임 선택","Select game nickname","ゲーム名を選択","选择游戏昵称","Spielname auswählen","Seleziona nickname di gioco","Elegir apodo del juego","Oyun takma adı seç"],
+ "참가 팀":["참가 팀","Team","参加チーム","参赛队伍","Team","Squadra","Equipo","Takım"],
+ "⚔️ 전투참전":["⚔️ 전투참전","⚔️ Castle Participation","⚔️ 城战报名","⚔️ 城堡参战","⚔️ Burgteilnahme","⚔️ Partecipazione al Castello","⚔️ Participación en el Castillo","⚔️ Kale Katılımı"],
+ "참전 정보를 등록하세요. 닉네임은 고정 명단에서 선택합니다.":["참전 정보를 등록하세요. 닉네임은 고정 명단에서 선택합니다.","Register your participation. Select a nickname from the list.","参加情報を登録してください。リストから名前を選択します。","请登记参战信息，并从名单中选择昵称。","Registriere deine Teilnahme und wähle einen Namen aus der Liste.","Registra la partecipazione e scegli un nome dall'elenco.","Registra tu participación y elige un nombre de la lista.","Katılımını kaydet ve listeden bir takma ad seç."],
+ "닉네임":["닉네임","Nickname","名前","昵称","Spitzname","Nickname","Apodo","Takma ad"],
+ "캐슬전 참가 상태":["캐슬전 참가 상태","Castle War status","城戦参加状況","城堡战参战状态","Burgkriegsstatus","Stato Guerra del Castello","Estado de Guerra del Castillo","Kale Savaşı durumu"],
+ "병영 등급":["병영 등급","Barracks tier","兵舎ランク","兵营等级","Kaserne-Stufe","Livello caserma","Nivel de cuartel","Kışla seviyesi"],
+ "등록된 참전 정보":["등록된 참전 정보","Registered participants","登録済み参加者","已登记参战信息","Registrierte Teilnehmer","Partecipanti registrati","Participantes registrados","Kayıtlı katılımcılar"],
+ "대기 명단":["대기 명단","Waiting list","待機リスト","等待名单","Warteliste","Lista d'attesa","Lista de espera","Bekleme listesi"],
+ "🏆 영광의 순간들":["🏆 영광의 순간들","🏆 Moments of Glory","🏆 栄光の瞬間","🏆 荣耀时刻","🏆 Ruhmreiche Momente","🏆 Momenti di Gloria","🏆 Momentos de Gloria","🏆 Zafer Anları"],
+ "준비기간과 전쟁기간의 승패를 기록합니다.":["준비기간과 전쟁기간의 승패를 기록합니다.","Record the results of the preparation and war periods.","準備期間と戦争期間の結果を記録します。","记录准备阶段和战争阶段的胜负。","Erfasse die Ergebnisse der Vorbereitungs- und Kriegsphase.","Registra i risultati della fase di preparazione e di guerra.","Registra los resultados de preparación y guerra.","Hazırlık ve savaş dönemi sonuçlarını kaydedin."],
+ "캐슬전 기록 추가":["캐슬전 기록 추가","Add Castle War record","城戦記録を追加","添加城堡战记录","Burgkriegsaufzeichnung hinzufügen","Aggiungi registro Guerra del Castello","Añadir registro de Guerra del Castillo","Kale Savaşı kaydı ekle"],
+ "전투 날짜":["전투 날짜","Battle date","戦闘日","战斗日期","Kampftag","Data della battaglia","Fecha de batalla","Savaş tarihi"],
+ "상대 왕국":["상대 왕국","Opponent kingdom","相手王国","对手王国","Gegnerisches Königreich","Regno avversario","Reino rival","Rakip krallık"],
+ "준비기간 결과":["준비기간 결과","Preparation result","準備期間の結果","准备阶段结果","Ergebnis der Vorbereitungsphase","Risultato preparazione","Resultado de preparación","Hazırlık sonucu"],
+ "전쟁기간 결과":["전쟁기간 결과","War period result","戦争期間の結果","战争阶段结果","Ergebnis der Kriegsphase","Risultato della guerra","Resultado de guerra","Savaş dönemi sonucu"],
+ "전투 메모 — 선택 사항":["전투 메모 — 선택 사항","Battle notes — optional","戦闘メモ（任意）","战斗备注（可选）","Kampfnotizen – optional","Note battaglia — facoltative","Notas de batalla — opcional","Savaş notları — isteğe bağlı"]
+};
+function translateStatic(){
+ const root=$("#page-root");if(!root)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ for(const node of nodes){
+  const parent=node.parentElement;if(!parent)continue;
+  if(parent.closest("button,.content,.notice,.msg,.participant-line,.seating-row,.castle-layout1-content,.viking-member,input,textarea,script,style"))continue;
+  if(!ORIGINAL_TEXT.has(node))ORIGINAL_TEXT.set(node,node.nodeValue);
+  const original=ORIGINAL_TEXT.get(node),trim=original.trim();
+  const translations=STATIC_TRANSLATIONS[trim];
+  if(!translations)continue;
+  const translated=translations[langIndex()];
+  node.nodeValue=original.replace(trim,translated||trim);
+ }
+}
+function latestBanner(id){
+ const labels={
+  seating:["최신 자리배치 내용을 불러왔습니다.","Latest seating assignments loaded.","最新の配置を読み込みました。","已加载最新座位安排。","Aktueller Sitzplan geladen.","Ultima disposizione caricata.","Se ha cargado la distribución más reciente.","En güncel yerleşim yüklendi."],
+  castlewar1:["최신 캐슬전 내용을 불러왔습니다.","Latest Castle War content loaded.","最新の城戦データを読み込みました。","已加载最新城堡战内容。","Aktuelle Burgkriegsdaten geladen.","Dati Guerra del Castello aggiornati.","Se cargó el contenido más reciente de Guerra del Castillo.","En güncel Kale Savaşı içeriği yüklendi."],
+  castlelayout1:["최신 캐슬배치 내용을 불러왔습니다.","Latest Castle Layout loaded.","最新の城配置を読み込みました。","已加载最新城堡布阵。","Aktuelle Burgaufstellung geladen.","Disposizione del Castello aggiornata.","Se cargó la distribución del Castillo más reciente.","En güncel kale dizilimi yüklendi."],
+  battleJoin:["최신 캐슬참전 내용을 불러왔습니다.","Latest Castle Participation content loaded.","最新の城戦参加情報を読み込みました。","已加载最新城堡参战信息。","Aktuelle Burgteilnahme geladen.","Partecipazioni al Castello aggiornate.","Se cargó la participación más reciente.","En güncel Kale Katılımı yüklendi."]
+ };
+ return (labels[id]||[message("load")])[langIndex()];
+}
 function translateCommonControls(){
  const maps={
   "🔄 새로고침":["🔄 새로고침","🔄 Refresh","🔄 更新","🔄 刷新","🔄 Aktualisieren","🔄 Aggiorna","🔄 Actualizar","🔄 Yenile"],
@@ -419,7 +474,7 @@ async function saveAlliance(){
 function getRows(value){
  if(Array.isArray(value))return value;
  if(!value||typeof value!=="object")return [];
- for(const key of ["columns","seating","layout","rows","seatingData","placements","members","data"]){
+ for(const key of ["columns","seating","layout","seatingData","placements","members","data","rows"]){
   const candidate=value[key];
   if(Array.isArray(candidate))return candidate;
   if(candidate&&typeof candidate==="object"){const nested=getRows(candidate);if(nested.length)return nested;}
@@ -451,7 +506,7 @@ async function loadSeating(){
  const r=await loadData("seating",seatingData);
  seatingData={rows:normalizeSeatingRows(r.data),updatedAt:r.data.updatedAt||0};
  renderSeating();renderSeatingAdmin();
- setMsg("seatingLatestMsg",r.source==="unavailable"?message("fallback"):"최신 자리배치 내용을 불러왔습니다.");
+ setMsg("seatingLatestMsg",r.source==="unavailable"?message("fallback"):latestBanner("seating"));
 }
 async function toggleSeatingAdmin(){
  if(!adminModes.seating&&!await ensureGoogleAdmin())return;
@@ -497,13 +552,13 @@ async function loadNewCastleFeatures(){
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("battleJoin"));if(old.exists())data=old.data();}
    participants=normalizeParticipants(data||{});
-   renderParticipants();setMsg("ncJoinMsg",message("load"));
+   renderParticipants();setMsg("ncJoinMsg",latestBanner("battleJoin"));
   }else{
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("castlewar1"));if(old.exists())data=old.data();}
    const war=data?.war||data?.castleWar||{};
    castleWarData={war:{...castleWarData.war,...war,substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:data?.warLeaders||castleWarData.warLeaders,updatedAt:data?.updatedAt||0};
-   renderCastleWar();setMsg("ncWarMsg",message("load"));
+   renderCastleWar();setMsg("ncWarMsg",latestBanner("castlewar1"));
   }
  }catch(e){console.error(e);if(activePage==="battleJoin")setMsg("ncJoinMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
 }
@@ -593,7 +648,7 @@ async function loadCastleLayout1(){
   }
   while(castleLayoutData.slots.length<28)castleLayoutData.slots.push("");
   FIXED_LEADERS.forEach((n,i)=>castleLayoutData.slots[i]=n);
-  renderCastleLayout();setMsg("castleLayout1Msg",message("load"));
+  renderCastleLayout();setMsg("castleLayout1Msg",latestBanner("castlelayout1"));
  }catch(e){console.error(e);renderCastleLayout();setMsg("castleLayout1Msg",message("fallback"));}
 }
 function renderCastleLayout(){
