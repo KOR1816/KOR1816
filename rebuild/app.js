@@ -448,7 +448,7 @@ function normalizeParticipants(raw){
  const list=Array.isArray(raw?.participants)?raw.participants:[];
  return list.filter(x=>x&&typeof x==="object").map(x=>({
   nickname:String(x.nickname||"").trim(),status:["yes","no","later"].includes(x.status)?x.status:"yes",
-  tier:["A","B","C","none"].includes(x.tier)?x.tier:"A",salo:Boolean(x.salo),hilde:Boolean(x.hilde),updatedAt:Number(x.updatedAt)||0
+  tier:["A","B","C","none"].includes(x.tier)?x.tier:"A",salo:(x.salo===true||x.salo==="yes"||x.salo==="O"),hilde:(x.hilde===true||x.hilde==="yes"||x.hilde==="O"),updatedAt:Number(x.updatedAt)||0
  })).filter(x=>x.nickname);
 }
 function participantRank(p){if(!p||p.status!=="yes")return "";const base={A:"A",B:"B",C:"C"}[p.tier];if(!base)return "";return base+(p.salo?"1":"2");}
@@ -483,7 +483,7 @@ function updateNewCastleJoinFields(){
  const root=$("#battleJoin"),sel=$("#ncNick",root),custom=$("#ncCustomNickname",root);
  if(custom)custom.hidden=sel?.value!=="__custom__";
  const existing=participants.find(p=>p.nickname===sel?.value);
- if(existing){$("#ncStatus",root).value=existing.status;$("#ncTier",root).value=existing.tier;$("#ncSalo",root).checked=existing.salo;$("#ncHilde",root).checked=existing.hilde;}
+ if(existing){$("#ncStatus",root).value=existing.status;$("#ncTier",root).value=existing.tier;$("#ncSalo",root).value=existing.salo?"yes":"no";$("#ncHilde",root).value=existing.hilde?"yes":"no";}
 }
 function filterNewCastleNicknames(){
  const root=$("#battleJoin"),search=$("#ncIdSearch",root),sel=$("#ncNick",root);
@@ -493,10 +493,10 @@ function filterNewCastleNicknames(){
 }
 async function submitNewCastleParticipation(){
  const root=$("#battleJoin"),sel=$("#ncNick",root);
- let nickname=sel?.value==="__custom__"?($("#ncCustomNickname",root)?.value||"").trim():(sel?.value||"").trim();
+ let nickname=sel?.value==="__custom__"?($("#ncIdSearch",root)?.value||"").trim():(sel?.value||"").trim();
  if(!nickname){setMsg("ncJoinMsg","닉네임을 선택하거나 입력하세요.");return;}
  if(nickname.length>80){setMsg("ncJoinMsg","닉네임은 80자 이내로 입력하세요.");return;}
- const item={nickname,status:$("#ncStatus",root)?.value||"yes",tier:$("#ncTier",root)?.value||"A",salo:Boolean($("#ncSalo",root)?.checked),hilde:Boolean($("#ncHilde",root)?.checked),updatedAt:Date.now()};
+ const item={nickname,status:$("#ncStatus",root)?.value||"yes",tier:$("#ncTier",root)?.value||"A",salo:$("#ncSalo",root)?.value==="yes",hilde:$("#ncHilde",root)?.value==="yes",updatedAt:Date.now()};
  const idx=participants.findIndex(p=>p.nickname.toLowerCase()===nickname.toLowerCase());
  if(idx>=0)participants[idx]=item;else participants.push(item);
  try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncJoinMsg",message("saved"));}
@@ -517,8 +517,19 @@ async function deleteAllNewCastleParticipants(){
  catch(e){console.error(e);setMsg("ncMsg",message("failed"));}
 }
 async function toggleNewCastleAdmin(){
- if(activePage==="battleJoin")return togglePageAdmin("battleJoin","ncAdminBtn","ncSaveBtn");
- return togglePageAdmin("castlewar1","ncWarAdminBtn","ncWarSaveBtn");
+ if(activePage==="battleJoin"){
+  if(!adminModes.battleJoin&&!await ensureGoogleAdmin())return;
+  adminModes.battleJoin=!adminModes.battleJoin;
+  const b=$("#ncAdminBtn"),del=$("#ncDeleteAllBtn");
+  if(b)b.textContent=adminModes.battleJoin?"🔒 수정 종료":"🔐 관리자 수정";
+  if(del)del.style.display=adminModes.battleJoin?"inline-flex":"none";
+  return;
+ }
+ if(!adminModes.castlewar1&&!await ensureGoogleAdmin())return;
+ adminModes.castlewar1=!adminModes.castlewar1;
+ const b=$("[data-newcastle='admin']",$("#castlewar1"))[0];
+ if(b)b.textContent=adminModes.castlewar1?"🔒 수정 종료":"🔐 관리자 수정";
+ renderCastleWar();
 }
 function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
