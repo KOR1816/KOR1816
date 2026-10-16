@@ -679,7 +679,12 @@ async function loadCastleLayout1(){
   if(own&&Array.isArray(own.slots))castleLayoutData={slots:own.slots.slice(0,28),updatedAt:own.updatedAt||0};
   else{
    const old=await getDoc(legacyDoc("castlelayout1"));
-   if(old.exists()){const d=old.data();castleLayoutData={slots:Array.isArray(d.slots)?d.slots.slice(0,28):Array(28).fill(""),updatedAt:d.updatedAt||0};}
+   if(old.exists()){
+    const d=old.data();castleLayoutData={slots:Array.isArray(d.slots)?d.slots.slice(0,28):Array(28).fill(""),updatedAt:d.updatedAt||0};
+   }else{
+    const sorted=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!FIXED_LEADERS.includes(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));
+    castleLayoutData={slots:[...FIXED_LEADERS,...Array.from({length:22},(_,i)=>sorted[i]?.nickname||"")],updatedAt:0};
+   }
   }
   while(castleLayoutData.slots.length<28)castleLayoutData.slots.push("");
   FIXED_LEADERS.forEach((n,i)=>castleLayoutData.slots[i]=n);
@@ -688,17 +693,19 @@ async function loadCastleLayout1(){
 }
 function renderCastleLayout(){
  const root=$("#castlelayout1"),wrap=$("#castleLayout1Slots",root);if(!wrap)return;
- const names=[...new Set([...FIXED_LEADERS,...participants.map(p=>p.nickname)])];
+ const names=[...new Set([...FIXED_LEADERS,...FIXED_NICKNAMES,...participants.map(p=>p.nickname)])];
  wrap.innerHTML=Array.from({length:28},(_,i)=>{
-  const name=castleLayoutData.slots[i]||"",isFixed=i<6;
+  const name=castleLayoutData.slots[i]||"",isFixed=i<6,p=participants.find(x=>x.nickname===name);
   let inner;
   if(adminModes.castlelayout1&&!isFixed)inner='<select data-layout-slot="'+i+'"><option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===name?'selected':'')+'>'+esc(n)+'</option>').join("")+'</select>';
-  else inner='<span>'+esc(name||"—")+'</span>';
+  else if(!name)inner='<span>—</span>';
+  else if(isFixed)inner='<div class="layout-person"><strong>'+esc(name)+'</strong><small> S · 집결장</small></div>';
+  else inner='<div class="layout-person"><strong>'+esc(name)+'</strong><small>'+esc(p?(participantRank(p)||p.tier)+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X"):"")+'</small></div>';
   return '<div class="castle-layout1-slot"><span class="castle-layout1-number">'+(i+1)+'</span><div class="castle-layout1-content">'+inner+'</div></div>';
  }).join("");
- const b=$("#castleLayout1AdminBtn",root),s=$("#castleLayout1SaveBtn",root);
+ const b=$("#castleLayout1AdminBtn",root),save=$("#castleLayout1SaveBtn",root);
  if(b)b.textContent=adminModes.castlelayout1?"🔒 수정 종료":"🔐 관리자 수정";
- if(s)s.style.display=adminModes.castlelayout1?"inline-flex":"none";
+ if(save)save.style.display=adminModes.castlelayout1?"inline-flex":"none";
  translateStatic();
 }
 async function toggleCastleLayout1Admin(){await togglePageAdmin("castlelayout1","castleLayout1AdminBtn","castleLayout1SaveBtn");}
@@ -784,7 +791,7 @@ Object.assign(window,{
  loadAlliance,toggleAllianceAdmin,saveAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
  updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
  loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,
- loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b)));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
+ loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!FIXED_LEADERS.includes(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
  toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
 });
 
