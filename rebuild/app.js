@@ -618,8 +618,8 @@ async function cancelNewCastleParticipation(){
  if(!nickname||nickname==="__custom__"){setMsg("ncJoinMsg","삭제할 닉네임을 선택하세요.");return;}
  if(!confirm(nickname+"님의 참전 정보를 취소할까요?"))return;
  participants=participants.filter(p=>p.nickname.toLowerCase()!==nickname.toLowerCase());
- try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncMsg",message("saved"));}
- catch(e){console.error(e);setMsg("ncMsg",message("failed"));}
+ try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function deleteAllNewCastleParticipants(){
  if(!adminModes.battleJoin||!confirm("참전 등록 명단을 모두 삭제할까요?"))return;
