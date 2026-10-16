@@ -851,19 +851,19 @@ async function loadViking(){
  await loadVikingPhotos();
  renderViking();setMsg("vikingMsg",r.source==="unavailable"?message("fallback"):message("load"));
 }
-async function saveViking(){try{vikingData=await saveCloud("viking",vikingData);renderViking();setMsg("vikingMsg",message("saved"));return true;}catch(e){console.error(e);setMsg("vikingMsg",message("failed"));return false;}}
+async function saveViking(next=vikingData){try{vikingData=await saveCloud("viking",next);renderViking();setMsg("vikingMsg",message("saved"));return true;}catch(e){console.error(e);setMsg("vikingMsg",message("failed"));return false;}}
 async function joinVikingTeam(){
  const name=getVikingSelectedNick(),team=Number($("#vikingTeam")?.value),msg=$("#vikingMsg");
  if(!name||!team){if(msg)msg.textContent="닉네임과 팀을 선택하세요.";return;}
  if(Object.values(vikingData.teams).some(a=>a.some(n=>n.toLowerCase()===name.toLowerCase()))){if(msg)msg.textContent="이미 다른 팀에 등록되어 있습니다.";return;}
  const roster=vikingData.teams[team]||[];if(roster.length>=4){if(msg)msg.textContent="선택한 팀이 가득 찼습니다.";return;}
- vikingData.teams[team]=[...roster,name];await saveViking();
+ const next=clone(vikingData);next.teams[team]=[...roster,name];await saveViking(next);
 }
 async function leaveVikingTeam(){
  const name=getVikingSelectedNick();if(!name){setMsg("vikingMsg","취소할 닉네임을 선택하세요.");return;}
- let found=false;
- for(const [team,roster] of Object.entries(vikingData.teams)){if(roster.some(n=>n.toLowerCase()===name.toLowerCase())){vikingData.teams[team]=roster.filter(n=>n.toLowerCase()!==name.toLowerCase());found=true;}}
- if(!found){setMsg("vikingMsg","등록된 팀이 없습니다.");return;}await saveViking();
+ const next=clone(vikingData);let found=false;
+ for(const [team,roster] of Object.entries(next.teams)){if(roster.some(n=>n.toLowerCase()===name.toLowerCase())){next.teams[team]=roster.filter(n=>n.toLowerCase()!==name.toLowerCase());found=true;}}
+ if(!found){setMsg("vikingMsg","등록된 팀이 없습니다.");return;}await saveViking(next);
 }
 
 /* Glory records */
