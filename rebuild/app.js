@@ -491,7 +491,8 @@ async function toggleHomeAdmin(){
 let noticeAdmin=false;
 function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"";}
 function koreanOnly(value){
- return String(value??"").split("\n").filter(line=>/[가-힣]/.test(line)||!/[A-Za-z]{3,}/.test(line)).join("\n").trim();
+ // Preserve the administrator's notice text verbatim; English-only lines may be intentional.
+ return String(value??"").trim();
 }
 function renderNotices(){
  const root=$("#notices");if(!root)return;
