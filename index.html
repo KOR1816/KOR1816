@@ -20,6 +20,7 @@ h1{margin:0;color:#fff;font-size:34px;text-shadow:0 2px 12px #000}
 nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:14px;background:rgba(7,12,23,.94);border-bottom:1px solid #263b60;position:sticky;top:0;z-index:5}
 nav button{border:1px solid #39557f;border-radius:10px;padding:10px 15px;background:linear-gradient(180deg,#243a61,#172946);color:#fff;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700}
 nav button:hover{background:linear-gradient(180deg,#3a5785,#243c63);border-color:var(--gold)}
+[hidden]{display:none!important}
 nav button.active{background:linear-gradient(180deg,#f9a45c,#d97732);border:1px solid #ffd19b;color:#201306;box-shadow:0 0 0 1px #f59e52,0 4px 14px #f59e5238}
 .wrap{max-width:1050px;margin:auto;padding:20px}
 .home-main-image{text-align:center;margin:0 0 18px}
@@ -245,6 +246,7 @@ try{
 }catch(err){console.error("Firebase init:",err)}
 await refreshHome();
 renderHome();
+if(currentLang!=="ko")void translateHomeDynamic(currentLang);
 </script>
 </body>
 </html>
