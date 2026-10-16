@@ -966,7 +966,7 @@ async function triggerVikingPhoto(teamNo,nickname){
   if(!file.type.startsWith("image/")){alert(message("imageOnly"));return;}
   if(file.size>12*1024*1024){alert(message("photoTooLarge"));return;}
   try{
-   setMsg("vikingMsg",nickname+" 사진을 처리하는 중입니다.");
+   setMsg("vikingMsg",message("processingPhoto").replace("{nickname}",nickname));
    const dataUrl=await new Promise((resolve,reject)=>{
     const reader=new FileReader();reader.onerror=reject;
     reader.onload=()=>{
