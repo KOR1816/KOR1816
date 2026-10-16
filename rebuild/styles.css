@@ -65,7 +65,7 @@ label{display:block;min-width:0;color:#dbe5f7}
 .newcastle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 18px}
 .participant-line{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:9px 10px;border:1px solid #2e4468;border-radius:8px;background:#0c1526}
 .nc-war-attack,.nc-war-turrets{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:10px;overflow-x:auto;margin:12px 0}
-.nc-war-turrets{grid-template-columns:repeat(2,minmax(180px,1fr))}
+.nc-war-turrets{grid-template-columns:repeat(3,minmax(180px,1fr))}
 .war-column{min-width:0}
 .war-slot{display:grid;grid-template-columns:34px minmax(0,1fr);gap:6px;padding:6px;border-top:1px solid #273b5d;align-items:center}
 .war-slot span{text-align:center;color:#dbe5f7}
@@ -108,7 +108,7 @@ label{display:block;min-width:0;color:#dbe5f7}
  .grid,.cards{grid-template-columns:minmax(0,1fr)}
  .alliance-teams{grid-template-columns:minmax(240px,1fr);min-width:260px}
  .nc-war-attack{grid-template-columns:repeat(3,minmax(180px,1fr))}
- .nc-war-turrets{grid-template-columns:repeat(2,minmax(180px,1fr))}
+ .nc-war-turrets{grid-template-columns:repeat(3,minmax(180px,1fr))}
  .castle-layout1-slots{grid-template-columns:minmax(0,1fr)}
  .viking-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .newcastle-form{grid-template-columns:minmax(0,1fr)}
