@@ -741,6 +741,7 @@ async function saveCastleLayout1(){
  $$("#castlelayout1 [data-layout-slot]").forEach(el=>castleLayoutData.slots[Number(el.dataset.layoutSlot)]=el.value);
  FIXED_LEADERS.forEach((n,i)=>castleLayoutData.slots[i]=n);
  const chosen=castleLayoutData.slots.slice(6).filter(Boolean);
+ if(chosen.some(n=>FIXED_LEADERS.includes(n))){alert("1~6번 고정 집결장은 7~28번에 다시 배치할 수 없습니다.");return;}
  if(new Set(chosen).size!==chosen.length){alert("7~28번에는 중복 닉네임을 넣을 수 없습니다.");return;}
  try{castleLayoutData=await saveCloud("castlelayout1",castleLayoutData);renderCastleLayout();setMsg("castleLayout1Msg",message("saved"));}
  catch(e){console.error(e);setMsg("castleLayout1Msg",message("failed"));}
