@@ -306,7 +306,7 @@ function navigate(id,updateUrl=true){
  if(id==="viking")loadViking();
  document.dispatchEvent(new CustomEvent("kor1816:pagechange",{detail:{page:id,language:currentLang}}));
 }
-function restoreRoute(){const id=decodeURIComponent(location.hash.slice(1));navigate(PAGE_IDS.includes(id)?id:"home",false);}
+function restoreRoute(){const hash=decodeURIComponent(location.hash.slice(1));const query=new URLSearchParams(location.search).get("page")||"";const id=hash||query;navigate(PAGE_IDS.includes(id)?id:"home",false);}
 
 function setupTemplates(){
  for(const id of PAGE_IDS){const root=$("#"+id);if(!root)continue;root.innerHTML=PAGE_CONTENT[id]||'<div class="card"><h2>'+esc(PAGE_LABELS[id][0])+'</h2></div>';}
