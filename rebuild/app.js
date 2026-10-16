@@ -457,6 +457,7 @@ async function toggleAllianceAdmin(){
  const view=$("#allianceView",root),edit=$("#allianceEdit",root),b=$("#allianceAdminBtn",root);
  if(view)view.style.display=adminModes.alliance?"none":"block";
  if(edit)edit.style.display=adminModes.alliance?"block":"none";
+ setInputsEnabled(root,adminModes.alliance);
  if(b)b.textContent=adminModes.alliance?"🔒 수정 종료":"🔐 관리자 수정";
 }
 async function saveAlliance(){
