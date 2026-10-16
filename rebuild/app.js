@@ -94,7 +94,7 @@ let seatingData = {rows:[
  {row:"Row 3",left:Array(26).fill(""),right:Array(16).fill("")}
 ]};
 let participants = [];
-let castleWarData = {war:{assault:Array(8).fill(""),rush:Array(8).fill(""),finish:Array(8).fill(""),north:Array(8).fill(""),west:Array(8).fill(""),reserve:Array(8).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"Nemesis",rush:"Pham",finish:"샌디에이고"},updatedAt:0};
+let castleWarData = {war:{assault:Array(10).fill(""),rush:Array(10).fill(""),finish:Array(10).fill(""),north:Array(10).fill(""),west:Array(10).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"Nemesis",rush:"Pham",finish:"샌디에이고"},updatedAt:0};
 let castleLayoutData = {slots:Array(28).fill(""),updatedAt:0};
 let vikingData = {teams:Object.fromEntries(Array.from({length:25},(_,i)=>[i+1,[]])),updatedAt:0};
 let vikingPhotosByTeam = {};
@@ -602,7 +602,7 @@ async function loadNewCastleFeatures(){
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("castlewar1"));if(old.exists())data=old.data();}
    const war=data?.war||data?.castleWar||{};
-   castleWarData={war:{...castleWarData.war,...war,substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:data?.warLeaders?.rush||"Pham",finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
+   castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:10},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:10},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:10},(_,i)=>war.finish?.[i]||""),north:Array.from({length:10},(_,i)=>war.north?.[i]||""),west:Array.from({length:10},(_,i)=>war.west?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:data?.warLeaders?.rush||"Pham",finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
    renderCastleWar();setMsg("ncWarMsg",latestBanner("castlewar1"));
   }
  }catch(e){console.error(e);if(activePage==="battleJoin")setMsg("ncJoinMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
@@ -716,12 +716,12 @@ function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
  const attack=$("#ncWarAttack",root),turrets=$("#ncWarTurrets",root);
  const groups=[["assault","돌격조"],["rush","개돌조"],["finish","마무리조"]];
- const turretGroups=[["north","Leo li","북측포탑"],["west","Jinno","서측포탑"],["reserve","SsungBi","포탑 (예비)"]];
+ const turretGroups=[["north","Leo li","북측포탑"],["west","Jinno","서측포탑"]];
  const names=[...new Set([...FIXED_LEADERS,...participants.map(p=>p.nickname)])];
  const optionList=(value)=>'<option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(n)+'</option>').join("");
  const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+castleWarSelect(name)+'</select>':castleMemberCard(name,castleParticipantMeta(name));
  const leaderCell=(key)=>adminModes.castlewar1?'<select data-war-leader="'+key+'">'+castleWarSelect(castleWarData.warLeaders[key]||"")+'</select>':castleMemberCard(castleWarData.warLeaders[key]||"",castleCardText("leader"));
- const renderAttack=([key,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b>'+leaderCell(key)+'</div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
+ const renderAttack=([key,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b>'+leaderCell(key)+'</div>'+Array.from({length:10},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
  const renderTurret=([key,leader,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>'+esc(castleCardText("leader"))+'</b>'+castleMemberCard(leader,castleCardText("leader"))+'</div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
  if(attack)attack.innerHTML=groups.map(renderAttack).join("");
  if(turrets)turrets.innerHTML=turretGroups.map(renderTurret).join("");
