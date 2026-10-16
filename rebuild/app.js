@@ -97,6 +97,8 @@ let participants = [];
 let castleWarData = {war:{assault:Array(8).fill(""),rush:Array(8).fill(""),finish:Array(8).fill(""),north:Array(8).fill(""),west:Array(8).fill(""),reserve:Array(8).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"Nemesis",rush:"Pham",finish:"샌디에이고"},updatedAt:0};
 let castleLayoutData = {slots:Array(28).fill(""),updatedAt:0};
 let vikingData = {teams:Object.fromEntries(Array.from({length:25},(_,i)=>[i+1,[]])),updatedAt:0};
+let vikingPhotosByTeam = {};
+let vikingPhotoAdmin = false;
 let gloryRecords = [];
 const defaultGloryRecords = [
  {date:"2026-10-10",opponent:1775,prep:"패",castle:"패",memo:""},
@@ -268,6 +270,7 @@ function translateCommonControls(){
  };
  $("button").forEach(b=>{
   if(b.dataset.adminState){setAdminButton(b,b.dataset.adminState==="on");return;}
+  if(b.dataset.photoAdminState){setPhotoAdminButton(b.dataset.photoAdminState==="on");return;}
   if(b.dataset.keepLabel==="1")return;
   const raw=b.dataset.originalLabel||b.textContent.trim();
   if(!maps[raw])return;
@@ -737,21 +740,87 @@ async function saveCastleLayout1(){
 /* Viking team registration */
 function renderViking(){
  const root=$("#viking"),team=$("#vikingTeam"),count=$("#vikingCount"),list=$("#vikingTeams"),nick=$("#vikingNickname");
- if(team)team.innerHTML=Array.from({length:25},(_,i)=>'<option value="'+(i+1)+'">Team '+(i+1)+'</option>').join("");
+ if(team)team.innerHTML='<option value="">참가 팀</option>'+Array.from({length:25},(_,i)=>'<option value="'+(i+1)+'">Team '+(i+1)+'</option>').join("");
  if(nick){
   const selected=nick.value,names=[...new Set([...FIXED_NICKNAMES,...Object.values(vikingData.teams||{}).flat()])];
   nick.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
   if([...nick.options].some(o=>o.value===selected))nick.value=selected;
  }
  if(count)count.textContent=Object.values(vikingData.teams||{}).reduce((n,a)=>n+(a?.length||0),0)+" / 100";
- if(list)list.innerHTML=Array.from({length:25},(_,i)=>{const a=vikingData.teams?.[i+1]||[];return '<div class="viking-team"><h3>Team '+(i+1)+' ('+a.length+'/4)</h3>'+Array.from({length:4},(_,j)=>'<div class="viking-member">'+esc(a[j]||"—")+'</div>').join("")+'</div>';}).join("");
+ if(list)list.innerHTML=Array.from({length:25},(_,i)=>{
+  const teamNo=i+1,roster=vikingData.teams?.[teamNo]||[],photos=vikingPhotosByTeam[teamNo]||{};
+  const members=roster.length?roster.map(name=>{
+   const photo=photos[name],avatar=typeof photo==="string"&&photo.startsWith("data:image/")?'<img src="'+photo+'" alt="">':'<span class="viking-no-photo">?</span>';
+   const upload=vikingPhotoAdmin?'<button type="button" class="viking-photo-button" data-viking-photo="1" data-team="'+teamNo+'" data-nick="'+esc(name)+'">📷</button>':"";
+   return '<div class="viking-member"><span class="viking-avatar">'+avatar+'</span><span class="viking-member-name">'+esc(name)+'</span>'+upload+'</div>';
+  }).join(""):'<div class="viking-empty">—</div>';
+  return '<div class="viking-team"><h3>🛡️ Team '+teamNo+' <small>('+roster.length+'/4)</small></h3>'+members+'</div>';
+ }).join("");
+ const photoButton=$("#vikingPhotoAdminBtn",root);
+ if(photoButton){photoButton.dataset.photoAdminState=vikingPhotoAdmin?"on":"off";photoButton.textContent=(PHOTO_ADMIN_LABELS[currentLang]||PHOTO_ADMIN_LABELS.ko)[vikingPhotoAdmin?1:0];}
+ $$("#vikingTeams [data-viking-photo]").forEach(button=>button.addEventListener("click",()=>triggerVikingPhoto(Number(button.dataset.team),button.dataset.nick)));
  translateStatic();
+}
+const PHOTO_ADMIN_LABELS={
+ ko:["🔐 사진 관리자","🔒 사진 수정 종료"],en:["🔐 Photo admin","🔒 Finish photo editing"],ja:["🔐 写真管理","🔒 写真編集終了"],zh:["🔐 照片管理","🔒 结束照片编辑"],de:["🔐 Fotoadmin","🔒 Fotobearbeitung beenden"],it:["🔐 Gestione foto","🔒 Termina modifica foto"],es:["🔐 Admin de fotos","🔒 Finalizar edición de fotos"],tr:["🔐 Foto yöneticisi","🔒 Foto düzenlemeyi bitir"]
+};
+function setPhotoAdminButton(on){
+ const b=$("#vikingPhotoAdminBtn");if(!b)return;
+ b.dataset.photoAdminState=on?"on":"off";
+ b.textContent=(PHOTO_ADMIN_LABELS[currentLang]||PHOTO_ADMIN_LABELS.ko)[on?1:0];
+}
+async function loadVikingPhotos(){
+ const entries=await Promise.all(Array.from({length:25},async(_,i)=>{
+  const teamNo=i+1;
+  try{
+   let snap=await getDoc(doc(db,"siteData","rebuild_viking_photos_team_"+teamNo));
+   if(!snap.exists())snap=await getDoc(doc(db,"siteData","viking_photos_team_"+teamNo));
+   return [teamNo,snap.exists()&&snap.data()?.photos&&typeof snap.data().photos==="object"?snap.data().photos:{}];
+  }catch(error){console.warn("Viking photo read",teamNo,error);return [teamNo,{}];}
+ }));
+ vikingPhotosByTeam=Object.fromEntries(entries);
+}
+async function toggleVikingPhotoAdmin(){
+ if(!vikingPhotoAdmin&&!await ensureGoogleAdmin())return;
+ vikingPhotoAdmin=!vikingPhotoAdmin;setPhotoAdminButton(vikingPhotoAdmin);renderViking();
+}
+async function triggerVikingPhoto(teamNo,nickname){
+ if(!vikingPhotoAdmin||!await ensureGoogleAdmin())return;
+ const input=document.createElement("input");input.type="file";input.accept="image/*";
+ input.addEventListener("change",async()=>{
+  const file=input.files?.[0];if(!file)return;
+  if(!file.type.startsWith("image/")){alert("이미지 파일만 선택할 수 있습니다.");return;}
+  if(file.size>12*1024*1024){alert("사진은 12MB 이하로 선택해 주세요.");return;}
+  try{
+   setMsg("vikingMsg",nickname+" 사진을 처리하는 중입니다.");
+   const dataUrl=await new Promise((resolve,reject)=>{
+    const reader=new FileReader();reader.onerror=reject;
+    reader.onload=()=>{
+     const image=new Image();image.onerror=reject;
+     image.onload=()=>{
+      const canvas=document.createElement("canvas");canvas.width=128;canvas.height=128;
+      const side=Math.min(image.width,image.height),sx=(image.width-side)/2,sy=(image.height-side)/2;
+      const ctx=canvas.getContext("2d");ctx.drawImage(image,sx,sy,side,side,0,0,128,128);
+      resolve(canvas.toDataURL("image/jpeg",0.72));
+     };
+     image.src=String(reader.result);
+    };
+    reader.readAsDataURL(file);
+   });
+   if(dataUrl.length>180000)throw new Error("압축된 사진이 너무 큽니다.");
+   await setDoc(doc(db,"siteData","rebuild_viking_photos_team_"+teamNo),{photos:{[nickname]:dataUrl},updatedAt:Date.now()},{merge:true});
+   vikingPhotosByTeam[teamNo]=vikingPhotosByTeam[teamNo]||{};vikingPhotosByTeam[teamNo][nickname]=dataUrl;
+   setMsg("vikingMsg",message("saved"));renderViking();
+  }catch(error){console.error("Viking photo save",error);setMsg("vikingMsg",message("failed"));}
+ });
+ input.click();
 }
 function toggleVikingCustomNick(){const sel=$("#vikingNickname"),custom=$("#vikingCustomNickname");if(!sel||!custom)return;custom.style.display=sel.value==="__custom__"?"block":"none";}
 function getVikingSelectedNick(){return $("#vikingNickname")?.value==="__custom__"?($("#vikingCustomNickname")?.value||"").trim():($("#vikingNickname")?.value||"").trim();}
 async function loadViking(){
  const r=await loadData("viking",vikingData);
  if(r.data.teams)vikingData={...vikingData,...r.data,teams:{...vikingData.teams,...r.data.teams}};
+ await loadVikingPhotos();
  renderViking();setMsg("vikingMsg",r.source==="unavailable"?message("fallback"):message("load"));
 }
 async function saveViking(){try{vikingData=await saveCloud("viking",vikingData);renderViking();setMsg("vikingMsg",message("saved"));return true;}catch(e){console.error(e);setMsg("vikingMsg",message("failed"));return false;}}
@@ -807,7 +876,7 @@ Object.assign(window,{
  updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
  loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,
  loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!FIXED_LEADERS.includes(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
- toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
+ toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,toggleVikingPhotoAdmin,triggerVikingPhoto,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
 });
 
 function boot(){
