@@ -834,7 +834,7 @@ function renderCastleWar(){
  const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+castleWarSelect(name)+'</select>':castleMemberCard(name,castleParticipantMeta(name));
  const leaderCell=(key)=>adminModes.castlewar1?'<select data-war-leader="'+key+'">'+castleWarSelect(castleWarData.warLeaders[key]||"")+'</select>':castleMemberCard(castleWarData.warLeaders[key]||"",castleCardText("leader"));
  const renderAttack=([key,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b>'+leaderCell(key)+'</div>'+Array.from({length:10},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
- const renderTurret=([key,leader,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>'+esc(castleCardText("leader"))+'</b>'+castleMemberCard(leader,castleCardText("leader"))+'</div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
+ const renderTurret=([key,leader,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>'+esc(castleCardText("leader"))+'</b>'+castleMemberCard(leader,castleCardText("leader"))+'</div>'+Array.from({length:10},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
  if(attack)attack.innerHTML=groups.map(renderAttack).join("");
  if(turrets)turrets.innerHTML=turretGroups.map(renderTurret).join("");
  const waiting=$("#ncWarWaiting",root);
