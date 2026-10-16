@@ -311,7 +311,7 @@ function currentInputs(root){const out={};$$("input,textarea,select",root).forEa
 function fillInputs(root,values){for(const [id,value] of Object.entries(values||{})){const el=$("#"+CSS.escape(id),root);if(el&&"value" in el)el.value=value??"";}}
 function toggleButtonsForAdmin(root,on,buttonId,saveId){
  const b=buttonId?$("#"+buttonId,root):null,s=saveId?$("#"+saveId,root):null;
- if(b)b.textContent=on?"🔒 수정 종료":"🔐 관리자 수정";
+ setAdminButton(b,on);
  if(s)s.hidden=!on;
  root.classList.toggle("editing",on);
 }
@@ -366,7 +366,7 @@ async function toggleHomeAdmin(){
  const view=$("#homeView",root),edit=$("#homeEdit",root),button=$("#homeAdminBtn",root);
  if(view)view.style.display=adminModes.home?"none":"grid";
  if(edit)edit.style.display=adminModes.home?"grid":"none";
- if(button)button.textContent=adminModes.home?"🔒 수정 종료":"🔐 관리자 수정";
+ setAdminButton(button,adminModes.home);
 }
 
 /* Notices: Korean source and prewritten translations. */
@@ -384,7 +384,7 @@ function renderNotices(){
   if(edit){edit.value=noticeData[id]||NOTICE_DEFAULTS[id];edit.disabled=!noticeAdmin;}
  }
  const admin=$("#notice-admin",root),save=$("#notice-save",root);
- if(admin)admin.textContent=noticeAdmin?"🔒 수정 종료":"🔐 관리자 수정";
+ setAdminButton(admin,noticeAdmin);
  if(save)save.hidden=!noticeAdmin;
 }
 async function loadNotices(){
@@ -437,7 +437,7 @@ async function toggleTeamsAdmin(){
  adminModes.teams=!adminModes.teams;
  setTeamsInputsEnabled(adminModes.teams);
  const b=$("#teamsAdminBtn",root),save=$("#teamsSaveBtn",root);
- if(b)b.textContent=adminModes.teams?"🔒 수정 종료":"🔐 관리자 수정";
+ setAdminButton(b,adminModes.teams);
  if(save)save.style.display=adminModes.teams?"inline-flex":"none";
 }
 async function saveAllTeams(){
@@ -470,7 +470,7 @@ async function toggleAllianceAdmin(){
  if(view)view.style.display=adminModes.alliance?"none":"block";
  if(edit)edit.style.display=adminModes.alliance?"block":"none";
  setInputsEnabled(root,adminModes.alliance);
- if(b)b.textContent=adminModes.alliance?"🔒 수정 종료":"🔐 관리자 수정";
+ setAdminButton(b,adminModes.alliance);
 }
 async function saveAlliance(){
  if(!adminModes.alliance){alert(message("admin"));return;}
@@ -512,7 +512,7 @@ function renderSeating(){
  const wrap=$(".seating-3col-wrap",root);if(!wrap)return;
  wrap.innerHTML=seatingData.rows.map((row,ri)=>'<div class="seating-row-group"><h3 class="seating-column-title">'+row.row+'</h3><div class="seating-split-pair"><section class="seating-split-card"><h4>Bear1</h4>'+row.left.map((name,i)=>'<div class="seating-row"><span>'+(i+1)+'</span><span>'+esc(name||"—")+'</span></div>').join("")+'</section><section class="seating-split-card"><h4>Bear2</h4>'+row.right.map((name,i)=>'<div class="seating-row"><span>'+(i+1)+'</span><span>'+esc(name||"—")+'</span></div>').join("")+'</section></div></div>').join("");
  const panel=$("#seatingEdit",root);if(panel)panel.style.display=adminModes.seating?"block":"none";
- const button=$("#seatingAdminBtn",root);if(button)button.textContent=adminModes.seating?"🔒 수정 종료":"🔐 관리자 수정";
+ const button=$("#seatingAdminBtn",root);setAdminButton(button,adminModes.seating);
 }
 function renderSeatingAdmin(){
  const root=$("#seating"),grid=$("#seatingEditGrid",root);if(!grid)return;
@@ -648,14 +648,14 @@ async function toggleNewCastleAdmin(){
   if(!adminModes.battleJoin&&!await ensureGoogleAdmin())return;
   adminModes.battleJoin=!adminModes.battleJoin;
   const b=$("#ncAdminBtn"),del=$("#ncDeleteAllBtn");
-  if(b)b.textContent=adminModes.battleJoin?"🔒 수정 종료":"🔐 관리자 수정";
+  setAdminButton(b,adminModes.battleJoin);
   if(del)del.style.display=adminModes.battleJoin?"inline-flex":"none";
   return;
  }
  if(!adminModes.castlewar1&&!await ensureGoogleAdmin())return;
  adminModes.castlewar1=!adminModes.castlewar1;
  const b=$("[data-newcastle='admin']",$("#castlewar1"))[0];
- if(b)b.textContent=adminModes.castlewar1?"🔒 수정 종료":"🔐 관리자 수정";
+ setAdminButton(b,adminModes.castlewar1);
  renderCastleWar();
 }
 function castleParticipantMeta(name){const p=participants.find(x=>x.nickname===name);if(!name)return "";if(FIXED_LEADERS.includes(name))return "S · 집결장";if(!p)return "";return (p.tier||"—")+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X");}
@@ -719,7 +719,7 @@ function renderCastleLayout(){
   return '<div class="castle-layout1-slot"><span class="castle-layout1-number">'+(i+1)+'</span><div class="castle-layout1-content">'+inner+'</div></div>';
  }).join("");
  const b=$("#castleLayout1AdminBtn",root),save=$("#castleLayout1SaveBtn",root);
- if(b)b.textContent=adminModes.castlelayout1?"🔒 수정 종료":"🔐 관리자 수정";
+ setAdminButton(b,adminModes.castlelayout1);
  if(save)save.style.display=adminModes.castlelayout1?"inline-flex":"none";
  translateStatic();
 }
