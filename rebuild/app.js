@@ -460,6 +460,9 @@ function renderParticipants(){
  }
  const list=$("#ncParticipants",root);
  if(list)list.innerHTML=participants.map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(p.status)+ '</span><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">등록된 참전 정보가 없습니다.</p>';
+ const waiting=$("#ncWaiting",root);
+ if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
+
 }
 async function loadNewCastleFeatures(){
  const root=$("#"+(activePage==="battleJoin"?"battleJoin":"castlewar1"));
