@@ -1,20 +1,23 @@
-# KOR1816 rebuild (work in progress)
+# KOR1816 rebuild — work in progress
 
-This directory is an isolated development scaffold on branch `rebuild/full-rebuild-2026-10-17`. It is not the production site and is not ready for deployment.
+Development branch: `rebuild/full-rebuild-2026-10-17`
 
-## Confirmed scope
-- Ten buttons, in this order: 홈, 공지, 성검쟁탈, 3대연맹전, 캐슬참전, 캐슬전, 캐슬배치, 자리배치, 바이킹, 영광의순간들.
-- Keep the content and behavior of the reference site's `battleJoin`, `castlewar1`, and `castlelayout1` pages; remove only the visible “1” suffix from the last two titles. Do not import the old reference pages named simply `castlewar` and `castle`.
-- Eight languages: Korean, English, Japanese, Chinese, German, Italian, Spanish, Turkish. The language selection persists across routes.
-- Notice content is authored in Korean; prewritten translations are shown by language selection.
-- Preserve Google administrator sign-in and the current authorized-admin list after verifying the existing implementation.
-- Common edit/save/refresh controls; page data is independent. Cloud saves must be verified after refresh and from a second device.
-- Use image URLs from `KOR1816/1816KOR` where possible; no duplicate upload required for existing images.
-- Do not deploy or modify production `main` until the owner approves.
+This folder is an isolated development scaffold. It is not deployed and is not yet a finished replacement.
 
-## Required before deployment
-- Port all page content and page-specific interactions.
-- Confirm Firebase document mapping and isolate Castle War / Castle Layout / Castle Participation writes.
-- Verify authentication, save errors, and server-vs-local behavior.
-- Test direct URLs, refresh, browser back/forward, all eight languages, desktop/mobile layouts, and all ten buttons.
-- Inspect GitHub Actions / Pages build status and compare with the production backup.
+## Current implementation
+- Fresh responsive HTML/CSS/JavaScript rather than reusing the old page scripts.
+- Ten navigation buttons in the requested order, with a single active-page highlight and direct hash routes.
+- Eight language choices; language choice is stored locally and carried across navigation.
+- Existing public images are referenced from the `KOR1816/1816KOR` repository, avoiding duplicate uploads.
+- Existing Firestore records are read as migration sources only. New saves go to separate `rebuild_*` or `*_rebuild_v1` records, so edits from this new build do not overwrite the reference site's records.
+- Castle Participation, Castle War, and Castle Layout use separate new records; Castle War and Layout may read the old roster/layout as initial content, but their writes are independent.
+- Notice content is stored as Korean source with prewritten translations selected by language.
+- Google administrator sign-in uses the current site's approved administrator email list.
+
+## Not complete / needs testing
+- Some page controls and translations still need a careful visual and behavior review.
+- Firebase authorization rules must be tested in a real browser, including admin sign-in and participant registration.
+- Test all saves against the shared server, then refresh and verify on a second device.
+- Check all 10 routes, browser back/forward, mobile horizontal scrolling, and all 8 languages.
+- Confirm no existing record in the reference site was modified by this rebuild.
+- Do not replace production `index.html` or deploy until tests pass and the site owner approves.
