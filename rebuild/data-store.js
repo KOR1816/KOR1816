@@ -4,8 +4,8 @@ export const PAGE_DOCS = {
   home: "home", notices: "notices", teams: "teams", alliance: "alliance",
   seating: "seating_v4", viking: "viking_v1", glory: "glory_records",
   battleJoin: "castle_participation_rebuild_v1",
-  castlewar: "castlewar_rebuild_v1",
-  castlelayout: "castle_layout1_v1"
+  castlewar1: "castlewar_rebuild_v1",
+  castlelayout1: "castle_layout1_v1"
 };
 const localKey = id => "kor1816_rebuild_cache_v1:" + id;
 const copy = value => JSON.parse(JSON.stringify(value));
