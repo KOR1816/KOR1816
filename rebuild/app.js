@@ -290,7 +290,10 @@ async function toggleHomeAdmin(){
 
 /* Notices: Korean source and prewritten translations. */
 let noticeAdmin=false;
-function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"";}
+function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData.translations?.[currentLang]?.[key]||noticeData[key]||"";}
+function koreanOnly(value){
+ return String(value??"").split("\n").filter(line=>/[가-힣]/.test(line)||!/[A-Za-z]{3,}/.test(line)).join("\n").trim();
+}
 function renderNotices(){
  const root=$("#notices");if(!root)return;
  const ids=Object.keys(NOTICE_DEFAULTS);
@@ -311,7 +314,9 @@ async function loadNotices(){
    const saved=cloud.noticesV1;
    const translated={};
    for(const lang of LANGS.slice(1))translated[lang]={...(NOTICE_TRANSLATIONS[lang]||{}),...(saved.translations?.[lang]||{})};
-   noticeData={...NOTICE_DEFAULTS,...saved,translations:{...translated,...(saved.translations||{})}};
+   const koreanSaved={};
+   for(const key of Object.keys(NOTICE_DEFAULTS))koreanSaved[key]=koreanOnly(saved[key]||NOTICE_DEFAULTS[key]);
+   noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,updatedAt:saved.updatedAt||cloud.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
   renderNotices();setMsg("notice-status",message("load"));
  }catch(e){console.error(e);renderNotices();setMsg("notice-status",message("fallback"));}
@@ -557,7 +562,7 @@ async function saveNewCastleFeatures(){
 async function loadCastleLayout1(){
  try{
   if(!participants.length){
-   const legacyRoster=await getDoc(legacyDoc("castlelayout1"));
+   const legacyRoster=await getDoc(doc(db,"siteData","castle_features_v1"));
    if(legacyRoster.exists())participants=normalizeParticipants(legacyRoster.data());
   }
   const own=await readCloud("castlelayout1");
