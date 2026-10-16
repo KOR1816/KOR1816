@@ -31,6 +31,9 @@ This folder is an isolated development scaffold. It is not deployed and is not y
 - Fixed three selector-iteration errors that could break button translation and Castle War saves; these now use `querySelectorAll` via the shared `$$` helper.
 - Standardized all five Castle War columns to render ten numbered slots each, including both turret columns.
 - Preserved English-only lines in Korean notice text instead of silently filtering them during load.
+- Added an admin-only notice translation editor: select Korean, English, Japanese, Chinese, German, Italian, Spanish, or Turkish, edit the notice fields, and save the prepared translations without a runtime translation service.
+- Notice loading now accepts both the new `noticesV1` envelope and compatible legacy documents with direct notice fields.
+- Captured the Castle Participation/Castle War route before async reads to prevent quick navigation from mixing the two page loads.
 - Re-ran static syntax checks for `app.js` and `page-content.js`; both parse successfully, all ten route IDs have templates, new document IDs are unique, and the selector-iteration scan is clean.
 - Verified the image filenames referenced by the rebuild exist in the source repository.
 - Confirmed all rebuild writes target separate rebuild documents; legacy documents are read-only migration sources.
