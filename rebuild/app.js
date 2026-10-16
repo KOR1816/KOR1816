@@ -636,23 +636,22 @@ async function submitNewCastleParticipation(){
  if(!nickname){setMsg("ncJoinMsg","닉네임을 선택하거나 입력하세요.");return;}
  if(nickname.length>80){setMsg("ncJoinMsg","닉네임은 80자 이내로 입력하세요.");return;}
  const item={nickname,status:$("#ncStatus",root)?.value||"yes",tier:$("#ncTier",root)?.value||"A",salo:$("#ncSalo",root)?.value==="yes",hilde:$("#ncHilde",root)?.value==="yes",updatedAt:Date.now()};
- const idx=participants.findIndex(p=>p.nickname.toLowerCase()===nickname.toLowerCase());
- if(idx>=0)participants[idx]=item;else participants.push(item);
- try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ const next=participants.slice(),idx=next.findIndex(p=>p.nickname.toLowerCase()===nickname.toLowerCase());
+ if(idx>=0)next[idx]=item;else next.push(item);
+ try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function cancelNewCastleParticipation(){
  const root=$("#battleJoin"),sel=$("#ncNick",root),nickname=sel?.value||"";
  if(!nickname||nickname==="__custom__"){setMsg("ncJoinMsg","삭제할 닉네임을 선택하세요.");return;}
  if(!confirm(nickname+"님의 참전 정보를 취소할까요?"))return;
- participants=participants.filter(p=>p.nickname.toLowerCase()!==nickname.toLowerCase());
- try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ const next=participants.filter(p=>p.nickname.toLowerCase()!==nickname.toLowerCase());
+ try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function deleteAllNewCastleParticipants(){
  if(!adminModes.battleJoin||!confirm("참전 등록 명단을 모두 삭제할까요?"))return;
- participants=[];
- try{await saveCloud("battleJoin",{participants});renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ try{await saveCloud("battleJoin",{participants:[]});participants=[];renderParticipants();setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function toggleNewCastleAdmin(){
@@ -891,14 +890,14 @@ async function saveRecord(){
  if(!adminModes.glory&&!await ensureGoogleAdmin())return;adminModes.glory=true;
  const date=$("#glory-date")?.value,opponent=Number($("#glory-opponent")?.value);
  if(!date||!opponent){setMsg("glory-editor-msg","날짜와 상대 왕국을 입력하세요.");return;}
- gloryRecords.push({date,opponent,prep:$("#glory-prep")?.value||"패",castle:$("#glory-castle")?.value||"패",memo:$("#glory-memo")?.value.trim()||""});
- try{await saveCloud("glory",{records:gloryRecords});renderRecords();closeEditor();setMsg("glory-msg",message("saved"));}
+ const next=[...gloryRecords,{date,opponent,prep:$("#glory-prep")?.value||"패",castle:$("#glory-castle")?.value||"패",memo:$("#glory-memo")?.value.trim()||""}];
+ try{await saveCloud("glory",{records:next});gloryRecords=next;renderRecords();closeEditor();setMsg("glory-msg",message("saved"));}
  catch(e){console.error(e);setMsg("glory-msg",message("failed"));}
 }
 async function deleteRecord(index){
  if(!adminModes.glory||!confirm("이 기록을 삭제할까요?"))return;
- gloryRecords.splice(index,1);
- try{await saveCloud("glory",{records:gloryRecords});renderRecords();setMsg("glory-msg",message("saved"));}
+ const next=gloryRecords.filter((_,i)=>i!==index);
+ try{await saveCloud("glory",{records:next});gloryRecords=next;renderRecords();setMsg("glory-msg",message("saved"));}
  catch(e){console.error(e);setMsg("glory-msg",message("failed"));}
 }
 
