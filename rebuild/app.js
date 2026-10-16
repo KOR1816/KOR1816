@@ -249,6 +249,14 @@ function latestBanner(id){
  };
  return (labels[id]||[message("load")])[langIndex()];
 }
+const ADMIN_BUTTON_LABELS={
+ ko:["🔐 관리자 수정","🔒 수정 종료"],en:["🔐 Admin edit","🔒 Finish editing"],ja:["🔐 管理者編集","🔒 編集終了"],zh:["🔐 管理员编辑","🔒 结束编辑"],de:["🔐 Admin-Bearbeitung","🔒 Bearbeitung beenden"],it:["🔐 Modifica admin","🔒 Termina modifica"],es:["🔐 Edición admin","🔒 Finalizar edición"],tr:["🔐 Yönetici düzenleme","🔒 Düzenlemeyi bitir"]
+};
+function setAdminButton(button,on){
+ if(!button)return;
+ button.dataset.adminState=on?"on":"off";
+ button.textContent=(ADMIN_BUTTON_LABELS[currentLang]||ADMIN_BUTTON_LABELS.ko)[on?1:0];
+}
 function translateCommonControls(){
  const maps={
   "🔄 새로고침":["🔄 새로고침","🔄 Refresh","🔄 更新","🔄 刷新","🔄 Aktualisieren","🔄 Aggiorna","🔄 Actualizar","🔄 Yenile"],
@@ -258,7 +266,8 @@ function translateCommonControls(){
   "➕ 기록 추가":["➕ 기록 추가","➕ Add record","➕ 記録を追加","➕ 添加记录","➕ Eintrag hinzufügen","➕ Aggiungi record","➕ Añadir registro","➕ Kayıt ekle"],
   "취소":["취소","Cancel","キャンセル","取消","Abbrechen","Annulla","Cancelar","İptal"]
  };
- $$("button").forEach(b=>{
+ $("button").forEach(b=>{
+  if(b.dataset.adminState){setAdminButton(b,b.dataset.adminState==="on");return;}
   if(b.dataset.keepLabel==="1")return;
   const raw=b.dataset.originalLabel||b.textContent.trim();
   if(!maps[raw])return;
