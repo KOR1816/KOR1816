@@ -22,11 +22,12 @@ const PAGE_LABELS = {
   glory:["영광의순간들","Moments of Glory","栄光の瞬間","荣耀时刻","Ruhmreiche Momente","Momenti di Gloria","Momentos de Gloria","Zafer Anları"]
 };
 const DOCS = {
-  home:"home", notices:"notices", teams:"teams", alliance:"alliance",
+  home:"rebuild_home_v1", notices:"rebuild_notices_v1", teams:"rebuild_teams_v1", alliance:"rebuild_alliance_v1",
   battleJoin:"castle_participation_rebuild_v1", castlewar1:"castlewar_rebuild_v1",
-  castlelayout1:"castle_layout1_v1", seating:"seating_v4", viking:"viking_v1", glory:"glory_records"
+  castlelayout1:"castle_layout_rebuild_v1", seating:"rebuild_seating_v1", viking:"rebuild_viking_v1", glory:"rebuild_glory_records_v1"
 };
 const LEGACY = {
+  home:"home", notices:"notices", teams:"teams", alliance:"alliance", seating:"seating_v4", viking:"viking_v1", glory:"glory_records",
   battleJoin:"castle_features_v1", castlewar1:"castle_features_v1", castlelayout1:"castle_layout1_v1"
 };
 const FIXED_LEADERS = ["Nemesis","Pham","샌디에이고","Jinno","Leo li","SsungBi"];
@@ -156,7 +157,15 @@ async function saveCloud(id,data){
 async function loadData(id, defaults){
  try{
   const data=await readCloud(id);
-  return {data:data?{...clone(defaults),...data}:clone(defaults),source:data?"cloud":"empty"};
+  if(data)return {data:{...clone(defaults),...data},source:"cloud"};
+  if(LEGACY[id]){
+   const legacy=await getDoc(legacyDoc(id));
+   if(legacy.exists()){
+    const old=legacy.data()||{};
+    return {data:{...clone(defaults),...old},source:"legacy-read-only"};
+   }
+  }
+  return {data:clone(defaults),source:"empty"};
  }catch(error){console.error("Cloud load "+id,error);return {data:clone(defaults),source:"unavailable",error};}
 }
 function makeNav(){
@@ -309,7 +318,8 @@ function renderNotices(){
 async function loadNotices(){
  const root=$("#notices");if(!root)return;
  try{
-  const cloud=await readCloud("notices");
+  let cloud=await readCloud("notices");
+  if(!cloud){const legacy=await getDoc(legacyDoc("notices"));cloud=legacy.exists()?legacy.data():null;}
   if(cloud?.noticesV1){
    const saved=cloud.noticesV1;
    const translated={};
