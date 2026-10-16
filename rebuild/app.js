@@ -705,10 +705,16 @@ async function saveCastleLayout1(){
 
 /* Viking team registration */
 function renderViking(){
- const root=$("#viking"),team=$("#vikingTeam"),count=$("#vikingCount"),list=$("#vikingTeams");
+ const root=$("#viking"),team=$("#vikingTeam"),count=$("#vikingCount"),list=$("#vikingTeams"),nick=$("#vikingNickname");
  if(team)team.innerHTML=Array.from({length:25},(_,i)=>'<option value="'+(i+1)+'">Team '+(i+1)+'</option>').join("");
+ if(nick){
+  const selected=nick.value,names=[...new Set([...FIXED_NICKNAMES,...Object.values(vikingData.teams||{}).flat()])];
+  nick.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
+  if([...nick.options].some(o=>o.value===selected))nick.value=selected;
+ }
  if(count)count.textContent=Object.values(vikingData.teams||{}).reduce((n,a)=>n+(a?.length||0),0)+" / 100";
  if(list)list.innerHTML=Array.from({length:25},(_,i)=>{const a=vikingData.teams?.[i+1]||[];return '<div class="viking-team"><h3>Team '+(i+1)+' ('+a.length+'/4)</h3>'+Array.from({length:4},(_,j)=>'<div class="viking-member">'+esc(a[j]||"—")+'</div>').join("")+'</div>';}).join("");
+ translateStatic();
 }
 function toggleVikingCustomNick(){const sel=$("#vikingNickname"),custom=$("#vikingCustomNickname");if(!sel||!custom)return;custom.style.display=sel.value==="__custom__"?"block":"none";}
 function getVikingSelectedNick(){return $("#vikingNickname")?.value==="__custom__"?($("#vikingCustomNickname")?.value||"").trim():($("#vikingNickname")?.value||"").trim();}
