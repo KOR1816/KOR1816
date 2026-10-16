@@ -738,6 +738,21 @@ async function saveCastleLayout1(){
 }
 
 /* Viking team registration */
+function getVikingSprite(nickname){
+ const exact=String(nickname||"").normalize("NFKC").trim().toLowerCase();
+ const rank=FIXED_NICKNAMES.findIndex(name=>String(name||"").normalize("NFKC").trim().toLowerCase()===exact)+1;
+ if(rank<1||rank>99)return null;
+ const tops={2:[134,210,286,363,440,516],3:[134,210,286,363,440,516],4:[143,219,294,370,446,522],5:[143,219,295,371,447,523],6:[136,212,288,364,441,517],7:[143,219,295,371,447,523],8:[143,219,295,371,447,523],9:[143,219,295,371,447,523],10:[143,219,295,371,447,523],11:[143,219,295,371,447,523],12:[143,219,295,371,447,523],13:[143,219,295,371,447,523],14:[143,219,295,371,447,523],15:[143,219,295,371,447,523],16:[136,212,288,364,441,517],17:[143,219,295,371,447,523]};
+ let slide,row,top;
+ if(rank<=96){slide=Math.floor((rank-1)/6)+2;row=(rank-1)%6;top=tops[slide]?.[row];}
+ else{slide=18;row=rank-94;top=[166,242,319,395,471,548][row];}
+ return top?{slide,top}:null;
+}
+function vikingSpriteStyle(nickname){
+ const p=getVikingSprite(nickname);if(!p)return "";
+ const scale=32/72;
+ return "background-image:url('https://raw.githubusercontent.com/KOR1816/1816KOR/main/Slide"+p.slide+".jpg');background-repeat:no-repeat;background-size:"+(1280*scale)+"px "+(720*scale)+"px;background-position:-"+(70*scale)+"px -"+Math.round((p.top-4)*scale)+"px;";
+}
 function renderViking(){
  const root=$("#viking"),team=$("#vikingTeam"),count=$("#vikingCount"),list=$("#vikingTeams"),nick=$("#vikingNickname");
  if(team)team.innerHTML='<option value="">참가 팀</option>'+Array.from({length:25},(_,i)=>'<option value="'+(i+1)+'">Team '+(i+1)+'</option>').join("");
@@ -750,7 +765,7 @@ function renderViking(){
  if(list)list.innerHTML=Array.from({length:25},(_,i)=>{
   const teamNo=i+1,roster=vikingData.teams?.[teamNo]||[],photos=vikingPhotosByTeam[teamNo]||{};
   const members=roster.length?roster.map(name=>{
-   const photo=photos[name],avatar=typeof photo==="string"&&photo.startsWith("data:image/")?'<img src="'+photo+'" alt="">':'<span class="viking-no-photo">?</span>';
+   const photo=photos[name],sprite=vikingSpriteStyle(name),avatar=typeof photo==="string"&&photo.startsWith("data:image/")?'<img src="'+photo+'" alt="">':sprite?'<span class="viking-sprite" style="'+sprite+'"></span>':'<span class="viking-no-photo">?</span>';
    const upload=vikingPhotoAdmin?'<button type="button" class="viking-photo-button" data-viking-photo="1" data-team="'+teamNo+'" data-nick="'+esc(name)+'">📷</button>':"";
    return '<div class="viking-member"><span class="viking-avatar">'+avatar+'</span><span class="viking-member-name">'+esc(name)+'</span>'+upload+'</div>';
   }).join(""):'<div class="viking-empty">—</div>';
