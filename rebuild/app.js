@@ -270,6 +270,10 @@ function setAdminButton(button,on){
  button.textContent=(ADMIN_BUTTON_LABELS[currentLang]||ADMIN_BUTTON_LABELS.ko)[on?1:0];
 }
 const EXTRA_BUTTON_TRANSLATIONS={"💾 홈 저장":["💾 홈 저장","💾 Save Home","💾 ホームを保存","💾 保存主页","💾 Startseite speichern","💾 Salva Home","💾 Guardar inicio","💾 Ana sayfayı kaydet"],"💾 전체 저장":["💾 전체 저장","💾 Save All","💾 すべて保存","💾 全部保存","💾 Alles speichern","💾 Salva tutto","💾 Guardar todo","💾 Tümünü kaydet"],"💾 3대연맹전 저장":["💾 3대연맹전 저장","💾 Save Alliances War","💾 三大連盟戦を保存","💾 保存三大联盟战","💾 Krieg der drei Allianzen speichern","💾 Salva Guerra delle Tre Alleanze","💾 Guardar Guerra de las Tres Alianzas","💾 Üç İttifak Savaşı'nı kaydet"],"💾 자리배치 저장":["💾 자리배치 저장","💾 Save Seating","💾 座席配置を保存","💾 保存座位安排","💾 Sitzordnung speichern","💾 Salva disposizione","💾 Guardar distribución","💾 Yerleşimi kaydet"],"🗑️ 전체삭제":["🗑️ 전체삭제","🗑️ Delete All","🗑️ すべて削除","🗑️ 全部删除","🗑️ Alles löschen","🗑️ Elimina tutto","🗑️ Eliminar todo","🗑️ Tümünü sil"],"🔄 대체자":["🔄 대체자","🔄 Substitute","🔄 代替メンバー","🔄 替补","🔄 Ersatz","🔄 Sostituto","🔄 Sustituto","🔄 Yedek"],"참전 정보 등록 / 수정":["참전 정보 등록 / 수정","Register / Update Participation","参加情報を登録／更新","登记／更新参战信息","Teilnahme registrieren / aktualisieren","Registra / aggiorna partecipazione","Registrar / actualizar participación","Katılımı kaydet / güncelle"]};
+Object.assign(EXTRA_BUTTON_TRANSLATIONS,{
+ "새로고침":["새로고침","Refresh","更新","刷新","Aktualisieren","Aggiorna","Actualizar","Yenile"],
+ "💥 개돌조":["💥 개돌조","💥 Charge Squad","💥 突撃隊","💥 冲锋组","💥 Sturmtrupp","💥 Squadra d'assalto","💥 Escuadrón de asalto","💥 Hücum Ekibi"]
+});
 function translateCommonControls(){
  const maps={
   "🔄 새로고침":["🔄 새로고침","🔄 Refresh","🔄 更新","🔄 刷新","🔄 Aktualisieren","🔄 Aggiorna","🔄 Actualizar","🔄 Yenile"],
