@@ -648,7 +648,7 @@ function renderCastleWar(){
  const turretGroups=[["north","Leo li","북측포탑"],["west","Jinno","서측포탑"],["reserve","SsungBi","포탑 (예비)"]];
  const names=[...new Set([...FIXED_NICKNAMES,...participants.map(p=>p.nickname)])];
  const optionList=(value)=>'<option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(n)+'</option>').join("");
- const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+optionList(name)+'</select>':'<div class="war-name">'+esc(name||"—")+'</div>';
+ const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+optionList(name)+'</select>':'<div class="war-name"><strong>'+esc(name||"—")+'</strong><small>'+esc(castleParticipantMeta(name))+'</small></div>';
  const leaderCell=(key)=>adminModes.castlewar1?'<select data-war-leader="'+key+'">'+optionList(castleWarData.warLeaders[key]||"")+'</select>':'<div class="war-name">'+esc(castleWarData.warLeaders[key]||"—")+'</div>';
  const renderAttack=([key,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b>'+leaderCell(key)+'</div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
  const renderTurret=([key,leader,title])=>'<section class="war-column"><h3>'+title+'</h3><div class="war-leader-row"><b>집결장</b><div class="war-name">'+esc(leader)+'</div></div>'+Array.from({length:8},(_,i)=>'<label class="war-slot"><span>'+(i+1)+'</span>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</label>').join("")+'</section>';
