@@ -541,6 +541,10 @@ function renderCastleWar(){
  const renderColumn=([key,title,count])=>'<section class="war-column"><h3>'+title+'</h3>'+Array.from({length:count},(_,i)=>{const value=castleWarData.war[key]?.[i]||"";return '<label class="war-slot"><span>'+(i+1)+'</span><input '+(!adminModes.castlewar1?'disabled':'')+' data-war="'+key+'" data-index="'+i+'" value="'+esc(value)+'" maxlength="80"></label>';}).join("")+'</section>';
  if(attack)attack.innerHTML=config.slice(0,3).map(renderColumn).join("");
  if(turrets)turrets.innerHTML=config.slice(3).map(renderColumn).join("");
+ const waiting=$("#ncWarWaiting",root);
+ if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
+ const saveButton=$("[data-newcastle='save']",root)[0];
+ if(saveButton)saveButton.style.display=adminModes.castlewar1?"inline-flex":"none";
 }
 async function saveNewCastleFeatures(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
@@ -552,6 +556,10 @@ async function saveNewCastleFeatures(){
 /* Castle Layout — its own document; never writes to the war or participant record. */
 async function loadCastleLayout1(){
  try{
+  if(!participants.length){
+   const legacyRoster=await getDoc(legacyDoc("castlelayout1"));
+   if(legacyRoster.exists())participants=normalizeParticipants(legacyRoster.data());
+  }
   const own=await readCloud("castlelayout1");
   if(own&&Array.isArray(own.slots))castleLayoutData={slots:own.slots.slice(0,28),updatedAt:own.updatedAt||0};
   else{
