@@ -237,6 +237,18 @@ Object.assign(STATIC_TRANSLATIONS,{
  "집결원 공격":["집결원 공격","Rally Attack Members","集結攻撃メンバー","集结进攻成员","Angriffs-Sammelteilnehmer","Membri raduno attacco","Miembros de reunión de ataque","Toplanma saldırı üyeleri"],
  "집결원 수비":["집결원 수비","Rally Defense Members","集結防衛メンバー","集结防守成员","Verteidigungs-Sammelteilnehmer","Membri raduno difesa","Miembros de reunión de defensa","Toplanma savunma üyeleri"]
 });
+Object.assign(STATIC_TRANSLATIONS,{
+ "돌격조":["돌격조","Assault Squad","突撃隊","突击组","Sturmtrupp","Squadra d'assalto","Escuadrón de asalto","Hücum Ekibi"],
+ "개돌조":["개돌조","Charge Squad","突撃部隊","冲锋组","Angriffstrupp","Squadra d'attacco","Escuadrón de carga","Hücum Birliği"],
+ "마무리조":["마무리조","Finishing Squad","仕上げ隊","收尾组","Abschlusstrupp","Squadra finale","Escuadrón final","Son Vuruş Ekibi"],
+ "북측포탑":["북측포탑","North Turret","北側砲塔","北侧炮塔","Nordturm","Torre nord","Torreta norte","Kuzey Kulesi"],
+ "서측포탑":["서측포탑","West Turret","西側砲塔","西侧炮塔","Westturm","Torre ovest","Torreta oeste","Batı Kulesi"],
+ "대기 명단":["대기 명단","Waiting List","待機リスト","候补名单","Warteliste","Lista d'attesa","Lista de espera","Bekleme listesi"],
+ "등록된 참전 정보":["등록된 참전 정보","Registered Participants","登録済み参加情報","已登记参战信息","Registrierte Teilnehmer","Partecipanti registrati","Participantes registrados","Kayıtlı katılımcılar"],
+ "캐슬전 참가 상태":["캐슬전 참가 상태","Castle War Status","城戦参加状況","城战参战状态","Burgkriegsstatus","Stato partecipazione guerra","Estado de participación","Kale savaşı durumu"],
+ "닉네임":["닉네임","Nickname","ニックネーム","昵称","Spitzname","Nickname","Apodo","Takma ad"],
+ "병영 등급":["병영 등급","Barracks Tier","兵舎ランク","兵营等级","Kaserne-Stufe","Livello caserma","Nivel de cuartel","Kışla seviyesi"]
+});
 function translateStatic(){
  const root=$("#page-root");if(!root)return;
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
