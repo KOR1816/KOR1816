@@ -680,7 +680,7 @@ async function saveNewCastleFeatures(){
 /* Castle Layout — its own document; never writes to the war or participant record. */
 async function loadCastleLayout1(){
  try{
-  if(!participants.length)await loadParticipantRoster();
+  await loadParticipantRoster();
   const own=await readCloud("castlelayout1");
   if(own&&Array.isArray(own.slots))castleLayoutData={slots:own.slots.slice(0,28),updatedAt:own.updatedAt||0};
   else{
