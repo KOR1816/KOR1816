@@ -420,7 +420,8 @@ function setupTemplates(){
  if(n){
   $("#notice-refresh",n)?.addEventListener("click",loadNotices);
   $("#notice-admin",n)?.addEventListener("click",toggleNoticeAdmin);
-  $("#notice-save",n)?.addEventListener("click",saveNotices);\n  $("#notice-edit-language",n)?.addEventListener("change",e=>{captureNoticeEditor();noticeEditLang=LANGS.includes(e.target.value)?e.target.value:"ko";renderNotices();});
+  $("#notice-save",n)?.addEventListener("click",saveNotices);
+  $("#notice-edit-language",n)?.addEventListener("change",e=>{captureNoticeEditor();noticeEditLang=LANGS.includes(e.target.value)?e.target.value:"ko";renderNotices();});
  }
  // The source markup is content only; handlers below are shared, page-aware actions.
 }
@@ -738,7 +739,7 @@ function updateNewCastleJoinFields(){
  if(search&&sel?.value&&sel.value!=="__custom__")search.value=sel.value;
  if(box){box.hidden=true;box.style.display="none";}
  const special=FIXED_LEADERS.includes(sel?.value);
- $("[data-nc-optional]",root).forEach(el=>{el.style.display=special?"none":"";});
+ $$("[data-nc-optional]",root).forEach(el=>{el.style.display=special?"none":"";});
  const existing=participants.find(p=>p.nickname===sel?.value);
  if(existing){$("#ncStatus",root).value=existing.status;$("#ncTier",root).value=existing.tier;$("#ncSalo",root).value=existing.salo?"yes":"no";$("#ncHilde",root).value=existing.hilde?"yes":"no";}
 }
