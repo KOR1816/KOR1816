@@ -233,7 +233,7 @@ function translateStatic(){
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
  for(const node of nodes){
   const parent=node.parentElement;if(!parent)continue;
-  if(parent.closest("button,.content,.notice,.msg,.participant-line,.seating-row,.castle-layout1-content,.war-name,.viking-member,input,textarea,script,style"))continue;
+  if(parent.closest("button,.content,.notice,.msg,.participant-line,.seating-row,.castle-layout1-content,.layout-person,.war-name,.viking-member-name,.viking-member,input,textarea,script,style"))continue;
   if(!ORIGINAL_TEXT.has(node))ORIGINAL_TEXT.set(node,node.nodeValue);
   const original=ORIGINAL_TEXT.get(node),trim=original.trim();
   const translations=STATIC_TRANSLATIONS[trim];
