@@ -290,6 +290,17 @@ Object.assign(EXTRA_BUTTON_TRANSLATIONS,{
  "새로고침":["새로고침","Refresh","更新","刷新","Aktualisieren","Aggiorna","Actualizar","Yenile"],
  "💥 개돌조":["💥 개돌조","💥 Charge Squad","💥 突撃隊","💥 冲锋组","💥 Sturmtrupp","💥 Squadra d'assalto","💥 Escuadrón de asalto","💥 Hücum Ekibi"]
 });
+Object.assign(EXTRA_BUTTON_TRANSLATIONS,{
+ "🔐 사진 관리자":["🔐 사진 관리자","🔐 Photo Admin","🔐 写真管理","🔐 照片管理员","🔐 Fotoadmin","🔐 Gestione foto","🔐 Administración de fotos","🔐 Foto yöneticisi"]
+});
+Object.assign(STATIC_TRANSLATIONS,{
+ "A30　B30　C30 + 5명":["A30　B30　C30 + 5명","A30　B30　C30 + 5 members","A30　B30　C30 + 5人","A30　B30　C30 + 5人","A30　B30　C30 + 5 Mitglieder","A30　B30　C30 + 5 membri","A30　B30　C30 + 5 miembros","A30　B30　C30 + 5 üye"],
+ "A28　B28　C28 + 5명":["A28　B28　C28 + 5명","A28　B28　C28 + 5 members","A28　B28　C28 + 5人","A28　B28　C28 + 5人","A28　B28　C28 + 5 Mitglieder","A28　B28　C28 + 5 membri","A28　B28　C28 + 5 miembros","A28　B28　C28 + 5 üye"],
+ "A31　B31　C31 + 5명":["A31　B31　C31 + 5명","A31　B31　C31 + 5 members","A31　B31　C31 + 5人","A31　B31　C31 + 5人","A31　B31　C31 + 5 Mitglieder","A31　B31　C31 + 5 membri","A31　B31　C31 + 5 miembros","A31　B31　C31 + 5 üye"],
+ "A27　B27　C27 + 5명":["A27　B27　C27 + 5명","A27　B27　C27 + 5 members","A27　B27　C27 + 5人","A27　B27　C27 + 5人","A27　B27　C27 + 5 Mitglieder","A27　B27　C27 + 5 membri","A27　B27　C27 + 5 miembros","A27　B27　C27 + 5 üye"],
+ "A19　B19　C19 + 5명":["A19　B19　C19 + 5명","A19　B19　C19 + 5 members","A19　B19　C19 + 5人","A19　B19　C19 + 5人","A19　B19　C19 + 5 Mitglieder","A19　B19　C19 + 5 membri","A19　B19　C19 + 5 miembros","A19　B19　C19 + 5 üye"],
+ "A18　B18　C18 + 5명":["A18　B18　C18 + 5명","A18　B18　C18 + 5 members","A18　B18　C18 + 5人","A18　B18　C18 + 5人","A18　B18　C18 + 5 Mitglieder","A18　B18　C18 + 5 membri","A18　B18　C18 + 5 miembros","A18　B18　C18 + 5 üye"]
+});
 function translateCommonControls(){
  const maps={
   "🔄 새로고침":["🔄 새로고침","🔄 Refresh","🔄 更新","🔄 刷新","🔄 Aktualisieren","🔄 Aggiorna","🔄 Actualizar","🔄 Yenile"],
