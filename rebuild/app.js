@@ -416,47 +416,55 @@ async function saveAlliance(){
 }
 
 /* Seating table */
-function getRows(raw){
- if(Array.isArray(raw))return raw;
- if(Array.isArray(raw?.rows))return raw.rows;
- if(Array.isArray(raw?.columns))return raw.columns;
+function getRows(value){
+ if(Array.isArray(value))return value;
+ if(!value||typeof value!=="object")return [];
+ for(const key of ["columns","seating","layout","rows","seatingData","placements","members","data"]){
+  const candidate=value[key];
+  if(Array.isArray(candidate))return candidate;
+  if(candidate&&typeof candidate==="object"){const nested=getRows(candidate);if(nested.length)return nested;}
+ }
  return [];
+}
+function normalizeSeatingRows(value){
+ const source=getRows(value);
+ const leftLens=[12,17,26],rightLens=[12,18,16];
+ return [0,1,2].map(i=>{
+  const row=source[i]||{};
+  const left=Array.isArray(row.left)?row.left:[];
+  const right=Array.isArray(row.right)?row.right:[];
+  return {row:["Row 1","Row 2","Row 3"][i],left:Array.from({length:leftLens[i]},(_,j)=>String(left[j]??"")),right:Array.from({length:rightLens[i]},(_,j)=>String(right[j]??""))};
+ });
 }
 function renderSeating(){
  const root=$("#seating");if(!root)return;
  const wrap=$(".seating-3col-wrap",root);if(!wrap)return;
- const rows=getRows(seatingData.rows?.length?seatingData.rows:seatingData);
- wrap.innerHTML="";
- rows.forEach((row,ri)=>{
-  const block=document.createElement("div");block.className="seating-row-card";
-  const title=document.createElement("h4");title.textContent=row.row||("Row "+(ri+1));block.append(title);
-  const grid=document.createElement("div");grid.className="seating-two-side";
-  for(const side of ["left","right"]){
-   const col=document.createElement("div");col.className="seating-side";
-   (Array.isArray(row[side])?row[side]:[]).forEach((name,idx)=>{
-    const line=document.createElement("label");line.className="seating-entry";
-    const num=document.createElement("span");num.textContent=String(idx+1);
-    const input=document.createElement("input");input.type="text";input.maxLength=80;input.value=name||"";input.disabled=!adminModes.seating;input.dataset.row=ri;input.dataset.side=side;input.dataset.index=idx;
-    line.append(num,input);col.append(line);
-   });
-   grid.append(col);
-  }
-  block.append(grid);wrap.append(block);
- });
- const edit=$("#seatingEdit",root);if(edit)edit.style.display=adminModes.seating?"block":"none";
- const b=$("#seatingAdminBtn",root);if(b)b.textContent=adminModes.seating?"🔒 수정 종료":"🔐 관리자 수정";
+ wrap.innerHTML=seatingData.rows.map((row,ri)=>'<div class="seating-row-group"><h3 class="seating-column-title">'+row.row+'</h3><div class="seating-split-pair"><section class="seating-split-card"><h4>Bear1</h4>'+row.left.map((name,i)=>'<div class="seating-row"><span>'+(i+1)+'</span><span>'+esc(name||"—")+'</span></div>').join("")+'</section><section class="seating-split-card"><h4>Bear2</h4>'+row.right.map((name,i)=>'<div class="seating-row"><span>'+(i+1)+'</span><span>'+esc(name||"—")+'</span></div>').join("")+'</section></div></div>').join("");
+ const panel=$("#seatingEdit",root);if(panel)panel.style.display=adminModes.seating?"block":"none";
+ const button=$("#seatingAdminBtn",root);if(button)button.textContent=adminModes.seating?"🔒 수정 종료":"🔐 관리자 수정";
+}
+function renderSeatingAdmin(){
+ const root=$("#seating"),grid=$("#seatingEditGrid",root);if(!grid)return;
+ grid.innerHTML=seatingData.rows.map((row,ri)=>'<section class="seating-edit-column"><h4>'+row.row+'</h4><div class="seating-edit-split"><div class="seating-edit-card"><h5>Bear1</h5>'+row.left.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><input data-seating-row="'+ri+'" data-seating-side="left" data-seating-index="'+i+'" value="'+esc(name)+'" maxlength="80"></label>').join("")+'</div><div class="seating-edit-card"><h5>Bear2</h5>'+row.right.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><input data-seating-row="'+ri+'" data-seating-side="right" data-seating-index="'+i+'" value="'+esc(name)+'" maxlength="80"></label>').join("")+'</div></div></section>').join("");
 }
 async function loadSeating(){
  const r=await loadData("seating",seatingData);
- const rows=getRows(r.data);
- if(rows.length)seatingData={rows:rows.map(x=>({row:x.row||"",left:Array.isArray(x.left)?x.left.slice():[],right:Array.isArray(x.right)?x.right.slice():[]})),updatedAt:r.data.updatedAt||0};
- renderSeating();setMsg("seatingLatestMsg",r.source==="unavailable"?message("fallback"):"최신 자리배치 내용을 불러왔습니다.");
+ seatingData={rows:normalizeSeatingRows(r.data),updatedAt:r.data.updatedAt||0};
+ renderSeating();renderSeatingAdmin();
+ setMsg("seatingLatestMsg",r.source==="unavailable"?message("fallback"):"최신 자리배치 내용을 불러왔습니다.");
 }
-async function toggleSeatingAdmin(){await togglePageAdmin("seating","seatingAdminBtn","seatingSaveBtn");}
+async function toggleSeatingAdmin(){
+ if(!adminModes.seating&&!await ensureGoogleAdmin())return;
+ adminModes.seating=!adminModes.seating;
+ renderSeating();renderSeatingAdmin();
+}
 async function saveSeating(){
  if(!adminModes.seating){alert(message("admin"));return;}
- $$("#seating .seating-entry input").forEach(input=>{const row=seatingData.rows[Number(input.dataset.row)];if(row)row[input.dataset.side][Number(input.dataset.index)]=input.value.trim();});
- try{seatingData=await saveCloud("seating",seatingData);setMsg("seatingLatestMsg",message("saved"));renderSeating();}
+ $$("#seatingEditGrid [data-seating-row]").forEach(input=>{
+  const row=seatingData.rows[Number(input.dataset.seatingRow)];
+  if(row)row[input.dataset.seatingSide][Number(input.dataset.seatingIndex)]=input.value.trim();
+ });
+ try{seatingData=await saveCloud("seating",seatingData);renderSeating();renderSeatingAdmin();setMsg("seatingLatestMsg",message("saved"));}
  catch(e){console.error(e);setMsg("seatingLatestMsg",message("failed"));}
 }
 
