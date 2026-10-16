@@ -908,7 +908,7 @@ Object.assign(window,{
 });
 
 function boot(){
- const savedLang=(()=>{try{return localStorage.getItem("kor1816_rebuild_lang_v1")||localStorage.getItem("kor1816_lang")||"ko";}catch{return "ko";}})();
+ const savedLang=(()=>{try{return new URLSearchParams(location.search).get("lang")||localStorage.getItem("kor1816_rebuild_lang_v1")||localStorage.getItem("kor1816_lang")||"ko";}catch{return "ko";}})();
  currentLang=LANGS.includes(savedLang)?savedLang:"ko";
  setupTemplates();makeNav();
  $("#language-select").addEventListener("change",e=>applyLanguage(e.target.value));
