@@ -192,6 +192,14 @@ function message(key){
   imageOnly:"Lütfen bir resim dosyası seçin.",photoTooLarge:"12 MB veya daha küçük bir fotoğraf seçin.",processingPhoto:"{nickname} fotoğrafı işleniyor.",
   selectNicknameCancel:"İptal etmek için bir takma ad seçin.",noVikingTeam:"Kayıtlı takım bulunamadı.",gloryRequired:"Tarih ve rakip krallığı girin.",deleteRecord:"Bu kayıt silinsin mi?"
  });
+ Object.assign(values.ko,{vikingSelect:"닉네임과 팀을 선택하세요.",vikingAlreadyInTeam:"이미 다른 팀에 등록되어 있습니다.",vikingTeamFull:"선택한 팀이 가득 찼습니다."});
+ Object.assign(values.en,{vikingSelect:"Choose a nickname and a team.",vikingAlreadyInTeam:"This nickname is already registered with another team.",vikingTeamFull:"The selected team is full."});
+ Object.assign(values.ja,{vikingSelect:"ニックネームとチームを選択してください。",vikingAlreadyInTeam:"このニックネームはすでに別のチームに登録されています。",vikingTeamFull:"選択したチームは満員です。"});
+ Object.assign(values.zh,{vikingSelect:"请选择昵称和队伍。",vikingAlreadyInTeam:"此昵称已登记在其他队伍中。",vikingTeamFull:"所选队伍已满。"});
+ Object.assign(values.de,{vikingSelect:"Wähle einen Spitznamen und ein Team.",vikingAlreadyInTeam:"Dieser Spitzname ist bereits in einem anderen Team registriert.",vikingTeamFull:"Das ausgewählte Team ist voll."});
+ Object.assign(values.it,{vikingSelect:"Seleziona un nickname e una squadra.",vikingAlreadyInTeam:"Questo nickname è già registrato in un'altra squadra.",vikingTeamFull:"La squadra selezionata è al completo."});
+ Object.assign(values.es,{vikingSelect:"Elige un apodo y un equipo.",vikingAlreadyInTeam:"Este apodo ya está registrado en otro equipo.",vikingTeamFull:"El equipo seleccionado está lleno."});
+ Object.assign(values.tr,{vikingSelect:"Bir takma ad ve takım seçin.",vikingAlreadyInTeam:"Bu takma ad zaten başka bir takıma kayıtlı.",vikingTeamFull:"Seçilen takım dolu."});
  return values[currentLang]?.[key]||values.ko[key];
 }
 async function ensureReadSession(){
@@ -1000,9 +1008,9 @@ async function loadViking(){
 async function saveViking(next=vikingData){try{vikingData=await saveCloud("viking",next);renderViking();setMsg("vikingMsg",message("saved"));return true;}catch(e){console.error(e);setMsg("vikingMsg",message("failed"));return false;}}
 async function joinVikingTeam(){
  const name=getVikingSelectedNick(),team=Number($("#vikingTeam")?.value),msg=$("#vikingMsg");
- if(!name||!team){if(msg)msg.textContent="닉네임과 팀을 선택하세요.";return;}
- if(Object.values(vikingData.teams).some(a=>a.some(n=>n.toLowerCase()===name.toLowerCase()))){if(msg)msg.textContent="이미 다른 팀에 등록되어 있습니다.";return;}
- const roster=vikingData.teams[team]||[];if(roster.length>=4){if(msg)msg.textContent="선택한 팀이 가득 찼습니다.";return;}
+ if(!name||!team){if(msg)msg.textContent=message("vikingSelect");return;}
+ if(Object.values(vikingData.teams).some(a=>a.some(n=>n.toLowerCase()===name.toLowerCase()))){if(msg)msg.textContent=message("vikingAlreadyInTeam");return;}
+ const roster=vikingData.teams[team]||[];if(roster.length>=4){if(msg)msg.textContent=message("vikingTeamFull");return;}
  const next=clone(vikingData);next.teams[team]=[...roster,name];await saveViking(next);
 }
 async function leaveVikingTeam(){
