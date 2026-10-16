@@ -760,8 +760,8 @@ function renderCastleLayout(){
   let inner;
   if(adminModes.castlelayout1&&!isFixed)inner='<select data-layout-slot="'+i+'"><option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===name?'selected':'')+'>'+esc(n)+'</option>').join("")+'</select>';
   else if(!name)inner='<span>—</span>';
-  else if(isFixed)inner='<div class="layout-person"><strong>'+esc(name)+'</strong><small> S · 집결장</small></div>';
-  else inner='<div class="layout-person"><strong>'+esc(name)+'</strong><small>'+esc(p?(participantRank(p)||p.tier)+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X"):"")+'</small></div>';
+  else if(isFixed)inner=castleMemberCard(name,castleCardText("leader"));
+  else inner=castleMemberCard(name,p?(participantRank(p)||p.tier)+" · "+castleCardText("salo")+" "+(p.salo?"O":"X")+" · "+castleCardText("hilde")+" "+(p.hilde?"O":"X"):"");
   return '<div class="castle-layout1-slot"><span class="castle-layout1-number">'+(i+1)+'</span><div class="castle-layout1-content">'+inner+'</div></div>';
  }).join("");
  const b=$("#castleLayout1AdminBtn",root),save=$("#castleLayout1SaveBtn",root);
