@@ -383,7 +383,7 @@ async function toggleHomeAdmin(){
 
 /* Notices: Korean source and prewritten translations. */
 let noticeAdmin=false;
-function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData.translations?.[currentLang]?.[key]||noticeData[key]||"";}
+function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"";}
 function koreanOnly(value){
  return String(value??"").split("\n").filter(line=>/[가-힣]/.test(line)||!/[A-Za-z]{3,}/.test(line)).join("\n").trim();
 }
