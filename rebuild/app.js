@@ -773,9 +773,13 @@ async function loadVikingPhotos(){
  const entries=await Promise.all(Array.from({length:25},async(_,i)=>{
   const teamNo=i+1;
   try{
-   let snap=await getDoc(doc(db,"siteData","rebuild_viking_photos_team_"+teamNo));
-   if(!snap.exists())snap=await getDoc(doc(db,"siteData","viking_photos_team_"+teamNo));
-   return [teamNo,snap.exists()&&snap.data()?.photos&&typeof snap.data().photos==="object"?snap.data().photos:{}];
+   const [newSnap,legacySnap]=await Promise.all([
+    getDoc(doc(db,"siteData","rebuild_viking_photos_team_"+teamNo)),
+    getDoc(doc(db,"siteData","viking_photos_team_"+teamNo))
+   ]);
+   const legacyPhotos=legacySnap.exists()&&legacySnap.data()?.photos&&typeof legacySnap.data().photos==="object"?legacySnap.data().photos:{};
+   const newPhotos=newSnap.exists()&&newSnap.data()?.photos&&typeof newSnap.data().photos==="object"?newSnap.data().photos:{};
+   return [teamNo,{...legacyPhotos,...newPhotos}];
   }catch(error){console.warn("Viking photo read",teamNo,error);return [teamNo,{}];}
  }));
  vikingPhotosByTeam=Object.fromEntries(entries);
