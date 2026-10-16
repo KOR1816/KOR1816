@@ -30,6 +30,8 @@ This folder is an isolated development scaffold. It is not deployed and is not y
 - Fixed the Castle Layout save button so it becomes visible while admin editing is enabled.
 - Fixed three selector-iteration errors that could break button translation and Castle War saves; these now use `querySelectorAll` via the shared `$$` helper.
 - Standardized all five Castle War columns to render ten numbered slots each, including both turret columns.
+- Preserved English-only lines in Korean notice text instead of silently filtering them during load.
+- Re-ran static syntax checks for `app.js` and `page-content.js`; both parse successfully, all ten route IDs have templates, new document IDs are unique, and the selector-iteration scan is clean.
 - Verified the image filenames referenced by the rebuild exist in the source repository.
 - Confirmed all rebuild writes target separate rebuild documents; legacy documents are read-only migration sources.
 - Production `index.html` is still unchanged.
