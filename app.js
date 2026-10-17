@@ -1538,10 +1538,10 @@ Object.assign(STATIC_TRANSLATIONS,{
  "수성:":["수성:","Defense:","防衛：","防守：","Verteidigung:","Difesa:","Defensa:","Savunma:"]
 });
 Object.assign(window,{
- loadHome,toggleHomeAdmin,saveHome,refreshTeams:loadTeams,toggleTeamsAdmin,saveAllTeams,
- loadAlliance,toggleAllianceAdmin,saveAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
+ loadHome,toggleHomeAdmin,saveHome,refreshTeams:loadTeams,toggleTeamsAdmin,saveAllTeams,clearAllTeams,
+ loadAlliance,toggleAllianceAdmin,saveAlliance,clearAllAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
  updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
- loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,autoArrangeCastleWar,
+ loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,autoArrangeCastleWar,resetCastleWarTable,
  loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!FIXED_LEADERS.includes(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
  toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,toggleVikingPhotoAdmin,triggerVikingPhoto,toggleVikingAdmin,clearAllVikingTeams,toggleGloryAdmin,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
 });
