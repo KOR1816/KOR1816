@@ -923,13 +923,13 @@ function renderParticipants(){
    if(!groups.has(label))groups.set(label,[]);
    groups.get(label).push(p);
   });
-  return [...groups.entries()].map(([label,group])=>'<section class="nc-tier-group"><h4 class="nc-tier-heading">'+esc(label)+'</h4><div class="nc-tier-cards">'+group.map(battleJoinParticipantCard).join("")+'</div></section>').join("");
+  return [...groups.entries()].map(([label,group])=>'<section class="nc-tier-group"><h4 class="nc-tier-heading">'+esc(label)+'</h4><div class="nc-tier-cards">'+group.map(p=>battleJoinParticipantCard(p)).join("")+'</div></section>').join("");
  };
  const list=$("#ncParticipants",root);
  if(list)list.innerHTML=groupedCards(active)||'<div class="nc-empty">등록된 참전 정보가 없습니다.</div>';
  const waitingList=$("#ncWaiting",root);
  // Waiting list: no tier section headings; show the same participant cards in one flat list.
- const waitingCards=items=>items.map(battleJoinParticipantCard).join("");
+ const waitingCards=items=>items.map(p=>battleJoinParticipantCard(p)).join("");
  if(waitingList)waitingList.innerHTML=waitingCards(waiting)||'<div class="nc-empty">대기 명단이 없습니다.</div>';
  const participantsHeading=$('h3[data-newcastle="participants"]',root);
  if(participantsHeading)participantsHeading.textContent="등록된 참전 정보 ("+active.length+")";
@@ -1215,7 +1215,7 @@ function renderCastleWar(){
   // Include every non-available participant (later/resting and unavailable) in the waiting list.
   const roster=castleWarRoster().filter(p=>p.status!=="yes").sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
   // Match Castle Participation: no A/B/C headings or separate unranked section.
-  waiting.innerHTML=roster.map(battleJoinParticipantCard).join("")||'<p class="muted">대기 명단이 없습니다.</p>';
+  waiting.innerHTML=roster.map(p=>battleJoinParticipantCard(p)).join("")||'<p class="muted">대기 명단이 없습니다.</p>';
  }
  const saveButton=$("[data-newcastle='save']",root);
  const resetButton=$("[data-newcastle='reset-table']",root);
