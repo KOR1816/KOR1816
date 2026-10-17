@@ -1151,10 +1151,22 @@ function renderCastleWar(){
   waiting.innerHTML=roster.map(battleJoinParticipantCard).join("")||'<p class="muted">대기 명단이 없습니다.</p>';
  }
  const saveButton=$("[data-newcastle='save']",root);
+ const resetButton=$("[data-newcastle='reset-table']",root);
+ if(resetButton)resetButton.style.display=adminModes.castlewar1?"inline-flex":"none";
  if(saveButton)saveButton.style.display=adminModes.castlewar1?"inline-flex":"none";
  const autoButton=$("[data-newcastle='auto']",root);
  if(autoButton)autoButton.style.display=adminModes.castlewar1?"inline-flex":"none";
  translateStatic();
+}
+async function resetCastleWarTable(){
+ if(!adminModes.castlewar1){alert(message("admin"));return;}
+ if(!confirm("캐슬전 1~8번 표의 모든 배치를 삭제할까요? 집결장 설정은 유지됩니다."))return;
+ ["assault","rush","finish","north","west","reserve"].forEach(key=>castleWarData.war[key]=Array(8).fill(""));
+ try{
+  castleWarData=await saveCloud("castlewar1",castleWarData);
+  renderCastleWar();
+  setMsg("ncWarMsg","캐슬전 1~8번 표를 초기화했습니다.");
+ }catch(e){console.error("Castle War table reset failed",e);setMsg("ncWarMsg",message("failed"));}
 }
 async function saveNewCastleFeatures(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
