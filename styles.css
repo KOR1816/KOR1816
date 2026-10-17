@@ -446,3 +446,34 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 .seating-edit-side-title.seating-side-2-right{background:#a7dba2!important;color:#183b20!important}
 .seating-edit-side-title.seating-side-3-left{background:#e18a32!important;color:#fff!important}
 .seating-edit-side-title.seating-side-3-right{background:#8055bd!important;color:#fff!important}
+
+
+/* Requested final fixes: preserve the blue stripe on the home notice title. */
+#homeView #homeLatestTitle{border-left:4px solid #79a9ff!important;padding-left:11px!important}
+
+/* Home schedule group headings use the bordered title-bar treatment used for Castle War info headings. */
+#homeView .home-schedule-heading{
+  display:block;width:100%;box-sizing:border-box;margin:8px 0 12px;
+  border:1px solid #365783!important;border-left:4px solid #79a9ff!important;
+  border-radius:6px;padding:8px 10px 8px 11px!important;
+  background:rgba(70,112,177,.16);color:#f4f7ff;font-weight:800;
+}
+
+/* Three Alliances: Team 1 has two bordered groups side-by-side on desktop. */
+#alliance .alliance-team:first-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:8px}
+#alliance .alliance-team:first-child>.alliance-team-title{grid-column:1/-1}
+#alliance .alliance-team:first-child>.alliance-group{min-width:0;box-sizing:border-box;border:1px solid #365783;border-radius:9px;padding:9px;margin:0}
+#alliance .alliance-team:first-child>.alliance-group .alliance-label{overflow-wrap:anywhere}
+#alliance .alliance-display{display:flex;flex-direction:column;grid-column:1/-1;gap:5px;width:100%}
+#alliance .alliance-display-item{display:grid;grid-template-columns:22px 32px minmax(0,1fr);gap:7px;align-items:center;min-width:0;padding:5px 6px;border:1px solid #273b5d;border-radius:7px;background:#101a2e;box-sizing:border-box;text-align:left}
+#alliance .alliance-display-number{text-align:center;color:#f6d77b;font-size:12px;font-weight:800}
+#alliance .alliance-display-item .roster-person{display:contents}
+#alliance .alliance-display-item .roster-avatar{width:30px;height:30px;flex-basis:30px}
+#alliance .alliance-display-item .roster-person-name{min-width:0;font-size:12px;line-height:1.25;overflow-wrap:anywhere}
+#alliance.alliance-admin-mode .alliance-display{display:none}
+#alliance .alliance-edit-actions{display:flex;gap:8px;flex-wrap:wrap}
+.danger-btn{border-color:#8b454f!important;background:#46202b!important;color:#ffe5e8!important}
+@media(max-width:760px){
+ #alliance .alliance-team:first-child{grid-template-columns:minmax(0,1fr)}
+ #alliance .alliance-team:first-child>.alliance-team-title{grid-column:1}
+}
