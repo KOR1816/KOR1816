@@ -320,3 +320,11 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
   background:rgba(70,112,177,.10);
   border-radius:4px;
 }
+
+
+/* Shared bordered blue title bars for home cards and event notice headings. */
+#homeView>.card>h2,#homeView .home-schedule-heading,#homeView .home-discord-card>h2,#homeView #homeLatestTitle,#homeView #homeScheduleTitle,#homeView #homeWelcomeTitle,#homeLatest h3,#homeLatest .notice-title,#homeLatest strong.notice-heading{border:1px solid #365783;border-left:4px solid #79a9ff;border-radius:6px;padding:8px 10px 8px 11px;background:rgba(70,112,177,.16);color:#f4f7ff}
+#homeLatestTitle,#homeScheduleTitle,#homeWelcomeTitle{margin-top:0}
+.msg.is-latest-load{color:#79cfff!important;font-weight:600}
+.viking-bottom-actions,.glory-bottom-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0 4px}
+.glory-page .hero .muted{color:#9fd7ff;font-size:14px;font-weight:600;letter-spacing:.02em;line-height:1.7;text-shadow:0 1px 8px rgba(61,145,220,.18)}
