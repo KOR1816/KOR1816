@@ -372,7 +372,7 @@ function translateStatic(){
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
  for(const node of nodes){
   const parent=node.parentElement;if(!parent)continue;
-  if(parent.closest("button,.content,.notice,.msg,.participant-line,.seating-row,.castle-layout1-content,.layout-person,.war-name,.viking-member-name,.viking-member,input,textarea,script,style"))continue;
+  if(parent.closest("button,.content,.notice,.msg,.participant-line,.seating-row,.castle-layout1-content,.layout-person,.war-name,.viking-member-name,.viking-member,.team-display-column h3,input,textarea,script,style"))continue;
   if(!ORIGINAL_TEXT.has(node))ORIGINAL_TEXT.set(node,node.nodeValue);
   const original=ORIGINAL_TEXT.get(node),trim=original.trim();
   const translations=STATIC_TRANSLATIONS[trim];
@@ -740,7 +740,7 @@ function renderNotices(){
     ko:["1군","2군"],en:["Squad 1","Squad 2"],ja:["第1部隊","第2部隊"],zh:["第1队","第2队"],
     de:["Trupp 1","Trupp 2"],it:["Squadra 1","Squadra 2"],es:["Grupo 1","Grupo 2"],tr:["1. Takım","2. Takım"]
    }[currentLang]||["1군","2군"];
-   value=value.replace(/(^|\n)1군(?=\s*[：:])/g,(_,p)=>p+localizedSquadLabel("1군")).replace(/(^|\n)2군(?=\s*[：:])/g,(_,p)=>p+localizedSquadLabel("2군"));
+   value=value.replace(/(^|\n)([ \t]*)1군(?=[ \t]*(?:[：:]|\n|$))/g,(_,p,space)=>p+space+localizedSquadLabel("1군")).replace(/(^|\n)([ \t]*)2군(?=[ \t]*(?:[：:]|\n|$))/g,(_,p,space)=>p+space+localizedSquadLabel("2군"));
    view.textContent=value;
   }
   if(edit){
@@ -843,7 +843,7 @@ function setTeamsInputsEnabled(enabled){setInputsEnabled($("#teams"),enabled);}
 function renderTeamsDisplay(){
  const root=$("#teams"),display=$("#teamDisplay"),editor=$(".team-columns-wrap",root);if(!root||!display)return;
  const groups=[["A","A1",7],["B","A2",7],["C","D1",7],["D","D2",7],["extra","💥 개돌조",2],["subs","🔄 대체자",10]];
- display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+localizedTeamHeading(title)+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
+ display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+title+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
  display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
  translateStatic();
 }
