@@ -466,10 +466,8 @@ async function loadHome(){
  renderHome();
  if(r.source==="unavailable")setMsg("homeMsg",message("fallback"));else setMsg("homeMsg",message("load"));
 }
-function ensureHomeNoticeBody(value){
- const body=String(value||"").trimEnd();
- const lines=["항상 웃으면서 현실이 먼저이며!!","게임은 쉬엄쉬엄 즐기세요!!"];
- return lines.reduce((text,line)=>text.split(/\\r?\\n/).includes(line)?text:(text?text+"\\n":"")+line,body);
+function ensureHomeNoticeBody(){
+ return "항상 웃으면서\\n현실이 먼저이며!!\\n게임은 쉬엄쉬엄 즐기세요!!";
 }
 function captureHomeEditor(){
  const root=$("#home");if(!root||!adminModes.home)return;
