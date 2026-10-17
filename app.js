@@ -345,7 +345,7 @@ function translateStatic(){
 }
 function refreshGenericLoadMessages(){
  const known=["최신 내용을 불러왔습니다.","Latest content loaded.","最新の内容を読み込みました。","已加载最新内容。","Aktuelle Inhalte geladen.","Contenuti aggiornati caricati.","Contenido actualizado cargado.","En güncel içerik yüklendi."];
- $(".msg, .status, [role=\"status\"]").forEach(el=>{if(known.includes((el.textContent||"").trim()))el.textContent=message("load");});
+ $$(".msg, .status, [role=\"status\"]").forEach(el=>{if(known.includes((el.textContent||"").trim()))el.textContent=message("load");});
 }
 function refreshTranslatedBanner(pageId,targetId){
  const el=$("#"+targetId),value=el?.textContent||"";
