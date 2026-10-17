@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261017-noticebanner1";
+import { PAGE_CONTENT } from "./page-content.js?v=20261017-battlejoinclone1";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -876,6 +876,19 @@ async function loadParticipantRoster(){
  return participants;
 }
 function participantRank(p){if(!p||p.status!=="yes")return "";const base={A:"A",B:"B",C:"C"}[p.tier];if(!base)return "";return base+(p.salo?"1":"2");}
+function battleJoinParticipantCard(p){
+ if(!p||!p.nickname)return '<div class="nc-empty">—</div>';
+ const fixed=FIXED_LEADERS.includes(p.nickname),hasTier=["A","B","C"].includes(p.tier);
+ const skillCount=(p.salo?1:0)+(p.hilde?1:0);
+ const tier=fixed?"S":hasTier?p.tier+(skillCount===2?"1":skillCount===1?"2":"3"):"😭";
+ const sprite=getVikingSprite(p.nickname),spriteStyle=vikingSpriteStyle(p.nickname);
+ const avatar='<span class="nc-avatar" '+(spriteStyle?'style="'+spriteStyle+'"':"")+'>'+(sprite?"":esc((p.nickname||"?").slice(0,1)))+'</span>';
+ const barracks=fixed?"집결장":p.tier==="A"?"병영5":p.tier==="B"?"병영4.5":p.tier==="C"?"병영4":"등급 미등록";
+ const skills=[];
+ if(p.salo)skills.push("살로 O");
+ if(p.hilde)skills.push("힐데 O");
+ return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong>'+esc(p.nickname)+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(skills.join(" · "))+'</div></div></div>';
+}
 function renderParticipants(){
  const root=$("#battleJoin");if(!root)return;
  const sel=$("#ncNick",root);
@@ -885,10 +898,25 @@ function renderParticipants(){
   sel.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
   if([...sel.options].some(o=>o.value===old))sel.value=old;
  }
+ const fixedOrder=new Set(FIXED_LEADERS);
+ const active=participants.filter(p=>p.status==="yes").sort((a,b)=>{
+  const fa=fixedOrder.has(a.nickname),fb=fixedOrder.has(b.nickname);
+  if(fa!==fb)return fa?-1:1;
+  const rank=p=>{const tier=["A","B","C"].includes(p.tier)?p.tier:"Z";const n=(p.salo?1:0)+(p.hilde?1:0);return tier+(n===2?"1":n===1?"2":"3");};
+  return rank(a).localeCompare(rank(b))||a.nickname.localeCompare(b.nickname);
+ });
+ const waiting=participants.filter(p=>p.status!=="yes").sort((a,b)=>{
+  const priority=p=>p.status==="later"?0:1;
+  return priority(a)-priority(b)||a.nickname.localeCompare(b.nickname);
+ });
  const list=$("#ncParticipants",root);
- if(list)list.innerHTML=participants.map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantStatusLabel(p.status))+'</span><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">등록된 참전 정보가 없습니다.</p>';
- const waiting=$("#ncWaiting",root);
- if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
+ if(list)list.innerHTML=active.map(battleJoinParticipantCard).join("")||'<div class="nc-empty">등록된 참전 정보가 없습니다.</div>';
+ const waitingList=$("#ncWaiting",root);
+ if(waitingList)waitingList.innerHTML=waiting.map(battleJoinParticipantCard).join("")||'<div class="nc-empty">대기 명단이 없습니다.</div>';
+ const participantsHeading=$('h3[data-newcastle="participants"]',root);
+ if(participantsHeading)participantsHeading.textContent="등록된 참전 정보 ("+active.length+")";
+ const waitingHeading=$('h3[data-newcastle="waiting"]',root);
+ if(waitingHeading)waitingHeading.textContent="대기 명단 ("+waiting.length+")";
  translateStatic();
 }
 async function loadNewCastleFeatures(){
