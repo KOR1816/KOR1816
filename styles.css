@@ -43,6 +43,8 @@ label{display:block;min-width:0;color:#dbe5f7}
 .team-columns-wrap,.castlewar-columns,.alliance-teams{width:100%;overflow-x:auto}
 .team-columns{display:grid;grid-template-columns:repeat(4,minmax(155px,1fr));gap:10px;min-width:650px;align-items:start}
 .team-column,.alliance-team,.war-column,.seating-row-card{border:1px solid #30496f;border-radius:12px;overflow:hidden;background:#0e182b}
+/* Keep Holy Sword editor column borders at their last slot: 7 for A1/A2/D1/D2 and 2 for Rush. */
+#teams .team-columns>.team-column{align-self:start;height:max-content;}
 .team-title,.alliance-team-title,.war-column h3{margin:0;padding:11px;text-align:center;background:#203253;color:#f6d77b;font-weight:800}
 .slot{display:grid;grid-template-columns:32px minmax(0,1fr);gap:5px;align-items:center;padding:6px;border-top:1px solid #273b5d}
 .slot span{color:#aebbd3;text-align:center}
