@@ -748,10 +748,11 @@ function renderNotices(){
   const view=$("#"+id,root),edit=$("#e"+id[0].toUpperCase()+id.slice(1),root);
   if(view){
    let value=noticeValue(id);
-   // 공지 제목의 1군/2군만 각각 독립 번역합니다. 본문과 UTC 시간은 그대로 둡니다.
+   // 공지 제목은 마크다운 기호가 있거나 없는 단독 제목 모두 번역합니다.
+   // 본문 문장과 UTC 시간 줄은 변경하지 않습니다.
    if(currentLang!=="ko"){
-    value=value.replace(/^(\s*#{1,6}\s*)1\s*군(?=\s|$|[:：])/gm,(_,prefix)=>prefix+homeText("squad1"));
-    value=value.replace(/^(\s*#{1,6}\s*)2\s*군(?=\s|$|[:：])/gm,(_,prefix)=>prefix+homeText("squad2"));
+    value=value.replace(/^(\s*(?:#{1,6}\s*)?)1\s*군\s*$/gm,(_,prefix)=>prefix+homeText("squad1"));
+    value=value.replace(/^(\s*(?:#{1,6}\s*)?)2\s*군\s*$/gm,(_,prefix)=>prefix+homeText("squad2"));
    }
    view.textContent=value;
   }
