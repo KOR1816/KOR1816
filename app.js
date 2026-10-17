@@ -665,7 +665,7 @@ async function loadNotices(){
    for(const lang of LANGS.slice(1))translated[lang]={...(NOTICE_TRANSLATIONS[lang]||{}),...(saved.translations?.[lang]||{})};
    const koreanSaved={};
    for(const key of directNoticeKeys)koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
-   noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,updatedAt:saved.updatedAt||cloud?.updatedAt||0};
+   noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,goldenGlaivesVersion:Number(saved.goldenGlaivesVersion||0),updatedAt:saved.updatedAt||cloud?.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
   if(Number(noticeData.goldenGlaivesVersion||0)<2){noticeData.goldenGlaives=NOTICE_DEFAULTS.goldenGlaives;noticeData.translations=noticeData.translations||{};for(const language of LANGS){noticeData.translations[language]={...(noticeData.translations[language]||{}),goldenGlaives:GOLDEN_GLAIVES_CONTENT_BY_LANG[language]||NOTICE_DEFAULTS.goldenGlaives};}noticeData.goldenGlaivesVersion=2;}
   mergeCombinedEventNotices();
