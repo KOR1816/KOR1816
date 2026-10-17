@@ -670,12 +670,10 @@ async function loadNotices(){
   if(Number(noticeData.goldenGlaivesVersion||0)<2){noticeData.goldenGlaives=NOTICE_DEFAULTS.goldenGlaives;noticeData.translations=noticeData.translations||{};for(const language of LANGS){noticeData.translations[language]={...(noticeData.translations[language]||{}),goldenGlaives:GOLDEN_GLAIVES_CONTENT_BY_LANG[language]||NOTICE_DEFAULTS.goldenGlaives};}noticeData.goldenGlaivesVersion=2;}
    // Apply the requested Korean time display to saved Korean Golden Glaives content only.
    // Keep the existing notice lines, action instructions, and line breaks unchanged.
-   const normalizeKoreanGoldenTimes=value=>String(value||"")
-    .replace(/UTC\s*(00:00|08:00|16:00)\s*\((?:한국시간|한국|KST|Korea|Korea time)\s*(09:00|17:00|01:00)(?:\s*KST)?\)/gi,(match,utc,kst)=>"UTC"+utc+" (한국 "+kst+")")
-    .replace(/UTC\s*(00:00|08:00|16:00)\s*\((09:00|17:00|01:00)\s*KST\)/gi,(match,utc,kst)=>"UTC"+utc+" (한국 "+kst+")")
-    .replace(/UTC\s+(00:00|08:00|16:00)/g,"UTC$1");
-   noticeData.goldenGlaives=normalizeKoreanGoldenTimes(noticeData.goldenGlaives);
-   if(noticeData.translations?.ko?.goldenGlaives)noticeData.translations.ko.goldenGlaives=normalizeKoreanGoldenTimes(noticeData.translations.ko.goldenGlaives);
+   const formatGoldenGlaives=value=>String(value||"")
+    .replace(/(UTC[^\n—]*?)\s*—\s*(?=[🚫✅])/g,"$1\n");
+   noticeData.goldenGlaives=formatGoldenGlaives(noticeData.goldenGlaives);
+   if(noticeData.translations)for(const language of Object.keys(noticeData.translations)){const translated=noticeData.translations[language];if(translated&&translated.goldenGlaives)translated.goldenGlaives=formatGoldenGlaives(translated.goldenGlaives);}
   mergeCombinedEventNotices();
   noticeEditLang="ko";
   renderNotices();setMsg("notice-status",message("load"));
