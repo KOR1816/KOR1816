@@ -671,8 +671,8 @@ async function loadNotices(){
    // Apply the requested Korean time display to saved Korean Golden Glaives content only.
    // Keep the existing notice lines, action instructions, and line breaks unchanged.
    const normalizeKoreanGoldenTimes=value=>String(value||"")
-    .replace(/UTC\s*(00:00|08:00|16:00)\s*\\((?:한국시간|한국|KST|Korea|Korea time)\s*(09:00|17:00|01:00)(?:\s*KST)?\\)/gi,(match,utc,kst)=>"UTC"+utc+" (한국 "+kst+")")
-    .replace(/UTC\s*(00:00|08:00|16:00)\s*\\((09:00|17:00|01:00)\s*KST\\)/gi,(match,utc,kst)=>"UTC"+utc+" (한국 "+kst+")")
+    .replace(/UTC\s*(00:00|08:00|16:00)\s*\((?:한국시간|한국|KST|Korea|Korea time)\s*(09:00|17:00|01:00)(?:\s*KST)?\)/gi,(match,utc,kst)=>"UTC"+utc+" (한국 "+kst+")")
+    .replace(/UTC\s*(00:00|08:00|16:00)\s*\((09:00|17:00|01:00)\s*KST\)/gi,(match,utc,kst)=>"UTC"+utc+" (한국 "+kst+")")
     .replace(/UTC\s+(00:00|08:00|16:00)/g,"UTC$1");
    noticeData.goldenGlaives=normalizeKoreanGoldenTimes(noticeData.goldenGlaives);
    if(noticeData.translations?.ko?.goldenGlaives)noticeData.translations.ko.goldenGlaives=normalizeKoreanGoldenTimes(noticeData.translations.ko.goldenGlaives);
