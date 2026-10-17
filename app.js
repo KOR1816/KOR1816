@@ -286,6 +286,7 @@ function applyLanguage(lang){
  renderNotices();
  translateCommonControls();
  translateStatic();
+ translateTeamsHeadings();
  refreshGenericLoadMessages();
  if(activePage==="home")renderHome();
  if(activePage==="teams")renderTeamsDisplay();
@@ -591,6 +592,16 @@ function localizedTeamHeading(title){
  const labels={"💥 개돌조":["💥 개돌조","💥 Rush Squad","💥 突撃部隊","💥 冲锋组","💥 Angriffstrupp","💥 Squadra rapida","💥 Escuadrón de avance","💥 Hızlı Hücum Ekibi"],"🔄 대체자":["🔄 대체자","🔄 Substitute","🔄 代替メンバー","🔄 替补","🔄 Ersatz","🔄 Sostituto","🔄 Sustituto","🔄 Yedek"]};
  return labels[title]?.[langIndex()]||title;
 }
+function translateTeamsHeadings(){
+ const root=$("#teams");if(!root)return;
+ const labels={"💥 개돌조":["💥 개돌조","💥 Rush Squad","💥 突撃部隊","💥 冲锋组","💥 Angriffstrupp","💥 Squadra rapida","💥 Escuadrón de avance","💥 Hızlı Hücum Ekibi"],"🔄 대체자":["🔄 대체자","🔄 Substitute","🔄 代替メンバー","🔄 替补","🔄 Ersatz","🔄 Sostituto","🔄 Sustituto","🔄 Yedek"]};
+ root.querySelectorAll("h3,.team-title").forEach(node=>{
+  const raw=node.dataset.teamHeadingKey||Object.keys(labels).find(key=>labels[key].includes(node.textContent.trim()));
+  if(!raw)return;
+  node.dataset.teamHeadingKey=raw;
+  node.textContent=labels[raw][langIndex()];
+ });
+}
 function renderHomeSchedule(value){
  const entries=String(value||"").split(/\r?\n/).map((line,index)=>{
   const raw=line.trim();if(!raw)return null;
@@ -850,6 +861,7 @@ function renderTeamsDisplay(){
  display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+localizedTeamHeading(title)+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
  display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
  translateStatic();
+ translateTeamsHeadings();
 }
 async function loadTeams(){
  const r=await loadData("teams",teamData);teamData={...teamData,...r.data};const root=$("#teams");
