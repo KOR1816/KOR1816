@@ -958,6 +958,8 @@ async function loadNewCastleFeatures(){
    const war=data?.war||data?.castleWar||{};
    castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:8},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:8},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:8},(_,i)=>war.finish?.[i]||""),north:Array.from({length:8},(_,i)=>war.north?.[i]||""),west:Array.from({length:8},(_,i)=>war.west?.[i]||""),reserve:Array.from({length:8},(_,i)=>war.reserve?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:data?.warLeaders?.rush||"Pham",finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
    if(rosterLoaded&&sanitizeCastleWarAssignments()){try{castleWarData=await saveCloud("castlewar1",castleWarData);}catch(saveError){console.warn("Could not persist removed Castle War assignments",saveError);}}
+   const hasAssignedMembers=["assault","rush","finish","north","west","reserve"].some(key=>(castleWarData.war[key]||[]).some(name=>String(name||"").trim()));
+   if(rosterLoaded&&!hasAssignedMembers&&castleWarTierSortedParticipants().length){try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.warn("Castle War auto-sync on load failed",syncError);}}
    renderCastleWar();setMsg("ncWarMsg",latestBanner("castlewar1"));
   }
  }catch(e){console.error(e);if(pageId==="battleJoin")setMsg("ncJoinMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
