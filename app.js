@@ -587,16 +587,17 @@ function koreanOnly(value){return String(value??"").trim();}
 function normalizeBearNoticeText(source){
  const d={...(source||{})};
  const labelPatterns={
-  bearLeaders:/^\\s*(?:집결장|rally\\s*leaders?)\\s*[:：]\\s*/i,
-  bearMembers:/^\\s*(?:집결원|rally\\s*members?)\\s*[:：]\\s*/i,
-  bearTroops:/^\\s*(?:병력|troops?|兵士数|兵力|Truppen|Truppe|Truppe|Truppe|Truppe|Truppe)\\s*[:：]\\s*/i,
-  bearRatio:/^\\s*(?:비율|troop\\s*ratio|兵士比率|兵力比例|Truppenverhältnis|Rapporto truppe|Proporción de tropas|Asker oranı)\\s*[:：]\\s*/i
+  bearLeaders:/^\s*(?:집결장|rally\s*leaders?|集結主|集结队长|Rally-Anführer|Capo raduno|Líder de reunión|Toplanma lideri)\s*[:：]\s*/i,
+  bearMembers:/^\s*(?:집결원|rally\s*members?|集結メンバー|集结成员|Rally-Mitglieder|Membri del rally|Miembros de reunión|Toplanma üyeleri)\s*[:：]\s*/i,
+  bearTroops:/^\s*(?:병력|troops?|兵士数|兵力|Truppen|Truppe|Truppe|Tropas|Birlikler)\s*[:：]\s*/i,
+  bearRatio:/^\s*(?:비율|troop\s*ratio|兵士比率|兵力比例|Truppenverhältnis|Rapporto truppe|Proporción de tropas|Asker oranı)\s*[:：]\s*/i
  };
+ const separators=/^(?:또는|or|oder|oppure|o|veya|または|或者)$/i;
  const clean=(key,value)=>{
-  let text=String(value??"");
-  if(key==="bearRatio")text=text.replace(/\\s+(?:또는|or|oder|oppure|o|veya|または|或者)\\s+/gi,"\\n");
-  return text.split("\\n").map(line=>line.replace(labelPatterns[key]||/$^/,"").trim())
-   .filter(line=>line&&!/^(?:또는|or|oder|oppure|o|veya|または|或者|\/\\s*or)$/i.test(line)).join("\\n");
+  let text=String(value??"").replace(/\r\n?/g,"\n");
+  if(key==="bearRatio")text=text.replace(/\s+(?:또는|or|oder|oppure|o|veya|または|或者)\s+/gi,"\n");
+  return text.split("\n").map(line=>line.replace(labelPatterns[key]||/$^/,"").trim())
+   .filter(line=>line&&!separators.test(line)&&!/^\/\s*or$/i.test(line)).join("\n");
  };
  for(const key of Object.keys(labelPatterns))if(d[key]!==undefined)d[key]=clean(key,d[key]);
  if(d.translations&&typeof d.translations==="object"){
