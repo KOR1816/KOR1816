@@ -257,11 +257,28 @@ function makeNav(){
  });
  applyLanguage(currentLang);
 }
+function translateBrandHeader(){
+ const subtitle={
+  ko:"Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!",
+  en:"Kingdom 1816 · Mess with us and you'll regret it! · Home of the Bear Fanatics!!",
+  ja:"Kingdom 1816 · 手を出したら噛みつくぞ！ · クマ愛好家たちの集まり!!",
+  zh:"Kingdom 1816 · 惹我们就咬你！ · 熊系狂热者的聚集地!!",
+  de:"Kingdom 1816 · Leg dich mit uns an und du wirst es bereuen! · Treffpunkt der Bärenfans!!",
+  it:"Kingdom 1816 · Se ci provochi, mordiamo! · Il ritrovo dei fanatici degli orsi!!",
+  es:"Kingdom 1816 · ¡Si nos provocas, mordemos! · ¡El punto de encuentro de los fanáticos de los osos!",
+  tr:"Kingdom 1816 · Bize bulaşanın canını yakarız! · Ayı tutkunlarının buluşma yeri!!"
+ }[currentLang]||"Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!";
+ const title=document.querySelector("header h1");
+ const tagline=document.querySelector("header p");
+ if(title)title.textContent="KOR1816";
+ if(tagline)tagline.textContent=subtitle;
+}
 function applyLanguage(lang){
  if(adminModes.home)captureHomeEditor();
  if(noticeAdmin)captureNoticeEditor();
  currentLang=LANGS.includes(lang)?lang:"ko";
  document.documentElement.lang=currentLang;
+ translateBrandHeader();
  $("#language-select").value=currentLang;
  $("#language-label").textContent=({ko:"언어",en:"Language",ja:"言語",zh:"语言",de:"Sprache",it:"Lingua",es:"Idioma",tr:"Dil"})[currentLang];
  $$("#main-nav button").forEach((b,i)=>{const id=PAGE_IDS[i];b.textContent=PAGE_ICONS[id]+" "+PAGE_LABELS[id][langIndex()];b.setAttribute("aria-label",PAGE_LABELS[id][langIndex()]);});
