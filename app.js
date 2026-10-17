@@ -763,12 +763,8 @@ function rosterPerson(name){return name?'<span class="roster-person">'+rosterAva
 function setTeamsInputsEnabled(enabled){setInputsEnabled($("#teams"),enabled);}
 function renderTeamsDisplay(){
  const root=$("#teams"),display=$("#teamDisplay"),editor=$(".team-columns-wrap",root);if(!root||!display)return;
- const col=(key,title,count)=>'<section class="team-display-column"><h4>'+title+'</h4>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>';
- display.innerHTML=
-  '<section class="team-display-team team-display-team-one"><h3>1팀</h3><div class="team-display-pair">'+col("A","A1",7)+col("B","A2",7)+'</div></section>'+
-  '<section class="team-display-team"><h3>2팀</h3><div class="team-display-single">'+col("C","D1",7)+'</div></section>'+
-  '<section class="team-display-team"><h3>3팀</h3><div class="team-display-single">'+col("D","D2",7)+'</div></section>'+
-  '<section class="team-display-team"><h3>4팀</h3><div class="team-display-pair">'+col("extra","💥 개돌조",2)+col("subs","🔄 대체자",10)+'</div></section>';
+ const groups=[["A","A1",7],["B","A2",7],["C","D1",7],["D","D2",7],["extra","💥 개돌조",2],["subs","🔄 대체자",10]];
+ display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+title+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
  display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
 }
 async function loadTeams(){
