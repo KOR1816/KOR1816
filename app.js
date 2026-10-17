@@ -748,9 +748,10 @@ function renderNotices(){
   const view=$("#"+id,root),edit=$("#e"+id[0].toUpperCase()+id.slice(1),root);
   if(view){
    let value=noticeValue(id);
-   // 공지 원문에 "1 군"/"2 군"처럼 공백이 있어도 군 표기를 잡아 번역을 붙입니다.
+   // 공지 제목의 1군/2군만 각각 독립 번역합니다. 본문과 UTC 시간은 그대로 둡니다.
    if(currentLang!=="ko"){
-    value=value.replace(/1\s*군/g,"1군 "+homeText("squad1")).replace(/2\s*군/g,"2군 "+homeText("squad2"));
+    value=value.replace(/^(\s*#{1,6}\s*)1\s*군(?=\s|$|[:：])/gm,(_,prefix)=>prefix+homeText("squad1"));
+    value=value.replace(/^(\s*#{1,6}\s*)2\s*군(?=\s|$|[:：])/gm,(_,prefix)=>prefix+homeText("squad2"));
    }
    view.textContent=value;
   }
