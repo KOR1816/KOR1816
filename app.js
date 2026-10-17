@@ -1179,13 +1179,13 @@ async function toggleNewCastleAdmin(){
 }
 const CASTLE_CARD_TEXT={
  ko:{leader:"집결장",tierA:"A등급",tierB:"B등급",tierC:"C등급",tierNone:"등급 미등록",barracks5:"병영5",barracks45:"병영4.5",barracks4:"병영4",salo:"살로",hilde:"힐데",choose:"닉네임 선택",empty:"—"},
- en:{leader:"Rally Leader",tierA:"Tier A",tierB:"Tier B",tierC:"Tier C",tierNone:"Unranked",barracks5:"Barracks 5",barracks45:"Barracks 4.5",barracks4:"Barracks 4",salo:"Saul",hilde:"Hilde",choose:"Choose nickname",empty:"—"},
- ja:{leader:"集結長",tierA:"Aランク",tierB:"Bランク",tierC:"Cランク",tierNone:"未登録",barracks5:"兵舎5",barracks45:"兵舎4.5",barracks4:"兵舎4",salo:"サウル",hilde:"ヒルデ",choose:"ニックネームを選択",empty:"—"},
- zh:{leader:"集结队长",tierA:"A级",tierB:"B级",tierC:"C级",tierNone:"未登记",barracks5:"兵营5",barracks45:"兵营4.5",barracks4:"兵营4",salo:"索尔",hilde:"希尔德",choose:"选择昵称",empty:"—"},
- de:{leader:"Sammelführer",tierA:"Rang A",tierB:"Rang B",tierC:"Rang C",tierNone:"Ohne Rang",barracks5:"Kaserne 5",barracks45:"Kaserne 4,5",barracks4:"Kaserne 4",salo:"Saul",hilde:"Hilde",choose:"Spitznamen wählen",empty:"—"},
- it:{leader:"Capo raduno",tierA:"Grado A",tierB:"Grado B",tierC:"Grado C",tierNone:"Senza grado",barracks5:"Caserma 5",barracks45:"Caserma 4,5",barracks4:"Caserma 4",salo:"Saul",hilde:"Hilde",choose:"Scegli nickname",empty:"—"},
- es:{leader:"Líder de rally",tierA:"Rango A",tierB:"Rango B",tierC:"Rango C",tierNone:"Sin rango",barracks5:"Cuartel 5",barracks45:"Cuartel 4,5",barracks4:"Cuartel 4",salo:"Saul",hilde:"Hilde",choose:"Elegir apodo",empty:"—"},
- tr:{leader:"Toplanma Lideri",tierA:"A Kademesi",tierB:"B Kademesi",tierC:"C Kademesi",tierNone:"Derecesiz",barracks5:"Kışla 5",barracks45:"Kışla 4,5",barracks4:"Kışla 4",salo:"Saul",hilde:"Hilde",choose:"Takma ad seç",empty:"—"}
+ en:{leader:"Rally Leader",tierA:"Tier A",tierB:"Tier B",tierC:"Tier C",tierNone:"Unranked",barracks5:"Barracks 5",barracks45:"Barracks 4.5",barracks4:"Barracks 4",salo:"Salo",hilde:"Hilde",choose:"Choose nickname",empty:"—"},
+ ja:{leader:"集結長",tierA:"Aランク",tierB:"Bランク",tierC:"Cランク",tierNone:"未登録",barracks5:"兵舎5",barracks45:"兵舎4.5",barracks4:"兵舎4",salo:"サロ",hilde:"ヒルデ",choose:"ニックネームを選択",empty:"—"},
+ zh:{leader:"集结队长",tierA:"A级",tierB:"B级",tierC:"C级",tierNone:"未登记",barracks5:"兵营5",barracks45:"兵营4.5",barracks4:"兵营4",salo:"萨洛",hilde:"希尔德",choose:"选择昵称",empty:"—"},
+ de:{leader:"Sammelführer",tierA:"Rang A",tierB:"Rang B",tierC:"Rang C",tierNone:"Ohne Rang",barracks5:"Kaserne 5",barracks45:"Kaserne 4,5",barracks4:"Kaserne 4",salo:"Salo",hilde:"Hilde",choose:"Spitznamen wählen",empty:"—"},
+ it:{leader:"Capo raduno",tierA:"Grado A",tierB:"Grado B",tierC:"Grado C",tierNone:"Senza grado",barracks5:"Caserma 5",barracks45:"Caserma 4,5",barracks4:"Caserma 4",salo:"Salo",hilde:"Hilde",choose:"Scegli nickname",empty:"—"},
+ es:{leader:"Líder de rally",tierA:"Rango A",tierB:"Rango B",tierC:"Rango C",tierNone:"Sin rango",barracks5:"Cuartel 5",barracks45:"Cuartel 4,5",barracks4:"Cuartel 4",salo:"Salo",hilde:"Hilde",choose:"Elegir apodo",empty:"—"},
+ tr:{leader:"Toplanma Lideri",tierA:"A Kademesi",tierB:"B Kademesi",tierC:"C Kademesi",tierNone:"Derecesiz",barracks5:"Kışla 5",barracks45:"Kışla 4,5",barracks4:"Kışla 4",salo:"Salo",hilde:"Hilde",choose:"Takma ad seç",empty:"—"}
 };
 function castleCardText(key){return (CASTLE_CARD_TEXT[currentLang]||CASTLE_CARD_TEXT.ko)[key]||key;}
 function castleAvatar(name){
