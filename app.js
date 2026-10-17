@@ -333,6 +333,11 @@ Object.assign(STATIC_TRANSLATIONS,{
 Object.assign(STATIC_TRANSLATIONS,{
  "성검쟁탈 · 3대연맹전":["성검쟁탈 · 3대연맹전","Holy Sword Clash · Three Alliances War","聖剣争奪 · 三大連盟戦","圣剑争夺 · 三大联盟战","Heiliges Schwert · Krieg der drei Allianzen","Duello della Spada Sacra · Guerra delle Tre Alleanze","Duelo de la Espada Sagrada · Guerra de las Tres Alianzas","Kutsal Kılıç · Üç İttifak Savaşı"]
 });
+Object.assign(STATIC_TRANSLATIONS,{
+ "🐻 곰사냥":["🐻 곰사냥","🐻 Bear Hunt","🐻 熊狩り","🐻 熊猎","🐻 Bärenjagd","🐻 Caccia all'orso","🐻 Caza del oso","🐻 Ayı Avı"],
+ "⚔️🛡️ 성검쟁탈 · 3대연맹전":["⚔️🛡️ 성검쟁탈 · 3대연맹전","⚔️🛡️ Holy Sword Clash · Three Alliances War","⚔️🛡️ 聖剣争奪 · 三大連盟戦","⚔️🛡️ 圣剑争夺 · 三大联盟战","⚔️🛡️ Heiliges Schwert · Krieg der drei Allianzen","⚔️🛡️ Duello della Spada Sacra · Guerra delle Tre Alleanze","⚔️🛡️ Duelo de la Espada Sagrada · Guerra de las Tres Alianzas","⚔️🛡️ Kutsal Kılıç · Üç İttifak Savaşı"],
+ "⚔️ 골든 글레이브 월요일":["⚔️ 골든 글레이브 월요일","⚔️ Golden Glaives Monday","⚔️ ゴールデン・グレイブ（月曜）","⚔️ 黄金长戟（周一）","⚔️ Goldene Glefen am Montag","⚔️ Lame Dorate del lunedì","⚔️ Guja Dorada del lunes","⚔️ Pazartesi Altın Mızraklar"]
+});
 function translateStatic(){
  const root=$("#page-root");if(!root)return;
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
