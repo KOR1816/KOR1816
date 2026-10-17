@@ -1451,6 +1451,10 @@ async function deleteRecord(index){
 
 /* Inline handlers are explicitly exported because page markup is static HTML. */
 Object.assign(EXTRA_BUTTON_TRANSLATIONS,{"🔀 등급별 자동배치":["🔀 등급별 자동배치","🔀 Auto-assign by tier","🔀 ランク別自動配置","🔀 按等级自动分配","🔀 Automatisch nach Rang","🔀 Assegna per grado","🔀 Asignar por rango","🔀 Kademeye göre otomatik ata"]});
+Object.assign(STATIC_TRANSLATIONS,{
+  "집결장":["집결장","Leader","集結主","队长","Leiter","Capo","Líder","Lider"]
+});
+
 Object.assign(window,{
  loadHome,toggleHomeAdmin,saveHome,refreshTeams:loadTeams,toggleTeamsAdmin,saveAllTeams,
  loadAlliance,toggleAllianceAdmin,saveAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
