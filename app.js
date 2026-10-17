@@ -31,7 +31,7 @@ const DOCS = {
   castlelayout1:"castle_layout_rebuild_v1", seating:"rebuild_seating_v1", viking:"rebuild_viking_v1", glory:"rebuild_glory_records_v1"
 };
 const LEGACY = {
-  home:"home", notices:"notices", teams:"teams", alliance:"alliance", seating:"seating_v4", viking:"viking_v1", glory:"glory_records",
+  home:"home", notices:"notices", teams:"teams", alliance:"alliance", viking:"viking_v1", glory:"glory_records",
   battleJoin:"castle_features_v1", castlewar1:"castle_features_v1", castlelayout1:"castle_layout1_v1"
 };
 const FIXED_NICKNAMES=["Nemesis","Pham","샌디에이고","Constant","SsungBi","Jinno","KOREAN MONSTER","hhHa","GeeGeeGeeZ","Jiwon","Aveline","DON QUIXOTE","Leo li","Aimee","yongi","moon","Chan Dam Bom","bebe","VIVIAN","Pika","Lekum","ImNotKorean","DDoro","Hani","miiiiia","bossi","Wilk","Krungkrung","Keith ape","OMEGA","Zidf","hajae","Mushi","Libby","LSJ","jennie","Nyctifer_v","Lager","GieZues","Sant Jordi","Eagle","Architect","El Elegido","LJ","Furball","AVA","AgaresKOR","coculim","Rarara","ROKA","Ian","다잘이 돌아왔다","backki","Commander 주","HIGH FIVE","Gideon","Dark Knight","Lady Anaiah","Korean","FlexMan","Dingdong","Alucard","S ssh","Hair loss beam","RESCENE Yaho","SUMMER","hun","themis1994","Sylvanas","RACruze","Kashish","Vista","HERA","Alchemist","DaddyEpstein","KOR","Rayan","ADIPATI KOR","Kuu Rawr","SAGAMI","KK Master","Solace","Bilal","The Warrior","Citykan","스타리아","Adanali Ibo","Hsun","benson627","Remember","Jshan","lolkillmeplz67","Pamuk","gozeromin","KOOK","Ojr","Mahecha","MG PRIME","MissCoco"];
@@ -748,18 +748,9 @@ function renderNotices(){
   const view=$("#"+id,root),edit=$("#e"+id[0].toUpperCase()+id.slice(1),root);
   if(view){
    let value=noticeValue(id);
-   // 홈 일정에서 검증된 번역 사전을 재사용하고, 공지의 제목 줄만 바꿉니다.
-   // 일반 문장과 UTC 일정, 나머지 공지 내용은 그대로 둡니다.
+   // 원래 1군/2군 표기는 남기고 한 칸 뒤에 해당 언어 번역을 붙입니다.
    if(currentLang!=="ko"){
-    value=value.split(/\r?\n/).map(line=>{
-     const trimmed=line.trim();
-     const heading=trimmed.replace(/^#{1,6}[ \t]+/,"").trim();
-     if(heading!=="1군"&&heading!=="2군")return line;
-     const translated=homeText(heading==="1군"?"squad1":"squad2");
-     const prefix=line.match(/^([ \t]*(?:#{1,6}[ \t]+)?)/)?.[0]||"";
-     const suffix=line.match(/[ \t]*$/)?.[0]||"";
-     return prefix+translated+suffix;
-    }).join("\n");
+    value=value.replace(/1군/g,"1군 "+homeText("squad1")).replace(/2군/g,"2군 "+homeText("squad2"));
    }
    view.textContent=value;
   }
@@ -929,6 +920,21 @@ async function saveAlliance(){
 }
 
 /* Seating table */
+function seatingRosterLabel(id){
+ const value=String(id||"");
+ return /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(value)?value:value.replace(/[^A-Za-z0-9 ]/g,"");
+}
+function seatingRosterPerson(id){
+ if(!id)return '<span class="roster-person-empty"></span>';
+ return '<span class="roster-person">'+rosterAvatar(id)+'<span class="roster-person-name">'+esc(seatingRosterLabel(id))+'</span></span>';
+}
+function fillSeatingNicknameSelect(select,value){
+ if(!select)return;
+ const allowed=new Set(FIXED_NICKNAMES);
+ const current=allowed.has(String(value||"").trim())?String(value).trim():"";
+ select.innerHTML='<option value="">닉네임 선택</option>'+FIXED_NICKNAMES.map(id=>'<option value="'+esc(id)+'" '+(id===current?'selected':'')+'>'+esc(seatingRosterLabel(id))+'</option>').join("");
+ select.value=current;
+}
 function getRows(value){
  if(Array.isArray(value))return value;
  if(!value||typeof value!=="object")return [];
@@ -940,24 +946,26 @@ function getRows(value){
  return [];
 }
 function normalizeSeatingRows(value){
- const source=getRows(value);
- const leftLens=[12,17,26],rightLens=[12,18,16];
- return [0,1,2].map(i=>{
-  const row=source[i]||{};
-  const left=Array.isArray(row.left)?row.left:[];
-  const right=Array.isArray(row.right)?row.right:[];
-  return {row:["Row 1","Row 2","Row 3"][i],left:Array.from({length:leftLens[i]},(_,j)=>String(left[j]??"")),right:Array.from({length:rightLens[i]},(_,j)=>String(right[j]??""))};
- });
+  const source=getRows(value);
+  const leftLens=[12,17,26],rightLens=[12,18,16];
+  const allowed=new Set(FIXED_NICKNAMES);
+  const validId=v=>{const id=String(v??"").trim();return allowed.has(id)?id:"";};
+  return [0,1,2].map(i=>{
+   const row=source[i]||{};
+   const left=Array.isArray(row.left)?row.left:[];
+   const right=Array.isArray(row.right)?row.right:[];
+   return {row:["Row 1","Row 2","Row 3"][i],left:Array.from({length:leftLens[i]},(_,j)=>validId(left[j])),right:Array.from({length:rightLens[i]},(_,j)=>validId(right[j]))};
+  });
 }
 function renderSeating(){
  const root=$("#seating");if(!root)return;const wrap=$(".seating-3col-wrap",root);if(!wrap)return;const colors=[["#2459b5","#62bde9"],["#27864a","#a7dba2"],["#e18a32","#8055bd"]];
- wrap.innerHTML=seatingData.rows.map((row,ri)=>'<div class="seating-row-group"><h3 class="seating-column-title">ROW '+(ri+1)+'</h3><div class="seating-split-pair"><section class="seating-split-card seating-side-'+(ri+1)+'-left"><h4 style="--seating-side-color:'+colors[ri][0]+'">Bear1</h4>'+row.left.map((name,i)=>'<div class="seating-row"><span class="seating-number">'+(i+1)+'</span>'+rosterPerson(name)+'</div>').join("")+'</section><section class="seating-split-card seating-side-'+(ri+1)+'-right"><h4 style="--seating-side-color:'+colors[ri][1]+'">Bear2</h4>'+row.right.map((name,i)=>'<div class="seating-row"><span class="seating-number">'+(i+1)+'</span>'+rosterPerson(name)+'</div>').join("")+'</section></div></div>').join("");
+ wrap.innerHTML=seatingData.rows.map((row,ri)=>'<div class="seating-row-group"><h3 class="seating-column-title">ROW '+(ri+1)+'</h3><div class="seating-split-pair"><section class="seating-split-card seating-side-'+(ri+1)+'-left"><h4 style="--seating-side-color:'+colors[ri][0]+'">Bear1</h4>'+row.left.map((name,i)=>'<div class="seating-row"><span class="seating-number">'+(i+1)+'</span>'+seatingRosterPerson(name)+'</div>').join("")+'</section><section class="seating-split-card seating-side-'+(ri+1)+'-right"><h4 style="--seating-side-color:'+colors[ri][1]+'">Bear2</h4>'+row.right.map((name,i)=>'<div class="seating-row"><span class="seating-number">'+(i+1)+'</span>'+seatingRosterPerson(name)+'</div>').join("")+'</section></div></div>').join("");
  const panel=$("#seatingEdit",root);if(panel)panel.style.display=adminModes.seating?"block":"none";setAdminButton($("#seatingAdminBtn",root),adminModes.seating);
 }
 function renderSeatingAdmin(){
  const root=$("#seating"),grid=$("#seatingEditGrid",root);if(!grid)return;
  grid.innerHTML=seatingData.rows.map((row,ri)=>'<section class="seating-edit-column"><h4>ROW '+(ri+1)+'</h4><div class="seating-edit-split"><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-left">Bear1</h5>'+row.left.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="left" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select></label>').join("")+'</div><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-right">Bear2</h5>'+row.right.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="right" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select></label>').join("")+'</div></div></section>').join("");
- $$("#seatingEditGrid [data-seating-row]").forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||"");});
+ $$("#seatingEditGrid [data-seating-row]").forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillSeatingNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||"");});
 }
 async function loadSeating(){
  const r=await loadData("seating",seatingData);
