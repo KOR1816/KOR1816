@@ -268,6 +268,7 @@ function applyLanguage(lang){
  renderNotices();
  translateCommonControls();
  translateStatic();
+ refreshGenericLoadMessages();
  if(activePage==="home")renderHome();
  if(activePage==="seating")refreshTranslatedBanner("seating","seatingLatestMsg");
  if(activePage==="castlewar1")refreshTranslatedBanner("castlewar1","ncWarMsg");
@@ -341,6 +342,10 @@ function translateStatic(){
   const translated=translations[langIndex()];
   node.nodeValue=original.replace(trim,translated||trim);
  }
+}
+function refreshGenericLoadMessages(){
+ const known=["최신 내용을 불러왔습니다.","Latest content loaded.","最新の内容を読み込みました。","已加载最新内容。","Aktuelle Inhalte geladen.","Contenuti aggiornati caricati.","Contenido actualizado cargado.","En güncel içerik yüklendi."];
+ $(".msg, .status, [role=\"status\"]").forEach(el=>{if(known.includes((el.textContent||"").trim()))el.textContent=message("load");});
 }
 function refreshTranslatedBanner(pageId,targetId){
  const el=$("#"+targetId),value=el?.textContent||"";
