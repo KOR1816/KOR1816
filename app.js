@@ -929,7 +929,9 @@ function renderParticipants(){
  const list=$("#ncParticipants",root);
  if(list)list.innerHTML=groupedCards(active)||'<div class="nc-empty">등록된 참전 정보가 없습니다.</div>';
  const waitingList=$("#ncWaiting",root);
- if(waitingList)waitingList.innerHTML=groupedCards(waiting)||'<div class="nc-empty">대기 명단이 없습니다.</div>';
+ // Waiting list: no tier section headings; show the same participant cards in one flat list.
+ const waitingCards=items=>items.map(battleJoinParticipantCard).join("");
+ if(waitingList)waitingList.innerHTML=waitingCards(waiting)||'<div class="nc-empty">대기 명단이 없습니다.</div>';
  const participantsHeading=$('h3[data-newcastle="participants"]',root);
  if(participantsHeading)participantsHeading.textContent="등록된 참전 정보 ("+active.length+")";
  const waitingHeading=$('h3[data-newcastle="waiting"]',root);
@@ -1145,10 +1147,8 @@ function renderCastleWar(){
  if(waiting){
   // Include every non-available participant (later/resting and unavailable) in the waiting list.
   const roster=castleWarRoster().filter(p=>p.status!=="yes").sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
-  const tiers=[["A","A등급"],["B","B등급"],["C","C등급"]];
-  const grouped=tiers.map(([tier,label])=>{const list=roster.filter(p=>p.tier===tier);return list.length?'<section class="nc-tier-group"><h4 class="nc-tier-heading">'+label+'</h4><div class="nc-tier-cards">'+list.map(battleJoinParticipantCard).join("")+'</div></section>':"";}).join("");
-  const unranked=roster.filter(p=>!["A","B","C"].includes(p.tier));
-  waiting.innerHTML=grouped+(unranked.length?'<div class="nc-tier-cards">'+unranked.map(battleJoinParticipantCard).join("")+'</div>':"")||'<p class="muted">대기 명단이 없습니다.</p>';
+  // Match Castle Participation: no A/B/C headings or separate unranked section.
+  waiting.innerHTML=roster.map(battleJoinParticipantCard).join("")||'<p class="muted">대기 명단이 없습니다.</p>';
  }
  const saveButton=$("[data-newcastle='save']",root);
  if(saveButton)saveButton.style.display=adminModes.castlewar1?"inline-flex":"none";
