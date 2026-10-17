@@ -526,18 +526,14 @@ function captureHomeEditor(){
 }
 function renderHomeSchedule(value){
  const entries=String(value||"").split(/\r?\n/).map((line,index)=>{
-  const raw=line.trim();
-  if(!raw)return null;
+  const raw=line.trim();if(!raw)return null;
   const match=raw.match(/\s[·—-]\s*(\d{1,2}:\d{2})(?:\s*\(([^)]*)\))?\s*$/);
   const event=match?raw.slice(0,match.index).trim():raw;
-  const time=match?match[1]:"";
-  const secondary=match?(match[2]||""):"";
+  const time=match?match[1]:"",secondary=match?(match[2]||""):"";
   const minutes=time?Number(time.split(":")[0])*60+Number(time.split(":")[1]):Infinity;
   const group=/성검|3대연맹전|연맹전|three alliances/i.test(event)?"성검쟁탈 · 3대연맹전":/곰/.test(event)?"곰 트랩":"기타 일정";
   return {event,time,secondary,minutes,index,group};
  }).filter(Boolean);
- // Keep the 3대연맹전 rows paired with the matching 성검쟁탈 squad/time,
- // including when an older saved schedule only contains 성검쟁탈 rows.
  const swordRows=entries.filter(item=>/성검쟁탈/.test(item.event)&&/[12]군/.test(item.event));
  for(const item of swordRows){
   const squad=(item.event.match(/[12]군/)||[])[0];
@@ -546,24 +542,25 @@ function renderHomeSchedule(value){
  }
  const groups=["성검쟁탈 · 3대연맹전","곰 트랩","기타 일정"];
  if(!entries.length)return '<p class="home-schedule-empty">'+esc(homeText("empty"))+'</p>';
- return '<div class="home-schedule-list">'+groups.map(group=>{
-  const groupIndex=groups.indexOf(group);
-  const groupLabel=homeText("groups")[groupIndex]||group;
+ return '<div class="home-schedule-list">'+groups.map((group,index)=>{
+  const groupLabel=homeText("groups")[index]||group;
   const items=entries.filter(item=>item.group===group).sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
   if(!items.length)return "";
   const rows=[];
   items.forEach(item=>{
-   const isPaired=/성검쟁탈|3대연맹전|연맹전|three alliances/i.test(item.event)&&/[12]군/.test(item.event);
-   const squad=isPaired?(item.event.match(/[12]군/)||[])[0]:"";
-   const pairKey=isPaired?item.time+"|"+squad:"";
-   let row=pairKey?rows.find(r=>r.pairKey===pairKey):null;
-   if(!row){row={...item,pairKey,pairedEvents:[item.event]};rows.push(row);}
+   const paired=/성검쟁탈|3대연맹전|연맹전|three alliances/i.test(item.event)&&/[12]군/.test(item.event);
+   const squad=paired?(item.event.match(/[12]군/)||[])[0]:"";
+   const pairKey=paired?item.time+"|"+squad:"";
+   const row=pairKey?rows.find(r=>r.pairKey===pairKey):null;
+   if(!row)rows.push({...item,pairKey,pairedEvents:[item.event]});
    else if(!row.pairedEvents.includes(item.event))row.pairedEvents.push(item.event);
   });
   rows.sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
-  return '<section class="home-schedule-group"><h3 class="home-schedule-heading">'+esc(groupLabel)+'</h3>'+rows.map(item=>'<div class="home-schedule-row">'+
+  return '<section class="home-schedule-panel"><h3 class="home-schedule-panel-title">'+esc(groupLabel)+'</h3>'+rows.map(item=>
+   '<div class="home-schedule-row">'+
    (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>'+esc(homeText("unscheduled"))+'</span></div>')+
-   '<div class="home-schedule-event">'+item.pairedEvents.map(event=>'<div class="home-schedule-event-line">'+esc(translateHomeEvent(event))+'</div>').join("")+'</div></div>').join("")+'</section>';
+   '<div class="home-schedule-event">'+item.pairedEvents.map(event=>'<div class="home-schedule-event-line">'+esc(translateHomeEvent(event))+'</div>').join("")+'</div></div>'
+  ).join("")+'</section>';
  }).join("")+'</div>';
 }
 function renderHome(){
@@ -766,8 +763,12 @@ function rosterPerson(name){return name?'<span class="roster-person">'+rosterAva
 function setTeamsInputsEnabled(enabled){setInputsEnabled($("#teams"),enabled);}
 function renderTeamsDisplay(){
  const root=$("#teams"),display=$("#teamDisplay"),editor=$(".team-columns-wrap",root);if(!root||!display)return;
- const groups=[["A","A1",7],["B","A2",7],["C","D1",7],["D","D2",7],["extra","💥 개돌조",2],["subs","🔄 대체자",10]];
- display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+title+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
+ const col=(key,title,count)=>'<section class="team-display-column"><h4>'+title+'</h4>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>';
+ display.innerHTML=
+  '<section class="team-display-team team-display-team-one"><h3>1팀</h3><div class="team-display-pair">'+col("A","A1",7)+col("B","A2",7)+'</div></section>'+
+  '<section class="team-display-team"><h3>2팀</h3><div class="team-display-single">'+col("C","D1",7)+'</div></section>'+
+  '<section class="team-display-team"><h3>3팀</h3><div class="team-display-single">'+col("D","D2",7)+'</div></section>'+
+  '<section class="team-display-team"><h3>4팀</h3><div class="team-display-pair">'+col("extra","💥 개돌조",2)+col("subs","🔄 대체자",10)+'</div></section>';
  display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
 }
 async function loadTeams(){
