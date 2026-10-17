@@ -750,13 +750,14 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #alliance.alliance-loading #allianceMsg{
   min-height:1.2em;
 }
-/* Seating: show exactly 17 slots in row 2 left and 16 in row 3 right.
-   Each card ends at its own final slot instead of stretching to its neighbor. */
-#seating .seating-split-pair{align-items:start!important;}
-#seating .seating-split-card{align-self:start!important;height:fit-content!important;min-height:0!important;}
+/* Seating: preserve the working mobile layout; fix stretched card borders on desktop only. */
 #seating .seating-side-2-left .seating-row:nth-child(n+18),
 #seating .seating-side-3-right .seating-row:nth-child(n+17){
   display:none!important;
+}
+@media(min-width:761px){
+  #seating .seating-split-pair{align-items:start!important;}
+  #seating .seating-split-card{align-self:start!important;height:fit-content!important;min-height:0!important;}
 }
 #viking .viking-register{
   display:flex!important;
