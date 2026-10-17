@@ -800,7 +800,7 @@ async function saveAllTeams(){
  try{teamData=await saveCloud("teams",next);renderTeamsDisplay();setMsg("teamMsg",message("saved"));}catch(e){console.error(e);setMsg("teamMsg",message("failed"));}
 }
 async function loadAlliance(){
- const root=$("#alliance");if(root){root.classList.add("alliance-loading");$(".alliance-display",root).forEach(el=>el.replaceChildren());}
+ const root=$("#alliance");if(root){root.classList.add("alliance-loading");$$(".alliance-display",root).forEach(el=>el.replaceChildren());}
  const r=await loadData("alliance",allianceData);allianceData=r.data;
  for(let t=1;t<=4;t++){const groups=allianceData.names?.[t]||{};for(let g=1;g<=(t<=2?2:1);g++){const vals=groups["g"+g]||[];for(let k=3;k<=7;k++){const v=vals[k]||"";fillNicknameSelect($("#alliance-"+t+"-"+g+"-"+k,root),v);fillNicknameSelect($("#ae-"+t+"-"+g+"-"+k,root),v);}}}
  renderAllianceDisplay();setInputsEnabled(root,Boolean(adminModes.alliance));root.classList.toggle("alliance-admin-mode",adminModes.alliance);root.classList.remove("alliance-loading");setMsg("allianceMsg",r.source==="unavailable"?message("fallback"):message("load"));
