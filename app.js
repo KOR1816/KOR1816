@@ -897,8 +897,8 @@ function battleJoinParticipantCard(p,hideSkills=false){
  const avatar='<span class="nc-avatar" '+(spriteStyle?'style="'+spriteStyle+'"':"")+'>'+(sprite?"":esc((p.nickname||"?").slice(0,1)))+'</span>';
  const barracks=fixed?castleCardText("leader"):p.tier==="A"?castleCardText("barracks5"):p.tier==="B"?castleCardText("barracks45"):p.tier==="C"?castleCardText("barracks4"):castleCardText("tierNone");
  const skills=[];
- if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" ✓");
- if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" ✓");
+ if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
+ if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
  return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong>'+esc(p.nickname)+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(skills.join(" · "))+'</div></div></div>';
 }
 function renderParticipants(){
@@ -1044,7 +1044,7 @@ async function toggleNewCastleAdmin(){
  renderCastleWar();
 }
 const CASTLE_CARD_TEXT={
- ko:{leader:"집결장",tierA:"A등급",tierB:"B등급",tierC:"C등급",tierNone:"등급 미등록",barracks5:"병영5",barracks45:"병영4.5",barracks4:"병영4",salo:"사울",hilde:"힐데",choose:"닉네임 선택",empty:"—"},
+ ko:{leader:"집결장",tierA:"A등급",tierB:"B등급",tierC:"C등급",tierNone:"등급 미등록",barracks5:"병영5",barracks45:"병영4.5",barracks4:"병영4",salo:"살로",hilde:"힐데",choose:"닉네임 선택",empty:"—"},
  en:{leader:"Rally Leader",tierA:"Tier A",tierB:"Tier B",tierC:"Tier C",tierNone:"Unranked",barracks5:"Barracks 5",barracks45:"Barracks 4.5",barracks4:"Barracks 4",salo:"Saul",hilde:"Hilde",choose:"Choose nickname",empty:"—"},
  ja:{leader:"集結長",tierA:"Aランク",tierB:"Bランク",tierC:"Cランク",tierNone:"未登録",barracks5:"兵舎5",barracks45:"兵舎4.5",barracks4:"兵舎4",salo:"サウル",hilde:"ヒルデ",choose:"ニックネームを選択",empty:"—"},
  zh:{leader:"集结队长",tierA:"A级",tierB:"B级",tierC:"C级",tierNone:"未登记",barracks5:"兵营5",barracks45:"兵营4.5",barracks4:"兵营4",salo:"索尔",hilde:"希尔德",choose:"选择昵称",empty:"—"},
@@ -1484,7 +1484,7 @@ Object.assign(STATIC_TRANSLATIONS,{
  "대기 명단":["대기 명단","Waiting List","待機リスト","等待名单","Warteliste","Lista d'attesa","Lista de espera","Bekleme Listesi"],
  "살로 원정 5스킬":["사울 원정 5스킬","Saul Expedition Skill 5","サウル遠征スキル5","索尔远征技能5","Saul-Expeditionsfähigkeit 5","Abilità spedizione Saul 5","Habilidad de expedición de Saul 5","Saul Sefer Yeteneği 5"],
  "아마데 / 페라 / 로사":["아마데 / 페라 / 로사","Amadeus / Fera / Rosa","アマデウス / フェラ / ローザ","阿玛德乌斯 / 费拉 / 罗莎","Amadeus / Fera / Rosa","Amadeus / Fera / Rosa","Amadeus / Fera / Rosa","Amadeus / Fera / Rosa"],
- "알카 / 마르고 / 사울 (상대가 강하면 예거)":["알카 / 마르고 / 사울 (상대가 강하면 예거)","Alca / Margot / Saul (use Yager if the opponent is strong)","アルカ / マーゴ / サウル（相手が強ければイェーガー）","阿尔卡 / 玛戈 / 索尔（对手较强时使用耶格）","Alca / Margot / Saul (bei starken Gegnern Yager)","Alca / Margot / Saul (usa Yager contro avversari forti)","Alca / Margot / Saul (usa Yager contra rivales fuertes)","Alca / Margot / Saul (rakip güçlüyse Yager kullan)"],
+ "알카 / 마르고 / 살로 (상대가 강하면 예거)":["알카 / 마르고 / 살로 (상대가 강하면 예거)","Alca / Margot / Saul (use Yager if the opponent is strong)","アルカ / マーゴ / サウル（相手が強ければイェーガー）","阿尔卡 / 玛戈 / 索尔（对手较强时使用耶格）","Alca / Margot / Saul (bei starken Gegnern Yager)","Alca / Margot / Saul (usa Yager contro avversari forti)","Alca / Margot / Saul (usa Yager contra rivales fuertes)","Alca / Margot / Saul (rakip güçlüyse Yager kullan)"],
  "2첸코 / 2아마":["2첸코 / 2아마","2 Chenko / 2 Amadeus","2チェンコ / 2アマデウス","2切恩科 / 2阿玛德乌斯","2 Chenko / 2 Amadeus","2 Chenko / 2 Amadeus","2 Chenko / 2 Amadeus","2 Chenko / 2 Amadeus"],
  "2첸코 / 아마네 / 파드":["2첸코 / 아마네 / 파드","2 Chenko / Amane / Fad","2チェンコ / アマネ / ファド","2切恩科 / 阿玛内 / 法德","2 Chenko / Amane / Fad","2 Chenko / Amane / Fad","2 Chenko / Amane / Fad","2 Chenko / Amane / Fad"],
  "2살로 / 첸코 / 아마네":["2사울 / 첸코 / 아마네","2 Saul / Chenko / Amane","2サウル / チェンコ / アマネ","2索尔 / 切恩科 / 阿玛内","2 Saul / Chenko / Amane","2 Saul / Chenko / Amane","2 Saul / Chenko / Amane","2 Saul / Chenko / Amane"],
