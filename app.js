@@ -21,6 +21,10 @@ const PAGE_LABELS = {
   viking:["바이킹","Viking","バイキング","维京","Wikinger","Vichinghi","Vikingos","Viking"],
   glory:["영광의순간들","Moments of Glory","栄光の瞬間","荣耀时刻","Ruhmreiche Momente","Momenti di Gloria","Momentos de Gloria","Zafer Anları"]
 };
+const PAGE_ICONS = {
+  home:"🏠", notices:"📢", teams:"⚔️", alliance:"🗡️", battleJoin:"⚔️",
+  castlewar1:"🔱🛡️", castlelayout1:"🏰", seating:"🪑", viking:"🪓", glory:"🏆"
+};
 const DOCS = {
   home:"rebuild_home_v1", notices:"rebuild_notices_v1", teams:"rebuild_teams_v1", alliance:"rebuild_alliance_v1",
   battleJoin:"castle_participation_rebuild_v1", castlewar1:"castlewar_rebuild_v1",
@@ -259,7 +263,7 @@ function applyLanguage(lang){
  document.documentElement.lang=currentLang;
  $("#language-select").value=currentLang;
  $("#language-label").textContent=({ko:"언어",en:"Language",ja:"言語",zh:"语言",de:"Sprache",it:"Lingua",es:"Idioma",tr:"Dil"})[currentLang];
- $$("#main-nav button").forEach((b,i)=>{const id=PAGE_IDS[i];b.textContent=(i+1)+". "+PAGE_LABELS[id][langIndex()];b.setAttribute("aria-label",PAGE_LABELS[id][langIndex()]);});
+ $$("#main-nav button").forEach((b,i)=>{const id=PAGE_IDS[i];b.textContent=PAGE_ICONS[id]+" "+PAGE_LABELS[id][langIndex()];b.setAttribute("aria-label",PAGE_LABELS[id][langIndex()]);});
  try{localStorage.setItem("kor1816_rebuild_lang_v1",currentLang);localStorage.setItem("kor1816_lang",currentLang);}catch{}
  renderNotices();
  translateCommonControls();
