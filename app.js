@@ -497,9 +497,19 @@ function renderHomeSchedule(value){
  return '<div class="home-schedule-list">'+groups.map(group=>{
   const items=entries.filter(item=>item.group===group).sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
   if(!items.length)return "";
-  return '<section class="home-schedule-group"><h3 class="home-schedule-heading">'+esc(group)+'</h3>'+items.map(item=>'<div class="home-schedule-row">'+
+  const rows=[];
+  items.forEach(item=>{
+   const isPaired=/성검쟁탈|3대연맹전|연맹전|three alliances/i.test(item.event)&&/[12]군/.test(item.event);
+   const squad=isPaired?(item.event.match(/[12]군/)||[])[0]:"";
+   const pairKey=isPaired?item.time+"|"+squad:"";
+   let row=pairKey?rows.find(r=>r.pairKey===pairKey):null;
+   if(!row){row={...item,pairKey,pairedEvents:[item.event]};rows.push(row);}
+   else if(!row.pairedEvents.includes(item.event))row.pairedEvents.push(item.event);
+  });
+  rows.sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
+  return '<section class="home-schedule-group"><h3 class="home-schedule-heading">'+esc(group)+'</h3>'+rows.map(item=>'<div class="home-schedule-row">'+
    (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>시간 미정</span></div>')+
-   '<div class="home-schedule-event">'+esc(item.event)+'</div></div>').join("")+'</section>';
+   '<div class="home-schedule-event">'+item.pairedEvents.map((event,index)=>'<div class="home-schedule-event-line">'+(index===0?'<strong>':'')+esc(event)+(index===0?'</strong>':'')+'</div>').join("")+'</div></div>').join("")+'</section>';
  }).join("")+'</div>';
 }
 function renderHome(){
