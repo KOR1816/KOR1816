@@ -288,6 +288,7 @@ function applyLanguage(lang){
  translateStatic();
  refreshGenericLoadMessages();
  if(activePage==="home")renderHome();
+ if(activePage==="teams")renderTeamsDisplay();
  if(activePage==="glory")renderRecords();
  if(activePage==="seating")refreshTranslatedBanner("seating","seatingLatestMsg");
  if(activePage==="castlewar1")refreshTranslatedBanner("castlewar1","ncWarMsg");
