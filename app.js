@@ -741,7 +741,10 @@ function renderNotices(){
     ko:["1군","2군"],en:["Squad 1","Squad 2"],ja:["第1部隊","第2部隊"],zh:["第1队","第2队"],
     de:["Trupp 1","Trupp 2"],it:["Squadra 1","Squadra 2"],es:["Grupo 1","Grupo 2"],tr:["1. Takım","2. Takım"]
    }[currentLang]||["1군","2군"];
-      value=value.replace(/(^|\r?\n)([ \t]*(?:#{1,6}[ \t]+)?)(1군|2군)([ \t]*)(?=\r?\n|$|[:：])/g,(_,lineStart,headingPrefix,squad,trailingSpace)=>lineStart+headingPrefix+localizedSquadLabel(squad)+trailingSpace);
+       value=value.split(/\r?\n/).map(line=>{
+        const match=line.match(/^([ \t]*(?:#{1,6}[ \t]+)?)(1군|2군)([ \t]*[:：]?[ \t]*)$/);
+        return match?match[1]+localizedSquadLabel(match[2])+match[3]:line;
+       }).join("\n");
    view.textContent=value;
   }
   if(edit){
