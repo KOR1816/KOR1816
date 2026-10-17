@@ -270,5 +270,5 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #castlewar1 .nc-war-row:not(.nc-war-leader-row) .castle-person-card,
 #castlewar1 .nc-war-row:not(.nc-war-leader-row) .castle-person-empty{padding:2px 4px}
 #castlewar1 .nc-war-row:not(.nc-war-leader-row) select{padding:4px 5px;min-height:30px}
-#castlewar1 .nc-war-row.nc-war-leader-row{grid-template-columns:58px minmax(0,1fr);gap:5px;padding:4px 5px}
-#castlewar1 .nc-war-row.nc-war-leader-row>b{min-height:30px}
+#castlewar1 .nc-war-row.nc-war-leader-row{grid-template-columns:30px minmax(0,1fr);gap:5px;padding:3px 5px;min-height:0}
+#castlewar1 .nc-war-row.nc-war-leader-row>b{min-height:26px;font-size:12px}
