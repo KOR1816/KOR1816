@@ -481,12 +481,18 @@ function renderHomeSchedule(value){
   const time=match?match[1]:"";
   const secondary=match?(match[2]||""):"";
   const minutes=time?Number(time.split(":")[0])*60+Number(time.split(":")[1]):Infinity;
-  return {event,time,secondary,minutes,index};
- }).filter(Boolean).sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
+  const group=/성검/.test(event)?"성검쟁탈":/곰/.test(event)?"곰 트랩":"기타 일정";
+  return {event,time,secondary,minutes,index,group};
+ }).filter(Boolean);
+ const groups=["성검쟁탈","곰 트랩","기타 일정"];
  if(!entries.length)return '<p class="home-schedule-empty">일정이 등록되지 않았습니다.</p>';
- return '<div class="home-schedule-list">'+entries.map(item=>'<div class="home-schedule-row">'+
-  (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>시간 미정</span></div>')+
-  '<div class="home-schedule-event">'+esc(item.event)+'</div></div>').join("")+'</div>';
+ return '<div class="home-schedule-list">'+groups.map(group=>{
+  const items=entries.filter(item=>item.group===group).sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
+  if(!items.length)return "";
+  return '<section class="home-schedule-group"><h3 class="home-schedule-heading">'+esc(group)+'</h3>'+items.map(item=>'<div class="home-schedule-row">'+
+   (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>시간 미정</span></div>')+
+   '<div class="home-schedule-event">'+esc(item.event)+'</div></div>').join("")+'</section>';
+ }).join("")+'</div>';
 }
 function renderHome(){
  const d=homeData.translations?.[currentLang]||homeData.translations?.ko||homeData;
