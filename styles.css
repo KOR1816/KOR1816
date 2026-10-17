@@ -750,11 +750,7 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #alliance.alliance-loading #allianceMsg{
   min-height:1.2em;
 }
-/* Seating: preserve the working mobile layout; fix stretched card borders on desktop only. */
-#seating .seating-side-2-left .seating-row:nth-of-type(n+18),
-#seating .seating-side-3-right .seating-row:nth-of-type(n+17){
-  display:none!important;
-}
+/* Seating: row counts come from normalized data; only stop desktop card stretching. */
 @media(min-width:761px){
   #seating .seating-split-pair{align-items:start!important;}
   #seating .seating-split-card{align-self:start!important;height:fit-content!important;min-height:0!important;}
