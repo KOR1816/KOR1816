@@ -364,6 +364,32 @@ function translateStatic(){
   const label=(STATIC_TRANSLATIONS[key]||[])[langIndex()]||key;
   heading.textContent=match?label+" ("+match[1]+")":label;
  });
+ // Empty-state messages and placeholders are generated dynamically and need explicit localization.
+ const emptyTargets=[
+  ["#ncParticipants","등록된 참전 정보가 없습니다."],
+  ["#ncWaiting","대기 명단이 없습니다."],
+  ["#ncWarWaiting","대기 명단이 없습니다."]
+ ];
+ emptyTargets.forEach(([selector,key])=>{
+  const el=$(selector);if(!el)return;
+  const raw=(el.textContent||"").trim();
+  const translations=STATIC_TRANSLATIONS[key]||[];
+  const known=translations.some(value=>value===raw);
+  if(known){
+   const translated=translations[langIndex()]||key;
+   const child=el.firstElementChild;
+   if(child && el.children.length===1)child.textContent=translated;
+   else el.textContent=translated;
+  }
+ });
+ const search=$("#ncIdSearch");
+ if(search){
+  const placeholders=["ID 검색 (닉네임)","Search ID (nickname)","ID検索（ニックネーム）","搜索ID（昵称）","ID-Suche (Spitzname)","Cerca ID (nickname)","Buscar ID (apodo)","ID ara (takma ad)"];
+  if(!search.dataset.originalPlaceholder)search.dataset.originalPlaceholder=search.placeholder||placeholders[0];
+  search.placeholder=placeholders[langIndex()]||placeholders[0];
+  search.setAttribute("aria-label",search.placeholder);
+ }
+ translateCommonControls();
 }
 function refreshGenericLoadMessages(){
  const known=["최신 내용을 불러왔습니다.","Latest content loaded.","最新の内容を読み込みました。","已加载最新内容。","Aktuelle Inhalte geladen.","Contenuti aggiornati caricati.","Contenido actualizado cargado.","En güncel içerik yüklendi."];
@@ -1481,7 +1507,7 @@ function renderRecords(){
  const sorted=gloryRecords.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  root.innerHTML=sorted.map(r=>{
   const originalIndex=gloryRecords.findIndex(x=>x.date===r.date&&x.opponent===r.opponent&&x.prep===r.prep&&x.castle===r.castle&&x.memo===r.memo);
-  return '<article class="glory-record"><header><strong>'+esc(r.date)+'</strong><span>상대 왕국 '+esc(r.opponent)+'</span></header><div class="glory-results"><span>준비기간: '+(r.prep==="승"?"🏆 승리":"⚔️ 패배")+'</span><span>전쟁기간: '+(r.castle==="승"?"🏆 승리":"⚔️ 패배")+'</span></div>'+(r.memo?'<p>'+esc(r.memo)+'</p>':"")+(adminModes.glory?'<button type="button" onclick="deleteRecord('+originalIndex+')">삭제</button>':"")+'</article>';
+  return '<article class="glory-record"><header><strong>'+esc(r.date)+'</strong><span><span>상대 왕국</span> '+esc(r.opponent)+'</span></header><div class="glory-results"><span>준비기간: '+(r.prep==="승"?"🏆 승리":"⚔️ 패배")+'</span><span>전쟁기간: '+(r.castle==="승"?"🏆 승리":"⚔️ 패배")+'</span></div>'+(r.memo?'<p>'+esc(r.memo)+'</p>':"")+(adminModes.glory?'<button type="button" onclick="deleteRecord('+originalIndex+')">삭제</button>':"")+'</article>';
  }).join("")||'<p class="muted">기록이 없습니다.</p>';
  translateStatic();
 }
