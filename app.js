@@ -481,10 +481,10 @@ function renderHomeSchedule(value){
   const time=match?match[1]:"";
   const secondary=match?(match[2]||""):"";
   const minutes=time?Number(time.split(":")[0])*60+Number(time.split(":")[1]):Infinity;
-  const group=/성검/.test(event)?"성검쟁탈":/곰/.test(event)?"곰 트랩":"기타 일정";
+  const group=/성검/.test(event)?"성검쟁탈":/3대연맹전|연맹전|three alliances/i.test(event)?"3대연맹전":/곰/.test(event)?"곰 트랩":"기타 일정";
   return {event,time,secondary,minutes,index,group};
  }).filter(Boolean);
- const groups=["성검쟁탈","곰 트랩","기타 일정"];
+ const groups=["성검쟁탈","3대연맹전","곰 트랩","기타 일정"];
  if(!entries.length)return '<p class="home-schedule-empty">일정이 등록되지 않았습니다.</p>';
  return '<div class="home-schedule-list">'+groups.map(group=>{
   const items=entries.filter(item=>item.group===group).sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
