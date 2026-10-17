@@ -477,3 +477,86 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
  #alliance .alliance-team:first-child{grid-template-columns:minmax(0,1fr)}
  #alliance .alliance-team:first-child>.alliance-team-title{grid-column:1}
 }
+
+
+/* Home schedule: three framed panels like the Castle War info panels, not separate title stripes. */
+#homeView .home-schedule-list{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:12px;
+ align-items:stretch;
+}
+#homeView .home-schedule-panel{
+ min-width:0;
+ padding:12px;
+ border:1px solid #30496f;
+ border-radius:12px;
+ background:linear-gradient(155deg,rgba(24,39,65,.98),rgba(10,17,31,.98));
+ box-sizing:border-box;
+}
+#homeView .home-schedule-panel-title{
+ margin:0 0 10px;
+ padding:0 0 9px;
+ border:0!important;
+ border-bottom:1px solid rgba(132,163,210,.28)!important;
+ border-left:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ color:#f4f7ff;
+ font-size:16px;
+ font-weight:800;
+ text-align:center;
+}
+#homeView .home-schedule-panel .home-schedule-list{display:flex!important}
+#homeView .home-schedule-panel .home-schedule-row{grid-template-columns:86px minmax(0,1fr);gap:8px;padding:8px}
+#homeView .home-schedule-panel .home-schedule-event{font-size:13px}
+@media(max-width:900px){
+ #homeView .home-schedule-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #homeView .home-schedule-panel:first-child{grid-column:1/-1}
+}
+@media(max-width:600px){
+ #homeView .home-schedule-list{grid-template-columns:minmax(0,1fr)}
+ #homeView .home-schedule-panel:first-child{grid-column:auto}
+}
+
+/* Home notice title keeps its blue left stripe. */
+#homeView #homeLatestTitle{border-left:4px solid #79a9ff!important;padding-left:11px!important}
+
+/* Notice-page headings: remove the filled title banner but retain a normal blue left accent. */
+#notices .intro>h2,#notices .cards>section.card>h3{
+ border:0!important;
+ border-left:4px solid #79a9ff!important;
+ border-radius:0!important;
+ padding:7px 0 8px 11px!important;
+ background:transparent!important;
+ color:#f4f7ff;
+}
+#notices .cards>section.card>h3{margin:8px 0 12px;font-size:16px}
+
+/* Holy Sword public layout: Team 1 has two columns; Teams 2, 3 and 4 follow below. */
+#teamDisplay.team-display{display:flex;flex-direction:column;gap:12px;overflow:visible}
+#teamDisplay .team-display-team{
+ min-width:0;
+ border:1px solid #30496f;
+ border-radius:12px;
+ overflow:hidden;
+ background:#0e182b;
+}
+#teamDisplay .team-display-team>h3{
+ margin:0;padding:10px 12px;text-align:center;
+ background:#203253;color:#f6d77b;font-weight:800;
+ border-bottom:1px solid #30496f;
+}
+#teamDisplay .team-display-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px}
+#teamDisplay .team-display-single{padding:8px}
+#teamDisplay .team-display-column{min-width:0;border:1px solid #30496f;border-radius:9px;overflow:hidden;background:#0e182b}
+#teamDisplay .team-display-column h4{margin:0;padding:8px;text-align:center;background:#172742;color:#cfe1ff;font-weight:800}
+#teamDisplay .team-display-slot{grid-template-columns:22px minmax(0,1fr);padding:5px 7px;min-height:40px}
+@media(max-width:560px){
+ #teamDisplay .team-display-pair{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px}
+ #teamDisplay .team-display-column h4{font-size:12px;padding:7px 4px}
+ #teamDisplay .team-display-slot{grid-template-columns:18px minmax(0,1fr);gap:3px;padding:4px}
+ #teamDisplay .roster-person{gap:4px}
+ #teamDisplay .roster-avatar{width:26px;height:26px;flex-basis:26px}
+ #teamDisplay .roster-person-name{font-size:11px}
+}
