@@ -742,6 +742,11 @@ function captureNoticeEditor(){
 }
 function renderNotices(){
  const root=$("#notices");if(!root)return;
+ // These section headings live in static page markup, not in the notice text.
+ root.querySelectorAll("[data-notice-squad]").forEach(heading=>{
+  const squad=heading.getAttribute("data-notice-squad");
+  heading.textContent=currentLang==="ko"?(squad==="1"?"1군":"2군"):homeText(squad==="1"?"squad1":"squad2");
+ });
  noticeData=normalizeBearNoticeText(noticeData);
  const ids=Object.keys(NOTICE_DEFAULTS);
  for(const id of ids){
