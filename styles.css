@@ -386,7 +386,7 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 .alliance-names select{display:none;width:100%;padding:7px 3px;font-size:11px}
 #alliance.alliance-admin-mode .alliance-names select{display:block}
 #alliance.alliance-admin-mode .alliance-display{display:none}
-.alliance-display{display:grid;grid-column:1/-1;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.alliance-display{display:grid;grid-column:1/-1;grid-template-columns:minmax(0,1fr);gap:5px}
 .alliance-display .roster-person{flex-direction:column;justify-content:flex-start;gap:4px;text-align:center;min-width:0;padding:4px 1px}
 .alliance-display .roster-avatar{width:32px;height:32px;flex-basis:32px}
 .alliance-display .roster-person-name{font-size:11px;line-height:1.2;overflow-wrap:anywhere}
