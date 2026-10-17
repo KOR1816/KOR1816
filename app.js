@@ -1000,7 +1000,7 @@ async function submitNewCastleParticipation(){
  const item={nickname,status:$("#ncStatus",root)?.value||"yes",tier:$("#ncTier",root)?.value||"A",salo:$("#ncSalo",root)?.value==="yes",hilde:$("#ncHilde",root)?.value==="yes",updatedAt:Date.now()};
  const next=participants.slice(),idx=next.findIndex(p=>p.nickname.toLowerCase()===nickname.toLowerCase());
  if(idx>=0)next[idx]=item;else next.push(item);
- try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after registration failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function cancelNewCastleParticipation(){
@@ -1008,12 +1008,12 @@ async function cancelNewCastleParticipation(){
  if(!nickname||nickname==="__custom__"){setMsg("ncJoinMsg",message("cancelNickRequired"));return;}
  if(!confirm(message("cancelParticipation").replace("{nickname}",nickname)))return;
  const next=participants.filter(p=>p.nickname.toLowerCase()!==nickname.toLowerCase());
- try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after cancellation failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function deleteAllNewCastleParticipants(){
  if(!adminModes.battleJoin||!confirm(message("deleteAllParticipants")))return;
- try{await saveCloud("battleJoin",{participants:[]});participants=[];renderParticipants();setMsg("ncJoinMsg",message("saved"));}
+ try{await saveCloud("battleJoin",{participants:[]});participants=[];renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after deleting roster failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function toggleNewCastleAdmin(){
@@ -1092,6 +1092,37 @@ function castleWarTierSortedParticipants(excludedNames=[]){
  return castleWarRoster().filter(p=>p.status==="yes"&&!FIXED_LEADERS.includes(p.nickname)&&!excluded.has(String(p.nickname||"").trim().toLocaleLowerCase()))
   .sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
 }
+async function syncCastleWarAssignmentsFromRoster(){
+ // Keep existing valid assignments, remove duplicates/ineligible names, and fill empty slots from the latest shared roster.
+ await loadParticipantRoster();
+ const latest=await readCloud("castlewar1");
+ if(latest&&latest.war){
+  castleWarData={...castleWarData,...latest,war:{...castleWarData.war,...latest.war},warLeaders:{...castleWarData.warLeaders,...(latest.warLeaders||{})}};
+ }
+ const keys=["assault","rush","finish","north","west","reserve"];
+ keys.forEach(key=>castleWarData.war[key]=Array.from({length:8},(_,i)=>String(castleWarData.war[key]?.[i]||"").trim()));
+ const eligible=castleWarTierSortedParticipants().filter(p=>String(p.nickname||"").trim());
+ const byName=new Map(eligible.map(p=>[p.nickname.trim().toLocaleLowerCase(),p.nickname.trim()]));
+ const assigned=new Set();
+ keys.forEach(key=>{
+  castleWarData.war[key]=castleWarData.war[key].map(name=>{
+   const normalized=name.toLocaleLowerCase();
+   const canonical=byName.get(normalized);
+   if(!canonical||assigned.has(normalized))return "";
+   assigned.add(normalized);
+   return canonical;
+  });
+ });
+ const remaining=eligible.filter(p=>!assigned.has(p.nickname.trim().toLocaleLowerCase()));
+ let next=0;
+ keys.forEach(key=>{
+  castleWarData.war[key]=castleWarData.war[key].map(name=>name||String(remaining[next++]?.nickname||""));
+ });
+ castleWarData=await saveCloud("castlewar1",castleWarData);
+ if(activePage==="castlewar1")renderCastleWar();
+ return {eligible:eligible.length,assigned:assigned.size+next};
+}
+
 async function autoArrangeCastleWar(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
  const squadKeys=["assault","rush","finish"],turretKeys=["north","west","reserve"];
