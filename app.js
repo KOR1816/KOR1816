@@ -473,10 +473,10 @@ function captureHomeEditor(){
  if(currentLang==="ko")homeData={...homeData,...edited};
 }
 function renderHomeSchedule(value){
- const entries=String(value||"").split(/\\r?\\n/).map((line,index)=>{
+ const entries=String(value||"").split(/\r?\n/).map((line,index)=>{
   const raw=line.trim();
   if(!raw)return null;
-  const match=raw.match(/\\s[·—-]\\s*(\\d{1,2}:\\d{2})(?:\\s*\\(([^)]*)\\))?\\s*$/);
+  const match=raw.match(/\s[·—-]\s*(\d{1,2}:\d{2})(?:\s*\(([^)]*)\))?\s*$/);
   const event=match?raw.slice(0,match.index).trim():raw;
   const time=match?match[1]:"";
   const secondary=match?(match[2]||""):"";
