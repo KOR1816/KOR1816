@@ -1,0 +1,253 @@
+:root{color-scheme:dark;--bg:#080d18;--panel:#101a2e;--panel2:#16233d;--line:#30496f;--gold:#e5b84b;--orange:#f59e52;--text:#f4f7ff;--muted:#aebbd3}
+*{box-sizing:border-box}
+html{min-height:100%;scrollbar-gutter:stable;scroll-behavior:auto}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#1a2b49 0,#0b1020 54%);color:var(--text);font-family:Arial,"Malgun Gothic",sans-serif}
+.site-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px clamp(12px,3vw,32px);border-bottom:1px solid #293b5a;background:rgba(8,13,24,.94)}
+.brand h1{margin:0;font-size:clamp(22px,3vw,32px);letter-spacing:.04em}.brand p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.language-control{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+select,button,input,textarea{font:inherit}
+.language-control select{max-width:150px;padding:9px 10px;border:1px solid #405a80;border-radius:9px;background:#101a2e;color:var(--text)}
+.main-nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px;background:rgba(8,13,24,.8);border-bottom:1px solid #293b5a}
+.main-nav button{min-height:40px;padding:9px 13px;border:1px solid #344a6e;border-radius:10px;background:#111c31;color:var(--text);font-weight:700;cursor:pointer;transition:background .15s,border-color .15s}
+.main-nav button:hover{border-color:#d9b85d}.main-nav button[aria-current="page"]{background:var(--orange);border-color:#ffc078;color:#201407;box-shadow:0 0 0 1px #f9ad66 inset}
+.page-root{width:min(1280px,100%);margin:0 auto;padding:clamp(12px,2.4vw,26px)}
+.page{display:none;min-width:0}.page.active{display:block}
+.hero-image{margin:0 auto 18px;padding:0;border:1px solid #344b72;border-radius:16px;background:#0c1526;overflow:hidden;text-align:center}
+.hero-image img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;border-radius:0}
+.card{min-width:0;margin:0 0 14px;padding:18px;border:1px solid #30496f;border-radius:14px;background:linear-gradient(145deg,rgba(22,35,61,.96),rgba(12,20,36,.98));box-shadow:0 10px 28px #0003}
+.card h2{margin:0 0 12px;font-size:clamp(18px,2vw,23px);color:#f7d77a}
+.muted{color:var(--muted)}.page-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.global-message{position:fixed;left:50%;bottom:16px;z-index:1000;transform:translateX(-50%);max-width:min(92vw,650px);padding:0;color:#f7d77a;text-align:center;pointer-events:none}
+.global-message:not(:empty){padding:10px 14px;border:1px solid #3b557c;border-radius:10px;background:#101a2e;box-shadow:0 8px 24px #0005}
+footer{padding:18px;text-align:center;color:#8295b5;font-size:12px}
+@media(max-width:760px){.site-header{align-items:flex-start;padding:14px 12px}.brand p{max-width:210px;line-height:1.4}.language-control{gap:5px;flex-direction:column;align-items:flex-end}.main-nav{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:10px;gap:7px}.main-nav button{flex:0 0 auto;white-space:nowrap;padding:9px 11px}.page-root{padding:12px}.page-grid{grid-template-columns:minmax(0,1fr)}.card{padding:13px}}
+
+/* Rebuilt page-specific layouts */
+button,.admin-btn{cursor:pointer}
+button:disabled,input:disabled,select:disabled,textarea:disabled{opacity:.82;cursor:default}
+input,textarea,select{max-width:100%;min-width:0;padding:9px 10px;border:1px solid #3a5278;border-radius:8px;background:#0b1425;color:var(--text)}
+textarea{min-height:90px;resize:vertical}
+label{display:block;min-width:0;color:#dbe5f7}
+.card img{max-width:100%;height:auto}
+.sword-image-wrap{width:100%;margin:12px auto 18px;padding:7px;border:1px solid #30496f;border-radius:13px;background:#0b1425;text-align:center}
+.sword-image{display:block;width:100%;max-height:580px;object-fit:contain;margin:0 auto;border-radius:8px}
+.msg{min-height:1.2em;margin:8px 0;color:#f5d47b;font-size:13px;white-space:pre-wrap}
+.notice-status-wrap{width:100%;margin:10px 0 12px}
+.notice-status-box{box-sizing:border-box;border:1px solid #30496f;border-radius:10px;padding:10px 14px;background:#0e182b;text-align:center;font-weight:700}
+.notice-status-box:empty{display:none}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.tag{display:inline-block;margin-bottom:8px;color:#e8c76a;font-size:11px;letter-spacing:.1em}
+.home-controls,.admin-bar,.seating-admin-actions,.castle-layout1-actions,.newcastle-actions,.actions,.tools{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:14px}
+.home-input{width:100%;margin:5px 0 12px}
+.home-area{min-height:130px}
+.team-columns-wrap,.castlewar-columns,.alliance-teams{width:100%;overflow-x:auto}
+.team-columns{display:grid;grid-template-columns:repeat(4,minmax(155px,1fr));gap:10px;min-width:650px}
+.team-column,.alliance-team,.war-column,.seating-row-card{border:1px solid #30496f;border-radius:12px;overflow:hidden;background:#0e182b}
+.team-title,.alliance-team-title,.war-column h3{margin:0;padding:11px;text-align:center;background:#203253;color:#f6d77b;font-weight:800}
+.slot{display:grid;grid-template-columns:32px minmax(0,1fr);gap:5px;align-items:center;padding:6px;border-top:1px solid #273b5d}
+.slot span{color:#aebbd3;text-align:center}
+.slot input{width:100%}
+.alliance-teams{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:12px}
+.alliance-group{padding:9px;border-top:1px solid #273b5d}
+.alliance-label{margin-bottom:8px;color:#e7cb78;font-weight:700}
+.alliance-names{display:grid;grid-template-columns:repeat(5,minmax(60px,1fr));gap:6px}
+.alliance-names input{width:100%;padding:8px 5px}
+.seating-map-image{max-height:650px}
+.seating-row-card{padding:12px}
+.seating-row-card h4{margin:0 0 10px;color:#f5d47b}
+.seating-two-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.seating-side{display:grid;gap:5px;align-content:start}
+.seating-entry{display:grid;grid-template-columns:30px minmax(0,1fr);gap:6px;align-items:center}
+.seating-entry span{color:#d7e1f2;text-align:center}
+.seating-entry input{width:100%;padding:7px}
+.seating-admin-panel{margin-top:12px}
+.newcastle-form{display:grid;grid-template-columns:minmax(130px,190px) minmax(0,1fr);gap:9px;align-items:center}
+.newcastle-form select,.newcastle-form input{width:100%}
+.nc-nickname-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.nc-participation-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+.newcastle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 18px}
+.participant-line{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:9px 10px;border:1px solid #2e4468;border-radius:8px;background:#0c1526}
+.nc-war-attack{display:grid;grid-template-columns:repeat(3,minmax(290px,1fr));gap:10px;overflow-x:auto;margin:12px 0;padding-bottom:8px}
+.nc-war-turrets{display:grid;grid-template-columns:repeat(3,minmax(250px,1fr));gap:10px;overflow-x:auto;margin:12px 0;padding-bottom:8px}
+.nc-war-column,.nc-turret-column{min-width:0;background:#101a2e;border:1px solid #365783;border-radius:12px;overflow:hidden}
+.nc-war-column h3,.nc-turret-column h3{margin:0;padding:12px;text-align:center;background:#202f52;color:#f7d77a}
+.nc-war-row{display:grid;grid-template-columns:40px minmax(0,1fr);gap:7px;align-items:center;padding:7px;border-top:1px solid #2b3f61;min-width:0}
+.nc-war-row>b{display:flex;align-items:center;justify-content:center;text-align:center;color:#dbe5f7;min-height:36px}
+.nc-war-row .castle-person-card,.nc-war-row .castle-person-empty{padding:5px;border:0;background:transparent;min-width:0}
+.nc-war-row .castle-person-card{gap:6px}
+.nc-war-row .castle-person-main{min-width:0;overflow-wrap:anywhere}
+.nc-war-row select{width:100%;min-width:0;padding:8px 5px;background:#0b1426;color:#fff;border:1px solid #365783;border-radius:7px}
+.nc-war-row.nc-war-leader-row{grid-template-columns:78px minmax(0,1fr);background:rgba(42,65,100,.22)}
+.war-column{min-width:0}
+.war-slot{display:grid;grid-template-columns:34px minmax(0,1fr);gap:6px;padding:6px;border-top:1px solid #273b5d;align-items:center}
+.war-slot span{text-align:center;color:#dbe5f7}
+.war-slot input{width:100%}
+.castle-layout1-image{max-height:600px}
+.castle-layout1-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.castle-layout1-column{display:grid;align-content:start;gap:7px}
+.castle-layout1-slot{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:stretch;gap:8px;padding:8px;border:1px solid #30496f;border-radius:9px;background:#0d1729}
+.castle-layout1-number{display:grid;place-items:center;border-radius:7px;background:#203253;color:#f5d47b;font-weight:900}
+.castle-layout1-content{min-width:0;overflow-wrap:anywhere}
+.castle-layout1-content select{width:100%}
+.viking-register{display:grid;grid-template-columns:minmax(130px,1fr) minmax(150px,2fr);gap:8px;align-items:center}
+.viking-register button,.viking-toolbar button{justify-self:start}
+.viking-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:14px}
+.viking-team{padding:9px;border:1px solid #30496f;border-radius:10px;background:#0c1526;min-width:0}
+.viking-team h3{margin:0 0 7px;font-size:13px;color:#f5d47b}
+.viking-member{padding:5px 0;border-top:1px solid #243957;overflow-wrap:anywhere;font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cards>.card{margin:0;padding:14px}
+.cards h3{margin:0 0 12px;color:#f5d47b}
+.block{margin:9px 0;padding:10px;border:1px solid #2a4063;border-radius:9px;background:#0c1526}
+.block h4{margin:0 0 7px;font-size:14px;color:#dce7f9}
+.content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
+.edit-only{display:none}
+.editing .edit-only{display:block}
+.glory-page .hero{padding:14px;text-align:center;border:1px solid #30496f;border-radius:12px;background:#0b1425}
+.glory-page .hero img{display:block;width:100%;height:auto;max-height:430px;object-fit:contain;margin:10px auto;border-radius:9px}
+.glory-page .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.glory-page .form label{display:grid;gap:6px}
+.glory-page .form .wide,.glory-page .form-actions{grid-column:1/-1}
+.glory-page .form textarea{width:100%}
+.glory-records,.records{display:grid;gap:10px;margin-top:12px}
+.glory-record{padding:13px;border:1px solid #30496f;border-radius:10px;background:#0c1526}
+.glory-record header,.glory-results{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.glory-record header strong{color:#f5d47b}
+.glory-results{margin-top:10px}
+.sources{margin-top:16px}
+.sources a{color:#9ec8ff}
+@media(max-width:760px){
+ .grid,.cards{grid-template-columns:minmax(0,1fr)}
+ .alliance-teams{grid-template-columns:minmax(240px,1fr);min-width:260px}
+ .nc-war-attack{grid-template-columns:repeat(3,minmax(180px,1fr))}
+ .nc-war-turrets{grid-template-columns:repeat(3,minmax(180px,1fr))}
+ .castle-layout1-slots{grid-template-columns:minmax(0,1fr)}
+ .viking-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .newcastle-form{grid-template-columns:minmax(0,1fr)}
+ .nc-nickname-tools{grid-template-columns:minmax(0,1fr)}
+ .newcastle-list{grid-template-columns:minmax(0,1fr)}
+ .glory-page .form{grid-template-columns:minmax(0,1fr)}
+ .glory-page .form .wide,.glory-page .form-actions{grid-column:auto}
+}
+
+.seating-row-group{margin-bottom:16px;padding:12px;border:1px solid #30496f;border-radius:12px;background:#0b1425}.seating-column-title{text-align:center;color:#f5d47b}.seating-split-pair,.seating-edit-split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.seating-split-card,.seating-edit-card{min-width:0;border:1px solid #30496f;border-radius:9px;overflow:hidden;background:#101a2e}.seating-split-card h4,.seating-edit-card h5{margin:0;padding:9px;text-align:center;background:#203253;color:#f5d47b}.seating-row{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px;padding:6px 9px;border-top:1px solid #273b5d;overflow-wrap:anywhere}.seating-edit-grid{display:grid;gap:12px}.seating-edit-column{padding:10px;border:1px solid #30496f;border-radius:10px;background:#0b1425}.seating-edit-column h4{margin:0 0 9px;color:#f5d47b}.seating-edit-row{display:grid;grid-template-columns:28px minmax(0,1fr);gap:5px;align-items:center;padding:4px 6px;border-top:1px solid #273b5d}.seating-edit-row input{width:100%;padding:7px 5px}.notice{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}@media(max-width:760px){.seating-split-pair,.seating-edit-split{grid-template-columns:minmax(0,1fr)}}
+
+.nc-id-search-wrap{position:relative;min-width:0}.nc-nickname-results{display:grid;gap:4px;max-height:220px;overflow:auto;margin-top:5px;padding:5px;border:1px solid #405a80;border-radius:8px;background:#0b1425}.nc-nickname-result{width:100%;padding:7px 9px;border:1px solid #30496f;border-radius:6px;background:#14213a;color:#f4f7ff;text-align:left}.nc-nickname-result:hover{background:#203253}.nc-nickname-no-results{padding:8px;color:#aebbd3}
+
+.war-leader-row{display:grid;grid-template-columns:78px minmax(0,1fr);gap:7px;align-items:center;padding:7px;border-top:1px solid #273b5d}.war-leader-row>b{color:#f5d47b;text-align:center}.war-leader-row select{width:100%;min-width:0}.war-name{display:flex;flex-direction:column;gap:3px;min-width:0;overflow-wrap:anywhere}.war-name small,.layout-person small{color:#aebbd3;font-size:11px;line-height:1.3}.layout-person{display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere}
+
+.viking-member{display:flex;align-items:center;gap:7px;min-width:0}.viking-avatar{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border-radius:50%;overflow:hidden;background:#203253;color:#d8e4f7}.viking-avatar img{width:100%;height:100%;object-fit:cover}.viking-no-photo{font-size:12px}.viking-member-name{min-width:0;flex:1;overflow-wrap:anywhere}.viking-photo-button{padding:4px 6px;border-radius:6px;font-size:12px}.viking-empty{padding:8px 0;color:#8497b5;font-size:12px}
+
+.viking-sprite{display:block;width:32px;height:32px;flex:0 0 32px;background-repeat:no-repeat}
+
+button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;background:#15243e;color:var(--text);padding:9px 12px;font-weight:700}button:hover,.admin-btn:hover{border-color:#d9b85d;background:#1d3153}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #e5b84b;outline-offset:2px}button[hidden]{display:none!important}
+
+.castle-person-card{display:flex;align-items:center;gap:7px;min-width:0;padding:5px;border-radius:8px;background:rgba(15,27,47,.55)}.castle-rank{display:grid;place-items:center;flex:0 0 25px;width:25px;min-height:28px;border-radius:6px;background:#233a60;color:#f6d77b;font-weight:900;font-size:13px}.castle-rank-none{color:#b9c5d9}.castle-avatar{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;overflow:hidden;border-radius:50%;background:#203253;color:#d7e2f4;font-size:10px}.castle-person-main{flex:1;min-width:0;overflow-wrap:anywhere}.castle-person-name{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 5px;font-size:12px}.castle-person-name>strong{color:#f3f6fd}.castle-person-name>span,.castle-person-main small{color:#aebbd3;font-size:10px;line-height:1.35}.castle-person-main small{display:block;margin-top:3px}.castle-person-empty{color:#8fa5ca;font-size:12px;padding:6px}.war-slot>.castle-person-card{width:100%;min-width:0}.war-leader-row>.castle-person-card{width:100%;min-width:0}
+
+.castle-war1-image-wrap{max-width:100%;margin:10px auto 16px;text-align:center}.castle-war1-image{display:block;width:100%;max-height:340px;object-fit:contain;border-radius:12px;border:1px solid var(--line);background:#0b1220}.castle-layout1-image{display:block;width:100%;max-height:360px;object-fit:contain}
+
+.castle-war-columns{display:grid;grid-template-columns:repeat(5,minmax(225px,1fr));gap:10px;overflow-x:auto;margin:12px 0 16px;padding-bottom:8px;align-items:start}.castle-war-columns>.nc-war-attack,.castle-war-columns>.nc-war-turrets{display:contents}.castle-war-columns .war-column{min-width:0}.castle-war-columns .war-slot{min-width:0}.castle-war-columns .war-slot>.castle-person-card,.castle-war-columns .war-slot>select{width:100%;min-width:0}@media(max-width:760px){.nc-war-attack{grid-template-columns:repeat(3,minmax(290px,1fr));overflow-x:auto;overscroll-behavior-x:contain}.nc-war-turrets{grid-template-columns:repeat(3,minmax(250px,1fr));overflow-x:auto;overscroll-behavior-x:contain}.nc-war-column{min-width:290px}.nc-turret-column{min-width:250px}.nc-war-row.nc-war-leader-row{grid-template-columns:66px minmax(0,1fr)}.castle-war-info-panels{grid-template-columns:repeat(3,minmax(250px,1fr))}}
+
+/* Admin-only notice translation editor */
+.notice-edit-language{display:flex;align-items:center;gap:7px;padding:5px 8px;border:1px solid #30496f;border-radius:9px;background:#0c1526;font-size:13px}.notice-edit-language select{max-width:170px}.notice-translation-help{margin:8px 0;color:var(--muted);font-size:12px;text-align:center}.notice-translation-help[hidden],.notice-edit-language[hidden]{display:none!important}#notices.editing .edit-only{display:block}#notices .edit-only textarea{display:block;width:100%;min-height:95px}#notices .actions{align-items:center}
+
+
+/* Home event schedule: vertical, time-sorted rows */
+.home-schedule-list{display:flex;flex-direction:column;gap:8px}
+.home-schedule-row{display:grid;grid-template-columns:108px minmax(0,1fr);align-items:center;gap:12px;padding:10px 12px;border:1px solid #30496f;border-radius:11px;background:linear-gradient(110deg,rgba(34,54,87,.8),rgba(14,24,43,.94))}
+.home-schedule-time{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:42px;padding:5px 7px;border-radius:8px;background:#263957;text-align:center;color:#fff}
+.home-schedule-time strong{font-size:16px;line-height:1.15;font-variant-numeric:tabular-nums}
+.home-schedule-time small,.home-schedule-time span{font-size:11px;color:#d6e4ff;line-height:1.25}
+.home-schedule-no-time{background:#1a2740}
+.home-schedule-event{min-width:0;font-size:14px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}
+.home-schedule-event-line{font-size:inherit;font-weight:inherit;line-height:inherit}
+.home-schedule-empty{margin:0;color:var(--muted)}
+@media(max-width:760px){.home-schedule-row{grid-template-columns:92px minmax(0,1fr);gap:9px;padding:9px}.home-schedule-time strong{font-size:15px}.home-schedule-event{font-size:14px}}
+
+/* Castle participation: align with the reference 1816KOR roster design. */
+#battleJoin>.card{border:1px solid #344c70;border-radius:16px;background:linear-gradient(155deg,rgba(24,39,65,.98),rgba(10,17,31,.98));box-shadow:0 10px 28px rgba(0,0,0,.2)}
+#battleJoin h2{padding-bottom:12px;border-bottom:1px solid rgba(132,163,210,.24);letter-spacing:.2px}
+#battleJoin .newcastle-form{display:grid;grid-template-columns:minmax(130px,200px) minmax(180px,1fr);gap:12px 14px;align-items:center;max-width:780px;background:rgba(7,14,27,.34);border:1px solid rgba(91,124,174,.28);border-radius:14px;padding:16px;overflow:visible}
+#battleJoin .newcastle-form label{font-weight:700;color:#d7e5ff}
+#battleJoin .newcastle-form select,#battleJoin .newcastle-form input{width:100%;min-width:0;min-height:42px;background:#0b1426;color:#fff;border:1px solid #365783;border-radius:8px;padding:9px 10px}
+#battleJoin .nc-nickname-tools{grid-column:2;display:grid;grid-template-columns:minmax(115px,.8fr) minmax(170px,1.2fr);gap:7px;min-width:0;align-items:start}
+#battleJoin .nc-nickname-tools select,#battleJoin .nc-nickname-tools input{width:100%;min-width:0;height:42px;padding:8px 10px;font:inherit;font-size:13px;box-sizing:border-box}
+#battleJoin .nc-participation-actions{grid-column:2;display:flex;gap:8px;flex-wrap:nowrap}
+#battleJoin .nc-participation-actions .admin-btn{min-height:40px;padding:9px 16px;border-radius:9px;font-weight:800;white-space:nowrap}
+#battleJoin .nc-participation-actions button:first-child{background:linear-gradient(135deg,#2d72bd,#2456a0);border-color:#5795e5;color:#fff}
+#battleJoin .nc-participation-actions .nc-cancel-btn{background:linear-gradient(135deg,#48232f,#321923);border-color:#a75d70;color:#ffe1e7}
+#battleJoin #ncJoinMsg{margin:10px 0;padding:0 3px;font-weight:700}
+#battleJoin h3{margin-top:22px;padding-bottom:8px;border-bottom:1px solid rgba(132,163,210,.2)}
+#battleJoin #ncParticipants.newcastle-list,#battleJoin #ncWaiting.newcastle-list{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:10px;margin:10px 0 20px}
+#battleJoin .nc-member-card{display:flex;gap:10px;align-items:center;background:#101a2e;border:1px solid #365783;border-radius:12px;padding:10px;min-width:0}
+#battleJoin .nc-rank-label{min-width:30px;text-align:center;font-size:24px;line-height:1;color:#f7d77a;flex:0 0 30px;font-weight:900;text-shadow:0 1px 8px rgba(247,215,122,.18)}
+#battleJoin .nc-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:50%;background:#243a61 center/cover no-repeat;border:1px solid #7895c5;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff}
+#battleJoin .nc-participant-card{display:grid;grid-template-columns:30px 38px minmax(0,1fr);column-gap:8px;align-items:center;padding:7px 9px;background:linear-gradient(145deg,#14233c,#0d1729);border-color:#344b6d;min-height:0}
+#battleJoin .nc-member-main{min-width:0;overflow-wrap:anywhere;display:flex;flex-direction:column;gap:3px}
+#battleJoin .nc-name-line{display:flex;align-items:baseline;flex-wrap:nowrap;gap:5px;min-width:0;white-space:nowrap}
+#battleJoin .nc-name-line>strong{font-size:14px;line-height:1.2;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#battleJoin .nc-barracks{font-size:11px;color:#bfd0ee;white-space:nowrap;flex:0 0 auto}
+#battleJoin .nc-meta{font-size:11px;line-height:1.25;color:#c8d7f0;margin:0;padding:0;border:0;background:transparent;display:block;overflow-wrap:anywhere}
+#battleJoin .nc-rank-none{font-size:21px;display:flex;align-items:center;justify-content:center;color:inherit;text-shadow:none}
+#battleJoin .nc-empty{grid-column:1/-1;color:#8fa5ca;font-size:13px;padding:12px;border:1px dashed #344b6d;border-radius:10px;text-align:center}
+@media(max-width:760px){
+ #battleJoin .newcastle-form{grid-template-columns:1fr;gap:7px;padding:12px}
+ #battleJoin .nc-nickname-tools{grid-column:1;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:7px}
+ #battleJoin .nc-nickname-tools select,#battleJoin .nc-nickname-tools input{font-size:12px;padding:7px 6px;height:40px}
+ #battleJoin .nc-participation-actions{grid-column:1;margin-top:5px;flex-wrap:wrap}
+ #battleJoin .nc-participation-actions .admin-btn{flex:1;padding:10px 8px}
+ #battleJoin #ncParticipants.newcastle-list,#battleJoin #ncWaiting.newcastle-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #battleJoin .nc-participant-card{grid-template-columns:24px 32px minmax(0,1fr);column-gap:6px;padding:6px}
+ #battleJoin .nc-rank-label{min-width:24px;width:24px;flex-basis:24px;font-size:20px}
+ #battleJoin .nc-avatar{width:32px;height:32px;flex-basis:32px}
+ #battleJoin .nc-name-line>strong{font-size:12px}
+ #battleJoin .nc-barracks{font-size:10px}
+}
+@media(max-width:460px){#battleJoin #ncParticipants.newcastle-list,#battleJoin #ncWaiting.newcastle-list{grid-template-columns:minmax(0,1fr)}}
+
+/* Castle participation lists grouped by barracks tier */
+#battleJoin .nc-tier-group{grid-column:1/-1;min-width:0;margin:4px 0 10px}
+#battleJoin .nc-tier-heading{margin:0 0 8px;padding:7px 10px;border-left:3px solid #79a9ff;border-radius:5px;background:rgba(70,112,177,.16);color:#eaf2ff;font-size:14px;font-weight:800;letter-spacing:.02em}
+#battleJoin .nc-tier-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:10px}
+@media(max-width:760px){#battleJoin .nc-tier-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
+@media(max-width:460px){#battleJoin .nc-tier-cards{grid-template-columns:minmax(0,1fr)}}
+
+/* Castle War: keep the three strategy panels side-by-side at the bottom. */
+.castle-war1-card .castle-war-info-panels{display:grid;grid-template-columns:repeat(3,minmax(250px,1fr));gap:10px;overflow-x:auto;margin:16px 0 0;padding-bottom:8px;align-items:stretch}
+.castle-war1-card .castle-war-info-panel{min-width:0;padding:14px;border:1px solid #30496f;border-radius:12px;background:linear-gradient(155deg,rgba(22,35,61,.96),rgba(10,17,31,.98));}
+.castle-war1-card .castle-war-info-panel h3{margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(132,163,210,.24)}
+.castle-war1-card .castle-war-info-panel p{margin:8px 0;line-height:1.55}
+.castle-war1-card .castle-war-info-panel ol{margin:0;padding-left:22px;line-height:1.8}
+@media(max-width:760px){.castle-war1-card .castle-war-info-panels{grid-template-columns:repeat(3,minmax(250px,1fr));overflow-x:auto}}
+
+
+.nc-war-admin-cell{display:flex;flex-direction:column;gap:6px;min-width:0;width:100%}
+.nc-war-admin-cell>.nc-member-card,.nc-war-admin-cell>.castle-person-card,.nc-war-admin-cell>.castle-person-empty{width:100%;box-sizing:border-box}
+.nc-war-admin-cell>select{width:100%;min-width:0;box-sizing:border-box}
+
+/* Castle War uses the same participant photo + tier card as Castle Participation. */
+#castlewar1 .nc-member-card{display:flex;gap:7px;align-items:center;background:#101a2e;border:1px solid #365783;border-radius:10px;padding:6px;min-width:0;box-sizing:border-box}
+#castlewar1 .nc-participant-card{display:grid;grid-template-columns:24px 32px minmax(0,1fr);column-gap:6px;align-items:center;min-height:0;padding:6px;background:linear-gradient(145deg,#14233c,#0d1729);border-color:#344b6d}
+#castlewar1 .nc-rank-label{min-width:24px;width:24px;flex:0 0 24px;text-align:center;font-size:20px;line-height:1;color:#f7d77a;font-weight:900}
+#castlewar1 .nc-rank-none{font-size:18px;color:#b9c5d9}
+#castlewar1 .nc-avatar{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex:0 0 32px;border-radius:50%;overflow:hidden;background:#243a61 center/cover no-repeat;border:1px solid #7895c5;color:#fff;font-weight:900}
+#castlewar1 .nc-member-main{display:flex;flex-direction:column;gap:3px;min-width:0;overflow-wrap:anywhere}
+#castlewar1 .nc-name-line{display:flex;align-items:baseline;flex-wrap:wrap;gap:3px 5px;min-width:0}
+#castlewar1 .nc-name-line>strong{font-size:12px;line-height:1.2;min-width:0;overflow-wrap:anywhere}
+#castlewar1 .nc-barracks{font-size:10px;line-height:1.3;color:#bfd0ee}
+#castlewar1 .nc-meta{font-size:10px;line-height:1.25;color:#c8d7f0;margin:0;padding:0;border:0;background:transparent;display:block;overflow-wrap:anywhere}
+#castlewar1 .nc-war-admin-cell{display:flex;flex-direction:column;gap:6px;min-width:0;width:100%}
+#castlewar1 .nc-war-admin-cell>.nc-member-card,#castlewar1 .nc-war-admin-cell>.castle-person-card,#castlewar1 .nc-war-admin-cell>.castle-person-empty{width:100%;box-sizing:border-box}
+#castlewar1 .nc-war-admin-cell>select{width:100%;min-width:0;box-sizing:border-box}
+
+/* Castle War alignment and participant-style waiting list. */
+#castlewar1 .nc-war-row{grid-template-columns:78px minmax(0,1fr);gap:7px;align-items:stretch}
+#castlewar1 .nc-war-row>b.nc-war-slot-number,#castlewar1 .nc-war-row.nc-war-leader-row>b{box-sizing:border-box;min-height:100%;height:100%;align-self:stretch;border:1px solid #365783;border-radius:8px;background:rgba(32,47,82,.72);padding:7px 4px}
+#castlewar1 .nc-war-row:not(.nc-war-leader-row)>b.nc-war-slot-number{min-height:48px}
+#castlewar1 .nc-war-row.nc-war-leader-row{grid-template-columns:78px minmax(0,1fr);align-items:stretch}
+#castlewar1 .nc-war-attack,#castlewar1 .nc-war-turrets{align-items:start}
+#castlewar1 .nc-tier-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:7px}
+#castlewar1 .nc-tier-group{margin:8px 0}
+#castlewar1 .nc-tier-heading{margin:6px 0;padding:6px 9px;border:1px solid #365783;border-radius:7px;background:#202f52;color:#f7d77a}
+#castlewar1 .castle-war-info-panels{margin-top:14px}
+@media(max-width:760px){#castlewar1 .nc-war-row{grid-template-columns:58px minmax(0,1fr)}#castlewar1 .nc-war-row.nc-war-leader-row{grid-template-columns:58px minmax(0,1fr)}#castlewar1 .nc-war-row:not(.nc-war-leader-row)>b.nc-war-slot-number{min-height:48px}#castlewar1 .nc-tier-cards{grid-template-columns:minmax(0,1fr)}}
