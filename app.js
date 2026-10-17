@@ -587,9 +587,9 @@ function koreanOnly(value){return String(value??"").trim();}
 function normalizeBearNoticeText(source){
  const d={...(source||{})};
  const labelPatterns={
-  bearLeaders:/^\s*(?:집결장|rally\s*leaders?|集結主|集结队长|Rally-Anführer|Capo raduno|Líder de reunión|Toplanma lideri)\s*[:：]\s*/i,
-  bearMembers:/^\s*(?:집결원|rally\s*members?|集結メンバー|集结成员|Rally-Mitglieder|Membri del rally|Miembros de reunión|Toplanma üyeleri)\s*[:：]\s*/i,
-  bearTroops:/^\s*(?:병력|troops?|兵士数|兵力|Truppen|Truppe|Truppe|Tropas|Birlikler)\s*[:：]\s*/i,
+  bearLeaders:/^\s*(?:집결장|rally\s*leaders?|集結主|集结队长|Rally-Anführer|Leader rally|Líder(?:es)? de rally|Ralli liderleri)\s*[:：]\s*/i,
+  bearMembers:/^\s*(?:집결원|rally\s*members?|集結メンバー|集结成员|Rally-Mitglieder|Membri rally|Miembros del rally|Ralli üyeleri)\s*[:：]\s*/i,
+  bearTroops:/^\s*(?:병력|troops?|兵士数|兵力|Truppen|Truppe|Tropas|Asker)\s*[:：]\s*/i,
   bearRatio:/^\s*(?:비율|troop\s*ratio|兵士比率|兵力比例|Truppenverhältnis|Rapporto truppe|Proporción de tropas|Asker oranı)\s*[:：]\s*/i
  };
  const separators=/^(?:또는|or|oder|oppure|o|veya|または|或者)$/i;
