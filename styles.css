@@ -195,3 +195,10 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
  #battleJoin .nc-barracks{font-size:10px}
 }
 @media(max-width:460px){#battleJoin #ncParticipants.newcastle-list,#battleJoin #ncWaiting.newcastle-list{grid-template-columns:minmax(0,1fr)}}
+
+/* Castle participation lists grouped by barracks tier */
+#battleJoin .nc-tier-group{grid-column:1/-1;min-width:0;margin:4px 0 10px}
+#battleJoin .nc-tier-heading{margin:0 0 8px;padding:7px 10px;border-left:3px solid #79a9ff;border-radius:5px;background:rgba(70,112,177,.16);color:#eaf2ff;font-size:14px;font-weight:800;letter-spacing:.02em}
+#battleJoin .nc-tier-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:10px}
+@media(max-width:760px){#battleJoin .nc-tier-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
+@media(max-width:460px){#battleJoin .nc-tier-cards{grid-template-columns:minmax(0,1fr)}}
