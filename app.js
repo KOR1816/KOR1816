@@ -668,6 +668,10 @@ async function loadNotices(){
    noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,goldenGlaivesVersion:Number(saved.goldenGlaivesVersion||0),updatedAt:saved.updatedAt||cloud?.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
   if(Number(noticeData.goldenGlaivesVersion||0)<2){noticeData.goldenGlaives=NOTICE_DEFAULTS.goldenGlaives;noticeData.translations=noticeData.translations||{};for(const language of LANGS){noticeData.translations[language]={...(noticeData.translations[language]||{}),goldenGlaives:GOLDEN_GLAIVES_CONTENT_BY_LANG[language]||NOTICE_DEFAULTS.goldenGlaives};}noticeData.goldenGlaivesVersion=2;}
+   // Normalize only the UTC time formatting in existing Golden Glaives notices; preserve all wording and actions.
+   const normalizeGoldenTimes=value=>String(value||"").replace(/UTC\s+(00:00|08:00|16:00)/g,"UTC$1");
+   noticeData.goldenGlaives=normalizeGoldenTimes(noticeData.goldenGlaives);
+   if(noticeData.translations)for(const language of Object.keys(noticeData.translations)){const translated=noticeData.translations[language];if(translated&&translated.goldenGlaives)translated.goldenGlaives=normalizeGoldenTimes(translated.goldenGlaives);}
   mergeCombinedEventNotices();
   noticeEditLang="ko";
   renderNotices();setMsg("notice-status",message("load"));
