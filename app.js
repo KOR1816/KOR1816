@@ -880,7 +880,7 @@ function battleJoinParticipantCard(p){
  if(!p||!p.nickname)return '<div class="nc-empty">—</div>';
  const fixed=FIXED_LEADERS.includes(p.nickname),hasTier=["A","B","C"].includes(p.tier);
  const skillCount=(p.salo?1:0)+(p.hilde?1:0);
- const tier=fixed?"S":hasTier?p.tier+(skillCount===2?"1":skillCount===1?"2":"3"):"😭";
+ const tier=fixed?"S":hasTier?p.tier:"😭";
  const sprite=getVikingSprite(p.nickname),spriteStyle=vikingSpriteStyle(p.nickname);
  const avatar='<span class="nc-avatar" '+(spriteStyle?'style="'+spriteStyle+'"':"")+'>'+(sprite?"":esc((p.nickname||"?").slice(0,1)))+'</span>';
  const barracks=fixed?"집결장":p.tier==="A"?"병영5":p.tier==="B"?"병영4.5":p.tier==="C"?"병영4":"등급 미등록";
