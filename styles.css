@@ -274,3 +274,12 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #castlewar1 .nc-war-row .castle-person-empty{padding:2px 4px}
 #castlewar1 .nc-war-row select{padding:4px 5px;min-height:30px}
 @media(max-width:760px){#castlewar1 .nc-war-attack{grid-template-columns:repeat(3,minmax(290px,1fr));overflow-x:auto;overscroll-behavior-x:contain}}
+
+/* Hard override: Castle War assault groups and their leader rows must be three-across. */
+#castlewar1 #ncWarAttack{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px;overflow-x:auto;align-items:start}
+#castlewar1 #ncWarAttack>.nc-war-column{display:block;min-width:0!important;width:100%;box-sizing:border-box}
+#castlewar1 #ncWarAttack .nc-war-leader-row{display:grid;grid-template-columns:30px minmax(0,1fr);gap:5px;padding:3px 5px;min-width:0}
+#castlewar1 #ncWarAttack .nc-war-leader-row .castle-person-card,
+#castlewar1 #ncWarAttack .nc-war-leader-row .castle-person-empty,
+#castlewar1 #ncWarAttack .nc-war-leader-row .nc-war-admin-cell{min-width:0;width:100%;box-sizing:border-box}
+@media(max-width:760px){#castlewar1 #ncWarAttack{grid-template-columns:repeat(3,minmax(290px,1fr))!important;overflow-x:auto;overscroll-behavior-x:contain}#castlewar1 #ncWarAttack>.nc-war-column{min-width:290px!important}}
