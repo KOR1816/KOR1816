@@ -345,9 +345,8 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 .viking-register #vikingMsg{grid-column:1/-1}
 
 
-/* Final requested layout overrides: keep latest banners dark and centered. */
+/* Final requested layout overrides: dark centered latest banners and schedule group headings only. */
 .msg.is-latest-load{background:#080d18!important;text-align:center!important;justify-content:center}
-#homeView #homeLatest h3,#homeView #homeLatest .notice-title,#homeView #homeLatest strong.notice-heading{border-left:0!important}
-#notices .cards>section.card>h3{border-left:0!important}
+#homeView .home-schedule-heading{border-left:0!important;padding-left:10px!important}
 .viking-register .viking-register-actions{grid-column:1!important;display:flex!important;align-items:center;gap:8px;flex-wrap:wrap;justify-self:start}
 .viking-register #vikingMsg{grid-column:1!important;justify-self:start;text-align:left}
