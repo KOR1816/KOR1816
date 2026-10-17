@@ -421,3 +421,20 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
  .seating-row .roster-avatar{width:24px;height:24px;flex-basis:24px}
  .seating-row .roster-person-name{font-size:11px}
 }
+
+/* Castle War waiting cards mirror Castle Participation waiting cards on every screen size. */
+#castlewar1 #ncWarWaiting .nc-participant-card{display:flex!important;grid-template-columns:none!important;gap:10px!important;align-items:center!important;padding:10px!important}
+#castlewar1 #ncWarWaiting .nc-rank-label{min-width:30px!important;width:30px!important;flex:0 0 30px!important;font-size:24px!important}
+#castlewar1 #ncWarWaiting .nc-avatar{width:38px!important;height:38px!important;flex:0 0 38px!important}
+#castlewar1 #ncWarWaiting .nc-name-line{display:flex!important;flex-wrap:wrap;align-items:baseline;gap:5px}
+#castlewar1 #ncWarWaiting .nc-barracks{display:inline!important}
+#castlewar1 #ncWarWaiting .nc-member-main{min-width:0;overflow-wrap:anywhere}
+@media(max-width:760px){
+ #castlewar1 #ncWarWaiting.newcastle-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #castlewar1 #ncWarWaiting .nc-participant-card{gap:6px!important;padding:8px!important}
+ #castlewar1 #ncWarWaiting .nc-rank-label{min-width:24px!important;width:24px!important;flex-basis:24px!important;font-size:20px!important}
+ #castlewar1 #ncWarWaiting .nc-avatar{width:32px!important;height:32px!important;flex-basis:32px!important}
+}
+@media(max-width:460px){
+ #castlewar1 #ncWarWaiting.newcastle-list{grid-template-columns:minmax(0,1fr)!important}
+}
