@@ -377,7 +377,7 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 .roster-person-empty{display:block;min-height:28px}
 .team-display{display:grid;grid-template-columns:repeat(6,minmax(145px,1fr));gap:10px;width:100%;overflow-x:auto;padding:2px 1px 8px}
 .team-display-column{min-width:145px;border:1px solid #30496f;border-radius:12px;overflow:hidden;background:#0e182b}
-.team-display-column h3{margin:0;padding:11px;text-align:center;background:#203253;color:#f6d77b;font-weight:800}
+.team-display-column h3{margin:0;padding:9px 4px;text-align:center;background:#203253;color:#f6d77b;font-weight:800;font-size:clamp(11px,1vw,14px);line-height:1.25;white-space:normal;overflow-wrap:anywhere;word-break:normal}
 .team-display-slot{display:grid;grid-template-columns:25px minmax(0,1fr);gap:5px;align-items:center;min-height:43px;padding:5px 7px;border-top:1px solid #273b5d}
 .team-display-number,.seating-number{color:#aebbd3;text-align:center;font-size:12px;font-weight:700}
 .team-columns-wrap .slot select{width:100%;padding:7px 5px}
