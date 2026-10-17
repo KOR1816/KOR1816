@@ -294,3 +294,29 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #castlewar1 #ncWarAttack .nc-war-leader-row .castle-person-empty,
 #castlewar1 #ncWarAttack .nc-war-leader-row .nc-war-admin-cell{min-width:0;width:100%;box-sizing:border-box}
 @media(max-width:760px){#castlewar1 #ncWarAttack{grid-template-columns:repeat(3,minmax(290px,1fr))!important;overflow-x:auto;overscroll-behavior-x:contain}#castlewar1 #ncWarAttack>.nc-war-column{min-width:290px!important}}
+
+/* Consistent blue left accent for Castle section and group title bars. */
+#battleJoin .nc-tier-heading,
+#castlewar1 .nc-tier-heading{
+  border-left:4px solid #79a9ff!important;
+  border-top:1px solid #365783;
+  border-right:1px solid #365783;
+  border-bottom:1px solid #365783;
+  border-radius:6px;
+  padding-left:11px;
+  background:rgba(70,112,177,.16);
+}
+#castlewar1 .nc-war-column>h3,
+#castlewar1 .nc-turret-column>h3,
+#castlewar1 .castle-war-info-panel>h3{
+  border-left:4px solid #79a9ff;
+  padding-left:11px;
+}
+#battleJoin h3[data-newcastle="participants"],
+#battleJoin h3[data-newcastle="waiting"],
+#castlewar1 h3[data-newcastle="waiting"]{
+  border-left:4px solid #79a9ff;
+  padding:7px 0 8px 11px;
+  background:rgba(70,112,177,.10);
+  border-radius:4px;
+}
