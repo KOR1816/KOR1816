@@ -1168,38 +1168,32 @@ async function syncCastleLayoutFromRoster(){
 
 async function autoArrangeCastleWar(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
- const squadKeys=["assault","rush","finish"],turretKeys=["north","west","reserve"];
- const resetKeys=[...squadKeys,...turretKeys];
+ const resetKeys=["assault","rush","finish","north","west","reserve"];
  try{
-  // Always read the latest shared participation roster; never auto-assign from stale page memory.
   await loadParticipantRoster();
   const ordered=castleWarTierSortedParticipants().filter(p=>String(p.nickname||"").trim());
   resetKeys.forEach(key=>castleWarData.war[key]=Array(8).fill(""));
-  // Fill each group from one contiguous, validated block of unique eligible nicknames.
-  const assignBlock=(keys,people)=>{
-   keys.forEach((key,col)=>{
-    const block=people.slice(col*8,col*8+8).map(p=>String(p.nickname||"").trim()).filter(Boolean);
-    castleWarData.war[key]=Array.from({length:8},(_,row)=>block[row]||"");
-   });
-  };
-  assignBlock(squadKeys,ordered.slice(0,24));
-  assignBlock(turretKeys,ordered.slice(24,48));
-  if(ordered.length>=16&&["assault","rush"].some(key=>castleWarData.war[key].filter(Boolean).length!==8)){
-   throw new Error("자동배치 검증 실패: 참전 가능 인원은 충분하지만 돌격조/개돌조 8번까지 채워지지 않았습니다. 참전 명단 데이터를 확인하세요.");
-  }
+  // First 24 tier-sorted participants rotate Assault -> Rush -> Finish, one at a time.
+  ordered.slice(0,24).forEach((p,i)=>{
+   const key=["assault","rush","finish"][i%3];
+   castleWarData.war[key][Math.floor(i/3)]=p.nickname.trim();
+  });
+  // After all three attack groups, fill North and West towers, then Reserve last.
+  ordered.slice(24,40).forEach((p,i)=>{
+   const key=i<8?"north":"west";
+   castleWarData.war[key][i%8]=p.nickname.trim();
+  });
+  ordered.slice(40,48).forEach((p,i)=>{castleWarData.war.reserve[i]=p.nickname.trim();});
   const counts=resetKeys.map(key=>({key,count:castleWarData.war[key].filter(Boolean).length}));
   const detail=counts.map(x=>({assault:"돌격조",rush:"개돌조",finish:"마무리조",north:"북측포탑",west:"서측포탑",reserve:"예비포탑"})[x.key]+" "+x.count+"/8").join(" · ");
-  // With 58 active registrations, all 48 member slots must be filled after fixed leaders are excluded.
-  if(ordered.length>=16&&(counts[0].count!==8||counts[1].count!==8)){
-   throw new Error("자동배치 검증 실패: 참전 가능 "+participants.filter(p=>p.status==="yes").length+"명, 고정 집결장 제외 대상 "+ordered.length+"명, "+detail);
-  }
-  if(ordered.length>=48&&counts.some(x=>x.count!==8)){
-   throw new Error("자동배치 검증 실패: "+detail);
-  }
+  const expected=Math.min(ordered.length,48);
+  const actual=counts.reduce((sum,x)=>sum+x.count,0);
+  if(actual!==expected)throw new Error("자동배치 검증 실패: 대상 "+expected+"명, 배치 "+actual+"명. "+detail);
+  castleWarData.rosterSignature=ordered.map(p=>[p.nickname,p.tier,p.status,p.salo?1:0,p.hilde?1:0].join("|")).join(";");
+  castleWarData.rosterSyncedAt=Date.now();
   castleWarData=await saveCloud("castlewar1",castleWarData);
   renderCastleWar();
-  const msg="자동배치 저장 완료: 참전 가능 "+participants.filter(p=>p.status==="yes").length+"명 · 고정 집결장 제외 "+ordered.length+"명. "+detail+(counts.some(x=>x.count<8)?" · 배치 대상 인원 확인 필요":" · 48칸 배치 완료");
-  setMsg("ncWarMsg",msg);
+  setMsg("ncWarMsg","등급순 순환 자동배치 저장 완료: "+detail);
  }catch(e){
   console.error("Castle War auto-arrange validation failed",e);
   renderCastleWar();
