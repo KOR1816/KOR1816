@@ -780,7 +780,16 @@ async function loadTeams(){
 async function toggleTeamsAdmin(){
  const root=$("#teams");if(!root)return;if(!adminModes.teams&&!await ensureGoogleAdmin())return;
  adminModes.teams=!adminModes.teams;setTeamsInputsEnabled(adminModes.teams);setAdminButton($("#teamsAdminBtn",root),adminModes.teams);
- const save=$("#teamsSaveBtn",root);if(save)save.style.display=adminModes.teams?"inline-flex":"none";renderTeamsDisplay();
+ const save=$("#teamsSaveBtn",root);if(save)save.style.display=adminModes.teams?"inline-flex":"none";const clear=$("#teamsClearBtn",root);if(clear)clear.style.display=adminModes.teams?"inline-flex":"none";renderTeamsDisplay();
+}
+async function clearAllTeams(){
+ if(!adminModes.teams){alert(message("admin"));return;}
+ if(!confirm("성검쟁탈의 모든 배치 내용을 삭제할까요?"))return;
+ const root=$("#teams");
+ for(const g of ["A","B","C","D"])for(let i=1;i<=7;i++){const el=$("#team-"+g+"-"+i,root);if(el)el.value="";}
+ for(let i=1;i<=2;i++){const el=$("#extra-"+i,root);if(el)el.value="";}
+ for(let i=1;i<=10;i++){const el=$("#sub-"+i,root);if(el)el.value="";}
+ await saveAllTeams();
 }
 async function saveAllTeams(){
  if(!adminModes.teams){alert(message("admin"));return;}const root=$("#teams"),next={A:[],B:[],C:[],D:[],extra:[],subs:[]};
@@ -796,13 +805,23 @@ async function loadAlliance(){
 function renderAllianceDisplay(){
  const root=$("#alliance");if(!root)return;
  for(let t=1;t<=4;t++){const team=$(".alliance-team:nth-child("+t+")",root);if(!team)continue;const groups=$$(".alliance-group",team);
-  for(let g=1;g<=groups.length;g++){const wrap=$(".alliance-display",groups[g-1]);if(!wrap)continue;const vals=allianceData.names?.[t]?.["g"+g]||[];wrap.innerHTML=Array.from({length:5},(_,i)=>rosterPerson(vals[i+3]||"")).join("");}
+  for(let g=1;g<=groups.length;g++){const wrap=$(".alliance-display",groups[g-1]);if(!wrap)continue;const vals=allianceData.names?.[t]?.["g"+g]||[];wrap.innerHTML=Array.from({length:5},(_,i)=>'<div class="alliance-display-item"><span class="alliance-display-number">'+(i+1)+'</span>'+rosterPerson(vals[i+3]||"")+'</div>').join("");}
  }
 }
 async function toggleAllianceAdmin(){
  const root=$("#alliance");if(!root)return;if(!adminModes.alliance&&!await ensureGoogleAdmin())return;adminModes.alliance=!adminModes.alliance;
  const view=$("#allianceView",root),edit=$("#allianceEdit",root),b=$("#allianceAdminBtn",root);if(view)view.style.display=adminModes.alliance?"none":"block";if(edit)edit.style.display=adminModes.alliance?"block":"none";
  root.classList.toggle("alliance-admin-mode",adminModes.alliance);setInputsEnabled(root,adminModes.alliance);setAdminButton(b,adminModes.alliance);
+}
+async function clearAllAlliance(){
+ if(!adminModes.alliance){alert(message("admin"));return;}
+ if(!confirm("3대연맹전의 모든 배치 내용을 삭제할까요?"))return;
+ const root=$("#alliance");
+ for(let t=1;t<=4;t++)for(let g=1;g<=(t<=2?2:1);g++)for(let k=3;k<=7;k++){
+  const edit=$("#ae-"+t+"-"+g+"-"+k,root);if(edit)edit.value="";
+  const view=$("#alliance-"+t+"-"+g+"-"+k,root);if(view)view.value="";
+ }
+ await saveAlliance();
 }
 async function saveAlliance(){
  if(!adminModes.alliance){alert(message("admin"));return;}const root=$("#alliance"),next={names:{}};
