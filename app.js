@@ -582,6 +582,14 @@ function captureHomeEditor(){
  homeData={...homeData,translations:{...(homeData.translations||{}),[currentLang]:edited}};
  if(currentLang==="ko")homeData={...homeData,...edited};
 }
+function localizedSquadLabel(squad){
+ const labels={ko:{"1군":"1군","2군":"2군"},en:{"1군":"Squad 1","2군":"Squad 2"},ja:{"1군":"第1部隊","2군":"第2部隊"},zh:{"1군":"第1队","2군":"第2队"},de:{"1군":"Trupp 1","2군":"Trupp 2"},it:{"1군":"Squadra 1","2군":"Squadra 2"},es:{"1군":"Grupo 1","2군":"Grupo 2"},tr:{"1군":"1. Takım","2군":"2. Takım"}};
+ return labels[currentLang]?.[squad]||squad;
+}
+function localizedTeamHeading(title){
+ const labels={"💥 개돌조":["💥 개돌조","💥 Rush Squad","💥 突撃部隊","💥 冲锋组","💥 Angriffstrupp","💥 Squadra rapida","💥 Escuadrón de avance","💥 Hızlı Hücum Ekibi"],"🔄 대체자":["🔄 대체자","🔄 Substitute","🔄 代替メンバー","🔄 替补","🔄 Ersatz","🔄 Sostituto","🔄 Sustituto","🔄 Yedek"]};
+ return labels[title]?.[langIndex()]||title;
+}
 function renderHomeSchedule(value){
  const entries=String(value||"").split(/\r?\n/).map((line,index)=>{
   const raw=line.trim();if(!raw)return null;
@@ -619,7 +627,7 @@ function renderHomeSchedule(value){
   rows.sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
   return '<section class="home-schedule-panel"><h3 class="home-schedule-panel-title">'+esc(group.label)+'</h3><div class="home-schedule-divider"></div>'+rows.map(item=>{
    const paired=group.key==="sword"&&/[12]군/.test(item.event);
-   const label=paired?(item.event.match(/[12]군/)||[])[0]:item.pairedEvents.map(event=>translateHomeEvent(event)).join(" · ");
+   const label=paired?localizedSquadLabel((item.event.match(/[12]군/)||[])[0]):item.pairedEvents.map(event=>translateHomeEvent(event)).join(" · ");
    return '<div class="home-schedule-row">'+
     (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>'+esc(homeText("unscheduled"))+'</span></div>')+
     '<div class="home-schedule-event"><div class="home-schedule-event-line">'+esc(label)+'</div></div></div>';
@@ -732,7 +740,7 @@ function renderNotices(){
     ko:["1군","2군"],en:["Squad 1","Squad 2"],ja:["第1部隊","第2部隊"],zh:["第1队","第2队"],
     de:["Trupp 1","Trupp 2"],it:["Squadra 1","Squadra 2"],es:["Grupo 1","Grupo 2"],tr:["1. Takım","2. Takım"]
    }[currentLang]||["1군","2군"];
-   value=value.replace(/(^|\n)1군(?=：|:)/g,(_,p)=>p+squadLabels[0]).replace(/(^|\n)2군(?=：|:)/g,(_,p)=>p+squadLabels[1]);
+   value=value.replace(/(^|\n)1군(?=\s*[：:])/g,(_,p)=>p+localizedSquadLabel("1군")).replace(/(^|\n)2군(?=\s*[：:])/g,(_,p)=>p+localizedSquadLabel("2군"));
    view.textContent=value;
   }
   if(edit){
@@ -835,7 +843,7 @@ function setTeamsInputsEnabled(enabled){setInputsEnabled($("#teams"),enabled);}
 function renderTeamsDisplay(){
  const root=$("#teams"),display=$("#teamDisplay"),editor=$(".team-columns-wrap",root);if(!root||!display)return;
  const groups=[["A","A1",7],["B","A2",7],["C","D1",7],["D","D2",7],["extra","💥 개돌조",2],["subs","🔄 대체자",10]];
- display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+title+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
+ display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+localizedTeamHeading(title)+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
  display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
  translateStatic();
 }
