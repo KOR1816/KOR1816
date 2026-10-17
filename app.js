@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261018-castlewar-terms3";
+import { PAGE_CONTENT } from "./page-content.js?v=20261018-roster-dropdowns-photos-layout1";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -748,70 +748,66 @@ async function saveNotices(){
  }catch(e){console.error(e);setMsg("notice-status",message("failed"));}
 }
 
+
+function knownRosterNicknames(extra=[]){
+ const seatingNames=(seatingData?.rows||[]).flatMap(r=>[...(r.left||[]),...(r.right||[])]);
+ const allianceNames=Object.values(allianceData?.names||{}).flatMap(groups=>Object.values(groups||{}).flat());
+ const teamNames=[...(teamData?.A||[]),...(teamData?.B||[]),...(teamData?.C||[]),...(teamData?.D||[]),...(teamData?.extra||[]),...(teamData?.subs||[])];
+ return [...new Set([...FIXED_NICKNAMES,...teamNames,...allianceNames,...seatingNames,...extra].map(v=>String(v||"").trim()).filter(Boolean))];
+}
+function fillNicknameSelect(select,value){
+ if(!select)return;const current=String(value||""),names=knownRosterNicknames([current]);
+ select.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===current?'selected':'')+'>'+esc(n)+'</option>').join("");select.value=current;
+}
+function rosterAvatar(name){const style=name?vikingSpriteStyle(name):"";return style?'<span class="roster-avatar" style="'+style+'"></span>':'<span class="roster-avatar roster-avatar-missing">😭</span>';}
+function rosterPerson(name){return name?'<span class="roster-person">'+rosterAvatar(name)+'<span class="roster-person-name">'+esc(name)+'</span></span>':'<span class="roster-person-empty"></span>';}
+
 /* Holy Sword and Alliance */
 function setTeamsInputsEnabled(enabled){setInputsEnabled($("#teams"),enabled);}
+function renderTeamsDisplay(){
+ const root=$("#teams"),display=$("#teamDisplay"),editor=$(".team-columns-wrap",root);if(!root||!display)return;
+ const groups=[["A","A1",7],["B","A2",7],["C","D1",7],["D","D2",7],["extra","💥 개돌조",2],["subs","🔄 대체자",10]];
+ display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+title+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
+ display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
+}
 async function loadTeams(){
- const r=await loadData("teams",teamData);teamData={...teamData,...r.data};
- const root=$("#teams");
- for(const group of ["A","B","C","D"]){(teamData[group]||[]).forEach((v,i)=>{const el=$("#team-"+group+"-"+(i+1),root);if(el)el.value=v||"";});}
- (teamData.extra||[]).forEach((v,i)=>{const el=$("#extra-"+(i+1),root);if(el)el.value=v||"";});
- (teamData.subs||[]).forEach((v,i)=>{const el=$("#sub-"+(i+1),root);if(el)el.value=v||"";});
- setTeamsInputsEnabled(Boolean(adminModes.teams));
- if(r.source==="unavailable")setMsg("teamMsg",message("fallback"));else setMsg("teamMsg",message("load"));
+ const r=await loadData("teams",teamData);teamData={...teamData,...r.data};const root=$("#teams");
+ for(const g of ["A","B","C","D"])(teamData[g]||[]).forEach((v,i)=>fillNicknameSelect($("#team-"+g+"-"+(i+1),root),v||""));
+ (teamData.extra||[]).forEach((v,i)=>fillNicknameSelect($("#extra-"+(i+1),root),v||""));
+ (teamData.subs||[]).forEach((v,i)=>fillNicknameSelect($("#sub-"+(i+1),root),v||""));
+ setTeamsInputsEnabled(Boolean(adminModes.teams));renderTeamsDisplay();setMsg("teamMsg",r.source==="unavailable"?message("fallback"):message("load"));
 }
 async function toggleTeamsAdmin(){
- const root=$("#teams");if(!root)return;
- if(!adminModes.teams&&!await ensureGoogleAdmin())return;
- adminModes.teams=!adminModes.teams;
- setTeamsInputsEnabled(adminModes.teams);
- const b=$("#teamsAdminBtn",root),save=$("#teamsSaveBtn",root);
- setAdminButton(b,adminModes.teams);
- if(save)save.style.display=adminModes.teams?"inline-flex":"none";
+ const root=$("#teams");if(!root)return;if(!adminModes.teams&&!await ensureGoogleAdmin())return;
+ adminModes.teams=!adminModes.teams;setTeamsInputsEnabled(adminModes.teams);setAdminButton($("#teamsAdminBtn",root),adminModes.teams);
+ const save=$("#teamsSaveBtn",root);if(save)save.style.display=adminModes.teams?"inline-flex":"none";renderTeamsDisplay();
 }
 async function saveAllTeams(){
- if(!adminModes.teams){alert(message("admin"));return;}
- const root=$("#teams"),next={A:[],B:[],C:[],D:[],extra:[],subs:[]};
+ if(!adminModes.teams){alert(message("admin"));return;}const root=$("#teams"),next={A:[],B:[],C:[],D:[],extra:[],subs:[]};
  for(const g of ["A","B","C","D"])for(let i=1;i<=7;i++)next[g].push($("#team-"+g+"-"+i,root)?.value.trim()||"");
- for(let i=1;i<=2;i++)next.extra.push($("#extra-"+i,root)?.value.trim()||"");
- for(let i=1;i<=10;i++)next.subs.push($("#sub-"+i,root)?.value.trim()||"");
- try{teamData=await saveCloud("teams",next);setMsg("teamMsg",message("saved"));}
- catch(e){console.error(e);setMsg("teamMsg",message("failed"));}
+ for(let i=1;i<=2;i++)next.extra.push($("#extra-"+i,root)?.value.trim()||"");for(let i=1;i<=10;i++)next.subs.push($("#sub-"+i,root)?.value.trim()||"");
+ try{teamData=await saveCloud("teams",next);renderTeamsDisplay();setMsg("teamMsg",message("saved"));}catch(e){console.error(e);setMsg("teamMsg",message("failed"));}
 }
 async function loadAlliance(){
- const r=await loadData("alliance",allianceData);allianceData=r.data;
- const root=$("#alliance");
- for(let t=1;t<=4;t++){
-  const groups=allianceData.names?.[t]||{};
-  for(let g=1;g<=(t<=2?2:1);g++){
-   const vals=groups["g"+g]||[];
-   for(let k=3;k<=7;k++){const el=$("#alliance-"+t+"-"+g+"-"+k,root);if(el)el.value=vals[k]||"";}
-  }
+ const r=await loadData("alliance",allianceData);allianceData=r.data;const root=$("#alliance");
+ for(let t=1;t<=4;t++){const groups=allianceData.names?.[t]||{};for(let g=1;g<=(t<=2?2:1);g++){const vals=groups["g"+g]||[];for(let k=3;k<=7;k++){const v=vals[k]||"";fillNicknameSelect($("#alliance-"+t+"-"+g+"-"+k,root),v);fillNicknameSelect($("#ae-"+t+"-"+g+"-"+k,root),v);}}}
+ renderAllianceDisplay();setInputsEnabled(root,Boolean(adminModes.alliance));root.classList.toggle("alliance-admin-mode",adminModes.alliance);setMsg("allianceMsg",r.source==="unavailable"?message("fallback"):message("load"));
+}
+function renderAllianceDisplay(){
+ const root=$("#alliance");if(!root)return;
+ for(let t=1;t<=4;t++){const team=$(".alliance-team:nth-child("+t+")",root);if(!team)continue;const groups=$$(".alliance-group",team);
+  for(let g=1;g<=groups.length;g++){const wrap=$(".alliance-display",groups[g-1]);if(!wrap)continue;const vals=allianceData.names?.[t]?.["g"+g]||[];wrap.innerHTML=Array.from({length:5},(_,i)=>rosterPerson(vals[i+3]||"")).join("");}
  }
- setInputsEnabled(root,Boolean(adminModes.alliance));
- setMsg("allianceMsg",r.source==="unavailable"?message("fallback"):message("load"));
 }
 async function toggleAllianceAdmin(){
- const root=$("#alliance");if(!root)return;
- if(!adminModes.alliance&&!await ensureGoogleAdmin())return;
- adminModes.alliance=!adminModes.alliance;
- const view=$("#allianceView",root),edit=$("#allianceEdit",root),b=$("#allianceAdminBtn",root);
- if(view)view.style.display=adminModes.alliance?"none":"block";
- if(edit)edit.style.display=adminModes.alliance?"block":"none";
- setInputsEnabled(root,adminModes.alliance);
- setAdminButton(b,adminModes.alliance);
+ const root=$("#alliance");if(!root)return;if(!adminModes.alliance&&!await ensureGoogleAdmin())return;adminModes.alliance=!adminModes.alliance;
+ const view=$("#allianceView",root),edit=$("#allianceEdit",root),b=$("#allianceAdminBtn",root);if(view)view.style.display=adminModes.alliance?"none":"block";if(edit)edit.style.display=adminModes.alliance?"block":"none";
+ root.classList.toggle("alliance-admin-mode",adminModes.alliance);setInputsEnabled(root,adminModes.alliance);setAdminButton(b,adminModes.alliance);
 }
 async function saveAlliance(){
- if(!adminModes.alliance){alert(message("admin"));return;}
- const root=$("#alliance"),next={names:{}};
- for(let t=1;t<=4;t++){
-  next.names[t]={};
-  for(let g=1;g<=(t<=2?2:1);g++){
-   next.names[t]["g"+g]=["","",""];
-   for(let k=3;k<=7;k++)next.names[t]["g"+g].push($("#ae-"+t+"-"+g+"-"+k,root)?.value.trim()||"");
-  }
- }
- try{allianceData=await saveCloud("alliance",next);setMsg("allianceMsg",message("saved"));}
- catch(e){console.error(e);setMsg("allianceMsg",message("failed"));}
+ if(!adminModes.alliance){alert(message("admin"));return;}const root=$("#alliance"),next={names:{}};
+ for(let t=1;t<=4;t++){next.names[t]={};for(let g=1;g<=(t<=2?2:1);g++){next.names[t]["g"+g]=["","",""];for(let k=3;k<=7;k++)next.names[t]["g"+g].push($("#ae-"+t+"-"+g+"-"+k,root)?.value.trim()||"");}}
+ try{allianceData=await saveCloud("alliance",next);renderAllianceDisplay();setMsg("allianceMsg",message("saved"));}catch(e){console.error(e);setMsg("allianceMsg",message("failed"));}
 }
 
 /* Seating table */
@@ -836,15 +832,14 @@ function normalizeSeatingRows(value){
  });
 }
 function renderSeating(){
- const root=$("#seating");if(!root)return;
- const wrap=$(".seating-3col-wrap",root);if(!wrap)return;
- wrap.innerHTML=seatingData.rows.map((row,ri)=>'<div class="seating-row-group"><h3 class="seating-column-title">'+row.row+'</h3><div class="seating-split-pair"><section class="seating-split-card"><h4>Bear1</h4>'+row.left.map((name,i)=>'<div class="seating-row"><span>'+(i+1)+'</span><span>'+esc(name||"—")+'</span></div>').join("")+'</section><section class="seating-split-card"><h4>Bear2</h4>'+row.right.map((name,i)=>'<div class="seating-row"><span>'+(i+1)+'</span><span>'+esc(name||"—")+'</span></div>').join("")+'</section></div></div>').join("");
- const panel=$("#seatingEdit",root);if(panel)panel.style.display=adminModes.seating?"block":"none";
- const button=$("#seatingAdminBtn",root);setAdminButton(button,adminModes.seating);
+ const root=$("#seating");if(!root)return;const wrap=$(".seating-3col-wrap",root);if(!wrap)return;const colors=[["#2459b5","#62bde9"],["#27864a","#a7dba2"],["#e18a32","#8055bd"]];
+ wrap.innerHTML=seatingData.rows.map((row,ri)=>'<div class="seating-row-group"><h3 class="seating-column-title">ROW '+(ri+1)+'</h3><div class="seating-split-pair"><section class="seating-split-card seating-side-'+(ri+1)+'-left"><h4 style="--seating-side-color:'+colors[ri][0]+'">Bear1</h4>'+row.left.map((name,i)=>'<div class="seating-row"><span class="seating-number">'+(i+1)+'</span>'+rosterPerson(name)+'</div>').join("")+'</section><section class="seating-split-card seating-side-'+(ri+1)+'-right"><h4 style="--seating-side-color:'+colors[ri][1]+'">Bear2</h4>'+row.right.map((name,i)=>'<div class="seating-row"><span class="seating-number">'+(i+1)+'</span>'+rosterPerson(name)+'</div>').join("")+'</section></div></div>').join("");
+ const panel=$("#seatingEdit",root);if(panel)panel.style.display=adminModes.seating?"block":"none";setAdminButton($("#seatingAdminBtn",root),adminModes.seating);
 }
 function renderSeatingAdmin(){
  const root=$("#seating"),grid=$("#seatingEditGrid",root);if(!grid)return;
- grid.innerHTML=seatingData.rows.map((row,ri)=>'<section class="seating-edit-column"><h4>'+row.row+'</h4><div class="seating-edit-split"><div class="seating-edit-card"><h5>Bear1</h5>'+row.left.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><input data-seating-row="'+ri+'" data-seating-side="left" data-seating-index="'+i+'" value="'+esc(name)+'" maxlength="80"></label>').join("")+'</div><div class="seating-edit-card"><h5>Bear2</h5>'+row.right.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><input data-seating-row="'+ri+'" data-seating-side="right" data-seating-index="'+i+'" value="'+esc(name)+'" maxlength="80"></label>').join("")+'</div></div></section>').join("");
+ grid.innerHTML=seatingData.rows.map((row,ri)=>'<section class="seating-edit-column"><h4>ROW '+(ri+1)+'</h4><div class="seating-edit-split"><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-left">Bear1</h5>'+row.left.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="left" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select></label>').join("")+'</div><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-right">Bear2</h5>'+row.right.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="right" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select></label>').join("")+'</div></div></section>').join("");
+ $$("#seatingEditGrid [data-seating-row]").forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||"");});
 }
 async function loadSeating(){
  const r=await loadData("seating",seatingData);
