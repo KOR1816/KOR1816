@@ -750,8 +750,8 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #alliance.alliance-loading #allianceMsg{
   min-height:1.2em;
 }
-#seating .seating-side-2-left .seating-row:nth-child(n+18),
-#seating .seating-side-3-right .seating-row:nth-child(n+17){
+#seating .seating-side-2-left .seating-row:nth-child(n+19),
+#seating .seating-side-3-right .seating-row:nth-child(n+18){
   display:none!important;
 }
 #viking .viking-register{
