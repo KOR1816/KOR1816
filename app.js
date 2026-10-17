@@ -466,9 +466,14 @@ async function loadHome(){
  renderHome();
  if(r.source==="unavailable")setMsg("homeMsg",message("fallback"));else setMsg("homeMsg",message("load"));
 }
+function ensureHomeNoticeBody(value){
+ const body=String(value||"").trimEnd();
+ const lines=["항상 웃으면서 현실이 먼저이며!!","게임은 쉬엄쉬엄 즐기세요!!"];
+ return lines.reduce((text,line)=>text.split(/\\r?\\n/).includes(line)?text:(text?text+"\\n":"")+line,body);
+}
 function captureHomeEditor(){
  const root=$("#home");if(!root||!adminModes.home)return;
- const edited={latestTitle:$("#homeLatestInput",root)?.value||"",latestBody:$("#homeLatestBody",root)?.value||"",schedule:$("#homeScheduleInput",root)?.value||"",welcome:$("#homeWelcomeInput",root)?.value||""};
+ const edited={latestTitle:$("#homeLatestInput",root)?.value||"",latestBody:ensureHomeNoticeBody($("#homeLatestBody",root)?.value||""),schedule:$("#homeScheduleInput",root)?.value||"",welcome:$("#homeWelcomeInput",root)?.value||""};
  homeData={...homeData,translations:{...(homeData.translations||{}),[currentLang]:edited}};
  if(currentLang==="ko")homeData={...homeData,...edited};
 }
@@ -516,10 +521,10 @@ function renderHome(){
  const d=homeData.translations?.[currentLang]||homeData.translations?.ko||homeData;
  const title=$("#homeLatestTitle"),body=$("#homeLatest"),sch=$("#homeSchedule"),wel=$("#homeWelcome");
  if(title)title.textContent="📢 "+(d.latestTitle||"공지");
- if(body)body.textContent=d.latestBody||"";
+ if(body)body.textContent=ensureHomeNoticeBody(d.latestBody||"");
  if(sch)sch.innerHTML=renderHomeSchedule(d.schedule||"");
  if(wel)wel.textContent=d.welcome||"";
- fillInputs($("#home"),{homeLatestInput:d.latestTitle,homeLatestBody:d.latestBody,homeScheduleInput:d.schedule,homeWelcomeInput:d.welcome});
+ fillInputs($("#home"),{homeLatestInput:d.latestTitle,homeLatestBody:ensureHomeNoticeBody(d.latestBody||""),homeScheduleInput:d.schedule,homeWelcomeInput:d.welcome});
 }
 async function saveHome(){
  if(!adminModes.home){alert(message("admin"));return;}
