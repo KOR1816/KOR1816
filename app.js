@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261018-castlewar-priority6";
+import { PAGE_CONTENT } from "./page-content.js?v=20261018-castlewar-terms3";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -346,6 +346,18 @@ function translateStatic(){
   const translated=translations[langIndex()];
   node.nodeValue=original.replace(trim,translated||trim);
  }
+ // These headings include live counts, so translate the label separately from the number.
+ const counted=[
+  [$("#battleJoin h3[data-newcastle='participants']"),"등록된 참전 정보"],
+  [$("#battleJoin h3[data-newcastle='waiting']"),"대기 명단"],
+  [$("#castlewar1 h3[data-newcastle='waiting']"),"대기 명단"]
+ ];
+ counted.forEach(([heading,key])=>{
+  if(!heading)return;
+  const match=heading.textContent.match(/\((\d+)\)$/);
+  const label=(STATIC_TRANSLATIONS[key]||[])[langIndex()]||key;
+  heading.textContent=match?label+" ("+match[1]+")":label;
+ });
 }
 function refreshGenericLoadMessages(){
  const known=["최신 내용을 불러왔습니다.","Latest content loaded.","最新の内容を読み込みました。","已加载最新内容。","Aktuelle Inhalte geladen.","Contenuti aggiornati caricati.","Contenido actualizado cargado.","En güncel içerik yüklendi."];
@@ -883,10 +895,10 @@ function battleJoinParticipantCard(p,hideSkills=false){
  const tier=fixed?"S":hasTier?p.tier:"😭";
  const sprite=getVikingSprite(p.nickname),spriteStyle=vikingSpriteStyle(p.nickname);
  const avatar='<span class="nc-avatar" '+(spriteStyle?'style="'+spriteStyle+'"':"")+'>'+(sprite?"":esc((p.nickname||"?").slice(0,1)))+'</span>';
- const barracks=fixed?"집결장":p.tier==="A"?"병영5":p.tier==="B"?"병영4.5":p.tier==="C"?"병영4":"등급 미등록";
+ const barracks=fixed?castleCardText("leader"):p.tier==="A"?castleCardText("barracks5"):p.tier==="B"?castleCardText("barracks45"):p.tier==="C"?castleCardText("barracks4"):castleCardText("tierNone");
  const skills=[];
- if(!hideSkills&&!fixed&&p.salo)skills.push("살로 O");
- if(!hideSkills&&!fixed&&p.hilde)skills.push("힐데 O");
+ if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" ✓");
+ if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" ✓");
  return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong>'+esc(p.nickname)+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(skills.join(" · "))+'</div></div></div>';
 }
 function renderParticipants(){
@@ -1032,14 +1044,14 @@ async function toggleNewCastleAdmin(){
  renderCastleWar();
 }
 const CASTLE_CARD_TEXT={
- ko:{leader:"집결장",tierA:"A등급",tierB:"B등급",tierC:"C등급",tierNone:"등급 없음",salo:"살로",hilde:"힐데",choose:"닉네임 선택",empty:"—"},
- en:{leader:"Rally leader",tierA:"Tier A",tierB:"Tier B",tierC:"Tier C",tierNone:"No tier",salo:"Salo",hilde:"Hilde",choose:"Choose nickname",empty:"—"},
- ja:{leader:"集結長",tierA:"Aランク",tierB:"Bランク",tierC:"Cランク",tierNone:"ランクなし",salo:"サロ",hilde:"ヒルデ",choose:"ニックネームを選択",empty:"—"},
- zh:{leader:"集结队长",tierA:"A级",tierB:"B级",tierC:"C级",tierNone:"无等级",salo:"萨洛",hilde:"希尔德",choose:"选择昵称",empty:"—"},
- de:{leader:"Sammelführer",tierA:"Rang A",tierB:"Rang B",tierC:"Rang C",tierNone:"Ohne Rang",salo:"Salo",hilde:"Hilde",choose:"Spitznamen wählen",empty:"—"},
- it:{leader:"Capo raduno",tierA:"Grado A",tierB:"Grado B",tierC:"Grado C",tierNone:"Senza grado",salo:"Salo",hilde:"Hilde",choose:"Scegli nickname",empty:"—"},
- es:{leader:"Líder de reunión",tierA:"Rango A",tierB:"Rango B",tierC:"Rango C",tierNone:"Sin rango",salo:"Salo",hilde:"Hilde",choose:"Elegir apodo",empty:"—"},
- tr:{leader:"Toplanma lideri",tierA:"A kademesi",tierB:"B kademesi",tierC:"C kademesi",tierNone:"Kademesiz",salo:"Salo",hilde:"Hilde",choose:"Takma ad seç",empty:"—"}
+ ko:{leader:"집결장",tierA:"A등급",tierB:"B등급",tierC:"C등급",tierNone:"등급 미등록",barracks5:"병영5",barracks45:"병영4.5",barracks4:"병영4",salo:"사울",hilde:"힐데",choose:"닉네임 선택",empty:"—"},
+ en:{leader:"Rally Leader",tierA:"Tier A",tierB:"Tier B",tierC:"Tier C",tierNone:"Unranked",barracks5:"Barracks 5",barracks45:"Barracks 4.5",barracks4:"Barracks 4",salo:"Saul",hilde:"Hilde",choose:"Choose nickname",empty:"—"},
+ ja:{leader:"集結長",tierA:"Aランク",tierB:"Bランク",tierC:"Cランク",tierNone:"未登録",barracks5:"兵舎5",barracks45:"兵舎4.5",barracks4:"兵舎4",salo:"サウル",hilde:"ヒルデ",choose:"ニックネームを選択",empty:"—"},
+ zh:{leader:"集结队长",tierA:"A级",tierB:"B级",tierC:"C级",tierNone:"未登记",barracks5:"兵营5",barracks45:"兵营4.5",barracks4:"兵营4",salo:"索尔",hilde:"希尔德",choose:"选择昵称",empty:"—"},
+ de:{leader:"Sammelführer",tierA:"Rang A",tierB:"Rang B",tierC:"Rang C",tierNone:"Ohne Rang",barracks5:"Kaserne 5",barracks45:"Kaserne 4,5",barracks4:"Kaserne 4",salo:"Saul",hilde:"Hilde",choose:"Spitznamen wählen",empty:"—"},
+ it:{leader:"Capo raduno",tierA:"Grado A",tierB:"Grado B",tierC:"Grado C",tierNone:"Senza grado",barracks5:"Caserma 5",barracks45:"Caserma 4,5",barracks4:"Caserma 4",salo:"Saul",hilde:"Hilde",choose:"Scegli nickname",empty:"—"},
+ es:{leader:"Líder de rally",tierA:"Rango A",tierB:"Rango B",tierC:"Rango C",tierNone:"Sin rango",barracks5:"Cuartel 5",barracks45:"Cuartel 4,5",barracks4:"Cuartel 4",salo:"Saul",hilde:"Hilde",choose:"Elegir apodo",empty:"—"},
+ tr:{leader:"Toplanma Lideri",tierA:"A Kademesi",tierB:"B Kademesi",tierC:"C Kademesi",tierNone:"Derecesiz",barracks5:"Kışla 5",barracks45:"Kışla 4,5",barracks4:"Kışla 4",salo:"Saul",hilde:"Hilde",choose:"Takma ad seç",empty:"—"}
 };
 function castleCardText(key){return (CASTLE_CARD_TEXT[currentLang]||CASTLE_CARD_TEXT.ko)[key]||key;}
 function castleAvatar(name){
@@ -1466,6 +1478,24 @@ Object.assign(STATIC_TRANSLATIONS,{
   "집결원 수비":["집결원 수비","Rally Defense","集結防衛","集结防守","Verteidigung","Difesa","Defensa","Savunma"]
 });
 
+
+Object.assign(STATIC_TRANSLATIONS,{
+ "등록된 참전 정보":["등록된 참전 정보","Registered Participants","登録済み参加情報","已登记参战信息","Registrierte Teilnehmer","Partecipanti registrati","Participantes registrados","Kayıtlı Katılımcılar"],
+ "대기 명단":["대기 명단","Waiting List","待機リスト","等待名单","Warteliste","Lista d'attesa","Lista de espera","Bekleme Listesi"],
+ "살로 원정 5스킬":["사울 원정 5스킬","Saul Expedition Skill 5","サウル遠征スキル5","索尔远征技能5","Saul-Expeditionsfähigkeit 5","Abilità spedizione Saul 5","Habilidad de expedición de Saul 5","Saul Sefer Yeteneği 5"],
+ "아마데 / 페라 / 로사":["아마데 / 페라 / 로사","Amadeus / Fera / Rosa","アマデウス / フェラ / ローザ","阿玛德乌斯 / 费拉 / 罗莎","Amadeus / Fera / Rosa","Amadeus / Fera / Rosa","Amadeus / Fera / Rosa","Amadeus / Fera / Rosa"],
+ "알카 / 마르고 / 사울 (상대가 강하면 예거)":["알카 / 마르고 / 사울 (상대가 강하면 예거)","Alca / Margot / Saul (use Yager if the opponent is strong)","アルカ / マーゴ / サウル（相手が強ければイェーガー）","阿尔卡 / 玛戈 / 索尔（对手较强时使用耶格）","Alca / Margot / Saul (bei starken Gegnern Yager)","Alca / Margot / Saul (usa Yager contro avversari forti)","Alca / Margot / Saul (usa Yager contra rivales fuertes)","Alca / Margot / Saul (rakip güçlüyse Yager kullan)"],
+ "2첸코 / 2아마":["2첸코 / 2아마","2 Chenko / 2 Amadeus","2チェンコ / 2アマデウス","2切恩科 / 2阿玛德乌斯","2 Chenko / 2 Amadeus","2 Chenko / 2 Amadeus","2 Chenko / 2 Amadeus","2 Chenko / 2 Amadeus"],
+ "2첸코 / 아마네 / 파드":["2첸코 / 아마네 / 파드","2 Chenko / Amane / Fad","2チェンコ / アマネ / ファド","2切恩科 / 阿玛内 / 法德","2 Chenko / Amane / Fad","2 Chenko / Amane / Fad","2 Chenko / Amane / Fad","2 Chenko / Amane / Fad"],
+ "2살로 / 첸코 / 아마네":["2사울 / 첸코 / 아마네","2 Saul / Chenko / Amane","2サウル / チェンコ / アマネ","2索尔 / 切恩科 / 阿玛内","2 Saul / Chenko / Amane","2 Saul / Chenko / Amane","2 Saul / Chenko / Amane","2 Saul / Chenko / Amane"],
+ "2힐데 / 살로 / 첸코":["2힐데 / 사울 / 첸코","2 Hilde / Saul / Chenko","2ヒルデ / サウル / チェンコ","2希尔德 / 索尔 / 切恩科","2 Hilde / Saul / Chenko","2 Hilde / Saul / Chenko","2 Hilde / Saul / Chenko","2 Hilde / Saul / Chenko"],
+ "4힐데":["4힐데","4 Hilde","4ヒルデ","4希尔德","4 Hilde","4 Hilde","4 Hilde","4 Hilde"],
+ "2힐데 / 살로 / 고든":["2힐데 / 사울 / 고든","2 Hilde / Saul / Gordon","2ヒルデ / サウル / ゴードン","2希尔德 / 索尔 / 戈登","2 Hilde / Saul / Gordon","2 Hilde / Saul / Gordon","2 Hilde / Saul / Gordon","2 Hilde / Saul / Gordon"],
+ "2살로 / 1힐데 / 알카":["2사울 / 1힐데 / 알카","2 Saul / 1 Hilde / Alca","2サウル / 1ヒルデ / アルカ","2索尔 / 1希尔德 / 阿尔卡","2 Saul / 1 Hilde / Alca","2 Saul / 1 Hilde / Alca","2 Saul / 1 Hilde / Alca","2 Saul / 1 Hilde / Alca"],
+ "공격:":["공격:","Attack:","攻撃：","进攻：","Angriff:","Attacco:","Ataque:","Saldırı:"],
+ "비율:":["비율:","Troop Ratio:","兵士比率：","兵力比例：","Truppenverhältnis:","Rapporto truppe:","Proporción de tropas:","Birlik Oranı:"],
+ "수성:":["수성:","Defense:","防衛：","防守：","Verteidigung:","Difesa:","Defensa:","Savunma:"]
+});
 Object.assign(window,{
  loadHome,toggleHomeAdmin,saveHome,refreshTeams:loadTeams,toggleTeamsAdmin,saveAllTeams,
  loadAlliance,toggleAllianceAdmin,saveAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
