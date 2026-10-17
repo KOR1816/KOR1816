@@ -877,17 +877,16 @@ async function loadParticipantRoster(){
  return participants;
 }
 function participantRank(p){if(!p||p.status!=="yes")return "";const base={A:"A",B:"B",C:"C"}[p.tier];if(!base)return "";return base+(p.salo?"1":"2");}
-function battleJoinParticipantCard(p){
+function battleJoinParticipantCard(p,hideSkills=false){
  if(!p||!p.nickname)return '<div class="nc-empty">—</div>';
  const fixed=FIXED_LEADERS.includes(p.nickname),hasTier=["A","B","C"].includes(p.tier);
- const skillCount=(p.salo?1:0)+(p.hilde?1:0);
  const tier=fixed?"S":hasTier?p.tier:"😭";
  const sprite=getVikingSprite(p.nickname),spriteStyle=vikingSpriteStyle(p.nickname);
  const avatar='<span class="nc-avatar" '+(spriteStyle?'style="'+spriteStyle+'"':"")+'>'+(sprite?"":esc((p.nickname||"?").slice(0,1)))+'</span>';
  const barracks=fixed?"집결장":p.tier==="A"?"병영5":p.tier==="B"?"병영4.5":p.tier==="C"?"병영4":"등급 미등록";
  const skills=[];
- if(p.salo)skills.push("살로 O");
- if(p.hilde)skills.push("힐데 O");
+ if(!hideSkills&&!fixed&&p.salo)skills.push("살로 O");
+ if(!hideSkills&&!fixed&&p.hilde)skills.push("힐데 O");
  return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong>'+esc(p.nickname)+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(skills.join(" · "))+'</div></div></div>';
 }
 function renderParticipants(){
@@ -1047,13 +1046,13 @@ function castleAvatar(name){
  const style=vikingSpriteStyle(name);
  return '<span class="castle-avatar" '+(style?'style="'+style+'"':"")+'>'+(style?"":'<span>?</span>')+'</span>';
 }
-function castleParticipantCard(p){
+function castleParticipantCard(p,hideSkills=false){
  if(!p||!p.nickname)return '<div class="castle-person-empty">—</div>';
  const name=p.nickname,fixed=FIXED_LEADERS.includes(name),hasTier=["A","B","C"].includes(p.tier),tier=fixed?"S":hasTier?p.tier:"😭";
  const barracks=fixed?castleCardText("leader"):castleCardText(p.tier==="A"?"tierA":p.tier==="B"?"tierB":p.tier==="C"?"tierC":"tierNone");
  const skills=[];
- if(p.salo)skills.push(castleCardText("salo")+" O");
- if(p.hilde)skills.push(castleCardText("hilde")+" O");
+ if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
+ if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
  return '<div class="castle-person-card"><strong class="castle-rank'+(hasTier||fixed?"":" castle-rank-none")+'">'+tier+'</strong>'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong>'+esc(name)+'</strong><span>('+esc(barracks)+')</span></div><small>'+esc(skills.join(" · "))+'</small></div></div>';
 }
 function castleMemberCard(name,meta){
@@ -1205,10 +1204,10 @@ function renderCastleWar(){
  const attack=$("#ncWarAttack",root),turrets=$("#ncWarTurrets",root);
  const groups=[["assault","돌격조"],["rush","개돌조"],["finish","마무리조"]];
  const turretGroups=[["north","Leo li",""],["west","Jinno",""],["reserve","SsungBi"," (예비)"]];
- const displayWarCard=(name)=>{const p=activeCastleWarParticipants().find(p=>p.nickname===name);return p?battleJoinParticipantCard(p):FIXED_LEADERS.includes(name)?battleJoinParticipantCard({nickname:name,tier:"S",status:"yes",salo:false,hilde:false}):'<div class="castle-person-empty">—</div>';};
+ const displayWarCard=(name,hideSkills=false)=>{const p=activeCastleWarParticipants().find(p=>p.nickname===name);return p?battleJoinParticipantCard(p,hideSkills):FIXED_LEADERS.includes(name)?battleJoinParticipantCard({nickname:name,tier:"S",status:"yes",salo:false,hilde:false},true):'<div class="castle-person-empty">—</div>';};
  const cell=(name,key,index)=>adminModes.castlewar1?'<div class="nc-war-admin-cell">'+displayWarCard(name)+'<select data-war="'+key+'" data-index="'+index+'">'+castleWarSelect(name)+'</select></div>':displayWarCard(name);
- const leaderCell=(key)=>{const name=castleWarData.warLeaders[key]||"";return adminModes.castlewar1?'<div class="nc-war-admin-cell">'+displayWarCard(name)+'<select data-war-leader="'+key+'">'+castleWarSelect(name)+'</select></div>':displayWarCard(name);};
- const renderColumn=(key,title,leader,suffix="",isAttack=true)=>'<section class="nc-war-column '+(isAttack?"":"nc-turret-column")+'"><h3>'+title+suffix+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+(isAttack?leaderCell(key):battleJoinParticipantCard({nickname:leader,tier:"S",status:"yes",salo:false,hilde:false}))+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b class="nc-war-slot-number">'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
+ const leaderCell=(key)=>{const name=castleWarData.warLeaders[key]||"";return adminModes.castlewar1?'<div class="nc-war-admin-cell">'+displayWarCard(name,true)+'<select data-war-leader="'+key+'">'+castleWarSelect(name)+'</select></div>':displayWarCard(name,true);};
+ const renderColumn=(key,title,leader,suffix="",isAttack=true)=>'<section class="nc-war-column '+(isAttack?"":"nc-turret-column")+'"><h3>'+title+suffix+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+(isAttack?leaderCell(key):battleJoinParticipantCard({nickname:leader,tier:"S",status:"yes",salo:false,hilde:false},true))+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b class="nc-war-slot-number">'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
  if(attack)attack.innerHTML=groups.map(([key,title])=>renderColumn(key,title,"","",true)).join("");
  if(turrets)turrets.innerHTML=turretGroups.map(([key,leader,suffix])=>renderColumn(key,"포탑",leader,suffix,false)).join("");
  const waiting=$("#ncWarWaiting",root);
