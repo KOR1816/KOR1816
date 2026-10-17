@@ -1097,15 +1097,20 @@ async function autoArrangeCastleWar(){
  try{
   // Always read the latest shared participation roster; never auto-assign from stale page memory.
   await loadParticipantRoster();
-  const ordered=castleWarTierSortedParticipants();
+  const ordered=castleWarTierSortedParticipants().filter(p=>String(p.nickname||"").trim());
   resetKeys.forEach(key=>castleWarData.war[key]=Array(8).fill(""));
+  // Fill each group from one contiguous, validated block of unique eligible nicknames.
   const assignBlock=(keys,people)=>{
    keys.forEach((key,col)=>{
-    for(let row=0;row<8;row++)castleWarData.war[key][row]=people[col*8+row]?.nickname||"";
+    const block=people.slice(col*8,col*8+8).map(p=>String(p.nickname||"").trim()).filter(Boolean);
+    castleWarData.war[key]=Array.from({length:8},(_,row)=>block[row]||"");
    });
   };
   assignBlock(squadKeys,ordered.slice(0,24));
   assignBlock(turretKeys,ordered.slice(24,48));
+  if(ordered.length>=16&&["assault","rush"].some(key=>castleWarData.war[key].filter(Boolean).length!==8)){
+   throw new Error("자동배치 검증 실패: 참전 가능 인원은 충분하지만 돌격조/개돌조 8번까지 채워지지 않았습니다. 참전 명단 데이터를 확인하세요.");
+  }
   const counts=resetKeys.map(key=>({key,count:castleWarData.war[key].filter(Boolean).length}));
   const detail=counts.map(x=>({assault:"돌격조",rush:"개돌조",finish:"마무리조",north:"북측포탑",west:"서측포탑",reserve:"예비포탑"})[x.key]+" "+x.count+"/8").join(" · ");
   // With 58 active registrations, all 48 member slots must be filled after fixed leaders are excluded.
@@ -1138,9 +1143,12 @@ function renderCastleWar(){
  if(turrets)turrets.innerHTML=turretGroups.map(([key,leader,suffix])=>renderColumn(key,"포탑",leader,suffix,false)).join("");
  const waiting=$("#ncWarWaiting",root);
  if(waiting){
-  const roster=castleWarRoster().filter(p=>p.status==="later").sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
-  const tiers=[["A","A등급"],["B","B등급"],["C","C등급"],["—","등급 미등록"]];
-  waiting.innerHTML=tiers.map(([tier,label])=>{const list=roster.filter(p=>(["A","B","C"].includes(p.tier)?p.tier:"—")===tier);return list.length?'<section class="nc-tier-group"><h4 class="nc-tier-heading">'+label+'</h4><div class="nc-tier-cards">'+list.map(battleJoinParticipantCard).join("")+'</div></section>':"";}).join("")||'<p class="muted">대기 명단이 없습니다.</p>';
+  // Include every non-available participant (later/resting and unavailable) in the waiting list.
+  const roster=castleWarRoster().filter(p=>p.status!=="yes").sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
+  const tiers=[["A","A등급"],["B","B등급"],["C","C등급"]];
+  const grouped=tiers.map(([tier,label])=>{const list=roster.filter(p=>p.tier===tier);return list.length?'<section class="nc-tier-group"><h4 class="nc-tier-heading">'+label+'</h4><div class="nc-tier-cards">'+list.map(battleJoinParticipantCard).join("")+'</div></section>':"";}).join("");
+  const unranked=roster.filter(p=>!["A","B","C"].includes(p.tier));
+  waiting.innerHTML=grouped+(unranked.length?'<div class="nc-tier-cards">'+unranked.map(battleJoinParticipantCard).join("")+'</div>':"")||'<p class="muted">대기 명단이 없습니다.</p>';
  }
  const saveButton=$("[data-newcastle='save']",root);
  if(saveButton)saveButton.style.display=adminModes.castlewar1?"inline-flex":"none";
