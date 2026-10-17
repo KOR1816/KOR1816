@@ -1095,7 +1095,7 @@ function castleWarTierSortedParticipants(excludedNames=[]){
 }
 async function syncCastleWarAssignmentsFromRoster(){
  // Rebuild in the requested order only when the shared participation roster changes.
- // Tier-sorted names rotate through Assault -> Rush -> Finish, then North -> West, and Reserve last.
+ // Tier-sorted names rotate through Assault -> Rush -> Finish, then the two regular Turret groups, and Reserve last.
  await loadParticipantRoster();
  const latest=await readCloud("castlewar1");
  if(latest&&latest.war){
@@ -1185,7 +1185,7 @@ async function autoArrangeCastleWar(){
   });
   ordered.slice(40,48).forEach((p,i)=>{castleWarData.war.reserve[i]=p.nickname.trim();});
   const counts=resetKeys.map(key=>({key,count:castleWarData.war[key].filter(Boolean).length}));
-  const detail=counts.map(x=>({assault:"돌격조",rush:"개돌조",finish:"마무리조",north:"북측포탑",west:"서측포탑",reserve:"예비포탑"})[x.key]+" "+x.count+"/8").join(" · ");
+  const detail=counts.map(x=>({assault:"돌격조",rush:"개돌조",finish:"마무리조",north:"포탑",west:"포탑",reserve:"예비포탑"})[x.key]+" "+x.count+"/8").join(" · ");
   const expected=Math.min(ordered.length,48);
   const actual=counts.reduce((sum,x)=>sum+x.count,0);
   if(actual!==expected)throw new Error("자동배치 검증 실패: 대상 "+expected+"명, 배치 "+actual+"명. "+detail);
