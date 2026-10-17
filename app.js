@@ -1247,7 +1247,7 @@ async function saveNewCastleFeatures(){
 async function loadCastleLayout1(){
  try{
   // The saved layout must remain readable even when the separate participant roster is unavailable.
-  try{await loadParticipantRoster();}catch(rosterError){console.warn("Participant roster unavailable for Castle Layout",rosterError);participants=[];}
+  let rosterLoaded=true;try{await loadParticipantRoster();}catch(rosterError){console.warn("Participant roster unavailable for Castle Layout",rosterError);participants=[];rosterLoaded=false;}
   const own=await readCloud("castlelayout1");
   if(own&&Array.isArray(own.slots))castleLayoutData={slots:own.slots.slice(0,28),updatedAt:own.updatedAt||0};
   else{
@@ -1261,6 +1261,7 @@ async function loadCastleLayout1(){
   }
   while(castleLayoutData.slots.length<28)castleLayoutData.slots.push("");
   FIXED_LEADERS.forEach((n,i)=>castleLayoutData.slots[i]=n);
+  if(rosterLoaded){const rosterSignature=castleWarTierSortedParticipants().map(p=>[p.nickname,p.status,p.tier,p.salo?1:0,p.hilde?1:0].join("|")).join(";");if(!own||own.rosterSignature!==rosterSignature){try{await syncCastleLayoutFromRoster();}catch(syncError){console.warn("Castle Layout auto-sync on load failed",syncError);}}}
   renderCastleLayout();setMsg("castleLayout1Msg",latestBanner("castlelayout1"));
  }catch(e){console.error(e);renderCastleLayout();setMsg("castleLayout1Msg",message("fallback"));}
 }
