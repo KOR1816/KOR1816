@@ -467,11 +467,13 @@ tr:{notice:"Duyuru",lines:["Her zaman gülümseyin","Gerçek hayat her şeyden �
 };
 function homeText(key){return (HOME_TRANSLATIONS[currentLang]||HOME_TRANSLATIONS.ko)[key]||HOME_TRANSLATIONS.ko[key]||key;}
 function translateHomeEvent(event){
+ const isAlliance=/3대연맹전|Three Alliances War|三大連盟戦|三大联盟战|Krieg der drei Allianzen|Guerra delle Tre Alleanze|Guerra de las Tres Alianzas|Üç İttifak Savaşı/i.test(event);
  const pairs=[
   [/성검쟁탈/g,homeText("sword")],[/3대연맹전/g,homeText("alliance")],[/바이킹/g,homeText("viking")],
   [/곰 1트랩/g,homeText("bear1")],[/곰 2트랩/g,homeText("bear2")]
  ];
- return pairs.reduce((value,pair)=>value.replace(pair[0],pair[1]),event);
+ const translated=pairs.reduce((value,pair)=>value.replace(pair[0],pair[1]),event);
+ return isAlliance?translated.replace(/^⚔️/,"🗡️"):translated;
 }
 
 const homeDefaults={
