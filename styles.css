@@ -202,3 +202,12 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #battleJoin .nc-tier-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:10px}
 @media(max-width:760px){#battleJoin .nc-tier-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
 @media(max-width:460px){#battleJoin .nc-tier-cards{grid-template-columns:minmax(0,1fr)}}
+
+/* Castle War: keep the three strategy panels side-by-side at the bottom. */
+.castle-war1-card .castle-war-info-panels{display:grid;grid-template-columns:repeat(3,minmax(250px,1fr));gap:10px;overflow-x:auto;margin:16px 0 0;padding-bottom:8px;align-items:stretch}
+.castle-war1-card .castle-war-info-panel{min-width:0;padding:14px;border:1px solid #30496f;border-radius:12px;background:linear-gradient(155deg,rgba(22,35,61,.96),rgba(10,17,31,.98));}
+.castle-war1-card .castle-war-info-panel h3{margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(132,163,210,.24)}
+.castle-war1-card .castle-war-info-panel p{margin:8px 0;line-height:1.55}
+.castle-war1-card .castle-war-info-panel ol{margin:0;padding-left:22px;line-height:1.8}
+@media(max-width:760px){.castle-war1-card .castle-war-info-panels{grid-template-columns:repeat(3,minmax(250px,1fr));overflow-x:auto}}
+
