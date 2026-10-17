@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261018-alliance-rows-v1";
+import { PAGE_CONTENT } from "./page-content.js?v=20261018-notice-static-squad-headings-v21";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
