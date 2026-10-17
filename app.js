@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261018-castlewar-columns4";
+import { PAGE_CONTENT } from "./page-content.js?v=20261018-castlewar-priority5";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -1098,12 +1098,13 @@ async function autoArrangeCastleWar(){
  // Every one of the six columns is explicitly normalized to eight slots (48 total).
  resetKeys.forEach(key=>castleWarData.war[key]=Array(8).fill(""));
  const assignBlock=(keys,people)=>{
-  for(let row=0;row<8;row++){
-   for(let col=0;col<keys.length;col++){
-    const p=people[row*keys.length+col];
-    castleWarData.war[keys[col]][row]=p?p.nickname:"";
+  // Fill each group top-to-bottom so priority groups reach slot 8 before later groups.
+  keys.forEach((key,col)=>{
+   for(let row=0;row<8;row++){
+    const p=people[col*8+row];
+    castleWarData.war[key][row]=p?p.nickname:"";
    }
-  }
+  });
  };
  assignBlock(squadKeys,ordered.slice(0,24));
  assignBlock(turretKeys,ordered.slice(24,48));
