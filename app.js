@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261018-castlewar-priority5";
+import { PAGE_CONTENT } from "./page-content.js?v=20261018-castlewar-priority6";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -1093,30 +1093,37 @@ function castleWarTierSortedParticipants(excludedNames=[]){
 async function autoArrangeCastleWar(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
  const squadKeys=["assault","rush","finish"],turretKeys=["north","west","reserve"];
- const ordered=castleWarTierSortedParticipants();
  const resetKeys=[...squadKeys,...turretKeys];
- // Every one of the six columns is explicitly normalized to eight slots (48 total).
- resetKeys.forEach(key=>castleWarData.war[key]=Array(8).fill(""));
- const assignBlock=(keys,people)=>{
-  // Fill each group top-to-bottom so priority groups reach slot 8 before later groups.
-  keys.forEach((key,col)=>{
-   for(let row=0;row<8;row++){
-    const p=people[col*8+row];
-    castleWarData.war[key][row]=p?p.nickname:"";
-   }
-  });
- };
- assignBlock(squadKeys,ordered.slice(0,24));
- assignBlock(turretKeys,ordered.slice(24,48));
- const counts=resetKeys.map(key=>({key,count:castleWarData.war[key].filter(Boolean).length}));
- const empty=counts.filter(x=>x.count<8);
  try{
+  // Always read the latest shared participation roster; never auto-assign from stale page memory.
+  await loadParticipantRoster();
+  const ordered=castleWarTierSortedParticipants();
+  resetKeys.forEach(key=>castleWarData.war[key]=Array(8).fill(""));
+  const assignBlock=(keys,people)=>{
+   keys.forEach((key,col)=>{
+    for(let row=0;row<8;row++)castleWarData.war[key][row]=people[col*8+row]?.nickname||"";
+   });
+  };
+  assignBlock(squadKeys,ordered.slice(0,24));
+  assignBlock(turretKeys,ordered.slice(24,48));
+  const counts=resetKeys.map(key=>({key,count:castleWarData.war[key].filter(Boolean).length}));
+  const detail=counts.map(x=>({assault:"돌격조",rush:"개돌조",finish:"마무리조",north:"북측포탑",west:"서측포탑",reserve:"예비포탑"})[x.key]+" "+x.count+"/8").join(" · ");
+  // With 58 active registrations, all 48 member slots must be filled after fixed leaders are excluded.
+  if(ordered.length>=16&&(counts[0].count!==8||counts[1].count!==8)){
+   throw new Error("자동배치 검증 실패: 참전 가능 "+participants.filter(p=>p.status==="yes").length+"명, 고정 집결장 제외 대상 "+ordered.length+"명, "+detail);
+  }
+  if(ordered.length>=48&&counts.some(x=>x.count!==8)){
+   throw new Error("자동배치 검증 실패: "+detail);
+  }
   castleWarData=await saveCloud("castlewar1",castleWarData);
   renderCastleWar();
-  const detail=counts.map(x=>({assault:"돌격조",rush:"개돌조",finish:"마무리조",north:"북측포탑",west:"서측포탑",reserve:"예비포탑"})[x.key]+" "+x.count+"/8").join(" · ");
-  const msg="자동배치 저장 완료: "+Math.min(ordered.length,48)+"/48명 배치. "+detail+(empty.length?" · 빈칸은 해당 등급의 참가 인원이 부족해서 생겼습니다.":" · 48칸 모두 배치했습니다.");
+  const msg="자동배치 저장 완료: 참전 가능 "+participants.filter(p=>p.status==="yes").length+"명 · 고정 집결장 제외 "+ordered.length+"명. "+detail+(counts.some(x=>x.count<8)?" · 배치 대상 인원 확인 필요":" · 48칸 배치 완료");
   setMsg("ncWarMsg",msg);
- }catch(e){console.error(e);renderCastleWar();setMsg("ncWarMsg",message("failed"));}
+ }catch(e){
+  console.error("Castle War auto-arrange validation failed",e);
+  renderCastleWar();
+  setMsg("ncWarMsg",e.message&&e.message.startsWith("자동배치 검증 실패")?e.message:message("failed"));
+ }
 }
 function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
