@@ -271,6 +271,7 @@ function applyLanguage(lang){
  translateStatic();
  refreshGenericLoadMessages();
  if(activePage==="home")renderHome();
+ if(activePage==="glory")renderRecords();
  if(activePage==="seating")refreshTranslatedBanner("seating","seatingLatestMsg");
  if(activePage==="castlewar1")refreshTranslatedBanner("castlewar1","ncWarMsg");
  if(activePage==="castlelayout1")refreshTranslatedBanner("castlelayout1","castleLayout1Msg");
@@ -428,6 +429,10 @@ function setAdminButton(button,on){
 }
 const EXTRA_BUTTON_TRANSLATIONS={"💾 홈 저장":["💾 홈 저장","💾 Save Home","💾 ホームを保存","💾 保存主页","💾 Startseite speichern","💾 Salva Home","💾 Guardar inicio","💾 Ana sayfayı kaydet"],"💾 전체 저장":["💾 전체 저장","💾 Save All","💾 すべて保存","💾 全部保存","💾 Alles speichern","💾 Salva tutto","💾 Guardar todo","💾 Tümünü kaydet"],"💾 3대연맹전 저장":["💾 3대연맹전 저장","💾 Save Alliances War","💾 三大連盟戦を保存","💾 保存三大联盟战","💾 Krieg der drei Allianzen speichern","💾 Salva Guerra delle Tre Alleanze","💾 Guardar Guerra de las Tres Alianzas","💾 Üç İttifak Savaşı'nı kaydet"],"💾 자리배치 저장":["💾 자리배치 저장","💾 Save Seating","💾 座席配置を保存","💾 保存座位安排","💾 Sitzordnung speichern","💾 Salva disposizione","💾 Guardar distribución","💾 Yerleşimi kaydet"],"🗑️ 전체삭제":["🗑️ 전체삭제","🗑️ Delete All","🗑️ すべて削除","🗑️ 全部删除","🗑️ Alles löschen","🗑️ Elimina tutto","🗑️ Eliminar todo","🗑️ Tümünü sil"],"🔄 대체자":["🔄 대체자","🔄 Substitute","🔄 代替メンバー","🔄 替补","🔄 Ersatz","🔄 Sostituto","🔄 Sustituto","🔄 Yedek"],"참전 정보 등록 / 수정":["참전 정보 등록 / 수정","Register / Update Participation","参加情報を登録／更新","登记／更新参战信息","Teilnahme registrieren / aktualisieren","Registra / aggiorna partecipazione","Registrar / actualizar participación","Katılımı kaydet / güncelle"]};
 Object.assign(EXTRA_BUTTON_TRANSLATIONS,{
+ "팀 참가":["팀 참가","Join Team","チームに参加","加入队伍","Team beitreten","Unisciti alla squadra","Unirse al equipo","Takıma katıl"],
+ "팀참가":["팀참가","Join Team","チームに参加","加入队伍","Team beitreten","Unisciti alla squadra","Unirse al equipo","Takıma katıl"],
+ "참가 취소":["참가 취소","Leave Team","チーム参加を取り消す","取消参赛","Team verlassen","Annulla partecipazione","Cancelar participación","Takımdan ayrıl"],
+ "참가취소":["참가취소","Leave Team","チーム参加を取り消す","取消参赛","Team verlassen","Annulla partecipazione","Cancelar participación","Takımdan ayrıl"],
  "새로고침":["새로고침","Refresh","更新","刷新","Aktualisieren","Aggiorna","Actualizar","Yenile"],
  "💥 개돌조":["💥 개돌조","💥 Charge Squad","💥 突撃隊","💥 冲锋组","💥 Sturmtrupp","💥 Squadra d'assalto","💥 Escuadrón de asalto","💥 Hücum Ekibi"]
 });
@@ -704,7 +709,15 @@ function renderNotices(){
  const ids=Object.keys(NOTICE_DEFAULTS);
  for(const id of ids){
   const view=$("#"+id,root),edit=$("#e"+id[0].toUpperCase()+id.slice(1),root);
-  if(view)view.textContent=noticeValue(id);
+  if(view){
+   let value=noticeValue(id);
+   const squadLabels={
+    ko:["1군","2군"],en:["Squad 1","Squad 2"],ja:["第1部隊","第2部隊"],zh:["第1队","第2队"],
+    de:["Trupp 1","Trupp 2"],it:["Squadra 1","Squadra 2"],es:["Grupo 1","Grupo 2"],tr:["1. Takım","2. Takım"]
+   }[currentLang]||["1군","2군"];
+   value=value.replace(/(^|\n)1군(?=：|:)/g,(_,p)=>p+squadLabels[0]).replace(/(^|\n)2군(?=：|:)/g,(_,p)=>p+squadLabels[1]);
+   view.textContent=value;
+  }
   if(edit){
    edit.value=noticeEditLang==="ko"?(noticeData[id]??NOTICE_DEFAULTS[id]):(noticeData.translations?.[noticeEditLang]?.[id]??NOTICE_TRANSLATIONS[noticeEditLang]?.[id]??noticeData[id]??NOTICE_DEFAULTS[id]);
    edit.disabled=!noticeAdmin;
@@ -1518,7 +1531,9 @@ function renderRecords(){
  const sorted=gloryRecords.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  root.innerHTML=sorted.map(r=>{
   const originalIndex=gloryRecords.findIndex(x=>x.date===r.date&&x.opponent===r.opponent&&x.prep===r.prep&&x.castle===r.castle&&x.memo===r.memo);
-  return '<article class="glory-record"><header><strong>'+esc(r.date)+'</strong><span><span>상대 왕국</span> '+esc(r.opponent)+'</span></header><div class="glory-results"><span>준비기간: '+(r.prep==="승"?"🏆 승리":"⚔️ 패배")+'</span><span>전쟁기간: '+(r.castle==="승"?"🏆 승리":"⚔️ 패배")+'</span></div>'+(r.memo?'<p>'+esc(r.memo)+'</p>':"")+(adminModes.glory?'<button type="button" onclick="deleteRecord('+originalIndex+')">삭제</button>':"")+'</article>';
+  const t=key=>(STATIC_TRANSLATIONS[key]||[key])[langIndex()]||key;
+  const outcome=value=>value==="승"?t("🏆 승리"):t("⚔️ 패배");
+  return '<article class="glory-record"><header><strong>'+esc(r.date)+'</strong><span><span>'+t("상대 왕국")+'</span> '+esc(r.opponent)+'</span></header><div class="glory-results"><span>'+t("준비기간:")+' '+outcome(r.prep)+'</span><span>'+t("전쟁기간:")+' '+outcome(r.castle)+'</span></div>'+(r.memo?'<p>'+esc(r.memo)+'</p>':"")+(adminModes.glory?'<button type="button" onclick="deleteRecord('+originalIndex+')">삭제</button>':"")+'</article>';
  }).join("")||'<p class="muted">기록이 없습니다.</p>';
  translateStatic();
 }
