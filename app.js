@@ -484,6 +484,14 @@ function renderHomeSchedule(value){
   const group=/성검|3대연맹전|연맹전|three alliances/i.test(event)?"성검쟁탈 · 3대연맹전":/곰/.test(event)?"곰 트랩":"기타 일정";
   return {event,time,secondary,minutes,index,group};
  }).filter(Boolean);
+ // Keep the 3대연맹전 rows paired with the matching 성검쟁탈 squad/time,
+ // including when an older saved schedule only contains 성검쟁탈 rows.
+ const swordRows=entries.filter(item=>/성검쟁탈/.test(item.event)&&/[12]군/.test(item.event));
+ for(const item of swordRows){
+  const squad=(item.event.match(/[12]군/)||[])[0];
+  if(!entries.some(row=>/3대연맹전|연맹전|three alliances/i.test(row.event)&&row.event.includes(squad)))
+   entries.push({...item,event:item.event.replace(/성검쟁탈/,"3대연맹전"),index:entries.length});
+ }
  const groups=["성검쟁탈 · 3대연맹전","곰 트랩","기타 일정"];
  if(!entries.length)return '<p class="home-schedule-empty">일정이 등록되지 않았습니다.</p>';
  return '<div class="home-schedule-list">'+groups.map(group=>{
