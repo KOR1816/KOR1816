@@ -262,6 +262,14 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
  align-items:start!important;
 }
 
+/* Mobile: keep Castle Participation waiting cards the same size as the registered cards. */
+@media(max-width:760px){
+ #battleJoin #ncWaiting.newcastle-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:460px){
+ #battleJoin #ncWaiting.newcastle-list{grid-template-columns:minmax(0,1fr)!important}
+}
+
 /* Match Castle War waiting heading underline to Castle Participation. */
 #castlewar1 h3[data-newcastle="waiting"]{margin-top:22px;padding-bottom:8px;border-bottom:1px solid rgba(132,163,210,.2)}
 /* Castle War: show three attack columns side by side; compact leader and 1–8 rows identically. */
