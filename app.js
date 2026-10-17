@@ -582,7 +582,7 @@ function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";retur
 function koreanOnly(value){return String(value??"").trim();}
 function mergeCombinedEventNotices(){
  const eventNames={ko:["성검쟁탈","3대연맹전"],en:["Holy Sword Clash","Three Alliances War"],ja:["聖剣争奪","三大連盟戦"],zh:["圣剑争夺","三大联盟战"],de:["Heiliges Schwert","Krieg der drei Allianzen"],it:["Duello della Spada Sacra","Guerra delle Tre Alleanze"],es:["Duelo de la Espada Sagrada","Guerra de las Tres Alianzas"],tr:["Kutsal Kılıç","Üç İttifak Savaşı"]};
- const clean=value=>String(value??"").trim().replace(/^[^:\n]{1,35}:\s*/,"");
+ const clean=value=>String(value??"").trim().replace(/^([^:\n]{1,35}):\s*/,(match,prefix)=>/^UTC\s+\d{1,2}$/i.test(prefix)?match:"");
  const combine=(sword,alliance,names)=>{
   if(String(sword||"").includes(names[0]+":")&&String(sword||"").includes(names[1]+":"))return sword;
   return names[0]+": "+clean(sword)+"\n"+names[1]+": "+clean(alliance);
