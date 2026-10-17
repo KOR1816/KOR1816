@@ -578,7 +578,11 @@ async function toggleHomeAdmin(){
 /* Notices: Korean source and prewritten translations. */
 let noticeAdmin=false;
 let noticeEditLang="ko";
-function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"";}
+function noticeValue(key){
+ const value=currentLang==="ko"?(noticeData[key]||""):(noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"");
+ if(["bearLeaders","bearMembers","bearRatio","bearTroops"].includes(key))return normalizeBearNoticeText({[key]:value})[key]||"";
+ return value;
+}
 function koreanOnly(value){return String(value??"").trim();}
 function normalizeBearNoticeText(source){
  const d={...(source||{})};
