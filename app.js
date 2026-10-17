@@ -328,6 +328,9 @@ Object.assign(STATIC_TRANSLATIONS,{
  "닉네임":["닉네임","Nickname","ニックネーム","昵称","Spitzname","Nickname","Apodo","Takma ad"],
  "병영 등급":["병영 등급","Barracks Tier","兵舎ランク","兵营等级","Kaserne-Stufe","Livello caserma","Nivel de cuartel","Kışla seviyesi"]
 });
+Object.assign(STATIC_TRANSLATIONS,{
+ "성검쟁탈 · 3대연맹전":["성검쟁탈 · 3대연맹전","Holy Sword Clash · Three Alliances War","聖剣争奪 · 三大連盟戦","圣剑争夺 · 三大联盟战","Heiliges Schwert · Krieg der drei Allianzen","Duello della Spada Sacra · Guerra delle Tre Alleanze","Duelo de la Espada Sagrada · Guerra de las Tres Alianzas","Kutsal Kılıç · Üç İttifak Savaşı"]
+});
 function translateStatic(){
  const root=$("#page-root");if(!root)return;
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
@@ -577,6 +580,25 @@ let noticeAdmin=false;
 let noticeEditLang="ko";
 function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"";}
 function koreanOnly(value){return String(value??"").trim();}
+function mergeCombinedEventNotices(){
+ const eventNames={ko:["성검쟁탈","3대연맹전"],en:["Holy Sword Clash","Three Alliances War"],ja:["聖剣争奪","三大連盟戦"],zh:["圣剑争夺","三大联盟战"],de:["Heiliges Schwert","Krieg der drei Allianzen"],it:["Duello della Spada Sacra","Guerra delle Tre Alleanze"],es:["Duelo de la Espada Sagrada","Guerra de las Tres Alianzas"],tr:["Kutsal Kılıç","Üç İttifak Savaşı"]};
+ const clean=value=>String(value??"").trim().replace(/^[^:\n]{1,35}:\s*/,"");
+ const combine=(sword,alliance,names)=>{
+  if(String(sword||"").includes(names[0]+":")&&String(sword||"").includes(names[1]+":"))return sword;
+  return names[0]+": "+clean(sword)+"\n"+names[1]+": "+clean(alliance);
+ };
+ for(const group of [1,2]){
+  const key="swordTeam"+group,oldKey="allianceTeam"+group;
+  noticeData[key]=combine(noticeData[key]||NOTICE_DEFAULTS[key],noticeData[oldKey]||NOTICE_DEFAULTS[oldKey],eventNames.ko);
+  noticeData.translations=noticeData.translations||{};
+  for(const lang of LANGS.slice(1)){
+   const source={...(noticeData.translations[lang]||{})};
+   const defaults=NOTICE_TRANSLATIONS[lang]||{};
+   source[key]=combine(source[key]||defaults[key]||NOTICE_DEFAULTS[key],source[oldKey]||defaults[oldKey]||NOTICE_DEFAULTS[oldKey],eventNames[lang]||eventNames.en);
+   noticeData.translations[lang]=source;
+  }
+ }
+}
 function captureNoticeEditor(){
  const root=$("#notices");if(!root||!noticeAdmin)return;
  if(noticeEditLang!=="ko")noticeData.translations[noticeEditLang]={...(noticeData.translations[noticeEditLang]||NOTICE_TRANSLATIONS[noticeEditLang]||{})};
@@ -633,6 +655,7 @@ async function loadNotices(){
    for(const key of directNoticeKeys)koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
    noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,updatedAt:saved.updatedAt||cloud?.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
+  mergeCombinedEventNotices();
   noticeEditLang="ko";
   renderNotices();setMsg("notice-status",message("load"));
  }catch(e){console.error(e);renderNotices();setMsg("notice-status",message("fallback"));}
