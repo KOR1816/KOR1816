@@ -1094,7 +1094,8 @@ function castleWarTierSortedParticipants(excludedNames=[]){
   .sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
 }
 async function syncCastleWarAssignmentsFromRoster(){
- // Keep existing valid assignments, remove duplicates/ineligible names, and fill empty slots from the latest shared roster.
+ // Rebuild in the requested order only when the shared participation roster changes.
+ // Tier-sorted names rotate through Assault -> Rush -> Finish, then North -> West, and Reserve last.
  await loadParticipantRoster();
  const latest=await readCloud("castlewar1");
  if(latest&&latest.war){
@@ -1103,25 +1104,31 @@ async function syncCastleWarAssignmentsFromRoster(){
  const keys=["assault","rush","finish","north","west","reserve"];
  keys.forEach(key=>castleWarData.war[key]=Array.from({length:8},(_,i)=>String(castleWarData.war[key]?.[i]||"").trim()));
  const eligible=castleWarTierSortedParticipants().filter(p=>String(p.nickname||"").trim());
- const byName=new Map(eligible.map(p=>[p.nickname.trim().toLocaleLowerCase(),p.nickname.trim()]));
- const assigned=new Set();
- keys.forEach(key=>{
-  castleWarData.war[key]=castleWarData.war[key].map(name=>{
-   const normalized=name.toLocaleLowerCase();
-   const canonical=byName.get(normalized);
-   if(!canonical||assigned.has(normalized))return "";
-   assigned.add(normalized);
-   return canonical;
+ const signature=eligible.map(p=>[p.nickname,p.tier,p.status,p.salo?1:0,p.hilde?1:0].join("|")).join(";");
+ const assignedNames=keys.flatMap(key=>castleWarData.war[key]).filter(Boolean);
+ const hasDuplicates=new Set(assignedNames.map(n=>n.toLocaleLowerCase())).size!==assignedNames.length;
+ const rosterChanged=castleWarData.rosterSignature!==signature;
+ const assignmentsIncomplete=eligible.length>0&&(assignedNames.length===0||hasDuplicates);
+ if(rosterChanged||assignmentsIncomplete){
+  const nextWar={assault:Array(8).fill(""),rush:Array(8).fill(""),finish:Array(8).fill(""),north:Array(8).fill(""),west:Array(8).fill(""),reserve:Array(8).fill("")};
+  // First 24: cycle one-by-one through the three attack groups.
+  eligible.slice(0,24).forEach((p,i)=>{
+   const group=["assault","rush","finish"][i%3];
+   nextWar[group][Math.floor(i/3)]=p.nickname.trim();
   });
- });
- const remaining=eligible.filter(p=>!assigned.has(p.nickname.trim().toLocaleLowerCase()));
- let next=0;
- keys.forEach(key=>{
-  castleWarData.war[key]=castleWarData.war[key].map(name=>name||String(remaining[next++]?.nickname||""));
- });
- castleWarData=await saveCloud("castlewar1",castleWarData);
+  // Next fill both main towers, then use the reserve tower only after those are filled.
+  eligible.slice(24,40).forEach((p,i)=>{
+   const group=i<8?"north":"west";
+   nextWar[group][i%8]=p.nickname.trim();
+  });
+  eligible.slice(40,48).forEach((p,i)=>{nextWar.reserve[i]=p.nickname.trim();});
+  castleWarData.war={...castleWarData.war,...nextWar};
+  castleWarData.rosterSignature=signature;
+  castleWarData.rosterSyncedAt=Date.now();
+  castleWarData=await saveCloud("castlewar1",castleWarData);
+ }
  if(activePage==="castlewar1")renderCastleWar();
- return {eligible:eligible.length,assigned:assigned.size+next};
+ return {eligible:eligible.length,rebuilt:rosterChanged||assignmentsIncomplete};
 }
 
 async function syncCastleLayoutFromRoster(){
