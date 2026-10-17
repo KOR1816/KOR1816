@@ -590,13 +590,16 @@ function localizedSquadLabel(squad){
 }
 function localizedTeamHeading(title){
  const labels={"💥 개돌조":["💥 개돌조","💥 Rush Squad","💥 突撃部隊","💥 冲锋组","💥 Angriffstrupp","💥 Squadra rapida","💥 Escuadrón de avance","💥 Hızlı Hücum Ekibi"],"🔄 대체자":["🔄 대체자","🔄 Substitute","🔄 代替メンバー","🔄 替补","🔄 Ersatz","🔄 Sostituto","🔄 Sustituto","🔄 Yedek"]};
- return labels[title]?.[langIndex()]||title;
+ const raw=String(title||"").trim();
+ const key=Object.keys(labels).find(k=>raw===k||raw.includes(k));
+ return key?labels[key][langIndex()]:title;
 }
 function translateTeamsHeadings(){
  const root=$("#teams");if(!root)return;
  const labels={"💥 개돌조":["💥 개돌조","💥 Rush Squad","💥 突撃部隊","💥 冲锋组","💥 Angriffstrupp","💥 Squadra rapida","💥 Escuadrón de avance","💥 Hızlı Hücum Ekibi"],"🔄 대체자":["🔄 대체자","🔄 Substitute","🔄 代替メンバー","🔄 替补","🔄 Ersatz","🔄 Sostituto","🔄 Sustituto","🔄 Yedek"]};
- root.querySelectorAll("h3,.team-title").forEach(node=>{
-  const raw=node.dataset.teamHeadingKey||Object.keys(labels).find(key=>labels[key].includes(node.textContent.trim()));
+ root.querySelectorAll(".team-display-column h3, h3, .team-title").forEach(node=>{
+  const existing=node.dataset.teamHeadingKey||"";
+  const raw=Object.keys(labels).find(key=>existing===key||node.textContent.trim()===key||node.textContent.trim().includes(key));
   if(!raw)return;
   node.dataset.teamHeadingKey=raw;
   node.textContent=labels[raw][langIndex()];
@@ -752,10 +755,11 @@ function renderNotices(){
     ko:["1군","2군"],en:["Squad 1","Squad 2"],ja:["第1部隊","第2部隊"],zh:["第1队","第2队"],
     de:["Trupp 1","Trupp 2"],it:["Squadra 1","Squadra 2"],es:["Grupo 1","Grupo 2"],tr:["1. Takım","2. Takım"]
    }[currentLang]||["1군","2군"];
-       value=value.split(/\r?\n/).map(line=>{
-        const match=line.match(/^([ \t]*(?:#{1,6}[ \t]+)?)(1군|2군)([ \t]*[:：]?[ \t]*)$/);
-        return match?match[1]+localizedSquadLabel(match[2])+match[3]:line;
-       }).join("\n");
+   // 공지 문구는 사용자가 저장한 마크다운/일반 텍스트 모두 고정 치환한다.
+   // 제목(#### 1군), 문장(1군: ...), 기존 번역이 섞인 경우를 모두 처리한다.
+   if(currentLang!=="ko"){
+    value=value.replace(/1군/g,localizedSquadLabel("1군")).replace(/2군/g,localizedSquadLabel("2군"));
+   }
    view.textContent=value;
   }
   if(edit){
