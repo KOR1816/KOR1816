@@ -794,3 +794,10 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
   font-weight:600!important;
   line-height:1.55!important;
 }
+
+
+/* Holy Sword editor: end each column border exactly after its final numbered slot. */
+#teams .team-columns{align-items:start!important;grid-auto-rows:max-content!important;}
+#teams .team-columns>.team-column{align-self:start!important;align-content:start!important;height:fit-content!important;min-height:0!important;max-height:none!important;grid-row:auto!important;}
+#teams .team-columns>.team-column:nth-child(-n+4){height:fit-content!important;}
+#teams .team-columns>.team-column:nth-child(5){height:fit-content!important;}
