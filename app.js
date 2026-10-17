@@ -1094,16 +1094,27 @@ async function autoArrangeCastleWar(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
  const squadKeys=["assault","rush","finish"],turretKeys=["north","west","reserve"];
  const ordered=castleWarTierSortedParticipants();
- const fillRows=(keys,people)=>{
-  keys.forEach(key=>castleWarData.war[key]=Array(8).fill(""));
-  people.forEach((p,i)=>{const row=Math.floor(i/keys.length),col=i%keys.length;if(row<8)castleWarData.war[keys[col]][row]=p.nickname;});
+ const resetKeys=[...squadKeys,...turretKeys];
+ // Every one of the six columns is explicitly normalized to eight slots (48 total).
+ resetKeys.forEach(key=>castleWarData.war[key]=Array(8).fill(""));
+ const assignBlock=(keys,people)=>{
+  for(let row=0;row<8;row++){
+   for(let col=0;col<keys.length;col++){
+    const p=people[row*keys.length+col];
+    castleWarData.war[keys[col]][row]=p?p.nickname:"";
+   }
+  }
  };
- fillRows(squadKeys,ordered.slice(0,24));
- fillRows(turretKeys,ordered.slice(24,48));
+ assignBlock(squadKeys,ordered.slice(0,24));
+ assignBlock(turretKeys,ordered.slice(24,48));
+ const counts=resetKeys.map(key=>({key,count:castleWarData.war[key].filter(Boolean).length}));
+ const empty=counts.filter(x=>x.count<8);
  try{
   castleWarData=await saveCloud("castlewar1",castleWarData);
   renderCastleWar();
-  setMsg("ncWarMsg","등급별 자동배치 후 공용 서버에 저장했습니다.");
+  const detail=counts.map(x=>({assault:"돌격조",rush:"개돌조",finish:"마무리조",north:"북측포탑",west:"서측포탑",reserve:"예비포탑"})[x.key]+" "+x.count+"/8").join(" · ");
+  const msg="자동배치 저장 완료: "+Math.min(ordered.length,48)+"/48명 배치. "+detail+(empty.length?" · 빈칸은 해당 등급의 참가 인원이 부족해서 생겼습니다.":" · 48칸 모두 배치했습니다.");
+  setMsg("ncWarMsg",msg);
  }catch(e){console.error(e);renderCastleWar();setMsg("ncWarMsg",message("failed"));}
 }
 function renderCastleWar(){
