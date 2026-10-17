@@ -1002,7 +1002,7 @@ async function submitNewCastleParticipation(){
  const item={nickname,status:$("#ncStatus",root)?.value||"yes",tier:$("#ncTier",root)?.value||"A",salo:$("#ncSalo",root)?.value==="yes",hilde:$("#ncHilde",root)?.value==="yes",updatedAt:Date.now()};
  const next=participants.slice(),idx=next.findIndex(p=>p.nickname.toLowerCase()===nickname.toLowerCase());
  if(idx>=0)next[idx]=item;else next.push(item);
- try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after registration failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
+ try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after registration failed",syncError);}try{await syncCastleLayoutFromRoster();}catch(syncError){console.error("Castle Layout auto-sync after registration failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function cancelNewCastleParticipation(){
@@ -1010,12 +1010,12 @@ async function cancelNewCastleParticipation(){
  if(!nickname||nickname==="__custom__"){setMsg("ncJoinMsg",message("cancelNickRequired"));return;}
  if(!confirm(message("cancelParticipation").replace("{nickname}",nickname)))return;
  const next=participants.filter(p=>p.nickname.toLowerCase()!==nickname.toLowerCase());
- try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after cancellation failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
+ try{await saveCloud("battleJoin",{participants:next});participants=next;renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after cancellation failed",syncError);}try{await syncCastleLayoutFromRoster();}catch(syncError){console.error("Castle Layout auto-sync after cancellation failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function deleteAllNewCastleParticipants(){
  if(!adminModes.battleJoin||!confirm(message("deleteAllParticipants")))return;
- try{await saveCloud("battleJoin",{participants:[]});participants=[];renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after deleting roster failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
+ try{await saveCloud("battleJoin",{participants:[]});participants=[];renderParticipants();try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.error("Castle War auto-sync after deleting roster failed",syncError);}try{await syncCastleLayoutFromRoster();}catch(syncError){console.error("Castle Layout auto-sync after deleting roster failed",syncError);}setMsg("ncJoinMsg",message("saved"));}
  catch(e){console.error(e);setMsg("ncJoinMsg",message("failed"));}
 }
 async function toggleNewCastleAdmin(){
@@ -1123,6 +1123,40 @@ async function syncCastleWarAssignmentsFromRoster(){
  castleWarData=await saveCloud("castlewar1",castleWarData);
  if(activePage==="castlewar1")renderCastleWar();
  return {eligible:eligible.length,assigned:assigned.size+next};
+}
+
+async function syncCastleLayoutFromRoster(){
+ await loadParticipantRoster();
+ const latest=await readCloud("castlelayout1");
+ let currentSlots=Array(28).fill("");
+ if(latest&&Array.isArray(latest.slots))currentSlots=latest.slots.slice(0,28);
+ else{
+  try{
+   const old=await getDoc(legacyDoc("castlelayout1"));
+   if(old.exists()&&Array.isArray(old.data()?.slots))currentSlots=old.data().slots.slice(0,28);
+  }catch(e){console.warn("Legacy Castle Layout read skipped",e);}
+ }
+ while(currentSlots.length<28)currentSlots.push("");
+ const sorted=castleWarTierSortedParticipants().filter(p=>String(p.nickname||"").trim());
+ const signature=sorted.map(p=>[p.nickname,p.status,p.tier,p.salo?1:0,p.hilde?1:0].join("|")).join(";");
+ const changedRoster=!latest||latest.rosterSignature!==signature;
+ if(changedRoster){
+  castleLayoutData={
+   ...castleLayoutData,
+   slots:[...FIXED_LEADERS,...sorted.slice(0,Math.max(0,28-FIXED_LEADERS.length)).map(p=>p.nickname)],
+   rosterSignature:signature,
+   rosterSyncedAt:Date.now()
+  };
+  while(castleLayoutData.slots.length<28)castleLayoutData.slots.push("");
+  castleLayoutData.slots=castleLayoutData.slots.slice(0,28);
+  castleLayoutData.updatedAt=Date.now();
+  castleLayoutData=await saveCloud("castlelayout1",castleLayoutData);
+ }else{
+  castleLayoutData={...latest,slots:currentSlots};
+  FIXED_LEADERS.forEach((name,i)=>castleLayoutData.slots[i]=name);
+ }
+ if(activePage==="castlelayout1")renderCastleLayout();
+ return {changed:changedRoster,count:sorted.length};
 }
 
 async function autoArrangeCastleWar(){
