@@ -580,6 +580,32 @@ let noticeAdmin=false;
 let noticeEditLang="ko";
 function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"";}
 function koreanOnly(value){return String(value??"").trim();}
+function normalizeBearNoticeText(source){
+ const d={...(source||{})};
+ const labelPatterns={
+  bearLeaders:/^\\s*(?:집결장|rally\\s*leaders?)\\s*[:：]\\s*/i,
+  bearMembers:/^\\s*(?:집결원|rally\\s*members?)\\s*[:：]\\s*/i,
+  bearTroops:/^\\s*(?:병력|troops?|兵士数|兵力|Truppen|Truppe|Truppe|Truppe|Truppe|Truppe)\\s*[:：]\\s*/i,
+  bearRatio:/^\\s*(?:비율|troop\\s*ratio|兵士比率|兵力比例|Truppenverhältnis|Rapporto truppe|Proporción de tropas|Asker oranı)\\s*[:：]\\s*/i
+ };
+ const clean=(key,value)=>{
+  let text=String(value??"");
+  if(key==="bearRatio")text=text.replace(/\\s+(?:또는|or|oder|oppure|o|veya|または|或者)\\s+/gi,"\\n");
+  return text.split("\\n").map(line=>line.replace(labelPatterns[key]||/$^/,"").trim())
+   .filter(line=>line&&!/^(?:또는|or|oder|oppure|o|veya|または|或者|\/\\s*or)$/i.test(line)).join("\\n");
+ };
+ for(const key of Object.keys(labelPatterns))if(d[key]!==undefined)d[key]=clean(key,d[key]);
+ if(d.translations&&typeof d.translations==="object"){
+  d.translations={...d.translations};
+  for(const [lang,values] of Object.entries(d.translations)){
+   if(!values||typeof values!=="object")continue;
+   const next={...values};
+   for(const key of Object.keys(labelPatterns))if(next[key]!==undefined)next[key]=clean(key,next[key]);
+   d.translations[lang]=next;
+  }
+ }
+ return d;
+}
 function mergeCombinedEventNotices(){
  const strip=value=>String(value??"").trim()
   .replace(/^(?:성검쟁탈|3대연맹전|Holy Sword Clash|Three Alliances War|聖剣争奪|三大連盟戦|圣剑争夺|三大联盟战|Heiliges Schwert|Krieg der drei Allianzen|Duello della Spada Sacra|Guerra delle Tre Alleanze|Duelo de la Espada Sagrada|Guerra de las Tres Alianzas|Kutsal Kılıç|Üç İttifak Savaşı)\s*:\s*/i,"")
@@ -612,6 +638,7 @@ function captureNoticeEditor(){
 }
 function renderNotices(){
  const root=$("#notices");if(!root)return;
+ noticeData=normalizeBearNoticeText(noticeData);
  const ids=Object.keys(NOTICE_DEFAULTS);
  for(const id of ids){
   const view=$("#"+id,root),edit=$("#e"+id[0].toUpperCase()+id.slice(1),root);
@@ -667,6 +694,7 @@ async function loadNotices(){
    for(const key of directNoticeKeys)koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
    noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,goldenGlaivesVersion:Number(saved.goldenGlaivesVersion||0),squadScheduleVersion:Number(saved.squadScheduleVersion||0),updatedAt:saved.updatedAt||cloud?.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
+     noticeData=normalizeBearNoticeText(noticeData);
      if(Number(noticeData.squadScheduleVersion||0)<1){noticeData.translations=noticeData.translations||{};for(const language of LANGS){const source=language==="ko"?NOTICE_DEFAULTS:(NOTICE_TRANSLATIONS[language]||NOTICE_DEFAULTS);noticeData.translations[language]={...(noticeData.translations[language]||{}),swordTeam1:source.swordTeam1||NOTICE_DEFAULTS.swordTeam1,swordTeam2:source.swordTeam2||NOTICE_DEFAULTS.swordTeam2,allianceTeam1:source.allianceTeam1||NOTICE_DEFAULTS.allianceTeam1,allianceTeam2:source.allianceTeam2||NOTICE_DEFAULTS.allianceTeam2};}Object.assign(noticeData,{swordTeam1:NOTICE_DEFAULTS.swordTeam1,swordTeam2:NOTICE_DEFAULTS.swordTeam2,allianceTeam1:NOTICE_DEFAULTS.allianceTeam1,allianceTeam2:NOTICE_DEFAULTS.allianceTeam2,squadScheduleVersion:1});}
    if(Number(noticeData.goldenGlaivesVersion||0)<2){noticeData.goldenGlaives=NOTICE_DEFAULTS.goldenGlaives;noticeData.translations=noticeData.translations||{};for(const language of LANGS){noticeData.translations[language]={...(noticeData.translations[language]||{}),goldenGlaives:GOLDEN_GLAIVES_CONTENT_BY_LANG[language]||NOTICE_DEFAULTS.goldenGlaives};}noticeData.goldenGlaivesVersion=2;}
    // Apply the requested Korean time display to saved Korean Golden Glaives content only.
@@ -688,6 +716,7 @@ async function toggleNoticeAdmin(){
 async function saveNotices(){
  if(!noticeAdmin){alert(message("admin"));return;}
  captureNoticeEditor();
+ noticeData=normalizeBearNoticeText(noticeData);
  noticeData.updatedAt=Date.now();
  try{
   await setDoc(pageDoc("notices"),{noticesV1:noticeData,updatedAt:noticeData.updatedAt},{merge:true});
