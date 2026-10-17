@@ -473,7 +473,7 @@ async function togglePageAdmin(id,buttonId,saveId){
  if(id==="castlelayout1")renderCastleLayout();
 }
 function setInputsEnabled(root,enabled){$$("input,textarea,select",root).forEach(el=>{if(!["vikingNickname","vikingTeam","ncNick","ncIdSearch","ncStatus","ncTier"].includes(el.id))el.disabled=!enabled;});}
-function setMsg(id,msg){const el=$("#"+id);if(el)el.textContent=msg;}
+function setMsg(id,msg){const el=$("#"+id);if(el){el.textContent=msg;const isLatest=/최신 .*내용을 불러왔습니다\.|최신 내용을 불러왔습니다\.|Latest .*loaded\.|Latest content loaded\.|最新.*読み込みました|已加载最新|Aktuelle .*geladen|Contenuti .*caricat|Se cargó el contenido más reciente|En güncel .*yüklendi/i.test(String(msg));el.classList.toggle("is-latest-load",isLatest);}}
 
 /* Home */
 const HOME_TRANSLATIONS={
