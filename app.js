@@ -338,6 +338,16 @@ Object.assign(STATIC_TRANSLATIONS,{
  "⚔️🛡️ 성검쟁탈 · 3대연맹전":["⚔️🛡️ 성검쟁탈 · 3대연맹전","⚔️🛡️ Holy Sword Clash · Three Alliances War","⚔️🛡️ 聖剣争奪 · 三大連盟戦","⚔️🛡️ 圣剑争夺 · 三大联盟战","⚔️🛡️ Heiliges Schwert · Krieg der drei Allianzen","⚔️🛡️ Duello della Spada Sacra · Guerra delle Tre Alleanze","⚔️🛡️ Duelo de la Espada Sagrada · Guerra de las Tres Alianzas","⚔️🛡️ Kutsal Kılıç · Üç İttifak Savaşı"],
  "⚔️ 골든 글레이브 월요일":["⚔️ 골든 글레이브 월요일","⚔️ Golden Glaives Monday","⚔️ ゴールデン・グレイブ（月曜）","⚔️ 黄金长戟（周一）","⚔️ Goldene Glefen am Montag","⚔️ Lame Dorate del lunedì","⚔️ Guja Dorada del lunes","⚔️ Pazartesi Altın Mızraklar"]
 });
+Object.assign(STATIC_TRANSLATIONS,{
+ "🔄 대체자":["🔄 대체자","🔄 Substitute","🔄 代替メンバー","🔄 替补","🔄 Ersatz","🔄 Sostituto","🔄 Sustituto","🔄 Yedek"],
+ "ID 검색 (닉네임)":["ID 검색 (닉네임)","Search ID (nickname)","ID検索（ニックネーム）","搜索ID（昵称）","ID-Suche (Spitzname)","Cerca ID (nickname)","Buscar ID (apodo)","ID ara (takma ad)"],
+ "등록된 참전 정보가 없습니다.":["등록된 참전 정보가 없습니다.","No participants registered.","登録された参加者はいません。","暂无已登记的参战人员。","Keine Teilnehmer registriert.","Nessun partecipante registrato.","No hay participantes registrados.","Kayıtlı katılımcı yok."],
+ "대기 명단이 없습니다.":["대기 명단이 없습니다.","No one is on the waiting list.","待機リストは空です。","等待名单为空。","Die Warteliste ist leer.","La lista d'attesa è vuota.","La lista de espera está vacía.","Bekleme listesi boş."],
+ "팀 참가":["팀 참가","Join Team","チームに参加","加入队伍","Team beitreten","Unisciti alla squadra","Unirse al equipo","Takıma katıl"],
+ "참가 취소":["참가 취소","Leave Team","チーム参加を取り消す","取消参赛","Team verlassen","Annulla partecipazione","Cancelar participación","Takımdan ayr"],
+ "⚔️ 패배":["⚔️ 패배","⚔️ Defeat","⚔️ 敗北","⚔️ 失败","⚔️ Niederlage","⚔️ Sconfitta","⚔️ Derrota","⚔️ Yenilgi"],
+ "🏆 승리":["🏆 승리","🏆 Victory","🏆 勝利","🏆 胜利","🏆 Sieg","🏆 Vittoria","🏆 Victoria","🏆 Zafer"]
+});
 function translateStatic(){
  const root=$("#page-root");if(!root)return;
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
