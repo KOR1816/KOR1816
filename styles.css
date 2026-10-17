@@ -261,3 +261,14 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
  gap:8px!important;
  align-items:start!important;
 }
+
+/* Match Castle War waiting heading underline to Castle Participation. */
+#castlewar1 h3[data-newcastle="waiting"]{margin-top:22px;padding-bottom:8px;border-bottom:1px solid rgba(132,163,210,.2)}
+/* Compact Castle War 1–8 rows while keeping all columns aligned. */
+#castlewar1 .nc-war-row:not(.nc-war-leader-row){grid-template-columns:30px minmax(0,1fr);gap:5px;padding:3px 5px;min-height:0}
+#castlewar1 .nc-war-row:not(.nc-war-leader-row)>b{min-height:26px;font-size:12px}
+#castlewar1 .nc-war-row:not(.nc-war-leader-row) .castle-person-card,
+#castlewar1 .nc-war-row:not(.nc-war-leader-row) .castle-person-empty{padding:2px 4px}
+#castlewar1 .nc-war-row:not(.nc-war-leader-row) select{padding:4px 5px;min-height:30px}
+#castlewar1 .nc-war-row.nc-war-leader-row{grid-template-columns:58px minmax(0,1fr);gap:5px;padding:4px 5px}
+#castlewar1 .nc-war-row.nc-war-leader-row>b{min-height:30px}
