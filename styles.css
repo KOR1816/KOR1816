@@ -438,3 +438,11 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 @media(max-width:460px){
  #castlewar1 #ncWarWaiting.newcastle-list{grid-template-columns:minmax(0,1fr)!important}
 }
+
+/* Apply the same Bear1/Bear2 colors to the nickname editor headings. */
+.seating-edit-side-title.seating-side-1-left{background:#2459b5!important;color:#fff!important}
+.seating-edit-side-title.seating-side-1-right{background:#62bde9!important;color:#10283b!important}
+.seating-edit-side-title.seating-side-2-left{background:#27864a!important;color:#fff!important}
+.seating-edit-side-title.seating-side-2-right{background:#a7dba2!important;color:#183b20!important}
+.seating-edit-side-title.seating-side-3-left{background:#e18a32!important;color:#fff!important}
+.seating-edit-side-title.seating-side-3-right{background:#8055bd!important;color:#fff!important}
