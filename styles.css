@@ -727,3 +727,68 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #alliance .alliance-team:nth-child(4)>.alliance-group{background:#44305f!important;border-color:#9674c9!important}
 #alliance .alliance-group .alliance-label,
 #alliance .alliance-group .alliance-merged-label{background:rgba(0,0,0,.16)!important;border-color:rgba(255,255,255,.22)!important;color:#fff!important}
+
+/* Requested fixes: plain notice headings, no stale alliance flash, consistent Viking controls/banners. */
+#notices .intro>h2,
+#notices .cards>section.card>h3{
+  border:0!important;
+  border-left:0!important;
+  border-radius:0!important;
+  padding:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#notices .cards>section.card>h3{
+  margin:8px 0 12px!important;
+  font-size:16px!important;
+}
+#alliance.alliance-loading #allianceView{
+  visibility:hidden!important;
+}
+#alliance.alliance-loading #allianceMsg{
+  min-height:1.2em;
+}
+#seating .seating-side-2-left .seating-row:nth-child(n+19),
+#seating .seating-side-3-right .seating-row:nth-child(n+18){
+  display:none!important;
+}
+#viking .viking-register{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+}
+#viking .viking-register label{
+  margin-top:2px!important;
+}
+#viking .viking-register select,
+#viking .viking-register input{
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+#viking .viking-register .viking-register-actions{
+  display:flex!important;
+  grid-column:auto!important;
+  align-self:flex-start!important;
+  margin-top:2px!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+#viking #vikingMsg.msg.is-latest-load{
+  display:flex!important;
+  width:100%!important;
+  min-height:1.2em!important;
+  box-sizing:border-box!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  border:1px solid #365783!important;
+  border-radius:7px!important;
+  padding:10px 12px!important;
+  margin:10px 0!important;
+  background:#080d18!important;
+  color:#79cfff!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.55!important;
+}
