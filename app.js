@@ -45,7 +45,7 @@ const NOTICE_DEFAULTS = {
   swordTeam2:"2군: UTC 12:00 (한국시간 21:00) — 선착순 투표",
   allianceTeam1:"1군: UTC 12:00 (한국시간 21:00) — 전투력순",
   allianceTeam2:"2군: UTC 14:00 (한국시간 23:00) — 선착순 투표",
-  goldenGlaives:"❗️ 일요일 정보(Intel)를 아껴두세요\n\nUTC 00:00 (한국 09:00) — 탐색 금지 / 진행 / 수령\nUTC 08:00 (한국 17:00) — 탐색 금지 / 진행 / 수령 금지\nUTC 16:00 (한국 01:00) — 탐색 / 진행 금지 / 수령 금지\n\n작동 방식\nPAN = 정보 스킬 사용 (화면 이동/탐색)\nDO = 정보 미션 완료\nCOLLECT = 보상 수령\n\n정보 이벤트\nUTC 16:00 (한국 01:00) — 탐색 가능 / 진행 금지 / 수령 금지\n(PAN 유지 15시간)"
+  goldenGlaives:"❗️ 일요일 정보를 아껴두세요 ❗️\n\nUTC00:00 (한국 09:00) — 🚫 탐색(Pan) / ✅ 진행(Do) / ✅ 수령(Collect)\nUTC08:00 (한국 17:00) — 🚫 탐색(Pan) / ✅ 진행(Do) / 🚫 수령(Collect)\nUTC16:00 (한국 01:00) — ✅ 탐색(Pan) / 🚫 진행(Do) / 🚫 수령(Collect)\nUTC00:00 (한국 09:00) — ✅ 탐색(Pan) / ✅ 진행(Do) / ✅ 수령(Collect)\n\n💡 작동 방식\n✅ PAN = 정보 스킬 사용 (화면 이동/탐색)\nDO = 정보 미션 완료 DO\nCOLLECT = 보상 수령 COLLECT\n\n정보 이벤트\nUTC16:00 (한국 01:00) — ✅ 탐색(Pan) / 🚫 진행(Do) / 🚫 수령(Collect)\n(PAN 유지 15시간)"
 };
 const NOTICE_TRANSLATIONS = {
   en:{
@@ -581,24 +581,26 @@ let noticeEditLang="ko";
 function noticeValue(key){if(currentLang==="ko")return noticeData[key]||"";return noticeData.translations?.[currentLang]?.[key]||NOTICE_TRANSLATIONS[currentLang]?.[key]||noticeData[key]||"";}
 function koreanOnly(value){return String(value??"").trim();}
 function mergeCombinedEventNotices(){
- const eventNames={ko:["성검쟁탈","3대연맹전"],en:["Holy Sword Clash","Three Alliances War"],ja:["聖剣争奪","三大連盟戦"],zh:["圣剑争夺","三大联盟战"],de:["Heiliges Schwert","Krieg der drei Allianzen"],it:["Duello della Spada Sacra","Guerra delle Tre Alleanze"],es:["Duelo de la Espada Sagrada","Guerra de las Tres Alianzas"],tr:["Kutsal Kılıç","Üç İttifak Savaşı"]};
- const clean=value=>String(value??"").trim().replace(/^([^:\n]{1,35}):\s*/,(match,prefix)=>/^UTC\s+\d{1,2}$/i.test(prefix)?match:"");
- const combine=(sword,alliance,names)=>{
-  if(String(sword||"").includes(names[0]+":")&&String(sword||"").includes(names[1]+":"))return sword;
-  return names[0]+": "+clean(sword)+"\n"+names[1]+": "+clean(alliance);
- };
+ const strip=value=>String(value??"").trim()
+  .replace(/^(?:성검쟁탈|3대연맹전|Holy Sword Clash|Three Alliances War|聖剣争奪|三大連盟戦|圣剑争夺|三大联盟战|Heiliges Schwert|Krieg der drei Allianzen|Duello della Spada Sacra|Guerra delle Tre Alleanze|Duelo de la Espada Sagrada|Guerra de las Tres Alianzas|Kutsal Kılıç|Üç İttifak Savaşı)\s*:\s*/i,"")
+  .replace(/^(?:1군|2군|1st team|2nd team|Team 1|Team 2|第1チーム|第2チーム|一队|二队|Team 1|Team 2|Squadra 1|Squadra 2|Equipo 1|Equipo 2|1\. Takım|2\. Takım)\s*:\s*/i,"");
  for(const group of [1,2]){
   const key="swordTeam"+group,oldKey="allianceTeam"+group;
-  noticeData[key]=combine(noticeData[key]||NOTICE_DEFAULTS[key],noticeData[oldKey]||NOTICE_DEFAULTS[oldKey],eventNames.ko);
+  const current=String(noticeData[key]||NOTICE_DEFAULTS[key]||"");
+  const hasBoth=/(?:성검쟁탈|Holy Sword Clash|聖剣争奪|圣剑争夺|Heiliges Schwert|Duello della Spada Sacra|Duelo de la Espada Sagrada|Kutsal Kılıç)\s*:/i.test(current)&&/(?:3대연맹전|Three Alliances War|三大連盟戦|三大联盟战|Krieg der drei Allianzen|Guerra delle Tre Alleanze|Guerra de las Tres Alianzas|Üç İttifak Savaşı)\s*:/i.test(current);
+  noticeData[key]=hasBoth?current.split("\n").map(strip).filter(Boolean).join("\n"):[strip(current),strip(noticeData[oldKey]||NOTICE_DEFAULTS[oldKey]||"")].filter(Boolean).join("\n");
   noticeData.translations=noticeData.translations||{};
   for(const lang of LANGS.slice(1)){
    const source={...(noticeData.translations[lang]||{})};
    const defaults=NOTICE_TRANSLATIONS[lang]||{};
-   source[key]=combine(source[key]||defaults[key]||NOTICE_DEFAULTS[key],source[oldKey]||defaults[oldKey]||NOTICE_DEFAULTS[oldKey],eventNames[lang]||eventNames.en);
+   const existing=String(source[key]||defaults[key]||NOTICE_DEFAULTS[key]||"");
+   const translatedHasBoth=/(?:Holy Sword Clash|Three Alliances War|聖剣争奪|三大連盟戦|圣剑争夺|三大联盟战|Heiliges Schwert|Krieg der drei Allianzen|Duello della Spada Sacra|Guerra delle Tre Alleanze|Duelo de la Espada Sagrada|Guerra de las Tres Alianzas|Kutsal Kılıç|Üç İttifak Savaşı)\s*:/i.test(existing);
+   source[key]=translatedHasBoth?existing.split("\n").map(strip).filter(Boolean).join("\n"):[strip(existing),strip(source[oldKey]||defaults[oldKey]||NOTICE_DEFAULTS[oldKey]||"")].filter(Boolean).join("\n");
    noticeData.translations[lang]=source;
   }
  }
 }
+
 function captureNoticeEditor(){
  const root=$("#notices");if(!root||!noticeAdmin)return;
  if(noticeEditLang!=="ko")noticeData.translations[noticeEditLang]={...(noticeData.translations[noticeEditLang]||NOTICE_TRANSLATIONS[noticeEditLang]||{})};
@@ -655,6 +657,7 @@ async function loadNotices(){
    for(const key of directNoticeKeys)koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
    noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,updatedAt:saved.updatedAt||cloud?.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
+  if(Number(noticeData.goldenGlaivesVersion||0)<2){noticeData.goldenGlaives=NOTICE_DEFAULTS.goldenGlaives;noticeData.goldenGlaivesVersion=2;}
   mergeCombinedEventNotices();
   noticeEditLang="ko";
   renderNotices();setMsg("notice-status",message("load"));
