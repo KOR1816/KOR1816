@@ -467,7 +467,7 @@ async function loadHome(){
  if(r.source==="unavailable")setMsg("homeMsg",message("fallback"));else setMsg("homeMsg",message("load"));
 }
 function ensureHomeNoticeBody(){
- return "항상 웃으면서\\n현실이 먼저이며!!\\n게임은 쉬엄쉬엄 즐기세요!!";
+ return "항상 웃으면서\n현실이 먼저이며!!\n게임은 쉬엄쉬엄 즐기세요!!";
 }
 function captureHomeEditor(){
  const root=$("#home");if(!root||!adminModes.home)return;
