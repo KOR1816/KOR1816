@@ -588,14 +588,14 @@ function mergeCombinedEventNotices(){
   const key="swordTeam"+group,oldKey="allianceTeam"+group;
   const current=String(noticeData[key]||NOTICE_DEFAULTS[key]||"");
   const hasBoth=/(?:성검쟁탈|Holy Sword Clash|聖剣争奪|圣剑争夺|Heiliges Schwert|Duello della Spada Sacra|Duelo de la Espada Sagrada|Kutsal Kılıç)\s*:/i.test(current)&&/(?:3대연맹전|Three Alliances War|三大連盟戦|三大联盟战|Krieg der drei Allianzen|Guerra delle Tre Alleanze|Guerra de las Tres Alianzas|Üç İttifak Savaşı)\s*:/i.test(current);
-  noticeData[key]=hasBoth?current.split("\n").map(strip).filter(Boolean).join("\n"):[strip(current),strip(noticeData[oldKey]||NOTICE_DEFAULTS[oldKey]||"")].filter(Boolean).join("\n");
+  noticeData[key]=hasBoth?current.split("\n").map(strip).filter(Boolean).filter((value,index,items)=>items.indexOf(value)===index).join("\n"):[strip(current),strip(noticeData[oldKey]||NOTICE_DEFAULTS[oldKey]||"")].filter(Boolean).filter((value,index,items)=>items.indexOf(value)===index).join("\n");
   noticeData.translations=noticeData.translations||{};
   for(const lang of LANGS.slice(1)){
    const source={...(noticeData.translations[lang]||{})};
    const defaults=NOTICE_TRANSLATIONS[lang]||{};
    const existing=String(source[key]||defaults[key]||NOTICE_DEFAULTS[key]||"");
    const translatedHasBoth=/(?:Holy Sword Clash|聖剣争奪|圣剑争夺|Heiliges Schwert|Duello della Spada Sacra|Duelo de la Espada Sagrada|Kutsal Kılıç)\s*:/i.test(existing)&&/(?:Three Alliances War|三大連盟戦|三大联盟战|Krieg der drei Allianzen|Guerra delle Tre Alleanze|Guerra de las Tres Alianzas|Üç İttifak Savaşı)\s*:/i.test(existing);
-   source[key]=translatedHasBoth?existing.split("\n").map(strip).filter(Boolean).join("\n"):[strip(existing),strip(source[oldKey]||defaults[oldKey]||NOTICE_DEFAULTS[oldKey]||"")].filter(Boolean).join("\n");
+   source[key]=translatedHasBoth?existing.split("\n").map(strip).filter(Boolean).filter((value,index,items)=>items.indexOf(value)===index).join("\n"):[strip(existing),strip(source[oldKey]||defaults[oldKey]||NOTICE_DEFAULTS[oldKey]||"")].filter(Boolean).filter((value,index,items)=>items.indexOf(value)===index).join("\n");
    noticeData.translations[lang]=source;
   }
  }
