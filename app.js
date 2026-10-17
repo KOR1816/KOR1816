@@ -899,21 +899,37 @@ function renderParticipants(){
   sel.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
   if([...sel.options].some(o=>o.value===old))sel.value=old;
  }
+ // Collapse legacy duplicate records by nickname, keeping the most recently updated entry.
+ const uniqueByNickname=new Map();
+ participants.forEach(p=>{
+  const key=String(p.nickname||"").trim().toLocaleLowerCase();
+  if(!key)return;
+  const prev=uniqueByNickname.get(key);
+  if(!prev||(Number(p.updatedAt)||0)>=(Number(prev.updatedAt)||0))uniqueByNickname.set(key,p);
+ });
+ participants=[...uniqueByNickname.values()];
  const fixedOrder=new Set(FIXED_LEADERS);
- const active=participants.filter(p=>p.status==="yes").sort((a,b)=>{
-  const fa=fixedOrder.has(a.nickname),fb=fixedOrder.has(b.nickname);
-  if(fa!==fb)return fa?-1:1;
-  const rank=p=>{const tier=["A","B","C"].includes(p.tier)?p.tier:"Z";const n=(p.salo?1:0)+(p.hilde?1:0);return tier+(n===2?"1":n===1?"2":"3");};
+ const tierOrder=p=>fixedOrder.has(p.nickname)?0:p.tier==="A"?1:p.tier==="B"?2:p.tier==="C"?3:4;
+ const tierLabel=p=>fixedOrder.has(p.nickname)?"집결장":p.tier==="A"?"A등급":p.tier==="B"?"B등급":p.tier==="C"?"C등급":"해당없음";
+ const sortWithinTier=(a,b)=>{
+  const rank=p=>{const n=(p.salo?1:0)+(p.hilde?1:0);return n===2?"1":n===1?"2":"3";};
   return rank(a).localeCompare(rank(b))||a.nickname.localeCompare(b.nickname);
- });
- const waiting=participants.filter(p=>p.status!=="yes").sort((a,b)=>{
-  const priority=p=>p.status==="later"?0:1;
-  return priority(a)-priority(b)||a.nickname.localeCompare(b.nickname);
- });
+ };
+ const active=participants.filter(p=>p.status==="yes").sort((a,b)=>tierOrder(a)-tierOrder(b)||sortWithinTier(a,b));
+ const waiting=participants.filter(p=>p.status!=="yes").sort((a,b)=>tierOrder(a)-tierOrder(b)||(a.status==="later"?0:1)-(b.status==="later"?0:1)||sortWithinTier(a,b));
+ const groupedCards=items=>{
+  const groups=new Map();
+  items.forEach(p=>{
+   const label=tierLabel(p);
+   if(!groups.has(label))groups.set(label,[]);
+   groups.get(label).push(p);
+  });
+  return [...groups.entries()].map(([label,group])=>'<section class="nc-tier-group"><h4 class="nc-tier-heading">'+esc(label)+'</h4><div class="nc-tier-cards">'+group.map(battleJoinParticipantCard).join("")+'</div></section>').join("");
+ };
  const list=$("#ncParticipants",root);
- if(list)list.innerHTML=active.map(battleJoinParticipantCard).join("")||'<div class="nc-empty">등록된 참전 정보가 없습니다.</div>';
+ if(list)list.innerHTML=groupedCards(active)||'<div class="nc-empty">등록된 참전 정보가 없습니다.</div>';
  const waitingList=$("#ncWaiting",root);
- if(waitingList)waitingList.innerHTML=waiting.map(battleJoinParticipantCard).join("")||'<div class="nc-empty">대기 명단이 없습니다.</div>';
+ if(waitingList)waitingList.innerHTML=groupedCards(waiting)||'<div class="nc-empty">대기 명단이 없습니다.</div>';
  const participantsHeading=$('h3[data-newcastle="participants"]',root);
  if(participantsHeading)participantsHeading.textContent="등록된 참전 정보 ("+active.length+")";
  const waitingHeading=$('h3[data-newcastle="waiting"]',root);
