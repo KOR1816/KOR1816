@@ -334,8 +334,24 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #notices .cards>section.card>h3{margin:8px 0 12px;font-size:16px}
 
 
-/* Latest-content notices: dark background, centered text, consistent bordered box. */
-.msg.is-latest-load{display:block;width:100%;box-sizing:border-box;text-align:center;border:1px solid #365783;border-radius:7px;padding:10px 12px;margin:10px 0;background:#080d18!important;color:#79cfff!important;font-weight:600;line-height:1.55}
+/* Every latest-content banner uses the same dark background, font size, and centered alignment. */
+.msg.is-latest-load{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+  border:1px solid #365783!important;
+  border-radius:7px!important;
+  padding:10px 12px!important;
+  margin:10px 0!important;
+  background:#080d18!important;
+  color:#79cfff!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.55!important;
+}
 /* Home individual notice titles keep their frame but lose the blue left stripe. */
 #homeLatest h3,#homeLatest .notice-title,#homeLatest strong.notice-heading{border-left:0!important;padding-left:10px}
 /* Castle participation headings use plain text, not the blue left stripe. */
