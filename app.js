@@ -642,6 +642,16 @@ function renderNotices(){
  if(help)help.hidden=!noticeAdmin;
  if(languageSelect)languageSelect.value=noticeEditLang;
 }
+const GOLDEN_GLAIVES_CONTENT_BY_LANG={
+ ko:NOTICE_DEFAULTS.goldenGlaives,
+ en:"❗️ Save your Sunday Intel ❗️\n\nUTC00:00 (Korea 09:00) — 🚫 Pan / ✅ Do / ✅ Collect\nUTC08:00 (Korea 17:00) — 🚫 Pan / ✅ Do / 🚫 Collect\nUTC16:00 (Korea 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\nUTC00:00 (Korea 09:00) — ✅ Pan / ✅ Do / ✅ Collect\n\n💡 How it works\n✅ PAN = Use the Intel skill (navigate/explore)\nDO = Complete Intel missions\nCOLLECT = Claim rewards\n\nIntel event\nUTC16:00 (Korea 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\n(PAN remains active for 15 hours)",
+ ja:"❗️ 日曜日の情報を温存してください ❗️\n\nUTC00:00（韓国09:00）— 🚫 探索(Pan) / ✅ 実行(Do) / ✅ 受取(Collect)\nUTC08:00（韓国17:00）— 🚫 探索(Pan) / ✅ 実行(Do) / 🚫 受取(Collect)\nUTC16:00（韓国01:00）— ✅ 探索(Pan) / 🚫 実行(Do) / 🚫 受取(Collect)\nUTC00:00（韓国09:00）— ✅ 探索(Pan) / ✅ 実行(Do) / ✅ 受取(Collect)\n\n💡 操作方法\n✅ PAN = 情報スキルを使用（移動/探索）\nDO = 情報ミッションを完了\nCOLLECT = 報酬を受け取る\n\n情報イベント\nUTC16:00（韓国01:00）— ✅ 探索(Pan) / 🚫 実行(Do) / 🚫 受取(Collect)\n（PANは15時間維持）",
+ zh:"❗️ 请保留周日情报 ❗️\n\nUTC00:00（韩国09:00）— 🚫 探索(Pan) / ✅ 执行(Do) / ✅ 领取(Collect)\nUTC08:00（韩国17:00）— 🚫 探索(Pan) / ✅ 执行(Do) / 🚫 领取(Collect)\nUTC16:00（韩国01:00）— ✅ 探索(Pan) / 🚫 执行(Do) / 🚫 领取(Collect)\nUTC00:00（韩国09:00）— ✅ 探索(Pan) / ✅ 执行(Do) / ✅ 领取(Collect)\n\n💡 操作说明\n✅ PAN = 使用情报技能（移动/探索）\nDO = 完成情报任务\nCOLLECT = 领取奖励\n\n情报活动\nUTC16:00（韩国01:00）— ✅ 探索(Pan) / 🚫 执行(Do) / 🚫 领取(Collect)\n（PAN持续15小时）",
+ de:"❗️ Hebt euch die Sonntags-Intel auf ❗️\n\nUTC00:00 (Korea 09:00) — 🚫 Pan / ✅ Do / ✅ Collect\nUTC08:00 (Korea 17:00) — 🚫 Pan / ✅ Do / 🚫 Collect\nUTC16:00 (Korea 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\nUTC00:00 (Korea 09:00) — ✅ Pan / ✅ Do / ✅ Collect\n\n💡 So funktioniert es\n✅ PAN = Intel-Fähigkeit verwenden (bewegen/erkunden)\nDO = Intel-Aufgaben abschließen\nCOLLECT = Belohnungen abholen\n\nIntel-Event\nUTC16:00 (Korea 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\n(PAN bleibt 15 Stunden aktiv)",
+ it:"❗️ Conservate le Intel di domenica ❗️\n\nUTC00:00 (Corea 09:00) — 🚫 Pan / ✅ Do / ✅ Collect\nUTC08:00 (Corea 17:00) — 🚫 Pan / ✅ Do / 🚫 Collect\nUTC16:00 (Corea 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\nUTC00:00 (Corea 09:00) — ✅ Pan / ✅ Do / ✅ Collect\n\n💡 Come funziona\n✅ PAN = Usa l'abilità Intel (spostamento/esplorazione)\nDO = Completa le missioni Intel\nCOLLECT = Ritira le ricompense\n\nEvento Intel\nUTC16:00 (Corea 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\n(PAN resta attivo per 15 ore)",
+ es:"❗️ Guarda la Intel del domingo ❗️\n\nUTC00:00 (Corea 09:00) — 🚫 Pan / ✅ Do / ✅ Collect\nUTC08:00 (Corea 17:00) — 🚫 Pan / ✅ Do / 🚫 Collect\nUTC16:00 (Corea 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\nUTC00:00 (Corea 09:00) — ✅ Pan / ✅ Do / ✅ Collect\n\n💡 Cómo funciona\n✅ PAN = Usar la habilidad Intel (moverse/explorar)\nDO = Completar misiones Intel\nCOLLECT = Reclamar recompensas\n\nEvento Intel\nUTC16:00 (Corea 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\n(PAN se mantiene activo durante 15 horas)",
+ tr:"❗️ Pazar gününün istihbaratını saklayın ❗️\n\nUTC00:00 (Kore 09:00) — 🚫 Pan / ✅ Do / ✅ Collect\nUTC08:00 (Kore 17:00) — 🚫 Pan / ✅ Do / 🚫 Collect\nUTC16:00 (Kore 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\nUTC00:00 (Kore 09:00) — ✅ Pan / ✅ Do / ✅ Collect\n\n💡 Nasıl çalışır\n✅ PAN = İstihbarat becerisini kullan (hareket/keşif)\nDO = İstihbarat görevlerini tamamla\nCOLLECT = Ödülleri al\n\nİstihbarat etkinliği\nUTC16:00 (Kore 01:00) — ✅ Pan / 🚫 Do / 🚫 Collect\n(PAN 15 saat aktif kalır)"
+};
 async function loadNotices(){
  const root=$("#notices");if(!root)return;
  try{
@@ -657,7 +667,7 @@ async function loadNotices(){
    for(const key of directNoticeKeys)koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
    noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,updatedAt:saved.updatedAt||cloud?.updatedAt||0};
   }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
-  if(Number(noticeData.goldenGlaivesVersion||0)<2){noticeData.goldenGlaives=NOTICE_DEFAULTS.goldenGlaives;noticeData.goldenGlaivesVersion=2;}
+  if(Number(noticeData.goldenGlaivesVersion||0)<2){noticeData.goldenGlaives=NOTICE_DEFAULTS.goldenGlaives;noticeData.translations=noticeData.translations||{};for(const language of LANGS){noticeData.translations[language]={...(noticeData.translations[language]||{}),goldenGlaives:GOLDEN_GLAIVES_CONTENT_BY_LANG[language]||NOTICE_DEFAULTS.goldenGlaives};}noticeData.goldenGlaivesVersion=2;}
   mergeCombinedEventNotices();
   noticeEditLang="ko";
   renderNotices();setMsg("notice-status",message("load"));
