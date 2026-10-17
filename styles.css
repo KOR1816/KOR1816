@@ -154,3 +154,44 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 .home-schedule-event-line{font-size:inherit;font-weight:inherit;line-height:inherit}
 .home-schedule-empty{margin:0;color:var(--muted)}
 @media(max-width:760px){.home-schedule-row{grid-template-columns:92px minmax(0,1fr);gap:9px;padding:9px}.home-schedule-time strong{font-size:15px}.home-schedule-event{font-size:14px}}
+
+/* Castle participation: align with the reference 1816KOR roster design. */
+#battleJoin>.card{border:1px solid #344c70;border-radius:16px;background:linear-gradient(155deg,rgba(24,39,65,.98),rgba(10,17,31,.98));box-shadow:0 10px 28px rgba(0,0,0,.2)}
+#battleJoin h2{padding-bottom:12px;border-bottom:1px solid rgba(132,163,210,.24);letter-spacing:.2px}
+#battleJoin .newcastle-form{display:grid;grid-template-columns:minmax(130px,200px) minmax(180px,1fr);gap:12px 14px;align-items:center;max-width:780px;background:rgba(7,14,27,.34);border:1px solid rgba(91,124,174,.28);border-radius:14px;padding:16px;overflow:visible}
+#battleJoin .newcastle-form label{font-weight:700;color:#d7e5ff}
+#battleJoin .newcastle-form select,#battleJoin .newcastle-form input{width:100%;min-width:0;min-height:42px;background:#0b1426;color:#fff;border:1px solid #365783;border-radius:8px;padding:9px 10px}
+#battleJoin .nc-nickname-tools{grid-column:2;display:grid;grid-template-columns:minmax(115px,.8fr) minmax(170px,1.2fr);gap:7px;min-width:0;align-items:start}
+#battleJoin .nc-nickname-tools select,#battleJoin .nc-nickname-tools input{width:100%;min-width:0;height:42px;padding:8px 10px;font:inherit;font-size:13px;box-sizing:border-box}
+#battleJoin .nc-participation-actions{grid-column:2;display:flex;gap:8px;flex-wrap:nowrap}
+#battleJoin .nc-participation-actions .admin-btn{min-height:40px;padding:9px 16px;border-radius:9px;font-weight:800;white-space:nowrap}
+#battleJoin .nc-participation-actions button:first-child{background:linear-gradient(135deg,#2d72bd,#2456a0);border-color:#5795e5;color:#fff}
+#battleJoin .nc-participation-actions .nc-cancel-btn{background:linear-gradient(135deg,#48232f,#321923);border-color:#a75d70;color:#ffe1e7}
+#battleJoin #ncJoinMsg{margin:10px 0;padding:0 3px;font-weight:700}
+#battleJoin h3{margin-top:22px;padding-bottom:8px;border-bottom:1px solid rgba(132,163,210,.2)}
+#battleJoin #ncParticipants.newcastle-list,#battleJoin #ncWaiting.newcastle-list{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:10px;margin:10px 0 20px}
+#battleJoin .nc-member-card{display:flex;gap:10px;align-items:center;background:#101a2e;border:1px solid #365783;border-radius:12px;padding:10px;min-width:0}
+#battleJoin .nc-rank-label{min-width:30px;text-align:center;font-size:24px;line-height:1;color:#f7d77a;flex:0 0 30px;font-weight:900;text-shadow:0 1px 8px rgba(247,215,122,.18)}
+#battleJoin .nc-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:50%;background:#243a61 center/cover no-repeat;border:1px solid #7895c5;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff}
+#battleJoin .nc-participant-card{display:grid;grid-template-columns:30px 38px minmax(0,1fr);column-gap:8px;align-items:center;padding:7px 9px;background:linear-gradient(145deg,#14233c,#0d1729);border-color:#344b6d;min-height:0}
+#battleJoin .nc-member-main{min-width:0;overflow-wrap:anywhere;display:flex;flex-direction:column;gap:3px}
+#battleJoin .nc-name-line{display:flex;align-items:baseline;flex-wrap:nowrap;gap:5px;min-width:0;white-space:nowrap}
+#battleJoin .nc-name-line>strong{font-size:14px;line-height:1.2;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#battleJoin .nc-barracks{font-size:11px;color:#bfd0ee;white-space:nowrap;flex:0 0 auto}
+#battleJoin .nc-meta{font-size:11px;line-height:1.25;color:#c8d7f0;margin:0;padding:0;border:0;background:transparent;display:block;overflow-wrap:anywhere}
+#battleJoin .nc-rank-none{font-size:21px;display:flex;align-items:center;justify-content:center;color:inherit;text-shadow:none}
+#battleJoin .nc-empty{grid-column:1/-1;color:#8fa5ca;font-size:13px;padding:12px;border:1px dashed #344b6d;border-radius:10px;text-align:center}
+@media(max-width:760px){
+ #battleJoin .newcastle-form{grid-template-columns:1fr;gap:7px;padding:12px}
+ #battleJoin .nc-nickname-tools{grid-column:1;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:7px}
+ #battleJoin .nc-nickname-tools select,#battleJoin .nc-nickname-tools input{font-size:12px;padding:7px 6px;height:40px}
+ #battleJoin .nc-participation-actions{grid-column:1;margin-top:5px;flex-wrap:wrap}
+ #battleJoin .nc-participation-actions .admin-btn{flex:1;padding:10px 8px}
+ #battleJoin #ncParticipants.newcastle-list,#battleJoin #ncWaiting.newcastle-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #battleJoin .nc-participant-card{grid-template-columns:24px 32px minmax(0,1fr);column-gap:6px;padding:6px}
+ #battleJoin .nc-rank-label{min-width:24px;width:24px;flex-basis:24px;font-size:20px}
+ #battleJoin .nc-avatar{width:32px;height:32px;flex-basis:32px}
+ #battleJoin .nc-name-line>strong{font-size:12px}
+ #battleJoin .nc-barracks{font-size:10px}
+}
+@media(max-width:460px){#battleJoin #ncParticipants.newcastle-list,#battleJoin #ncWaiting.newcastle-list{grid-template-columns:minmax(0,1fr)}}
