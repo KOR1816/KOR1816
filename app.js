@@ -103,6 +103,7 @@ let castleLayoutData = {slots:Array(28).fill(""),updatedAt:0};
 let vikingData = {teams:Object.fromEntries(Array.from({length:25},(_,i)=>[i+1,[]])),updatedAt:0};
 let vikingPhotosByTeam = {};
 let vikingPhotoAdmin = false;
+ let vikingAdminMode = false;
 let gloryRecords = [];
 const defaultGloryRecords = [
  {date:"2026-10-10",opponent:1775,prep:"패",castle:"패",memo:""},
@@ -1340,8 +1341,10 @@ function renderViking(){
   }).join(""):'<div class="viking-empty">—</div>';
   return '<div class="viking-team"><h3>🛡️ Team '+teamNo+' <small>('+roster.length+'/4)</small></h3>'+members+'</div>';
  }).join("");
- const photoButton=$("#vikingPhotoAdminBtn",root);
- if(photoButton){photoButton.dataset.photoAdminState=vikingPhotoAdmin?"on":"off";photoButton.textContent=(PHOTO_ADMIN_LABELS[currentLang]||PHOTO_ADMIN_LABELS.ko)[vikingPhotoAdmin?1:0];}
+ const adminButton=$("#vikingAdminBtn",root);
+ if(adminButton)adminButton.textContent=vikingAdminMode?"🔒 관리자 수정 종료":"🔐 관리자 수정";
+ const clearButton=$("#vikingClearAllBtn",root);
+ if(clearButton)clearButton.style.display=vikingAdminMode?"inline-flex":"none";
  $$("#vikingTeams [data-viking-photo]").forEach(button=>button.addEventListener("click",()=>triggerVikingPhoto(Number(button.dataset.team),button.dataset.nick)));
  translateStatic();
 }
@@ -1403,6 +1406,16 @@ async function triggerVikingPhoto(teamNo,nickname){
  });
  input.click();
 }
+async function toggleVikingAdmin(){
+  if(!vikingAdminMode&&!await ensureGoogleAdmin())return;
+  vikingAdminMode=!vikingAdminMode;renderViking();
+}
+async function clearAllVikingTeams(){
+  if(!vikingAdminMode||!await ensureGoogleAdmin())return;
+  if(!confirm("바이킹 25개 팀의 모든 등록 닉네임을 삭제할까요? 이 작업은 되돌릴 수 없습니다."))return;
+  const next={...vikingData,teams:Object.fromEntries(Array.from({length:25},(_,i)=>[i+1,[]])),updatedAt:Date.now()};
+  if(await saveViking(next))setMsg("vikingMsg","바이킹 팀 등록을 모두 삭제했습니다.");
+}
 function toggleVikingCustomNick(){const sel=$("#vikingNickname"),custom=$("#vikingCustomNickname");if(!sel||!custom)return;custom.style.display=sel.value==="__custom__"?"block":"none";}
 function getVikingSelectedNick(){return $("#vikingNickname")?.value==="__custom__"?($("#vikingCustomNickname")?.value||"").trim():($("#vikingNickname")?.value||"").trim();}
 async function loadViking(){
@@ -1434,6 +1447,12 @@ async function loadRecords(){
   gloryRecords=Array.isArray(cloud?.records)?cloud.records:clone(defaultGloryRecords);
   renderRecords();setMsg("glory-msg",message("load"));
  }catch(e){console.error(e);gloryRecords=clone(defaultGloryRecords);renderRecords();setMsg("glory-msg",message("fallback"));}
+}
+async function toggleGloryAdmin(){
+  if(!adminModes.glory&&!await ensureGoogleAdmin())return;
+  adminModes.glory=!adminModes.glory;
+  const button=$("#gloryAdminBtn");if(button)button.textContent=adminModes.glory?"🔒 관리자 수정 종료":"🔐 관리자 수정";
+  renderRecords();
 }
 function renderRecords(){
  const root=$("#glory-records");if(!root)return;
@@ -1502,7 +1521,7 @@ Object.assign(window,{
  updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
  loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,autoArrangeCastleWar,
  loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!FIXED_LEADERS.includes(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
- toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,toggleVikingPhotoAdmin,triggerVikingPhoto,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
+ toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,toggleVikingPhotoAdmin,triggerVikingPhoto,toggleVikingAdmin,clearAllVikingTeams,toggleGloryAdmin,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
 });
 
 function boot(){
