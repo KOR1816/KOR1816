@@ -531,7 +531,7 @@ function renderHomeSchedule(value){
   const event=match?raw.slice(0,match.index).trim():raw;
   const time=match?match[1]:"",secondary=match?(match[2]||""):"";
   const minutes=time?Number(time.split(":")[0])*60+Number(time.split(":")[1]):Infinity;
-  const group=/성검|3대연맹전|연맹전|three alliances/i.test(event)?"성검쟁탈 · 3대연맹전":/곰/.test(event)?"곰 트랩":"기타 일정";
+  const group=/성검|3대연맹전|연맹전|three alliances/i.test(event)?"sword":/곰/.test(event)?"bear":"other";
   return {event,time,secondary,minutes,index,group};
  }).filter(Boolean);
  const swordRows=entries.filter(item=>/성검쟁탈/.test(item.event)&&/[12]군/.test(item.event));
@@ -540,15 +540,18 @@ function renderHomeSchedule(value){
   if(!entries.some(row=>/3대연맹전|연맹전|three alliances/i.test(row.event)&&row.event.includes(squad)))
    entries.push({...item,event:item.event.replace(/성검쟁탈/,"3대연맹전"),index:entries.length});
  }
- const groups=["성검쟁탈 · 3대연맹전","곰 트랩","기타 일정"];
+ const groups=[
+  {key:"sword",label:"⚔️ "+(homeText("groups")[0]||"성검쟁탈 · 3대연맹전")},
+  {key:"bear",label:"🐻 "+(homeText("groups")[1]||"곰 트랩")},
+  {key:"other",label:"🪓 "+(homeText("groups")[2]||"기타 일정")}
+ ];
  if(!entries.length)return '<p class="home-schedule-empty">'+esc(homeText("empty"))+'</p>';
- return '<div class="home-schedule-list">'+groups.map((group,index)=>{
-  const groupLabel=homeText("groups")[index]||group;
-  const items=entries.filter(item=>item.group===group).sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
+ return '<div class="home-schedule-list">'+groups.map(group=>{
+  const items=entries.filter(item=>item.group===group.key).sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
   if(!items.length)return "";
   const rows=[];
   items.forEach(item=>{
-   const paired=/성검쟁탈|3대연맹전|연맹전|three alliances/i.test(item.event)&&/[12]군/.test(item.event);
+   const paired=group.key==="sword"&&/[12]군/.test(item.event);
    const squad=paired?(item.event.match(/[12]군/)||[])[0]:"";
    const pairKey=paired?item.time+"|"+squad:"";
    const row=pairKey?rows.find(r=>r.pairKey===pairKey):null;
@@ -556,11 +559,13 @@ function renderHomeSchedule(value){
    else if(!row.pairedEvents.includes(item.event))row.pairedEvents.push(item.event);
   });
   rows.sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
-  return '<section class="home-schedule-panel"><h3 class="home-schedule-panel-title">'+esc(groupLabel)+'</h3>'+rows.map(item=>
-   '<div class="home-schedule-row">'+
-   (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>'+esc(homeText("unscheduled"))+'</span></div>')+
-   '<div class="home-schedule-event">'+item.pairedEvents.map(event=>'<div class="home-schedule-event-line">'+esc(translateHomeEvent(event))+'</div>').join("")+'</div></div>'
-  ).join("")+'</section>';
+  return '<section class="home-schedule-panel"><h3 class="home-schedule-panel-title">'+esc(group.label)+'</h3><div class="home-schedule-divider"></div>'+rows.map(item=>{
+   const paired=group.key==="sword"&&/[12]군/.test(item.event);
+   const label=paired?(item.event.match(/[12]군/)||[])[0]:item.pairedEvents.map(event=>translateHomeEvent(event)).join(" · ");
+   return '<div class="home-schedule-row">'+
+    (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>'+esc(homeText("unscheduled"))+'</span></div>')+
+    '<div class="home-schedule-event"><div class="home-schedule-event-line">'+esc(label)+'</div></div></div>';
+  }).join("")+'</section>';
  }).join("")+'</div>';
 }
 function renderHome(){
