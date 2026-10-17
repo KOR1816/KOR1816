@@ -1139,7 +1139,8 @@ async function syncCastleLayoutFromRoster(){
  while(currentSlots.length<28)currentSlots.push("");
  const sorted=castleWarTierSortedParticipants().filter(p=>String(p.nickname||"").trim());
  const signature=sorted.map(p=>[p.nickname,p.status,p.tier,p.salo?1:0,p.hilde?1:0].join("|")).join(";");
- const changedRoster=!latest||latest.rosterSignature!==signature;
+ const hasLayoutMembers=currentSlots.slice(FIXED_LEADERS.length).some(name=>String(name||"").trim());
+ const changedRoster=!latest||latest.rosterSignature!==signature||(sorted.length>0&&!hasLayoutMembers);
  if(changedRoster){
   castleLayoutData={
    ...castleLayoutData,
