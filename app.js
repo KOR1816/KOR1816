@@ -594,7 +594,7 @@ function mergeCombinedEventNotices(){
    const source={...(noticeData.translations[lang]||{})};
    const defaults=NOTICE_TRANSLATIONS[lang]||{};
    const existing=String(source[key]||defaults[key]||NOTICE_DEFAULTS[key]||"");
-   const translatedHasBoth=/(?:Holy Sword Clash|Three Alliances War|聖剣争奪|三大連盟戦|圣剑争夺|三大联盟战|Heiliges Schwert|Krieg der drei Allianzen|Duello della Spada Sacra|Guerra delle Tre Alleanze|Duelo de la Espada Sagrada|Guerra de las Tres Alianzas|Kutsal Kılıç|Üç İttifak Savaşı)\s*:/i.test(existing);
+   const translatedHasBoth=/(?:Holy Sword Clash|聖剣争奪|圣剑争夺|Heiliges Schwert|Duello della Spada Sacra|Duelo de la Espada Sagrada|Kutsal Kılıç)\s*:/i.test(existing)&&/(?:Three Alliances War|三大連盟戦|三大联盟战|Krieg der drei Allianzen|Guerra delle Tre Alleanze|Guerra de las Tres Alianzas|Üç İttifak Savaşı)\s*:/i.test(existing);
    source[key]=translatedHasBoth?existing.split("\n").map(strip).filter(Boolean).join("\n"):[strip(existing),strip(source[oldKey]||defaults[oldKey]||NOTICE_DEFAULTS[oldKey]||"")].filter(Boolean).join("\n");
    noticeData.translations[lang]=source;
   }
