@@ -1090,7 +1090,7 @@ function castleWarTierSortedParticipants(excludedNames=[]){
  return castleWarRoster().filter(p=>p.status==="yes"&&!FIXED_LEADERS.includes(p.nickname)&&!excluded.has(String(p.nickname||"").trim().toLocaleLowerCase()))
   .sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
 }
-function autoArrangeCastleWar(){
+async function autoArrangeCastleWar(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
  const squadKeys=["assault","rush","finish"],turretKeys=["north","west","reserve"];
  const ordered=castleWarTierSortedParticipants();
@@ -1100,8 +1100,11 @@ function autoArrangeCastleWar(){
  };
  fillRows(squadKeys,ordered.slice(0,24));
  fillRows(turretKeys,ordered.slice(24,48));
- renderCastleWar();
- setMsg("ncWarMsg","등급별 자동배치가 완료되었습니다. 저장 버튼을 눌러 반영하세요.");
+ try{
+  castleWarData=await saveCloud("castlewar1",castleWarData);
+  renderCastleWar();
+  setMsg("ncWarMsg","등급별 자동배치 후 공용 서버에 저장했습니다.");
+ }catch(e){console.error(e);renderCastleWar();setMsg("ncWarMsg",message("failed"));}
 }
 function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
@@ -1340,11 +1343,12 @@ async function deleteRecord(index){
 }
 
 /* Inline handlers are explicitly exported because page markup is static HTML. */
+Object.assign(EXTRA_BUTTON_TRANSLATIONS,{"🔀 등급별 자동배치":["🔀 등급별 자동배치","🔀 Auto-assign by tier","🔀 ランク別自動配置","🔀 按等级自动分配","🔀 Automatisch nach Rang","🔀 Assegna per grado","🔀 Asignar por rango","🔀 Kademeye göre otomatik ata"]});
 Object.assign(window,{
  loadHome,toggleHomeAdmin,saveHome,refreshTeams:loadTeams,toggleTeamsAdmin,saveAllTeams,
  loadAlliance,toggleAllianceAdmin,saveAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
  updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
- loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,
+ loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,autoArrangeCastleWar,
  loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!FIXED_LEADERS.includes(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
  toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,toggleVikingPhotoAdmin,triggerVikingPhoto,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
 });
