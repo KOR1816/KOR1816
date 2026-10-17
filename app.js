@@ -509,7 +509,7 @@ function renderHomeSchedule(value){
   rows.sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
   return '<section class="home-schedule-group"><h3 class="home-schedule-heading">'+esc(group)+'</h3>'+rows.map(item=>'<div class="home-schedule-row">'+
    (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>시간 미정</span></div>')+
-   '<div class="home-schedule-event">'+item.pairedEvents.map((event,index)=>'<div class="home-schedule-event-line">'+(index===0?'<strong>':'')+esc(event)+(index===0?'</strong>':'')+'</div>').join("")+'</div></div>').join("")+'</section>';
+   '<div class="home-schedule-event">'+item.pairedEvents.map(event=>'<div class="home-schedule-event-line">'+esc(event)+'</div>').join("")+'</div></div>').join("")+'</section>';
  }).join("")+'</div>';
 }
 function renderHome(){
