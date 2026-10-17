@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261017-tiergroups1";
+import { PAGE_CONTENT } from "./page-content.js?v=20261017-castlewarorder1";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
