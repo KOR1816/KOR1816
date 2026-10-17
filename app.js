@@ -455,6 +455,25 @@ function setInputsEnabled(root,enabled){$$("input,textarea,select",root).forEach
 function setMsg(id,msg){const el=$("#"+id);if(el)el.textContent=msg;}
 
 /* Home */
+const HOME_TRANSLATIONS={
+ko:{notice:"공지",lines:["항상 웃으면서","현실이 먼저이며!!","게임은 쉬엄쉬엄 즐기세요!!"],welcome:"소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.",groups:["성검쟁탈 · 3대연맹전","곰 트랩","기타 일정"],unscheduled:"시간 미정",empty:"일정이 등록되지 않았습니다.",sword:"성검쟁탈",alliance:"3대연맹전",viking:"바이킹",bear1:"곰 1트랩",bear2:"곰 2트랩"},
+en:{notice:"Announcement",lines:["Always keep smiling","Real life comes first!!","Take it easy and enjoy the game!!"],welcome:"Built on communication · cooperation · growth · and strong KVK teamwork.",groups:["Holy Sword Clash · Three Alliances War","Bear Trap","Other Events"],unscheduled:"Time TBA",empty:"No schedule has been posted.",sword:"Holy Sword Clash",alliance:"Three Alliances War",viking:"Viking",bear1:"Bear Trap 1",bear2:"Bear Trap 2"},
+ja:{notice:"お知らせ",lines:["いつも笑顔で","現実を最優先に!!","ゲームは無理せず楽しみましょう!!"],welcome:"コミュニケーション · 協力 · 成長 · KVKでの連携を大切にします。",groups:["聖剣争奪 · 三大連盟戦","ベアトラップ","その他の予定"],unscheduled:"時間未定",empty:"予定はまだ登録されていません。",sword:"聖剣争奪",alliance:"三大連盟戦",viking:"バイキング",bear1:"ベアトラップ1",bear2:"ベアトラップ2"},
+zh:{notice:"公告",lines:["永远保持微笑","现实生活永远优先!!","轻松享受游戏!!"],welcome:"以沟通 · 合作 · 成长 · KVK团队协作为核心。",groups:["圣剑争夺 · 三大联盟战","熊陷阱","其他日程"],unscheduled:"时间待定",empty:"尚未发布日程。",sword:"圣剑争夺",alliance:"三大联盟战",viking:"维京",bear1:"熊陷阱1",bear2:"熊陷阱2"},
+de:{notice:"Ankündigung",lines:["Immer mit einem Lächeln","Das echte Leben geht vor!!","Spielt entspannt und habt Spaß!!"],welcome:"Wir setzen auf Kommunikation · Zusammenarbeit · Wachstum und Teamwork im KVK.",groups:["Heiliges Schwert · Krieg der drei Allianzen","Bärenfalle","Weitere Termine"],unscheduled:"Zeit folgt",empty:"Es wurde noch kein Zeitplan veröffentlicht.",sword:"Heiliges Schwert",alliance:"Krieg der drei Allianzen",viking:"Wikinger",bear1:"Bärenfalle 1",bear2:"Bärenfalle 2"},
+it:{notice:"Annuncio",lines:["Sorridete sempre","La vita reale viene prima di tutto!!","Godetevi il gioco senza stress!!"],welcome:"Puntiamo su comunicazione · collaborazione · crescita e gioco di squadra nel KVK.",groups:["Duello della Spada Sacra · Guerra delle Tre Alleanze","Trappola per orsi","Altri eventi"],unscheduled:"Orario da definire",empty:"Nessun programma pubblicato.",sword:"Duello della Spada Sacra",alliance:"Guerra delle Tre Alleanze",viking:"Vichinghi",bear1:"Trappola per orsi 1",bear2:"Trappola per orsi 2"},
+es:{notice:"Anuncio",lines:["Sonrían siempre","La vida real es lo primero!!","Disfruten del juego con calma!!"],welcome:"Nos centramos en la comunicación · la cooperación · el crecimiento y el trabajo en equipo en KVK.",groups:["Duelo de la Espada Sagrada · Guerra de las Tres Alianzas","Trampa para osos","Otros eventos"],unscheduled:"Horario por confirmar",empty:"Aún no hay ningún horario publicado.",sword:"Duelo de la Espada Sagrada",alliance:"Guerra de las Tres Alianzas",viking:"Vikingos",bear1:"Trampa para osos 1",bear2:"Trampa para osos 2"},
+tr:{notice:"Duyuru",lines:["Her zaman gülümseyin","Gerçek hayat her şeyden önce gelir!!","Oyunun tadını sakin sakin çıkarın!!"],welcome:"İletişim · iş birliği · gelişim ve KVK takım ruhunu temel alıyoruz.",groups:["Kutsal Kılıç · Üç İttifak Savaşı","Ayı Tuzağı","Diğer Etkinlikler"],unscheduled:"Saat daha sonra belli olacak",empty:"Henüz bir program yayınlanmadı.",sword:"Kutsal Kılıç",alliance:"Üç İttifak Savaşı",viking:"Viking",bear1:"Ayı Tuzağı 1",bear2:"Ayı Tuzağı 2"}
+};
+function homeText(key){return (HOME_TRANSLATIONS[currentLang]||HOME_TRANSLATIONS.ko)[key]||HOME_TRANSLATIONS.ko[key]||key;}
+function translateHomeEvent(event){
+ const pairs=[
+  [/성검쟁탈/g,homeText("sword")],[/3대연맹전/g,homeText("alliance")],[/바이킹/g,homeText("viking")],
+  [/곰 1트랩/g,homeText("bear1")],[/곰 2트랩/g,homeText("bear2")]
+ ];
+ return pairs.reduce((value,pair)=>value.replace(pair[0],pair[1]),event);
+}
+
 const homeDefaults={
  latestTitle:"공지",
  latestBody:"소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.",
@@ -467,7 +486,7 @@ async function loadHome(){
  if(r.source==="unavailable")setMsg("homeMsg",message("fallback"));else setMsg("homeMsg",message("load"));
 }
 function ensureHomeNoticeBody(){
- return "항상 웃으면서\n현실이 먼저이며!!\n게임은 쉬엄쉬엄 즐기세요!!";
+ return homeText("lines").join("\n");
 }
 function captureHomeEditor(){
  const root=$("#home");if(!root||!adminModes.home)return;
@@ -496,8 +515,10 @@ function renderHomeSchedule(value){
    entries.push({...item,event:item.event.replace(/성검쟁탈/,"3대연맹전"),index:entries.length});
  }
  const groups=["성검쟁탈 · 3대연맹전","곰 트랩","기타 일정"];
- if(!entries.length)return '<p class="home-schedule-empty">일정이 등록되지 않았습니다.</p>';
+ if(!entries.length)return '<p class="home-schedule-empty">'+esc(homeText("empty"))+'</p>';
  return '<div class="home-schedule-list">'+groups.map(group=>{
+  const groupIndex=groups.indexOf(group);
+  const groupLabel=homeText("groups")[groupIndex]||group;
   const items=entries.filter(item=>item.group===group).sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
   if(!items.length)return "";
   const rows=[];
@@ -510,18 +531,18 @@ function renderHomeSchedule(value){
    else if(!row.pairedEvents.includes(item.event))row.pairedEvents.push(item.event);
   });
   rows.sort((a,b)=>a.minutes-b.minutes||a.index-b.index);
-  return '<section class="home-schedule-group"><h3 class="home-schedule-heading">'+esc(group)+'</h3>'+rows.map(item=>'<div class="home-schedule-row">'+
-   (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>시간 미정</span></div>')+
-   '<div class="home-schedule-event">'+item.pairedEvents.map(event=>'<div class="home-schedule-event-line">'+esc(event)+'</div>').join("")+'</div></div>').join("")+'</section>';
+  return '<section class="home-schedule-group"><h3 class="home-schedule-heading">'+esc(groupLabel)+'</h3>'+rows.map(item=>'<div class="home-schedule-row">'+
+   (item.time?'<div class="home-schedule-time"><strong>'+esc(item.time)+'</strong>'+(item.secondary?'<small>'+esc(item.secondary)+'</small>':'')+'</div>':'<div class="home-schedule-time home-schedule-no-time"><span>'+esc(homeText("unscheduled"))+'</span></div>')+
+   '<div class="home-schedule-event">'+item.pairedEvents.map(event=>'<div class="home-schedule-event-line">'+esc(translateHomeEvent(event))+'</div>').join("")+'</div></div>').join("")+'</section>';
  }).join("")+'</div>';
 }
 function renderHome(){
  const d=homeData.translations?.[currentLang]||homeData.translations?.ko||homeData;
  const title=$("#homeLatestTitle"),body=$("#homeLatest"),sch=$("#homeSchedule"),wel=$("#homeWelcome");
- if(title)title.textContent="📢 "+(d.latestTitle||"공지");
+ if(title)title.textContent="📢 "+homeText("notice");
  if(body)body.textContent=ensureHomeNoticeBody(d.latestBody||"");
  if(sch)sch.innerHTML=renderHomeSchedule(d.schedule||"");
- if(wel)wel.textContent=d.welcome||"";
+ if(wel)wel.textContent=homeText("welcome");
  fillInputs($("#home"),{homeLatestInput:d.latestTitle,homeLatestBody:ensureHomeNoticeBody(d.latestBody||""),homeScheduleInput:d.schedule,homeWelcomeInput:d.welcome});
 }
 async function saveHome(){
