@@ -1085,6 +1085,24 @@ function sanitizeCastleWarAssignments(){
  });
  return changed;
 }
+function castleWarTierSortedParticipants(excludedNames=[]){
+ const excluded=new Set(excludedNames.map(n=>String(n||"").trim().toLocaleLowerCase()));
+ return castleWarRoster().filter(p=>p.status==="yes"&&!FIXED_LEADERS.includes(p.nickname)&&!excluded.has(String(p.nickname||"").trim().toLocaleLowerCase()))
+  .sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
+}
+function autoArrangeCastleWar(){
+ if(!adminModes.castlewar1){alert(message("admin"));return;}
+ const squadKeys=["assault","rush","finish"],turretKeys=["north","west","reserve"];
+ const ordered=castleWarTierSortedParticipants();
+ const fillRows=(keys,people)=>{
+  keys.forEach(key=>castleWarData.war[key]=Array(8).fill(""));
+  people.forEach((p,i)=>{const row=Math.floor(i/keys.length),col=i%keys.length;if(row<8)castleWarData.war[keys[col]][row]=p.nickname;});
+ };
+ fillRows(squadKeys,ordered.slice(0,24));
+ fillRows(turretKeys,ordered.slice(24,48));
+ renderCastleWar();
+ setMsg("ncWarMsg","등급별 자동배치가 완료되었습니다. 저장 버튼을 눌러 반영하세요.");
+}
 function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
  const attack=$("#ncWarAttack",root),turrets=$("#ncWarTurrets",root);
@@ -1093,14 +1111,19 @@ function renderCastleWar(){
  const displayWarCard=(name)=>{const p=activeCastleWarParticipants().find(p=>p.nickname===name);return p?battleJoinParticipantCard(p):FIXED_LEADERS.includes(name)?battleJoinParticipantCard({nickname:name,tier:"S",status:"yes",salo:false,hilde:false}):'<div class="castle-person-empty">—</div>';};
  const cell=(name,key,index)=>adminModes.castlewar1?'<div class="nc-war-admin-cell">'+displayWarCard(name)+'<select data-war="'+key+'" data-index="'+index+'">'+castleWarSelect(name)+'</select></div>':displayWarCard(name);
  const leaderCell=(key)=>{const name=castleWarData.warLeaders[key]||"";return adminModes.castlewar1?'<div class="nc-war-admin-cell">'+displayWarCard(name)+'<select data-war-leader="'+key+'">'+castleWarSelect(name)+'</select></div>':displayWarCard(name);};
- const renderAttack=([key,title])=>'<section class="nc-war-column"><h3>'+title+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+leaderCell(key)+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b>'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
- const renderTurret=([key,leader,suffix])=>'<section class="nc-war-column nc-turret-column"><h3>포탑'+suffix+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+battleJoinParticipantCard({nickname:leader,tier:"S",status:"yes",salo:false,hilde:false})+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b>'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
- if(attack)attack.innerHTML=groups.map(renderAttack).join("");
- if(turrets)turrets.innerHTML=turretGroups.map(renderTurret).join("");
+ const renderColumn=(key,title,leader,suffix="",isAttack=true)=>'<section class="nc-war-column '+(isAttack?"":"nc-turret-column")+'"><h3>'+title+suffix+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+(isAttack?leaderCell(key):battleJoinParticipantCard({nickname:leader,tier:"S",status:"yes",salo:false,hilde:false}))+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b class="nc-war-slot-number">'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
+ if(attack)attack.innerHTML=groups.map(([key,title])=>renderColumn(key,title,"","",true)).join("");
+ if(turrets)turrets.innerHTML=turretGroups.map(([key,leader,suffix])=>renderColumn(key,"포탑",leader,suffix,false)).join("");
  const waiting=$("#ncWarWaiting",root);
- if(waiting)waiting.innerHTML=participants.filter(p=>p.status==="later").map(p=>'<div class="participant-line"><strong>'+esc(p.nickname)+'</strong><span>'+esc(participantRank(p)||p.tier)+'</span></div>').join("")||'<p class="muted">대기 명단이 없습니다.</p>';
+ if(waiting){
+  const roster=castleWarRoster().filter(p=>p.status==="later").sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
+  const tiers=[["A","A등급"],["B","B등급"],["C","C등급"],["—","등급 미등록"]];
+  waiting.innerHTML=tiers.map(([tier,label])=>{const list=roster.filter(p=>(["A","B","C"].includes(p.tier)?p.tier:"—")===tier);return list.length?'<section class="nc-tier-group"><h4 class="nc-tier-heading">'+label+'</h4><div class="nc-tier-cards">'+list.map(battleJoinParticipantCard).join("")+'</div></section>':"";}).join("")||'<p class="muted">대기 명단이 없습니다.</p>';
+ }
  const saveButton=$("[data-newcastle='save']",root);
  if(saveButton)saveButton.style.display=adminModes.castlewar1?"inline-flex":"none";
+ const autoButton=$("[data-newcastle='auto']",root);
+ if(autoButton)autoButton.style.display=adminModes.castlewar1?"inline-flex":"none";
  translateStatic();
 }
 async function saveNewCastleFeatures(){
