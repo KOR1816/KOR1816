@@ -239,3 +239,15 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #castlewar1 .nc-war-admin-cell{display:flex;flex-direction:column;gap:6px;min-width:0;width:100%}
 #castlewar1 .nc-war-admin-cell>.nc-member-card,#castlewar1 .nc-war-admin-cell>.castle-person-card,#castlewar1 .nc-war-admin-cell>.castle-person-empty{width:100%;box-sizing:border-box}
 #castlewar1 .nc-war-admin-cell>select{width:100%;min-width:0;box-sizing:border-box}
+
+/* Castle War alignment and participant-style waiting list. */
+#castlewar1 .nc-war-row{grid-template-columns:78px minmax(0,1fr);gap:7px;align-items:stretch}
+#castlewar1 .nc-war-row>b.nc-war-slot-number,#castlewar1 .nc-war-row.nc-war-leader-row>b{box-sizing:border-box;min-height:100%;height:100%;align-self:stretch;border:1px solid #365783;border-radius:8px;background:rgba(32,47,82,.72);padding:7px 4px}
+#castlewar1 .nc-war-row:not(.nc-war-leader-row)>b.nc-war-slot-number{min-height:48px}
+#castlewar1 .nc-war-row.nc-war-leader-row{grid-template-columns:78px minmax(0,1fr);align-items:stretch}
+#castlewar1 .nc-war-attack,#castlewar1 .nc-war-turrets{align-items:start}
+#castlewar1 .nc-tier-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:7px}
+#castlewar1 .nc-tier-group{margin:8px 0}
+#castlewar1 .nc-tier-heading{margin:6px 0;padding:6px 9px;border:1px solid #365783;border-radius:7px;background:#202f52;color:#f7d77a}
+#castlewar1 .castle-war-info-panels{margin-top:14px}
+@media(max-width:760px){#castlewar1 .nc-war-row{grid-template-columns:58px minmax(0,1fr)}#castlewar1 .nc-war-row.nc-war-leader-row{grid-template-columns:58px minmax(0,1fr)}#castlewar1 .nc-war-row:not(.nc-war-leader-row)>b.nc-war-slot-number{min-height:48px}#castlewar1 .nc-tier-cards{grid-template-columns:minmax(0,1fr)}}
