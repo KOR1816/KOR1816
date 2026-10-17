@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261017-castlewartable3";
+import { PAGE_CONTENT } from "./page-content.js?v=20261018-castlewar-columns3";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -949,11 +949,13 @@ async function loadNewCastleFeatures(){
    renderParticipants();setMsg("ncJoinMsg",latestBanner("battleJoin"));
   }else{
    // Participant roster is auxiliary; its read failure must not block loading Castle War's own data.
-   try{await loadParticipantRoster();}catch(rosterError){console.warn("Participant roster unavailable for Castle War",rosterError);participants=[];}
+   let rosterLoaded=true;
+   try{await loadParticipantRoster();}catch(rosterError){console.warn("Participant roster unavailable for Castle War",rosterError);rosterLoaded=false;}
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("castlewar1"));if(old.exists())data=old.data();}
    const war=data?.war||data?.castleWar||{};
-   castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:10},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:10},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:10},(_,i)=>war.finish?.[i]||""),north:Array.from({length:10},(_,i)=>war.north?.[i]||""),west:Array.from({length:10},(_,i)=>war.west?.[i]||""),reserve:Array.from({length:10},(_,i)=>war.reserve?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:data?.warLeaders?.rush||"Pham",finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
+   castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:8},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:8},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:8},(_,i)=>war.finish?.[i]||""),north:Array.from({length:8},(_,i)=>war.north?.[i]||""),west:Array.from({length:8},(_,i)=>war.west?.[i]||""),reserve:Array.from({length:8},(_,i)=>war.reserve?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:data?.warLeaders?.rush||"Pham",finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
+   if(rosterLoaded&&sanitizeCastleWarAssignments()){try{castleWarData=await saveCloud("castlewar1",castleWarData);}catch(saveError){console.warn("Could not persist removed Castle War assignments",saveError);}}
    renderCastleWar();setMsg("ncWarMsg",latestBanner("castlewar1"));
   }
  }catch(e){console.error(e);if(pageId==="battleJoin")setMsg("ncJoinMsg",message("fallback"));else setMsg("ncWarMsg",message("fallback"));}
@@ -1059,19 +1061,33 @@ function castleMemberCard(name,meta){
  return '<div class="castle-person-card">'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong>'+esc(name)+'</strong></div><small>'+esc(meta||"")+'</small></div></div>';
 }
 function castleWarSelect(value){
- const names=[...new Set([...FIXED_LEADERS,...participants.map(p=>p.nickname)])];
+ const names=[...new Set([...FIXED_LEADERS,...participants.filter(p=>p.status==="yes").map(p=>p.nickname)])];
  return '<option value="">'+esc(castleCardText("choose"))+'</option>'+names.map(n=>{const p=participants.find(x=>x.nickname===n),tier=FIXED_LEADERS.includes(n)?"S":p&&["A","B","C"].includes(p.tier)?p.tier:"—";return '<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(tier+" · "+n)+'</option>';}).join("");
 }
 function castleParticipantMeta(name){const p=participants.find(x=>x.nickname===name);if(!name)return "";if(FIXED_LEADERS.includes(name))return "S · 집결장";if(!p)return "";return (p.tier||"—")+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X");}
+function sanitizeCastleWarAssignments(){
+ const eligible=new Set([...FIXED_LEADERS,...participants.filter(p=>p.status==="yes").map(p=>p.nickname)]);
+ let changed=false;
+ Object.keys(castleWarData.war||{}).forEach(key=>{
+  const group=castleWarData.war[key];
+  if(!Array.isArray(group))return;
+  for(let i=0;i<group.length;i++)if(group[i]&&!eligible.has(group[i])){group[i]="";changed=true;}
+ });
+ Object.keys(castleWarData.warLeaders||{}).forEach(key=>{
+  const name=castleWarData.warLeaders[key];
+  if(name&&!eligible.has(name)){castleWarData.warLeaders[key]="";changed=true;}
+ });
+ return changed;
+}
 function renderCastleWar(){
  const root=$("#castlewar1");if(!root)return;
  const attack=$("#ncWarAttack",root),turrets=$("#ncWarTurrets",root);
  const groups=[["assault","돌격조"],["rush","개돌조"],["finish","마무리조"]];
  const turretGroups=[["north","Leo li",""],["west","Jinno",""],["reserve","SsungBi"," (예비)"]];
- const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+castleWarSelect(name)+'</select>':castleMemberCard(name,castleParticipantMeta(name));
- const leaderCell=(key)=>adminModes.castlewar1?'<select data-war-leader="'+key+'">'+castleWarSelect(castleWarData.warLeaders[key]||"")+'</select>':castleMemberCard(castleWarData.warLeaders[key]||"",castleCardText("leader"));
+ const cell=(name,key,index)=>adminModes.castlewar1?'<select data-war="'+key+'" data-index="'+index+'">'+castleWarSelect(name)+'</select>':(participants.some(p=>p.nickname===name&&p.status==="yes")?battleJoinParticipantCard(participants.find(p=>p.nickname===name&&p.status==="yes")):FIXED_LEADERS.includes(name)?battleJoinParticipantCard({nickname:name,tier:"S",status:"yes",salo:false,hilde:false}):'<div class="castle-person-empty">—</div>');
+ const leaderCell=(key)=>{const name=castleWarData.warLeaders[key]||"";return adminModes.castlewar1?'<select data-war-leader="'+key+'">'+castleWarSelect(name)+'</select>':(participants.some(p=>p.nickname===name&&p.status==="yes")?battleJoinParticipantCard(participants.find(p=>p.nickname===name&&p.status==="yes")):FIXED_LEADERS.includes(name)?battleJoinParticipantCard({nickname:name,tier:"S",status:"yes",salo:false,hilde:false}):'<div class="castle-person-empty">—</div>');};
  const renderAttack=([key,title])=>'<section class="nc-war-column"><h3>'+title+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+leaderCell(key)+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b>'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
- const renderTurret=([key,leader,suffix])=>'<section class="nc-war-column nc-turret-column"><h3>포탑'+suffix+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+castleMemberCard(leader,castleCardText("leader"))+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b>'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
+ const renderTurret=([key,leader,suffix])=>'<section class="nc-war-column nc-turret-column"><h3>포탑'+suffix+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+battleJoinParticipantCard({nickname:leader,tier:"S",status:"yes",salo:false,hilde:false})+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b>'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
  if(attack)attack.innerHTML=groups.map(renderAttack).join("");
  if(turrets)turrets.innerHTML=turretGroups.map(renderTurret).join("");
  const waiting=$("#ncWarWaiting",root);
