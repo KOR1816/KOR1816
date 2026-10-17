@@ -1455,6 +1455,17 @@ Object.assign(STATIC_TRANSLATIONS,{
   "집결장":["집결장","Leader","集結主","队长","Leiter","Capo","Líder","Lider"]
 });
 
+Object.assign(STATIC_TRANSLATIONS,{
+  "포탑":["포탑","Turret","砲塔","炮塔","Turm","Torre","Torreta","Kule"],
+  "등급":["등급","Tier","ランク","等级","Rang","Grado","Rango","Kademe"],
+  "A등급":["A등급","Tier A","Aランク","A级","Rang A","Grado A","Rango A","A Kademesi"],
+  "B등급":["B등급","Tier B","Bランク","B级","Rang B","Grado B","Rango B","B Kademesi"],
+  "C등급":["C등급","Tier C","Cランク","C级","Rang C","Grado C","Rango C","C Kademesi"],
+  "해당없음":["해당없음","Unranked","該当なし","未分级","Ohne Rang","Senza grado","Sin rango","Derecesiz"],
+  "집결원 공격":["집결원 공격","Rally Attack","集結攻撃","集结进攻","Angriff","Attacco","Ataque","Saldırı"],
+  "집결원 수비":["집결원 수비","Rally Defense","集結防衛","集结防守","Verteidigung","Difesa","Defensa","Savunma"]
+});
+
 Object.assign(window,{
  loadHome,toggleHomeAdmin,saveHome,refreshTeams:loadTeams,toggleTeamsAdmin,saveAllTeams,
  loadAlliance,toggleAllianceAdmin,saveAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
