@@ -670,3 +670,60 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
  #alliance .alliance-display-item .roster-avatar{width:28px!important;height:28px!important;flex-basis:28px!important}
  #alliance .alliance-display-item .roster-person-name{font-size:12px!important}
 }
+
+
+/* Homepage event schedule: clear line break between each named group. */
+#homeView #homeSchedule .home-schedule-list{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ gap:12px!important;
+}
+#homeView #homeSchedule .home-schedule-panel{
+ display:block!important;
+ width:100%!important;
+ min-width:0!important;
+ box-sizing:border-box!important;
+}
+#homeView #homeSchedule .home-schedule-panel-title{
+ display:block!important;
+ margin:0!important;
+ padding:8px 2px 10px!important;
+ text-align:left!important;
+ border:0!important;
+ background:transparent!important;
+ font-size:15px!important;
+ font-weight:800!important;
+}
+#homeView #homeSchedule .home-schedule-divider{
+ height:1px!important;
+ width:100%!important;
+ background:#405575!important;
+ margin:0 0 8px!important;
+}
+#homeView #homeSchedule .home-schedule-row{
+ display:grid!important;
+ grid-template-columns:145px minmax(0,1fr)!important;
+ align-items:center!important;
+ gap:10px!important;
+ padding:7px 4px!important;
+ border:0!important;
+ border-bottom:1px solid rgba(110,137,175,.22)!important;
+ border-radius:0!important;
+}
+#homeView #homeSchedule .home-schedule-time{display:flex!important;flex-wrap:wrap!important;align-items:baseline!important;gap:6px!important}
+#homeView #homeSchedule .home-schedule-time strong{white-space:nowrap!important}
+#homeView #homeSchedule .home-schedule-event-line{font-weight:700!important}
+@media(max-width:600px){
+ #homeView #homeSchedule .home-schedule-row{grid-template-columns:120px minmax(0,1fr)!important;gap:6px!important;padding:7px 2px!important}
+ #homeView #homeSchedule .home-schedule-time{font-size:12px!important}
+}
+ 
+/* Three Alliances: color each full subgroup block, not just the label text. */
+#alliance .alliance-team:nth-child(1)>.alliance-group:nth-child(2),
+#alliance .alliance-team:nth-child(1)>.alliance-group:nth-child(3){background:#542d38!important;border-color:#a85e70!important}
+#alliance .alliance-team:nth-child(2)>.alliance-group:nth-child(2),
+#alliance .alliance-team:nth-child(2)>.alliance-group:nth-child(3){background:#203e68!important;border-color:#5c8fd2!important}
+#alliance .alliance-team:nth-child(3)>.alliance-group{background:#244d3b!important;border-color:#58a77b!important}
+#alliance .alliance-team:nth-child(4)>.alliance-group{background:#44305f!important;border-color:#9674c9!important}
+#alliance .alliance-group .alliance-label,
+#alliance .alliance-group .alliance-merged-label{background:rgba(0,0,0,.16)!important;border-color:rgba(255,255,255,.22)!important;color:#fff!important}
