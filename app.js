@@ -1126,7 +1126,7 @@ async function saveCastleLayout1(){
 /* Viking team registration */
 function getVikingSprite(nickname){
  const exact=String(nickname||"").normalize("NFKC").trim().toLowerCase();
- const rank=FIXED_NICKNAMES.findIndex(name=>String(name||"").normalize("NFKC").trim().toLowerCase()===exact)+1;
+ const rank=exact==="lan"?51:FIXED_NICKNAMES.findIndex(name=>String(name||"").normalize("NFKC").trim().toLowerCase()===exact)+1;
  if(rank<1||rank>99)return null;
  const tops={2:[134,210,286,363,440,516],3:[134,210,286,363,440,516],4:[143,219,294,370,446,522],5:[143,219,295,371,447,523],6:[136,212,288,364,441,517],7:[143,219,295,371,447,523],8:[143,219,295,371,447,523],9:[143,219,295,371,447,523],10:[143,219,295,371,447,523],11:[143,219,295,371,447,523],12:[143,219,295,371,447,523],13:[143,219,295,371,447,523],14:[143,219,295,371,447,523],15:[143,219,295,371,447,523],16:[136,212,288,364,441,517],17:[143,219,295,371,447,523]};
  let slide,row,top;
