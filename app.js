@@ -507,7 +507,7 @@ function translateHomeEvent(event){
 const homeDefaults={
  latestTitle:"공지",
  latestBody:"소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다.",
- schedule:"⚔️ 성검쟁탈 1군 · 23:00 (UTC 14:00)\n⚔️ 성검쟁탈 2군 · 21:00 (UTC 12:00)\n⚔️ 3대연맹전 1군 · 23:00 (UTC 14:00)\n⚔️ 3대연맹전 2군 · 21:00 (UTC 12:00)\n🪓 바이킹 · 23:00 (UTC 14:00)\n🐻 곰 1트랩 · 23:00 (UTC 14:00)\n🐻 곰 2트랩 · 21:00 (UTC 12:00)",
+ schedule:"⚔️ 성검쟁탈 2군 · 21:00 (UTC 12:00)\n🗡️ 3대연맹전 2군 · 21:00 (UTC 12:00)\n⚔️ 성검쟁탈 1군 · 23:00 (UTC 14:00)\n🗡️ 3대연맹전 1군 · 23:00 (UTC 14:00)\n🐻 곰 2트랩 · 21:00 (UTC 12:00)\n🐻 곰 1트랩 · 23:00 (UTC 14:00)\n🪓 바이킹 · 23:00 (UTC 14:00)",
  welcome:"소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다."
 };
 async function loadHome(){
@@ -568,7 +568,7 @@ function renderHome(){
  const title=$("#homeLatestTitle"),body=$("#homeLatest"),sch=$("#homeSchedule"),wel=$("#homeWelcome");
  if(title)title.textContent="📢 "+homeText("notice");
  if(body)body.textContent=ensureHomeNoticeBody(d.latestBody||"");
- if(sch)sch.innerHTML=renderHomeSchedule(d.schedule||"");
+ const scheduleValue=String(d.schedule||"").trim()?d.schedule:homeDefaults.schedule;if(sch)sch.innerHTML=renderHomeSchedule(scheduleValue);
  if(wel)wel.textContent=homeText("welcome");
  fillInputs($("#home"),{homeLatestInput:d.latestTitle,homeLatestBody:ensureHomeNoticeBody(d.latestBody||""),homeScheduleInput:d.schedule,homeWelcomeInput:d.welcome});
 }
