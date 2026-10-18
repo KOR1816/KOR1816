@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261018-notice-static-squad-headings-v22";
+import { PAGE_CONTENT } from "./page-content.js?v=20261018-absence-list-v1";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -89,7 +89,7 @@ let activePage = "home";
 let adminModes = {};
 let readSessionPromise = null;
 let homeData = { latestTitle:"", latestBody:"", schedule:"", welcome:"", translations:{} };
-let noticeData = { ...NOTICE_DEFAULTS, translations: NOTICE_TRANSLATIONS, updatedAt:0 };
+let noticeData = { ...NOTICE_DEFAULTS, translations: NOTICE_TRANSLATIONS, absenceList:{team1:Array(5).fill(""),team2:Array(5).fill("")}, updatedAt:0 };
 let teamData = {A:Array(7).fill(""),B:Array(7).fill(""),C:Array(7).fill(""),D:Array(7).fill(""),extra:["",""],subs:Array(10).fill("")};
 let allianceData = {names:{}};
 let seatingData = {rows:[
@@ -739,6 +739,21 @@ function captureNoticeEditor(){
   if(noticeEditLang==="ko")noticeData[id]=edit.value;
   else noticeData.translations[noticeEditLang][id]=edit.value;
  }
+ noticeData.absenceList=noticeData.absenceList||{team1:Array(5).fill(""),team2:Array(5).fill("")};
+ for(const team of [1,2])noticeData.absenceList["team"+team]=Array.from({length:5},(_,i)=>String($("#eNoticeAbsence"+team+"_"+(i+1),root)?.value||""));
+}
+function renderNoticeAbsenceList(root){
+ const titles={ko:"⚔️ 성검.3대 불참자목록",en:"⚔️ Holy Sword & Three Alliances Absentees",ja:"⚔️ 聖剣・三大連盟戦 不参加者リスト",zh:"⚔️ 圣剑·三大联盟战缺席名单",de:"⚔️ Abwesenheitsliste: Heiliges Schwert & Drei Allianzen",it:"⚔️ Assenti: Spada Sacra e Tre Alleanze",es:"⚔️ Ausentes: Espada Sagrada y Tres Alianzas",tr:"⚔️ Kutsal Kılıç ve Üç İttifak Katılmayanlar"};
+ const selectLabels={ko:"닉네임 선택",en:"Select nickname",ja:"ニックネームを選択",zh:"选择昵称",de:"Spitznamen auswählen",it:"Seleziona nickname",es:"Seleccionar apodo",tr:"Takma ad seç"};
+ const title=root.querySelector("[data-notice-absence-title]");if(title)title.textContent=titles[currentLang]||titles.ko;
+ root.querySelectorAll("[data-notice-absence-squad]").forEach(h=>{const team=h.getAttribute("data-notice-absence-squad");h.textContent=currentLang==="ko"?(team==="1"?"1군":"2군"):homeText(team==="1"?"squad1":"squad2");});
+ const list=noticeData.absenceList||{team1:Array(5).fill(""),team2:Array(5).fill("")};
+ for(const team of [1,2]){
+  const names=Array.from({length:5},(_,i)=>String(list["team"+team]?.[i]||""));
+  const view=$("#noticeAbsenceView"+team,root),edit=$("#noticeAbsenceEdit"+team,root);
+  if(view)view.innerHTML=names.map((name,i)=>'<div class="notice-absence-row"><span class="notice-absence-number">'+(i+1)+'.</span>'+(name?'<span class="notice-absence-avatar">'+rosterAvatar(name)+'</span>':'<span class="notice-absence-avatar notice-absence-empty">—</span>')+'<span class="notice-absence-name">'+(name?esc(name):"")+'</span></div>').join("");
+  if(edit){edit.innerHTML=names.map((name,i)=>'<label class="notice-absence-edit-row"><span>'+(i+1)+'.</span><select id="eNoticeAbsence'+team+'_'+(i+1)+'" aria-label="'+esc(selectLabels[currentLang]||selectLabels.ko)+'"></select></label>').join("");for(let i=0;i<5;i++){const select=$("#eNoticeAbsence"+team+"_"+(i+1),root);fillNicknameSelect(select,names[i]);if(select){select.disabled=!noticeAdmin;const first=select.options[0];if(first)first.textContent=selectLabels[currentLang]||selectLabels.ko;}}}
+ }
 }
 function renderNotices(){
  const root=$("#notices");if(!root)return;
@@ -766,6 +781,7 @@ function renderNotices(){
    edit.disabled=!noticeAdmin;
   }
  }
+ renderNoticeAbsenceList(root);
  const admin=$("#notice-admin",root),save=$("#notice-save",root),languageWrap=$("#notice-edit-language-wrap",root),languageSelect=$("#notice-edit-language",root),help=$("#notice-translation-help",root);
  const editorText={
   ko:["편집 언어","언어를 선택해 각 공지의 번역을 수정한 뒤 저장하세요. 자동 번역은 사용하지 않습니다."],
@@ -810,8 +826,8 @@ async function loadNotices(){
    for(const lang of LANGS.slice(1))translated[lang]={...(NOTICE_TRANSLATIONS[lang]||{}),...(saved.translations?.[lang]||{})};
    const koreanSaved={};
    for(const key of directNoticeKeys)koreanSaved[key]=koreanOnly(saved[key]??NOTICE_DEFAULTS[key]);
-   noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,goldenGlaivesVersion:Number(saved.goldenGlaivesVersion||0),squadScheduleVersion:Number(saved.squadScheduleVersion||0),updatedAt:saved.updatedAt||cloud?.updatedAt||0};
-  }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS};
+   noticeData={...NOTICE_DEFAULTS,...koreanSaved,translations:translated,absenceList:{team1:Array.from({length:5},(_,i)=>String(saved.absenceList?.team1?.[i]||"")),team2:Array.from({length:5},(_,i)=>String(saved.absenceList?.team2?.[i]||""))},goldenGlaivesVersion:Number(saved.goldenGlaivesVersion||0),squadScheduleVersion:Number(saved.squadScheduleVersion||0),updatedAt:saved.updatedAt||cloud?.updatedAt||0};
+  }else noticeData={...NOTICE_DEFAULTS,translations:NOTICE_TRANSLATIONS,absenceList:{team1:Array(5).fill(""),team2:Array(5).fill("")}};
      noticeData=normalizeBearNoticeText(noticeData);
      if(Number(noticeData.squadScheduleVersion||0)<1){noticeData.translations=noticeData.translations||{};for(const language of LANGS){const source=language==="ko"?NOTICE_DEFAULTS:(NOTICE_TRANSLATIONS[language]||NOTICE_DEFAULTS);noticeData.translations[language]={...(noticeData.translations[language]||{}),swordTeam1:source.swordTeam1||NOTICE_DEFAULTS.swordTeam1,swordTeam2:source.swordTeam2||NOTICE_DEFAULTS.swordTeam2,allianceTeam1:source.allianceTeam1||NOTICE_DEFAULTS.allianceTeam1,allianceTeam2:source.allianceTeam2||NOTICE_DEFAULTS.allianceTeam2};}Object.assign(noticeData,{swordTeam1:NOTICE_DEFAULTS.swordTeam1,swordTeam2:NOTICE_DEFAULTS.swordTeam2,allianceTeam1:NOTICE_DEFAULTS.allianceTeam1,allianceTeam2:NOTICE_DEFAULTS.allianceTeam2,squadScheduleVersion:1});}
    if(Number(noticeData.goldenGlaivesVersion||0)<2){noticeData.goldenGlaives=NOTICE_DEFAULTS.goldenGlaives;noticeData.translations=noticeData.translations||{};for(const language of LANGS){noticeData.translations[language]={...(noticeData.translations[language]||{}),goldenGlaives:GOLDEN_GLAIVES_CONTENT_BY_LANG[language]||NOTICE_DEFAULTS.goldenGlaives};}noticeData.goldenGlaivesVersion=2;}
