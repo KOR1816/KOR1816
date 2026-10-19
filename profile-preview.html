@@ -77,7 +77,8 @@ form.addEventListener('submit', async event => {
     }
     const p = data.player;
     const alliance = p.alliance || {};
-    const kingdomRaw = p.kid ?? p.kingdom_id ?? p.kingdomId ?? p.kingdom ?? '';\n    const kingdom = String(typeof kingdomRaw === 'object' ? (kingdomRaw.kid ?? kingdomRaw.id ?? '') : kingdomRaw).replace(/^Kingdom\\s*/i, '').trim();
+    const kingdomRaw = p.kid ?? p.kingdom_id ?? p.kingdomId ?? p.kingdom ?? '';
+    const kingdom = String(typeof kingdomRaw === 'object' ? (kingdomRaw.kid ?? kingdomRaw.id ?? '') : kingdomRaw).replace(/^Kingdom\s*/i, '').trim();
     const tag = String(alliance.abbr ?? alliance.tag ?? p.alliance_tag ?? '').trim();
     if (kingdom !== '1816' || tag !== 'KOR') {
       const why = [];
