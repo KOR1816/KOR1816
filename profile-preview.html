@@ -101,7 +101,11 @@ form.addEventListener('submit', async event => {
     }
     status(word(16), 'ok');
     verifiedSuccessfully = true;
-    try { sessionStorage.setItem('kor1816_member_ok', '1816:KOR'); } catch (_) { throw new Error('session'); }
+    try {
+      // Keep the verified member login across page navigation and future visits.
+      localStorage.setItem('kor1816_member_ok', '1816:KOR');
+      sessionStorage.setItem('kor1816_member_ok', '1816:KOR');
+    } catch (_) { throw new Error('session'); }
     button.textContent = word(20);
     setTimeout(() => { location.href = './index.html?space=1816#' + returnPage; }, 700);
   } catch (error) {
