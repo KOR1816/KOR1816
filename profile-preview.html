@@ -8,10 +8,10 @@
 <style>
 :root{color-scheme:dark;--ink:#f3f7ff;--muted:#b5c4d9;--line:#d5e4ff2b;--blue:#9ed7ff;--gold:#e7c98b}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;padding:22px;display:grid;place-items:center;color:var(--ink);font-family:Inter,"Pretendard","Noto Sans KR",system-ui,sans-serif;background:linear-gradient(180deg,#07101bd9,#0b1525f2),url("./1816.jpg") center/cover fixed}
+body{margin:0;min-height:100vh;padding:70px 22px 22px;display:grid;place-items:center;color:var(--ink);font-family:Inter,"Pretendard","Noto Sans KR",system-ui,sans-serif;background:linear-gradient(180deg,#07101bd9,#0b1525f2),url("./1816.jpg") center/cover fixed}
 main{width:min(460px,100%);padding:clamp(22px,5vw,36px);border:1px solid var(--line);border-radius:24px;background:#0b1726e8;box-shadow:0 24px 80px #0009;backdrop-filter:blur(12px)}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#d8e8fb;font-size:11px;font-weight:900;letter-spacing:.13em}
-.back{color:var(--blue);text-decoration:none;letter-spacing:0}.language-control{margin-left:auto;display:flex;align-items:center;gap:5px;color:#aebed3;font-size:10px;letter-spacing:0}.language-control select{max-width:105px;padding:6px 5px;border:1px solid #526b88;border-radius:8px;background:#081321;color:#f3f7ff;font:inherit}.brandline{white-space:nowrap}@media(max-width:460px){.top{flex-wrap:wrap}.language-control{margin-left:auto}.brandline{font-size:9px}.back{font-size:10px}}
+.back{color:var(--blue);text-decoration:none;letter-spacing:0}.language-control{position:fixed;top:18px;right:22px;z-index:20;display:flex;align-items:center;gap:8px;color:#aebed3;font-size:11px;letter-spacing:0}.language-control select{max-width:130px;padding:8px 10px;border:1px solid #526b88;border-radius:10px;background:#0b1726;color:#f3f7ff;font:inherit;font-weight:700;cursor:pointer}.brandline{white-space:nowrap}@media(max-width:460px){body{padding:66px 14px 14px}.top{flex-wrap:wrap}.language-control{top:12px;right:14px;gap:4px}.language-control select{max-width:100px;padding:7px 5px}.brandline{font-size:9px}.back{font-size:10px}}
 .crest{display:grid;place-items:center;width:38px;height:38px;border:1px solid #d7bd7c;border-radius:12px;color:#f1d89b;font: bold 23px Georgia,serif}
 .hero{text-align:center;padding:30px 0 22px}
 .eyebrow{color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.24em}
@@ -29,8 +29,9 @@ button:disabled{opacity:.6;cursor:wait}
 </style>
 </head>
 <body>
+<label class="language-control"><span id="language-label">언어</span><select id="language-select" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="es">Español</option><option value="tr">Türkçe</option></select></label>
 <main>
-<header class="top"><span class="crest">K</span><span class="brandline">KOR1816 · KINGDOM 1816</span><label class="language-control"><span id="language-label">언어</span><select id="language-select" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="es">Español</option><option value="tr">Türkçe</option></select></label><a class="back" href="./landing.html" data-i18n="back">← 뒤로</a></header>
+<header class="top"><span class="crest">K</span><span class="brandline">KOR1816 · KINGDOM 1816</span><a class="back" href="./landing.html" data-i18n="back">← 뒤로</a></header>
 <section class="hero"><div class="eyebrow" data-i18n="eyebrow">MEMBER ACCESS</div><h1 data-i18n="title">연맹원 확인</h1><p data-i18n="intro">게임 ID를 조회해 왕국 1816과 연맹 KOR 소속을 확인합니다.</p></section>
 <form id="loginForm">
 <label for="gameId" data-i18n="gameid">킹샷 게임 ID</label>
