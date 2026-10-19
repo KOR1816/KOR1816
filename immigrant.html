@@ -56,7 +56,7 @@ const heroSection=document.createElement("section");heroSection.className="gear-
 const memo=document.createElement("div");memo.className="memo";memo.textContent=entry.memo||t("memo")+" —";card.append(memo);
 const actions=document.createElement("div");actions.className="card-actions";const mb=document.createElement("button");mb.className="secondary";mb.textContent=entry.ownerUid===user?.uid?(entry.memo?t("editmemo"):t("addmemo")):t("memo");mb.addEventListener("click",()=>openMemo(entry));actions.append(mb);if(entry.ownerUid===user?.uid){const del=document.createElement("button");del.className="secondary danger";del.textContent=t("remove");del.addEventListener("click",()=>removeEntry(entry));actions.append(del)}card.append(actions);list.append(card)}
 }
-async function saveEntries(){await setDoc(DOC,{entries,updatedAt:Date.now()},{merge:false})}
+async function saveEntries(){const payload=JSON.parse(JSON.stringify({entries,updatedAt:Date.now()}));await setDoc(DOC,payload,{merge:false})}
 async function openMemo(entry){if(entry.ownerUid!==user?.uid){setStatus(t("denied"),"error");return}editingId=entry.gameId;$("memo-text").value=entry.memo||"";$("memo-modal").classList.add("open");$("memo-text").focus()}
 $("memo-cancel").addEventListener("click",()=>{$("memo-modal").classList.remove("open");editingId=null});
 $("memo-modal").addEventListener("click",e=>{if(e.target===$("memo-modal"))$("memo-modal").classList.remove("open")});
