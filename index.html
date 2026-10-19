@@ -9,11 +9,18 @@
     (function () {
       var params = new URLSearchParams(window.location.search);
       var hash = window.location.hash;
+      var isAuthorized = false;
+      try { isAuthorized = sessionStorage.getItem("kor1816_member_ok") === "1816:KOR"; } catch (_) {}
+      if (!isAuthorized) {
+        var requestedPage = hash && hash !== "#home" ? hash.slice(1) : "home";
+        var allowed = ["home","notices","teams","alliance","battleJoin","castlewar1","castlelayout1","seating","viking","glory"];
+        if (allowed.indexOf(requestedPage) < 0) requestedPage = "home";
+        window.location.replace("./profile-preview.html?space=1816&return=" + encodeURIComponent(requestedPage));
+        return;
+      }
       var isEntering1816 = params.get("space") === "1816";
-      var isExplicitBypass = params.get("bypassGateway") === "1";
-      // A generic #home link must still show the gateway; preserve other deep links.
       var isDirectPageLink = Boolean(hash && hash !== "#home");
-      if (!isEntering1816 && !isExplicitBypass && !isDirectPageLink) {
+      if (!isEntering1816 && !isDirectPageLink) {
         window.location.replace("./landing.html" + window.location.search);
       }
     })();
