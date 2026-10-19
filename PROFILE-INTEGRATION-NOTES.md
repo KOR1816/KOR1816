@@ -18,6 +18,16 @@ Build profile pages for the 1816 alliance and immigrant community without changi
 4. A public community analysis of the game's gift-code backend reports that the old `/player` endpoint returned HTTP 404 in July 2026. Treat that as a warning that unofficial endpoints can disappear; do not build production around it without a fresh, authorized verification.
 5. Full hero, troop, skill, equipment, and charm data must be verified field-by-field. Do not assume a player ID alone can retrieve every detail.
 
+## Confirmed API field map (from public MightPulse API documentation)
+The API documentation currently describes:
+- Base player section: `governor_id`, `nick_name`, `kid` (kingdom), `power`, `town_center_level`, `vip`, `avatar_url`, and alliance identity/name/tag/member/power information.
+- Optional `heroes` section: arena-defense heroes with level, stars, skill levels, four equipped hero gear slots, and exclusive/widget gear fields.
+- Optional `ranks` section: power, kills, town center and migration-score ranks.
+- Optional `gov_gear` section: governor equipment and gem slots; the response can explicitly report that gear is hidden.
+- Player/alliance responses may be up to 60 minutes old. The documented standard key limits are 60 requests/minute and 5,000/day; the API key must be sent as a server-side secret. See https://api.mightpulse.com/.
+
+**Not yet verified:** a real response for the user's own game ID, complete troop counts, and whether every hero/equipment field is populated for that account. A public API schema does not guarantee that all data exists for every player.
+
 ## Proposed profile record (separate from event data)
 Use a dedicated collection/document namespace such as `playerProfiles/{playerId}` only after Firestore rules and authentication are reviewed:
 - `playerId`: stable game ID, stored as a string
