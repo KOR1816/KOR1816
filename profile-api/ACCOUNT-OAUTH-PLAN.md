@@ -39,19 +39,21 @@ This is a third-party, independent fan-made service, not Kingshot's publisher. A
 
 ## Current implementation status (2026-10-20)
 
-- `profile-preview.html` remains a front-end prototype. It has manual fields and a separate public-data lookup button; it does not yet call the account OAuth Worker.
+- `profile-preview.html` remains a front-end prototype with account connect/fetch/disconnect controls. It can call a configured Worker URL, show the returned JSON, and best-effort map recognized scalar fields and collections into the preview fields. It does not persist the profile or bind it to a signed-in KOR1816 user.
 - `profile-api/worker.js` is a separate MightPulse public-data lookup template, not account authentication and not proof of ownership.
-- `profile-api/account-worker.js` is an **undeployed prototype** with OAuth discovery/client registration, state + PKCE setup, callback/token exchange, server-side session storage in KV, a profile endpoint, and logout. These routes have not been integration-tested against the live provider.
+- `profile-api/account-worker.js` is an **undeployed prototype** with OAuth discovery/client registration, state + PKCE setup, callback/token exchange, server-side session storage in KV, a profile endpoint, and logout. The profile request now follows the provider's published stateless JSON-RPC pattern; all routes still need live integration testing.
 - `profile-api/ACCOUNT-WORKER-README.md` documents the prototype, required Cloudflare KV binding and environment variables, and deployment caveats.
 - `profile-api/wrangler.toml.example` is a placeholder configuration example only. Replace placeholders locally; do not commit real deployment identifiers or secrets.
+- `.github/workflows/deploy-account-worker.yml` is a manual, Worker-only deployment workflow. It requires Cloudflare Actions secrets and repository variables; it has not been run.
 - Not implemented yet: verified binding to a KOR1816/Firebase user, Firestore profile persistence, a front-end connect/disconnect flow, field mapping from a real provider response, and end-to-end tests.
 - No Worker has been deployed. No public preview URL is verified. The draft PR remains unmerged.
 - The production site and legacy site have not been changed.
 
 ## Safe next steps
 
-1. Review the Worker against the provider's current OAuth metadata and MCP response format.
-2. Add the account connect/status/disconnect controls to the feature-branch profile UI, disabled or clearly marked until an API base URL is configured.
-3. Test the OAuth callback, session cookie behavior, refresh, logout, and profile response in a non-production environment.
-4. Only after successful tests, add explicit user ownership binding and a separate profile persistence path. Do not change event/castle/seating documents.
-5. Keep the PR in draft until those checks pass.
+1. Configure the Cloudflare KV namespace and Actions secrets/variables, then manually run the Worker-only deployment workflow on this feature branch.
+2. Test the Worker health route and OAuth discovery/client registration, then test consent, callback, cookie retention, refresh, logout, and profile response with a real consenting account.
+3. Confirm actual profile response keys and adjust field mapping based on observed data; do not invent unavailable fields.
+4. Resolve cross-site cookie restrictions with a same-site API host/proxy if needed.
+5. Only after successful tests, add explicit KOR1816 user ownership binding and a separate profile persistence path. Do not change event/castle/seating documents.
+6. Keep the PR in draft until those checks pass.
