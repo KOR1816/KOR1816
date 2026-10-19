@@ -9,7 +9,7 @@
 </head>
 <body>
 <main class="shell">
-<header class="topline"><span class="crest">K</span><span>KOR1816 <i>·</i> KINGDOM 1816</span><span class="top-tag">COMMUNITY GATEWAY</span></header>
+<header class="topline"><span class="crest">K</span><span>KOR1816 <i>·</i> KINGDOM 1816</span><label class="language-control"><span id="language-label">언어</span><select id="language-select" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="es">Español</option><option value="tr">Türkçe</option></select></label></header>
 <section class="intro" id="start">
 <p class="eyebrow">WELCOME TO OUR KINGDOM</p>
 <h1>당신의 여정을<br><span>선택하세요</span></h1>
@@ -24,5 +24,60 @@
 <section class="login-panel" id="login-immigrant"><a class="back" href="#start">← 처음으로</a><p class="eyebrow">MIGRATION COMMUNITY</p><h2>이민자 로그인</h2><p>이민자 프로필과 자기소개를 관리하는 전용 공간입니다.</p><label for="id-immigrant">킹샷 게임 ID</label><input id="id-immigrant" inputmode="numeric" placeholder="게임 ID 입력"><a class="preview-link" href="./profile-preview.html?space=immigrant">프로필 연결 화면 시안 보기 ↗</a><p class="notice">이민자 전용 화면입니다. 실제 인증은 연동 가능 여부 확인 후 구현합니다.</p></section>
 <footer><span>KOR1816</span><span>EST. KINGDOM 1816</span></footer>
 </main>
+
+<style>
+.language-control{margin-left:auto;display:flex;align-items:center;gap:8px;color:#aebed3;font-size:11px;letter-spacing:0}
+.language-control select{max-width:130px;padding:8px 10px;border:1px solid #526b88;border-radius:10px;background:#0b1726;color:#f3f7ff;font:inherit;font-weight:700;cursor:pointer}
+@media(max-width:480px){.topline{gap:8px;font-size:10px}.language-control{gap:4px}.language-control select{max-width:100px;padding:7px 5px}}
+</style>
+<script>
+(()=> {
+const langs=['ko','en','ja','zh','de','it','es','tr'];
+const names={ko:'언어',en:'Language',ja:'言語',zh:'语言',de:'Sprache',it:'Lingua',es:'Idioma',tr:'Dil'};
+const map={
+'당신의 여정을':['당신의 여정을','Choose your','旅の行き先を','选择你的','Wähle deine','Scegli il tuo','Elige tu','Yolculuğunu'],
+'선택하세요':['선택하세요','journey','選んでください','旅程','Reise','viaggio','viaje','seç'],
+'연맹원 전용 공간':['연맹원 전용 공간','Alliance members only','同盟メンバー専用','仅限联盟成员','Nur für Allianzmitglieder','Solo membri dell’alleanza','Solo miembros de la alianza','Yalnızca ittifak üyeleri'],
+'프로필 · 전투력 분석 · 연맹 활동':['프로필 · 전투력 분석 · 연맹 활동','Profile · Power analysis · Alliance activity','プロフィール・戦力分析・同盟活動','个人资料 · 战力分析 · 联盟活动','Profil · Machtanalyse · Allianzaktivität','Profilo · Analisi potenza · Attività alleanza','Perfil · Análisis de poder · Actividad de alianza','Profil · Güç analizi · İttifak etkinliği'],
+'입장하기':['입장하기','Enter','入場する','进入','Eintreten','Entra','Entrar','Giriş yap'],
+'새로운 인연을 찾는 공간':['새로운 인연을 찾는 공간','A place to find new connections','新しい出会いを探す場所','寻找新伙伴的空间','Ein Ort für neue Kontakte','Uno spazio per nuovi incontri','Un lugar para conocer gente','Yeni bağlantılar kurma alanı'],
+'전투력 프로필 · 자기소개 · 이민자 명부':['전투력 프로필 · 자기소개 · 이민자 명부','Power profile · Introduction · Migrant directory','戦力プロフィール・自己紹介・移民名簿','战力资料 · 自我介绍 · 移民名册','Machtprofil · Vorstellung · Einwandererverzeichnis','Profilo potenza · Presentazione · Elenco immigrati','Perfil de poder · Presentación · Lista de inmigrantes','Güç profili · Tanıtım · Göçmen listesi'],
+'안전한 공간을 위해 각 공간은 별도의 로그인과 권한으로 운영됩니다.':['안전한 공간을 위해 각 공간은 별도의 로그인과 권한으로 운영됩니다.','For a safe community, each space uses separate login and permissions.','安全のため、各スペースは別々のログインと権限で運営されます。','为保障安全，各空间使用独立登录和权限。','Für Sicherheit haben alle Bereiche getrennte Anmeldungen und Berechtigungen.','Per sicurezza, ogni spazio usa accessi e autorizzazioni separati.','Por seguridad, cada espacio tiene acceso y permisos independientes.','Güvenlik için her alan ayrı giriş ve izinlerle çalışır.'],
+'← 처음으로':['← 처음으로','← Back to start','← 最初に戻る','← 返回首页','← Zurück zum Anfang','← Torna all’inizio','← Volver al inicio','← Başlangıca dön'],
+'1816 로그인':['1816 로그인','1816 Login','1816 ログイン','1816 登录','1816 Anmeldung','Accesso 1816','Inicio de sesión 1816','1816 Girişi'],
+'게임 계정 인증을 통해 본인 프로필을 연결하는 공간입니다.':['게임 계정 인증을 통해 본인 프로필을 연결하는 공간입니다.','Connect your profile through game account verification.','ゲームアカウントを確認してプロフィールを連携します。','通过游戏账号验证关联个人资料。','Verbinde dein Profil nach Prüfung des Spielkontos.','Collega il profilo verificando l’account di gioco.','Conecta tu perfil tras verificar la cuenta del juego.','Oyun hesabı doğrulamasıyla profilini bağla.'],
+'킹샷 게임 ID':['킹샷 게임 ID','Kingshot Game ID','キングショット ゲームID','Kingshot 游戏 ID','Kingshot-Spiel-ID','ID di gioco Kingshot','ID de juego de Kingshot','Kingshot Oyun Kimliği'],
+'게임 ID 입력':['게임 ID 입력','Enter your Game ID','ゲームIDを入力','输入游戏 ID','Spiel-ID eingeben','Inserisci ID di gioco','Introduce tu ID de juego','Oyun kimliğini gir'],
+'게임 ID 확인 후 입장 ↗':['게임 ID 확인 후 입장 ↗','Verify Game ID & Enter ↗','IDを確認して入場 ↗','验证并进入 ↗','ID prüfen und eintreten ↗','Verifica ed entra ↗','Verificar y entrar ↗','Doğrula ve gir ↗'],
+'화면 시안입니다. 실제 인증은 API와 본인 확인 방식을 검증한 뒤 연결합니다.':['화면 시안입니다. 실제 인증은 API와 본인 확인 방식을 검증한 뒤 연결합니다.','Preview only. Live verification follows API and identity checks.','プレビューです。APIと本人確認の検証後に接続します。','这是预览页面。完成 API 和身份验证后再启用。','Vorschau. Die echte Prüfung folgt nach API- und Identitätsprüfung.','Anteprima. La verifica reale seguirà i controlli API e identità.','Vista previa. La verificación real seguirá tras revisar API e identidad.','Önizleme. Gerçek doğrulama API ve kimlik kontrollerinden sonra açılacak.'],
+'이민자 로그인':['이민자 로그인','Immigrant Login','移民ログイン','移民登录','Einwanderer-Anmeldung','Accesso immigrati','Inicio de sesión de inmigrantes','Göçmen Girişi'],
+'이민자 프로필과 자기소개를 관리하는 전용 공간입니다.':['이민자 프로필과 자기소개를 관리하는 전용 공간입니다.','A dedicated space to manage immigrant profiles and introductions.','移民プロフィールと自己紹介を管理する専用スペースです。','管理移民资料和自我介绍的专属空间。','Ein Bereich für Einwandererprofile und Vorstellungen.','Spazio dedicato ai profili e alle presentazioni degli immigrati.','Espacio para gestionar perfiles y presentaciones de inmigrantes.','Göçmen profilleri ve tanıtımları için özel alan.'],
+'프로필 연결 화면 시안 보기 ↗':['프로필 연결 화면 시안 보기 ↗','View profile connection preview ↗','プロフィール接続プレビュー ↗','查看资料连接预览 ↗','Profilverbindung ansehen ↗','Anteprima collegamento profilo ↗','Ver vista previa de conexión ↗','Profil bağlantı önizlemesi ↗'],
+'이민자 전용 화면입니다. 실제 인증은 연동 가능 여부 확인 후 구현합니다.':['이민자 전용 화면입니다. 실제 인증은 연동 가능 여부 확인 후 구현합니다.','For immigrants only. Integration follows verification.','移民専用です。連携可否の確認後に実装します。','仅供移民使用，确认可行后再接入。','Nur für Einwanderer. Integration folgt nach Prüfung.','Solo immigrati. Integrazione dopo la verifica.','Solo para inmigrantes. La integración se hará tras verificarla.','Yalnızca göçmenler için. Entegrasyon doğrulama sonrası yapılacak.']
+};
+const originals=[...document.querySelectorAll('.intro h1,.choice.alliance .choice-body>p,.choice.alliance .choice-detail,.choice.alliance .go,.choice.migrant .choice-body>p,.choice.migrant .choice-detail,.choice.migrant .go,.footnote,.login-panel .back,.login-panel h2,.login-panel>p:not(.eyebrow):not(.notice),.login-panel label,.login-panel input,.login-panel .preview-link,.login-panel .notice')].map(el=>({el,text:el.textContent,placeholder:el.placeholder||''}));
+function tr(s,l){return (map[s]||[])[langs.indexOf(l)]||s}
+function apply(l){
+if(!langs.includes(l))l='ko';document.documentElement.lang=l;
+document.getElementById('language-select').value=l;document.getElementById('language-label').textContent=names[l];
+for(const item of originals){
+ const t=tr(item.text,l);
+ if(item.el.matches('.intro h1')) item.el.innerHTML=tr('당신의 여정을',l)+'<br><span>'+tr('선택하세요',l)+'</span>';
+ else if(item.el.matches('input')) item.el.placeholder=tr('게임 ID 입력',l);
+ else if(item.el.matches('.go')) item.el.innerHTML=t.replace('↗','<b>↗</b>');
+ else item.el.textContent=t;
+}
+document.querySelectorAll('.choice-kicker')[0].textContent=l==='ko'?'ALLIANCE MEMBERS':l==='ja'?'同盟メンバー':l==='zh'?'联盟成员':l==='de'?'ALLIANZMITGLIEDER':l==='it'?'MEMBRI DELL’ALLEANZA':l==='es'?'MIEMBROS DE LA ALIANZA':l==='tr'?'İTTİFAK ÜYELERİ':'ALLIANCE MEMBERS';
+document.querySelectorAll('.choice-kicker')[1].textContent=l==='ko'?'MIGRATION COMMUNITY':l==='ja'?'移民コミュニティ':l==='zh'?'移民社区':l==='de'?'EINWANDERER-COMMUNITY':l==='it'?'COMUNITÀ IMMIGRATI':l==='es'?'COMUNIDAD DE INMIGRANTES':l==='tr'?'GÖÇMEN TOPLULUĞU':'MIGRATION COMMUNITY';
+document.querySelectorAll('.choice-body h2')[1].textContent=({ko:'이민자',en:'Immigrants',ja:'移民',zh:'移民',de:'Einwanderer',it:'Immigrati',es:'Inmigrantes',tr:'Göçmenler'})[l];
+document.querySelectorAll('.eyebrow')[0].textContent=({ko:'WELCOME TO OUR KINGDOM',en:'WELCOME TO OUR KINGDOM',ja:'王国へようこそ',zh:'欢迎来到我们的王国',de:'WILLKOMMEN IN UNSEREM KÖNIGREICH',it:'BENVENUTO NEL NOSTRO REGNO',es:'BIENVENIDO A NUESTRO REINO',tr:'KRALLIĞIMIZA HOŞ GELDİN'})[l];
+document.querySelectorAll('.eyebrow')[1].textContent=document.querySelectorAll('.choice-kicker')[0].textContent;
+document.querySelectorAll('.eyebrow')[2].textContent=document.querySelectorAll('.choice-kicker')[1].textContent;
+try{localStorage.setItem('kor1816_rebuild_lang_v1',l);localStorage.setItem('kor1816_lang',l)}catch{}
+}
+document.getElementById('language-select').addEventListener('change',e=>apply(e.target.value));
+apply((()=>{try{return localStorage.getItem('kor1816_rebuild_lang_v1')||localStorage.getItem('kor1816_lang')||'ko'}catch{return'ko'}})());
+})();
+</script>
 </body>
 </html>
