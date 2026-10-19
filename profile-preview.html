@@ -4,127 +4,101 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101b2d">
-<title>KOR1816 | 킹샷 프로필 연결</title>
+<title>KOR1816 | 입장 확인</title>
 <style>
-:root{color-scheme:dark;--ink:#eef4ff;--muted:#a8b6cb;--line:rgba(211,226,255,.16);--blue:#8ed0ff;--gold:#e7c98b}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0,#294565,#101b2d 52%,#090f1b);color:var(--ink);font-family:Inter,"Pretendard","Noto Sans KR",system-ui,sans-serif;padding:24px}
-main{width:min(760px,100%);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;letter-spacing:.12em;font-weight:850;color:#dbe8fa}.back{color:var(--blue);text-decoration:none;letter-spacing:0}
-.hero{text-align:center;padding:48px 0 28px}.eyebrow{color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.24em}.hero h1{font-size:clamp(30px,6vw,46px);margin:12px 0}.hero p{color:var(--muted);font-size:14px;line-height:1.7}
-.panel{border:1px solid var(--line);border-radius:18px;background:#101d2ddd;padding:24px;margin:16px 0;box-shadow:0 18px 50px #0003}.panel h2{font-size:18px;margin:0 0 16px}.label{display:block;font-size:12px;font-weight:800;color:#d5e4f7;margin:18px 0 8px}
-input{width:100%;padding:13px 14px;border:1px solid #506781;border-radius:10px;background:#0b1524;color:#fff;font:inherit}button{cursor:pointer;border:1px solid #8ed0ff55;border-radius:10px;background:#203b57;color:#eaf6ff;padding:12px 14px;font:inherit;font-size:13px;font-weight:850}button.primary{background:linear-gradient(135deg,#e7c98b,#b89658);color:#172033;border:0}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.actions button{flex:1;min-width:150px}
-.status{margin-top:14px;padding:12px 14px;border-left:3px solid var(--gold);background:#ffffff08;color:#c2cede;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.status.ok{border-color:#83d6b2}.status.error{border-color:#ff9a9a}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{padding:13px;border:1px solid var(--line);border-radius:10px;background:#ffffff05}.field span{display:block;font-size:11px;color:var(--muted);margin-bottom:6px}.field strong{font-size:14px;overflow-wrap:anywhere}
-.notice{font-size:12px;line-height:1.8;color:#aebdd1}footer{padding:22px 0;text-align:center;color:#7386a0;font-size:10px;letter-spacing:.14em}
-@media(max-width:560px){body{padding:16px}.hero{padding:36px 0 20px}.panel{padding:18px}.grid{grid-template-columns:1fr}.top{font-size:10px}}
+:root{color-scheme:dark;--ink:#f3f7ff;--muted:#b5c4d9;--line:#d5e4ff2b;--blue:#9ed7ff;--gold:#e7c98b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:22px;display:grid;place-items:center;color:var(--ink);font-family:Inter,"Pretendard","Noto Sans KR",system-ui,sans-serif;background:linear-gradient(180deg,#07101bd9,#0b1525f2),url("./1816.jpg") center/cover fixed}
+main{width:min(460px,100%);padding:clamp(22px,5vw,36px);border:1px solid var(--line);border-radius:24px;background:#0b1726e8;box-shadow:0 24px 80px #0009;backdrop-filter:blur(12px)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#d8e8fb;font-size:11px;font-weight:900;letter-spacing:.13em}
+.back{color:var(--blue);text-decoration:none;letter-spacing:0}
+.crest{display:grid;place-items:center;width:38px;height:38px;border:1px solid #d7bd7c;border-radius:12px;color:#f1d89b;font: bold 23px Georgia,serif}
+.hero{text-align:center;padding:30px 0 22px}
+.eyebrow{color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.24em}
+h1{font-size:clamp(30px,7vw,40px);line-height:1.15;margin:10px 0;letter-spacing:-.04em}
+.hero p{color:var(--muted);font-size:13px;line-height:1.8;margin:0}
+label{display:block;margin:12px 0 8px;font-size:12px;font-weight:850;color:#dbe8f8}
+input{width:100%;padding:15px 14px;border:1px solid #526b88;border-radius:12px;background:#081321;color:#fff;font:inherit;font-size:17px;letter-spacing:.04em;outline:none}
+input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #8ed0ff1f}
+button{width:100%;margin-top:13px;padding:15px;border:0;border-radius:12px;background:linear-gradient(135deg,#f0dba5,#b89454);color:#172235;font:inherit;font-size:14px;font-weight:950;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.status{margin-top:15px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:#ffffff08;color:#c6d3e5;font-size:12px;line-height:1.7;overflow-wrap:anywhere}
+.status.ok{border-color:#70d6a688;color:#c5f6df}.status.error{border-color:#ff9c9c88;color:#ffd0d0}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.rule{padding:12px;border:1px solid var(--line);border-radius:12px;background:#ffffff05;text-align:center}
+.rule span{display:block;color:#9eb0c7;font-size:10px;margin-bottom:5px}.rule strong{font-size:14px;letter-spacing:.04em}
+.note{color:#8fa2bb;font-size:10px;line-height:1.7;margin:16px 0 0;text-align:center}
+@media(max-width:420px){body{padding:14px}main{padding:22px 18px}.hero{padding:25px 0 18px}}
 </style>
 </head>
 <body>
 <main>
-<header class="top"><span>KOR1816 · KINGDOM 1816</span><a class="back" href="./landing.html#login-1816">← 시작 화면</a></header>
-<section class="hero"><div class="eyebrow">PLAYER PROFILE</div><h1>킹샷 프로필 연결</h1><p id="spaceDescription">게임 계정과 본인 프로필을 연결하는 화면 시안입니다.</p></section>
-<section class="panel">
-<h2>1. 게임 계정</h2>
-<label class="label" for="gameId">킹샷 게임 ID</label>
-<input id="gameId" inputmode="numeric" autocomplete="off" maxlength="20" value="277809051" aria-describedby="idHelp">
-<p id="idHelp" class="notice">게임 ID는 계정을 식별하기 위한 값입니다. ID만으로 비공개 프로필 정보를 가져오거나 본인 인증을 완료할 수는 없습니다.</p>
-<div class="actions"><button class="primary" id="accountConnectBtn" type="button">계정 연결</button><button id="accountFetchBtn" type="button">프로필 조회</button><button id="accountDisconnectBtn" type="button">연결 해제</button></div>
-<div class="status" id="status" role="status" aria-live="polite">화면 시안입니다. 실제 계정 연결·조회에는 검증된 인증 제공자와 배포된 연동 서버가 필요합니다.</div>
-</section>
-<section class="panel">
-<h2>2. 프로필 미리보기</h2>
-<div class="grid">
-<div class="field"><span>게임 ID</span><strong id="viewId">277809051</strong></div>
-<div class="field"><span>연결 상태</span><strong id="viewState">미연결</strong></div>
-<div class="field"><span>닉네임</span><strong id="viewName">조회 전</strong></div>
-<div class="field"><span>전투력</span><strong id="viewPower">조회 전</strong></div>
-<div class="field"><span>병력 정보</span><strong id="viewTroops">조회 전</strong></div>
-<div class="field"><span>영웅 / 장비</span><strong id="viewHeroes">조회 전</strong></div>
-</div>
-<p class="notice">현재는 오류 없이 화면을 확인할 수 있는 시안입니다. 실제 게임 데이터는 임의로 채우지 않았습니다. 연동 가능 여부와 인증 방식 확인 전에는 프로필 조회가 작동하는 것처럼 표시하지 않습니다.</p>
-</section>
-<footer>KOR1816 · PROFILE LINK PREVIEW</footer>
+<header class="top"><span class="crest">K</span><span>KOR1816 · KINGDOM 1816</span><a class="back" href="./landing.html">← 뒤로</a></header>
+<section class="hero"><div class="eyebrow">MEMBER ACCESS</div><h1>연맹원 확인</h1><p>게임 ID를 조회해<br>왕국 1816과 연맹 KOR 소속을 확인합니다.</p></section>
+<form id="loginForm">
+<label for="gameId">킹샷 게임 ID</label>
+<input id="gameId" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="게임 ID 숫자 입력" required>
+<button id="submitBtn" type="submit">확인 후 입장하기</button>
+</form>
+<div class="rules"><div class="rule"><span>왕국 확인</span><strong>1816</strong></div><div class="rule"><span>연맹 확인</span><strong>KOR</strong></div></div>
+<div class="status" id="status" role="status" aria-live="polite">두 조건이 모두 일치해야 입장할 수 있습니다.</div>
+<p class="note">프로필 데이터는 최대 1시간 전 정보일 수 있습니다. 이 확인은 공개 프로필의 소속 확인이며, 게임 계정 소유권을 증명하는 본인 인증은 아닙니다.</p>
 </main>
 <script>
 const API = 'https://kor1816-api.to1ggi8410.workers.dev/api/profile';
-const params = new URLSearchParams(location.search);
-const space = params.get('space') === 'immigrant' ? 'immigrant' : '1816';
-const idInput = document.getElementById('gameId');
+const form = document.getElementById('loginForm');
+const input = document.getElementById('gameId');
+const button = document.getElementById('submitBtn');
 const statusBox = document.getElementById('status');
-const $ = id => document.getElementById(id);
-$('spaceDescription').textContent = space === 'immigrant'
-  ? '이민자 공간 · 공개 프로필 조회'
-  : '1816 연맹원 공간 · 공개 프로필 조회';
-function setStatus(message, type='') {
+const params = new URLSearchParams(location.search);
+if (/^\\d{4,20}$/.test(params.get('id') || '')) input.value = params.get('id');
+function status(message, type='') {
   statusBox.className = 'status' + (type ? ' ' + type : '');
   statusBox.textContent = message;
 }
-function resetPreview() {
-  $('viewState').textContent = '미연결';
-  $('viewName').textContent = '조회 전';
-  $('viewPower').textContent = '조회 전';
-  $('viewTroops').textContent = '조회 전';
-  $('viewHeroes').textContent = '조회 전';
-}
-function validId() {
-  const id = idInput.value.trim();
-  if (!/^\d{4,20}$/.test(id)) {
-    setStatus('게임 ID는 숫자 4~20자리로 입력해 주세요.', 'error');
-    idInput.focus();
-    return null;
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  const id = input.value.trim();
+  if (!/^\\d{4,20}$/.test(id)) {
+    status('게임 ID는 숫자 4~20자리로 입력해 주세요.', 'error');
+    input.focus();
+    return;
   }
-  $('viewId').textContent = id;
-  return id;
-}
-async function lookupProfile() {
-  const id = validId();
-  if (!id) return;
-  const connectBtn = $('accountConnectBtn');
-  const fetchBtn = $('accountFetchBtn');
-  connectBtn.disabled = true;
-  fetchBtn.disabled = true;
-  setStatus('공개 프로필을 조회하고 있습니다…');
+  button.disabled = true;
+  button.textContent = '소속 확인 중…';
+  status('공개 프로필에서 왕국과 연맹 정보를 확인하고 있습니다.');
   try {
-    const response = await fetch(API + '?id=' + encodeURIComponent(id), {
-      headers: { Accept: 'application/json' }
-    });
+    const response = await fetch(API + '?id=' + encodeURIComponent(id), {headers:{Accept:'application/json'}});
     let data;
-    try { data = await response.json(); } catch { throw new Error('bad_response'); }
-    if (!response.ok || !data.ok || !data.player) {
-      if (response.status === 404 || data.error === 'player_not_found') throw new Error('not_found');
-      throw new Error('failed');
+    try { data = await response.json(); } catch { throw new Error('response'); }
+    if (!response.ok || !data || !data.ok || !data.player) {
+      if (response.status === 404 || data?.error === 'player_not_found') throw new Error('notfound');
+      throw new Error('unavailable');
     }
-    const p = data.player || {};
+    const p = data.player;
     const alliance = p.alliance || {};
-    const name = p.nickname || p.nick_name || p.name || '정보 없음';
-    const power = p.power == null ? '정보 없음' : Number(p.power).toLocaleString();
-    const troops = p.troops ?? p.troop_count ?? p.soldiers ?? null;
-    const heroes = Array.isArray(data.heroes) ? data.heroes : [];
-    const gearRaw = data.gov_gear || {};
-    const gear = Array.isArray(gearRaw) ? gearRaw : Array.isArray(gearRaw.items) ? gearRaw.items : Object.entries(gearRaw).filter(([,v]) => v && typeof v === 'object');
-    $('viewName').textContent = name;
-    $('viewPower').textContent = power;
-    $('viewTroops').textContent = troops == null ? '제공되지 않음' : (typeof troops === 'number' ? troops.toLocaleString() : JSON.stringify(troops));
-    $('viewHeroes').textContent = heroes.length + '명 · 영주 장비 ' + gear.length + '개';
-    $('viewState').textContent = '공개 프로필 조회 성공';
-    setStatus('공개 프로필 조회에 성공했습니다. 단, 게임 ID 소유자 본인 인증은 완료되지 않았습니다. 연맹/이민자 로그인 인증은 별도로 구현해야 합니다.', 'ok');
+    const kingdom = String(p.kid ?? p.kingdom_id ?? p.kingdomId ?? '');
+    const tag = String(alliance.abbr ?? alliance.tag ?? p.alliance_tag ?? '').trim();
+    if (kingdom !== '1816' || tag !== 'KOR') {
+      const why = [];
+      if (kingdom !== '1816') why.push('왕국 1816 불일치');
+      if (tag !== 'KOR') why.push('연맹 KOR 불일치');
+      status('입장할 수 없습니다. ' + why.join(' · ') + '. 조회 결과: 왕국 ' + (kingdom || '정보 없음') + ' / 연맹 ' + (tag || '정보 없음'), 'error');
+      return;
+    }
+    status('확인 완료! KOR · 왕국 1816으로 확인되어 연맹 메인으로 이동합니다.', 'ok');
+    button.textContent = '입장 확인 완료';
+    setTimeout(() => { location.href = './index.html?space=1816#home'; }, 700);
   } catch (error) {
-    resetPreview();
-    setStatus(error.message === 'not_found'
-      ? '해당 ID의 공개 프로필을 찾지 못했습니다. 게임 ID가 맞는지 확인해 주세요.'
-      : '조회에 실패했습니다. API 제공 범위, ID 형식 또는 서버 응답을 확인해야 합니다.', 'error');
+    if (error.message === 'notfound') status('해당 게임 ID를 찾을 수 없습니다. 번호를 확인해 주세요.', 'error');
+    else status('소속 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요. API 오류 또는 정보 누락 시 입장할 수 없습니다.', 'error');
   } finally {
-    connectBtn.disabled = false;
-    fetchBtn.disabled = false;
+    if (button.textContent !== '입장 확인 완료') {
+      button.disabled = false;
+      button.textContent = '확인 후 입장하기';
+    }
   }
-}
-$('accountConnectBtn').addEventListener('click', lookupProfile);
-$('accountFetchBtn').addEventListener('click', lookupProfile);
-$('accountDisconnectBtn').addEventListener('click', () => {
-  resetPreview();
-  setStatus('미리보기 정보를 초기화했습니다. 실제 계정 인증이 해제되거나 진행된 것은 아닙니다.');
 });
-idInput.addEventListener('input', () => { $('viewId').textContent = idInput.value.trim() || '—'; });
-if (idInput.value.trim()) lookupProfile();
 </script>
 </body>
 </html>
