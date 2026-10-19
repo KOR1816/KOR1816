@@ -76,7 +76,19 @@ function profileShape(data,id){
  const heroesRaw=Array.isArray(heroesCandidate)?heroesCandidate:(heroesCandidate&&typeof heroesCandidate==="object"?Object.values(heroesCandidate):[]);
  const govCandidate=pick(["gov_gear","govGear","governor_gear","governorGear","governor_equipment","governorEquipment","lord_equipment","lordEquipment"]);
  let govGear=govCandidate&&typeof govCandidate==="object"?(Array.isArray(govCandidate)?{items:govCandidate}:govCandidate):null;
- if(govGear&&!Array.isArray(govGear.items)){const nested=first(govGear,["items","equipment","equipments","gears","list","slots"]);if(Array.isArray(nested))govGear={...govGear,items:nested};else if(nested&&typeof nested==="object")govGear={...govGear,items:Object.entries(nested).map(([slot,value])=>typeof value==="object"?{slot,...value}:{slot,value})};else if(!first(govGear,["hidden","is_hidden","isHidden"])) {const values=Object.entries(govGear).filter(([,v])=>v&&typeof v==="object");if(values.length)govGear={...govGear,items:values.map(([slot,value])=>({slot,...value}))};}
+ if(govGear&&!Array.isArray(govGear.items)){
+  const nested=first(govGear,["items","equipment","equipments","gears","list","slots"]);
+  if(Array.isArray(nested)){govGear={...govGear,items:nested};}
+  else if(nested&&typeof nested==="object"){
+   const items=[];
+   for(const [slot,value] of Object.entries(nested)){items.push(value&&typeof value==="object"?{slot,...value}:{slot,value});}
+   govGear={...govGear,items};
+  }else if(!first(govGear,["hidden","is_hidden","isHidden"])){
+   const items=[];
+   for(const [slot,value] of Object.entries(govGear)){if(value&&typeof value==="object")items.push({slot,...value});}
+   if(items.length)govGear={...govGear,items};
+  }
+ }
  const normalizeHero=(hero)=>{
   const h={...hero};
   h.icon=h.icon||first(h,["hero_icon","heroIcon","icon_url","iconUrl","image_url","imageUrl","portrait","portrait_url","portraitUrl"]);
