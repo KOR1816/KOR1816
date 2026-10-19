@@ -17,7 +17,7 @@ This folder is a **starter template**, not a deployed service. It is deliberatel
 4. Set Worker variable `ALLOWED_ORIGIN=https://kor1816.github.io`. This controls CORS only; it is not authentication or abuse protection.
 5. Add request throttling and monitoring at the Worker/Cloudflare layer before public release.
 6. Test a consenting sample player ID and confirm what fields actually return, including whether governor gear is hidden and whether hero data is present.
-7. Only after this succeeds, configure the front end to call the Worker URL. Do not expose this endpoint to the public without rate limits and a policy decision.
+7. Only after this succeeds, configure the front end to call the Worker URL by setting `window.KOR1816_PROFILE_API_URL` to the Worker endpoint (for example, `https://YOUR-WORKER.workers.dev/api/player`) before the profile page script runs. Do not commit API keys to the frontend. Do not expose this endpoint to the public without rate limits and a policy decision.
 
 ## Important limitations
 - A game ID is not proof of account ownership.
