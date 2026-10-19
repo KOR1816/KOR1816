@@ -28,9 +28,9 @@ jobs:
           node --input-type=module <<'NODE'
           import { readFileSync, writeFileSync } from 'node:fs';
           const html = readFileSync('profile.html', 'utf8');
-          const scripts = [...html.matchAll(/<script\b[^>]*>([\s\\S]*?)<\/script>/gi)];
+          const scripts = [...html.matchAll(/<script[^>]*>([^]*?)<\\/script>/gi)];
           if (!scripts.length) throw new Error('No inline script found in profile.html');
-          writeFileSync('/tmp/kor1816-profile-inline.js', scripts.map(m => m[1]).join('\n'));
+          writeFileSync('/tmp/kor1816-profile-inline.js', scripts.map(m => m[1]).join('\\n'));
           NODE
           node --check /tmp/kor1816-profile-inline.js
 
