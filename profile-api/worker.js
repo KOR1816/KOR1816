@@ -46,14 +46,17 @@ export default {
     try {
       const response = await fetch(upstream.toString(), {
         headers: { "Authorization": "Bearer " + env.MIGHTPULSE_API_KEY, "Accept": "application/json" },
-        signal: AbortSignal.timeout(95000)
+        signal: AbortSignal.timeout(25000)
       });
       const raw = await response.text();
       let payload;
       try { payload = JSON.parse(raw); } catch { payload = { ok: false, error: "invalid_upstream_response" }; }
       if (!response.ok) {
-        const status = response.status === 404 ? 404 : response.status === 429 ? 429 : response.status === 401 || response.status === 403 ? 502 : 502;
+        const status = response.status === 404 ? 404 : response.status === 429 ? 429 : 502;
         return json({ ok: false, error: response.status === 404 ? "player_not_found" : response.status === 429 ? "provider_rate_limited" : "provider_request_failed", providerStatus: response.status }, status, corsOrigin);
+      }
+      if (!payload || payload.ok !== true || typeof payload.player !== "object") {
+        return json({ ok: false, error: "unexpected_provider_schema" }, 502, corsOrigin);
       }
       return json({ ok: true, source: "MightPulse", fetchedAt: new Date().toISOString(), data: payload }, 200, corsOrigin);
     } catch {
