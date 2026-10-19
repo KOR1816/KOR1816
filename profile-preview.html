@@ -51,7 +51,7 @@ const input = document.getElementById('gameId');
 const button = document.getElementById('submitBtn');
 const statusBox = document.getElementById('status');
 const params = new URLSearchParams(location.search);
-if (/^\\d{4,20}$/.test(params.get('id') || '')) input.value = params.get('id');
+if (/^\d{4,20}$/.test(params.get('id') || '')) input.value = params.get('id');
 function status(message, type='') {
   statusBox.className = 'status' + (type ? ' ' + type : '');
   statusBox.textContent = message;
@@ -59,7 +59,7 @@ function status(message, type='') {
 form.addEventListener('submit', async event => {
   event.preventDefault();
   const id = input.value.trim();
-  if (!/^\\d{4,20}$/.test(id)) {
+  if (!/^\d{4,20}$/.test(id)) {
     status('게임 ID는 숫자 4~20자리로 입력해 주세요.', 'error');
     input.focus();
     return;
