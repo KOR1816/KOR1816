@@ -16,7 +16,7 @@
 <div class="stats" id="stats"></div>
 <div class="section-head"><h2 id="lordHeading">영주 장비</h2><span id="lordSub">GOVERNOR EQUIPMENT</span></div><div id="lordGear"></div>
 <div class="section-head"><h2 id="heroHeading">영웅 장비</h2><span id="heroSub">HERO EQUIPMENT</span></div><div id="heroGear" class="hero-list"></div>
-<p class="foot"><span id="footerText">조회 가능한 공개 프로필 정보만 표시합니다. 영주 장비가 비공개인 경우 장비 목록은 표시되지 않습니다.</span><br>KOR1816 · My Info</p>
+<p class="foot"><span id="footerText">조회 가능한 공개 프로필 정보만 표시합니다. 영주 장비가 비공개인 경우 장비 목록은 표시되지 않습니다.</span><br><span id="footerBrand">KOR1816 · 내정보</span></p>
 </main>
 <script>
 const API='https://kor1816-api.to1ggi8410.workers.dev/api/profile';
@@ -30,7 +30,7 @@ function first(o,keys){for(const k of keys)if(o&&o[k]!==undefined&&o[k]!==null&&
 function fmt(v){return v===null||v===undefined||v===''?'—':typeof v==='number'?v.toLocaleString():String(v)}
 function metric(label,value,sub=''){return '<div class="stat"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</div>'}
 function imgUrl(path){if(!path)return '';if(/^https?:\/\//i.test(path))return path;if(path.startsWith('/'))return 'https://www.mightpulse.com'+path;return 'https://www.mightpulse.com/'+path}
-const slotNames={Helmet:T.helmet,Gloves:T.gloves,Armor:T.armor,Boots:T.boots};$('lordHeading').textContent=T.govTitle;$('lordSub').textContent=T.govLabel.toUpperCase();$('heroHeading').textContent=T.heroTitle;$('heroSub').textContent=T.heroLabel.toUpperCase();$('footerText').textContent=T.foot;
+const slotNames={Helmet:T.helmet,Gloves:T.gloves,Armor:T.armor,Boots:T.boots};$('lordHeading').textContent=T.govTitle;$('lordSub').textContent=T.govLabel.toUpperCase();$('heroHeading').textContent=T.heroTitle;$('heroSub').textContent=T.heroLabel.toUpperCase();$('footerText').textContent=T.foot;$('footerBrand').textContent=lang==='ko'?'KOR1816 · 내정보':lang==='ja'?'KOR1816 · マイ情報':'KOR1816 · My Info';
 const slotOrder={Helmet:0,Gloves:1,Armor:2,Boots:3};
 function gearQuality(item){const raw=String(first(item,['quality_label','qualityLabel','quality_key','qualityKey','quality','rarity','grade','quality_name','qualityName','color'])||'').toLowerCase();if(item.red===true||item.red===1||/red|mythic|신화|빨강|적색/.test(raw))return 'red';if(/yellow|gold|legendary|전설|노랑|황금/.test(raw))return 'yellow';if(/orange|주황/.test(raw))return 'orange';if(/purple|epic|보라|자색/.test(raw))return 'purple';if(/blue|rare|파랑|청색/.test(raw))return 'blue';if(/green|uncommon|녹색|초록/.test(raw))return 'green';return '';}
 function gearImage(item, kind='equipment'){const direct=first(item,['icon','image','image_url','imageUrl','icon_url','iconUrl','asset','portrait']);if(direct)return imgUrl(direct);const id=first(item,['eid','equipment_id','equipmentId','item_id','itemId','id']);if(id!=null)return 'https://www.mightpulse.com/assets/icons/equipment_icon_'+id+'.png';return '';}
