@@ -45,19 +45,86 @@ input{width:100%;padding:13px 14px;border:1px solid #506781;border-radius:10px;b
 <footer>KOR1816 · PROFILE LINK PREVIEW</footer>
 </main>
 <script>
+const API = 'https://kor1816-api.to1ggi8410.workers.dev/api/profile';
 const params = new URLSearchParams(location.search);
 const space = params.get('space') === 'immigrant' ? 'immigrant' : '1816';
 const idInput = document.getElementById('gameId');
 const statusBox = document.getElementById('status');
-const viewState = document.getElementById('viewState');
-document.getElementById('spaceDescription').textContent = space === 'immigrant'
-  ? '이민자 공간 · 프로필 연결 화면 시안'
-  : '1816 연맹원 공간 · 프로필 연결 화면 시안';
-function validId(){const id=idInput.value.trim();if(!/^\d{4,20}$/.test(id)){statusBox.className='status error';statusBox.textContent='게임 ID는 숫자만 입력해 주세요.';idInput.focus();return null;}document.getElementById('viewId').textContent=id;return id;}
-document.getElementById('accountConnectBtn').addEventListener('click',()=>{if(!validId())return;statusBox.className='status';statusBox.textContent='아직 실제 인증 서버가 연결되지 않았습니다. 현재 화면에서는 계정 연결을 시작하거나 인증 정보를 수집하지 않습니다.';});
-document.getElementById('accountFetchBtn').addEventListener('click',()=>{if(!validId())return;statusBox.className='status';statusBox.textContent='프로필 조회 불가: 실제 게임 데이터 API 또는 인증된 제공자 연동이 아직 구성되지 않았습니다. 임의의 프로필 데이터는 표시하지 않았습니다.';});
-document.getElementById('accountDisconnectBtn').addEventListener('click',()=>{document.getElementById('viewState').textContent='미연결';document.getElementById('viewName').textContent='조회 전';document.getElementById('viewPower').textContent='조회 전';document.getElementById('viewTroops').textContent='조회 전';document.getElementById('viewHeroes').textContent='조회 전';statusBox.className='status';statusBox.textContent='미리보기 상태를 초기화했습니다. 실제 계정 연결이 진행된 상태는 아닙니다.';});
-idInput.addEventListener('input',()=>{document.getElementById('viewId').textContent=idInput.value.trim()||'—';});
+const $ = id => document.getElementById(id);
+$('spaceDescription').textContent = space === 'immigrant'
+  ? '이민자 공간 · 공개 프로필 조회'
+  : '1816 연맹원 공간 · 공개 프로필 조회';
+function setStatus(message, type='') {
+  statusBox.className = 'status' + (type ? ' ' + type : '');
+  statusBox.textContent = message;
+}
+function resetPreview() {
+  $('viewState').textContent = '미연결';
+  $('viewName').textContent = '조회 전';
+  $('viewPower').textContent = '조회 전';
+  $('viewTroops').textContent = '조회 전';
+  $('viewHeroes').textContent = '조회 전';
+}
+function validId() {
+  const id = idInput.value.trim();
+  if (!/^\\d{4,20}$/.test(id)) {
+    setStatus('게임 ID는 숫자 4~20자리로 입력해 주세요.', 'error');
+    idInput.focus();
+    return null;
+  }
+  $('viewId').textContent = id;
+  return id;
+}
+async function lookupProfile() {
+  const id = validId();
+  if (!id) return;
+  const connectBtn = $('accountConnectBtn');
+  const fetchBtn = $('accountFetchBtn');
+  connectBtn.disabled = true;
+  fetchBtn.disabled = true;
+  setStatus('공개 프로필을 조회하고 있습니다…');
+  try {
+    const response = await fetch(API + '?id=' + encodeURIComponent(id), {
+      headers: { Accept: 'application/json' }
+    });
+    let data;
+    try { data = await response.json(); } catch { throw new Error('bad_response'); }
+    if (!response.ok || !data.ok || !data.player) {
+      if (response.status === 404 || data.error === 'player_not_found') throw new Error('not_found');
+      throw new Error('failed');
+    }
+    const p = data.player || {};
+    const alliance = p.alliance || {};
+    const name = p.nickname || p.nick_name || p.name || '정보 없음';
+    const power = p.power == null ? '정보 없음' : Number(p.power).toLocaleString();
+    const troops = p.troops ?? p.troop_count ?? p.soldiers ?? null;
+    const heroes = Array.isArray(data.heroes) ? data.heroes : [];
+    const gearRaw = data.gov_gear || {};
+    const gear = Array.isArray(gearRaw) ? gearRaw : Array.isArray(gearRaw.items) ? gearRaw.items : Object.entries(gearRaw).filter(([,v]) => v && typeof v === 'object');
+    $('viewName').textContent = name;
+    $('viewPower').textContent = power;
+    $('viewTroops').textContent = troops == null ? '제공되지 않음' : (typeof troops === 'number' ? troops.toLocaleString() : JSON.stringify(troops));
+    $('viewHeroes').textContent = heroes.length + '명 · 영주 장비 ' + gear.length + '개';
+    $('viewState').textContent = '공개 프로필 조회 성공';
+    setStatus('공개 프로필 조회에 성공했습니다. 단, 게임 ID 소유자 본인 인증은 완료되지 않았습니다. 연맹/이민자 로그인 인증은 별도로 구현해야 합니다.', 'ok');
+  } catch (error) {
+    resetPreview();
+    setStatus(error.message === 'not_found'
+      ? '해당 ID의 공개 프로필을 찾지 못했습니다. 게임 ID가 맞는지 확인해 주세요.'
+      : '조회에 실패했습니다. API 제공 범위, ID 형식 또는 서버 응답을 확인해야 합니다.', 'error');
+  } finally {
+    connectBtn.disabled = false;
+    fetchBtn.disabled = false;
+  }
+}
+$('accountConnectBtn').addEventListener('click', lookupProfile);
+$('accountFetchBtn').addEventListener('click', lookupProfile);
+$('accountDisconnectBtn').addEventListener('click', () => {
+  resetPreview();
+  setStatus('미리보기 정보를 초기화했습니다. 실제 계정 인증이 해제되거나 진행된 것은 아닙니다.');
+});
+idInput.addEventListener('input', () => { $('viewId').textContent = idInput.value.trim() || '—'; });
+if (idInput.value.trim()) lookupProfile();
 </script>
 </body>
 </html>
