@@ -53,3 +53,6 @@ body:has(.login-panel:target) .intro{display:none}
 footer{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:18px 0 4px;color:#6f829d;font-size:9px;font-weight:800;letter-spacing:.18em}
 @media(max-width:680px){.shell{padding:17px 16px 14px}.topline{font-size:10px;letter-spacing:.1em}.top-tag{font-size:8px;letter-spacing:.08em}.intro{padding:60px 0 28px}h1{font-size:42px}.sub{font-size:12px;line-height:1.6}.choices{grid-template-columns:1fr;gap:15px;margin-top:30px;max-width:430px}.choice-art{height:145px}.choice-body{padding:19px 20px 20px}.choice-body h2{font-size:29px}.go{margin-top:16px}.footnote{font-size:10px;line-height:1.6;text-align:left;align-items:flex-start}.login-panel{margin:46px auto 80px;padding:23px}.login-panel h2{font-size:30px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.choice{transition:none}}
+
+.preview-link{display:block;width:100%;margin-top:12px;padding:14px;border:1px solid #bda66d;border-radius:10px;background:linear-gradient(135deg,#e7c98b,#b89658);color:#172033;text-align:center;text-decoration:none;font-weight:900;font-size:14px}
+.preview-link:hover{filter:brightness(1.06)}
