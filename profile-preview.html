@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101b2d">
+<title>KOR1816 | 프로필 연결 시안</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1321;--panel:#142238;--line:#30435d;--ink:#eef4ff;--muted:#a8b6cb;--blue:#7fc8ff;--gold:#e7c98b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#263d5b,#0b1321 70%);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;min-height:100vh}
+main{width:min(980px,100%);margin:auto;padding:24px 18px 40px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;letter-spacing:.12em;font-weight:800}.top a,.back{color:var(--blue);text-decoration:none}.tag{color:var(--gold);font-size:11px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var(--muted);line-height:1.65}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--gold);font-weight:800}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.panel{border:1px solid var(--line);border-radius:18px;background:#111e31d9;padding:20px;box-shadow:0 16px 45px #0002}.panel h2{font-size:18px;margin:0 0 14px}label{display:block;font-size:12px;color:#c8d7ea;margin:14px 0 7px}input,select{width:100%;background:#0b1525;border:1px solid #405674;border-radius:10px;color:var(--ink);padding:12px;font:inherit}input[type=file]{padding:9px;font-size:12px}button{width:100%;margin-top:14px;padding:12px;border:1px solid #8c784f;border-radius:10px;background:linear-gradient(135deg,#e7c98b,#b89658);color:#172033;font-weight:900;cursor:pointer}.hint{font-size:12px;border-left:3px solid var(--blue);padding-left:10px;margin-top:14px}.profile{display:flex;gap:14px;align-items:center;margin-bottom:18px}.avatar{width:66px;height:66px;flex-shrink:0;border-radius:16px;border:1px solid #9c895d;background:linear-gradient(145deg,#334c6c,#121f32);display:grid;place-items:center;font-size:28px}.profile h2{margin:0 0 4px}.profile p{margin:0;font-size:12px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat{border:1px solid #2d415a;border-radius:12px;background:#0d192a;padding:12px}.stat small{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.stat strong{font-size:16px;overflow-wrap:anywhere}.subhead{font-size:13px;color:var(--gold);margin:20px 0 9px}.pillrow{display:flex;gap:7px;flex-wrap:wrap}.pill{border:1px solid #415673;border-radius:999px;padding:6px 10px;font-size:12px;color:#dce9f9}.preview{width:100%;max-height:220px;object-fit:contain;background:#09111e;border:1px dashed #405674;border-radius:12px;margin-top:10px;display:none}.status{font-size:12px;color:#9ed6ff;min-height:18px}.foot{margin-top:24px;text-align:center;font-size:11px;color:#8292a9}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.panel{padding:16px}.top{letter-spacing:.04em}.stats{gap:7px}.stat{padding:10px}}
+</style>
+</head>
+<body><main>
+<header class="top"><a href="./landing.html#start">← 처음 화면</a><span>KOR1816 <span class="tag">· PROFILE LAB</span></span></header>
+<p class="eyebrow">PLAYER PROFILE · PROTOTYPE</p>
+<h1>게임 프로필 연결</h1>
+<p>게임 ID와 프로필 캡처를 함께 활용하는 화면 시안이야. 아직 실제 킹샷 서버에 연결되지 않았고, 입력한 정보는 서버로 전송하거나 저장하지 않아.</p>
+<div class="grid">
+<section class="panel">
+<h2>① 내 정보 입력</h2>
+<label for="playerId">킹샷 게임 ID</label><input id="playerId" inputmode="numeric" placeholder="예: 123456789">
+<label for="nickname">게임 닉네임</label><input id="nickname" placeholder="프로필에 표시되는 닉네임">
+<label for="kingdom">왕국 번호</label><input id="kingdom" inputmode="numeric" placeholder="예: 710">
+<label for="alliance">연맹</label><input id="alliance" placeholder="연맹명">
+<label for="power">전투력</label><input id="power" placeholder="예: 850M">
+<label for="capture">프로필 캡처 이미지</label><input id="capture" type="file" accept="image/*">
+<img id="imagePreview" class="preview" alt="선택한 프로필 캡처 미리보기">
+<p class="hint">사진은 이 화면에서 미리보기만 해. 실제 OCR 자동 인식과 게임 데이터 조회는 별도로 검증한 다음 연결할 거야.</p>
+<button id="previewBtn" type="button">프로필 미리보기 반영</button><div class="status" id="status" aria-live="polite"></div>
+</section>
+<section class="panel" aria-label="프로필 미리보기">
+<div class="profile"><div class="avatar" id="avatar">♜</div><div><h2 id="outName">플레이어 닉네임</h2><p><span id="outKingdom">왕국 미입력</span> · <span id="outAlliance">연맹 미입력</span></p><p id="outId">게임 ID 미입력</p></div></div>
+<div class="stats">
+<div class="stat"><small>전투력</small><strong id="outPower">미입력</strong></div>
+<div class="stat"><small>프로필 상태</small><strong>시안</strong></div>
+<div class="stat"><small>병사 정보</small><strong>연동 확인 필요</strong></div>
+<div class="stat"><small>영웅·장비</small><strong>연동 확인 필요</strong></div>
+</div>
+<h3 class="subhead">상세 프로필 확장 영역</h3>
+<div class="pillrow"><span class="pill">영웅 / 별 등급</span><span class="pill">스킬</span><span class="pill">장비 / 부적</span><span class="pill">병종별 병력</span></div>
+<p class="hint">자동 조회가 가능한 정보는 API 검증 후 채우고, 나머지는 캡처 인식 또는 직접 입력으로 보완하는 구조로 설계할 예정이야.</p>
+</section>
+</div>
+<p class="foot">KOR1816 · 화면 검토용 · 실제 인증 / 저장 / 자동 조회 미연결</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+$("capture").addEventListener("change",()=>{const f=$("capture").files&&$("capture").files[0];const img=$("imagePreview");if(!f){img.removeAttribute("src");img.style.display="none";return}if(!f.type.startsWith("image/")){img.style.display="none";$("status").textContent="이미지 파일을 선택해줘.";return}img.src=URL.createObjectURL(f);img.style.display="block";$("status").textContent="캡처를 이 화면에서 미리 볼 수 있어."});
+$("previewBtn").addEventListener("click",()=>{const id=$("playerId").value.trim();$("outId").textContent=id?"게임 ID "+id:"게임 ID 미입력";$("outName").textContent=$("nickname").value.trim()||"플레이어 닉네임";$("outKingdom").textContent=$("kingdom").value.trim()?"왕국 "+$("kingdom").value.trim():"왕국 미입력";$("outAlliance").textContent=$("alliance").value.trim()||"연맹 미입력";$("outPower").textContent=$("power").value.trim()||"미입력";$("status").textContent="입력값을 화면 미리보기에 반영했어. 아직 저장하거나 서버에 전송하지 않았어."});
+</script></body></html>
