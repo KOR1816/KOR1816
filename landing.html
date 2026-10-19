@@ -64,7 +64,7 @@ for(const item of originals){
  const t=tr(item.text,l);
  if(item.el.matches('.intro h1')) item.el.innerHTML=tr('당신의 여정을',l)+'<br><span>'+tr('선택하세요',l)+'</span>';
  else if(item.el.matches('input')) item.el.placeholder=tr('게임 ID 입력',l);
- else if(item.el.matches('.go')) item.el.innerHTML=t.replace('↗','<b>↗</b>');
+ else if(item.el.matches('.go')) item.el.innerHTML=tr('입장하기',l)+' <b>↗</b>';
  else item.el.textContent=t;
 }
 document.querySelectorAll('.choice-kicker')[0].textContent=l==='ko'?'ALLIANCE MEMBERS':l==='ja'?'同盟メンバー':l==='zh'?'联盟成员':l==='de'?'ALLIANZMITGLIEDER':l==='it'?'MEMBRI DELL’ALLEANZA':l==='es'?'MIEMBROS DE LA ALIANZA':l==='tr'?'İTTİFAK ÜYELERİ':'ALLIANCE MEMBERS';
