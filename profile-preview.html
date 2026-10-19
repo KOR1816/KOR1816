@@ -51,7 +51,8 @@ const input = document.getElementById('gameId');
 const button = document.getElementById('submitBtn');
 const statusBox = document.getElementById('status');
 const params = new URLSearchParams(location.search);
-const returnPages = new Set(['home','notices','teams','alliance','battleJoin','castlewar1','castlelayout1','seating','viking','glory']);\nconst returnPage = returnPages.has(params.get('return')) ? params.get('return') : 'home';
+const returnPages = new Set(['home','notices','teams','alliance','battleJoin','castlewar1','castlelayout1','seating','viking','glory']);
+const returnPage = returnPages.has(params.get('return')) ? params.get('return') : 'home';
 if (/^\d{4,20}$/.test(params.get('id') || '')) input.value = params.get('id');
 function status(message, type='') {
   statusBox.className = 'status' + (type ? ' ' + type : '');
