@@ -211,7 +211,7 @@ async function mcpCall(accessToken, name) {
     // Be tolerant of an SSE response if the provider changes its negotiated
     // response format; only parse the JSON-RPC data payload, never HTML.
     const body = await response.text();
-    const dataLines = body.split(/\\r?\\n/).filter(line => line.startsWith("data:"));
+    const dataLines = body.split(/\r?\n/).filter(line => line.startsWith("data:"));
     const parsed = dataLines.map(line => line.slice(5).trim()).filter(Boolean);
     for (const item of parsed) {
       try { payload = JSON.parse(item); } catch {}
