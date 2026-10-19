@@ -26,7 +26,10 @@ h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var
 <label for="nickname">게임 닉네임</label><input id="nickname" placeholder="프로필에 표시되는 닉네임">
 <label for="kingdom">왕국 번호</label><input id="kingdom" inputmode="numeric" placeholder="예: 710">
 <label for="alliance">연맹</label><input id="alliance" placeholder="연맹명">
-<label for="power">전투력</label><input id="power" placeholder="예: 850M">\n<label for="troops">병사 수 / 병종 정보</label><input id="troops" placeholder="예: 총 2,400,000 · 보병/기병/궁병">\n<label for="heroes">주력 영웅 / 별 등급</label><input id="heroes" placeholder="예: 아마데우스 · 페라 · 로사">\n<label for="equipment">장비 / 부적 메모</label><input id="equipment" placeholder="예: 장비 등급, 부적 레벨 등">
+<label for="power">전투력</label><input id="power" placeholder="예: 850M">
+<label for="troops">병사 수 / 병종 정보</label><input id="troops" placeholder="예: 총 2,400,000 · 보병/기병/궁병">
+<label for="heroes">주력 영웅 / 별 등급</label><input id="heroes" placeholder="예: 아마데우스 · 페라 · 로사">
+<label for="equipment">장비 / 부적 메모</label><input id="equipment" placeholder="예: 장비 등급, 부적 레벨 등">
 <label for="capture">프로필 캡처 이미지</label><input id="capture" type="file" accept="image/*">
 <img id="imagePreview" class="preview" alt="선택한 프로필 캡처 미리보기">
 <p class="hint">사진은 이 화면에서 미리보기만 해. 실제 OCR 자동 인식과 게임 데이터 조회는 별도로 검증한 다음 연결할 거야.</p>
@@ -40,8 +43,9 @@ h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var
 <div class="stat"><small>병사 정보</small><strong>연동 확인 필요</strong></div>
 <div class="stat"><small>영웅·장비</small><strong id="outHeroes">연동 확인 필요</strong></div>
 </div>
-<h3 class="subhead">상세 프로필 확장 영역</h3>
-<div class="pillrow"><span class="pill">영웅 / 별 등급</span><span class="pill">스킬</span><span class="pill">장비 / 부적</span><span class="pill">병종별 병력</span></div>
+<h3 class="subhead">상세 프로필</h3>
+<div class="stats"><div class="stat"><small>병사 정보</small><strong id="outTroops">미입력</strong></div><div class="stat"><small>장비 / 부적</small><strong id="outEquipment">미입력</strong></div></div>
+<div class="pillrow" style="margin-top:12px"><span class="pill">스킬</span><span class="pill">병종별 병력</span><span class="pill">프로필 이미지</span></div>
 <p class="hint">자동 조회가 가능한 정보는 API 검증 후 채우고, 나머지는 캡처 인식 또는 직접 입력으로 보완하는 구조로 설계할 예정이야.</p>
 </section>
 </div>
@@ -49,6 +53,9 @@ h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var
 </main>
 <script>
 const $=id=>document.getElementById(id);
+const space=new URLSearchParams(location.search).get("space");
+if(space==="immigrant"){document.title="KOR1816 | 이민자 프로필 시안";document.querySelector(".eyebrow").textContent="MIGRATION COMMUNITY · PROFILE";document.querySelector("h1").textContent="이민자 프로필 연결";document.querySelector(".top .tag").textContent="· IMMIGRANT PROFILE";}
+else if(space==="1816"){document.title="KOR1816 | 1816 프로필 시안";document.querySelector("h1").textContent="1816 프로필 연결";}
 $("capture").addEventListener("change",()=>{const f=$("capture").files&&$("capture").files[0];const img=$("imagePreview");if(!f){img.removeAttribute("src");img.style.display="none";return}if(!f.type.startsWith("image/")){img.style.display="none";$("status").textContent="이미지 파일을 선택해줘.";return}img.src=URL.createObjectURL(f);img.style.display="block";$("status").textContent="캡처를 이 화면에서 미리 볼 수 있어."});
 $("previewBtn").addEventListener("click",()=>{const id=$("playerId").value.trim();$("outId").textContent=id?"게임 ID "+id:"게임 ID 미입력";$("outName").textContent=$("nickname").value.trim()||"플레이어 닉네임";$("outKingdom").textContent=$("kingdom").value.trim()?"왕국 "+$("kingdom").value.trim():"왕국 미입력";$("outAlliance").textContent=$("alliance").value.trim()||"연맹 미입력";$("outPower").textContent=$("power").value.trim()||"미입력";$("outTroops").textContent=$("troops").value.trim()||"미입력";$("outHeroes").textContent=$("heroes").value.trim()||"연동 확인 필요";$("outEquipment").textContent=$("equipment").value.trim()||"미입력";$("status").textContent="입력값을 화면 미리보기에 반영했어. 아직 저장하거나 서버에 전송하지 않았어."});
 </script></body></html>
