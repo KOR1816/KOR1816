@@ -10,12 +10,16 @@
       var params = new URLSearchParams(window.location.search);
       var hash = window.location.hash;
       var isAuthorized = false;
-      try { isAuthorized = sessionStorage.getItem("kor1816_member_ok") === "1816:KOR"; } catch (_) {}
+      try {
+        isAuthorized = localStorage.getItem("kor1816_member_ok") === "1816:KOR";
+        // Migrate an existing valid tab session to persistent login once.
+        if (!isAuthorized && sessionStorage.getItem("kor1816_member_ok") === "1816:KOR") {
+          localStorage.setItem("kor1816_member_ok", "1816:KOR");
+          isAuthorized = true;
+        }
+      } catch (_) {}
       if (!isAuthorized) {
-        var requestedPage = hash && hash !== "#home" ? hash.slice(1) : "home";
-        var allowed = ["home","notices","teams","alliance","battleJoin","castlewar1","castlelayout1","seating","viking","glory"];
-        if (allowed.indexOf(requestedPage) < 0) requestedPage = "home";
-        window.location.replace("./profile-preview.html?space=1816&return=" + encodeURIComponent(requestedPage));
+        window.location.replace("./landing.html" + window.location.search);
         return;
       }
       var isEntering1816 = params.get("space") === "1816";
@@ -25,9 +29,9 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="./styles.css?v=20261018-absence-list-v1">
+  <link rel="stylesheet" href="./styles.css?v=20261020-persistent-login-v1">
   <script>window.KOR1816_FIREBASE_CONFIG={apiKey:"AIzaSyB_7Uk6QkCQAt6LyWMVuQNARaXD78WdlZQ",authDomain:"kor1816.firebaseapp.com",projectId:"kor1816",storageBucket:"kor1816.firebasestorage.app",messagingSenderId:"838991083698",appId:"1:838991083698:web:de37c21f443386d902b1ab",measurementId:"G-SZ2ZX729BT"};window.KOR1816_ADMIN_EMAILS=["to1ggi8410@gmail.com","to1ggi8403@gmail.com","a3135a@naver.com","yunsungbin913@gmail.com"];</script>
-  <script type="module" src="./app.js?v=20261018-absence-list-v1"></script>
+  <script type="module" src="./app.js?v=20261020-persistent-login-v1"></script>
 </head>
 <body>
   <header class="site-header">
