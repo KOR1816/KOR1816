@@ -53,7 +53,7 @@ const viewState = document.getElementById('viewState');
 document.getElementById('spaceDescription').textContent = space === 'immigrant'
   ? '이민자 공간 · 프로필 연결 화면 시안'
   : '1816 연맹원 공간 · 프로필 연결 화면 시안';
-function validId(){const id=idInput.value.trim();if(!/^\\d{4,20}$/.test(id)){statusBox.className='status error';statusBox.textContent='게임 ID는 숫자만 입력해 주세요.';idInput.focus();return null;}document.getElementById('viewId').textContent=id;return id;}
+function validId(){const id=idInput.value.trim();if(!/^\d{4,20}$/.test(id)){statusBox.className='status error';statusBox.textContent='게임 ID는 숫자만 입력해 주세요.';idInput.focus();return null;}document.getElementById('viewId').textContent=id;return id;}
 document.getElementById('accountConnectBtn').addEventListener('click',()=>{if(!validId())return;statusBox.className='status';statusBox.textContent='아직 실제 인증 서버가 연결되지 않았습니다. 현재 화면에서는 계정 연결을 시작하거나 인증 정보를 수집하지 않습니다.';});
 document.getElementById('accountFetchBtn').addEventListener('click',()=>{if(!validId())return;statusBox.className='status';statusBox.textContent='프로필 조회 불가: 실제 게임 데이터 API 또는 인증된 제공자 연동이 아직 구성되지 않았습니다. 임의의 프로필 데이터는 표시하지 않았습니다.';});
 document.getElementById('accountDisconnectBtn').addEventListener('click',()=>{document.getElementById('viewState').textContent='미연결';document.getElementById('viewName').textContent='조회 전';document.getElementById('viewPower').textContent='조회 전';document.getElementById('viewTroops').textContent='조회 전';document.getElementById('viewHeroes').textContent='조회 전';statusBox.className='status';statusBox.textContent='미리보기 상태를 초기화했습니다. 실제 계정 연결이 진행된 상태는 아닙니다.';});
