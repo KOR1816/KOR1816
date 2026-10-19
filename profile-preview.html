@@ -104,6 +104,8 @@ form.addEventListener('submit', async event => {
     try {
       // Keep the verified member login across page navigation and future visits.
       localStorage.setItem('kor1816_member_ok', '1816:KOR');
+      localStorage.setItem('kor1816_member_game_id', id);
+      sessionStorage.setItem('kor1816_member_game_id', id);
       sessionStorage.setItem('kor1816_member_ok', '1816:KOR');
     } catch (_) { throw new Error('session'); }
     button.textContent = word(20);
