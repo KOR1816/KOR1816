@@ -179,31 +179,46 @@ async function getSession(env, sessionId, auth) {
   return session;
 }
 async function mcpCall(accessToken, name) {
-  const headers = {
-    "Authorization": "Bearer " + accessToken,
-    "Content-Type": "application/json",
-    "Accept": "application/json, text/event-stream"
-  };
-  const init = await fetch(RESOURCE, {
-    method: "POST", headers,
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: {
-      protocolVersion: "2025-11-25",
-      capabilities: {},
-      clientInfo: { name: "KOR1816", version: "0.1.0" }
-    } })
+  // The provider documents a stateless Streamable HTTP endpoint: send one
+  // JSON-RPC message per POST. No initialize/session handshake is required.
+  const response = await fetch(RESOURCE, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + accessToken,
+      "Content-Type": "application/json",
+      "Accept": "application/json, text/event-stream",
+      "MCP-Protocol-Version": "2025-11-25"
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: randomHex(8),
+      method: "tools/call",
+      params: { name, arguments: {} }
+    })
   });
-  if (init.status === 401) throw new Error("provider_unauthorized");
-  if (!init.ok) throw new Error("mcp_initialize_failed");
-  const call = await fetch(RESOURCE, {
-    method: "POST", headers,
-    body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/call", params: { name, arguments: {} } })
-  });
-  if (call.status === 401) throw new Error("provider_unauthorized");
-  if (call.status === 429) throw new Error("provider_rate_limited");
-  if (!call.ok) throw new Error("mcp_tool_call_failed");
-  const payload = await call.json();
+  if (response.status === 401) throw new Error("provider_unauthorized");
+  if (response.status === 429) throw new Error("provider_rate_limited");
+  if (!response.ok) throw new Error("mcp_tool_call_failed");
+  const contentType = response.headers.get("content-type") || "";
+  let payload;
+  if (contentType.includes("application/json")) {
+    payload = await response.json();
+  } else {
+    // Be tolerant of an SSE response if the provider changes its negotiated
+    // response format; only parse the JSON-RPC data payload, never HTML.
+    const body = await response.text();
+    const dataLines = body.split(/\\r?\\n/).filter(line => line.startsWith("data:"));
+    const parsed = dataLines.map(line => line.slice(5).trim()).filter(Boolean);
+    for (const item of parsed) {
+      try { payload = JSON.parse(item); } catch {}
+      if (payload) break;
+    }
+  }
+  if (!payload) throw new Error("mcp_invalid_response");
   if (payload.error) throw new Error("mcp_tool_error");
-  const contents = payload.result && payload.result.content;
+  const result = payload.result;
+  if (result && result.isError) throw new Error("mcp_tool_error");
+  const contents = result && result.content;
   if (Array.isArray(contents)) {
     for (const item of contents) {
       if (item && typeof item.text === "string") {
@@ -211,7 +226,7 @@ async function mcpCall(accessToken, name) {
       }
     }
   }
-  return payload.result || payload;
+  return result || payload;
 }
 async function profile(request, env) {
   const sessionId = getCookie(request, COOKIE);
