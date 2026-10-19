@@ -1,0 +1,58 @@
+name: Validate KOR1816 profile prototype
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check Worker JavaScript syntax
+        run: node --check profile-api/account-worker.js
+
+      - name: Check profile page inline JavaScript syntax
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const html = readFileSync('profile-preview.html', 'utf8');
+          const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
+          if (!scripts.length) throw new Error('No inline script found in profile-preview.html');
+          writeFileSync('/tmp/kor1816-profile-inline.js', scripts.map(m => m[1]).join('\n'));
+          NODE
+          node --check /tmp/kor1816-profile-inline.js
+
+      - name: Check expected account-link routes and controls
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const worker = readFileSync('profile-api/account-worker.js', 'utf8');
+          const html = readFileSync('profile-preview.html', 'utf8');
+          const requiredWorker = [
+            '/auth/login', '/auth/callback', '/api/profile',
+            '/auth/logout', '/health', 'get_my_profile'
+          ];
+          const requiredUi = [
+            'accountConnectBtn', 'accountFetchBtn', 'accountDisconnectBtn',
+            'applyAccountProfile'
+          ];
+          for (const item of requiredWorker) {
+            if (!worker.includes(item)) throw new Error('Missing Worker feature: ' + item);
+          }
+          for (const item of requiredUi) {
+            if (!html.includes(item)) throw new Error('Missing profile UI feature: ' + item);
+          }
+          console.log('Account-link route/control checks passed.');
+          NODE
