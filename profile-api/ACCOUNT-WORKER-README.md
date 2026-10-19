@@ -9,21 +9,32 @@ Provider documentation: https://www.kingshotcommand.com/developers
 - Dynamically discovers the provider OAuth endpoints and registers a public client.
 - Starts authorization-code login with PKCE S256 and `openid offline_access` scopes.
 - Exchanges the code server-side and stores access/refresh tokens in Cloudflare KV, never in the static page.
-- Exposes a read-only `/api/profile` endpoint that calls `get_my_profile`.
+- Exposes a read-only `/api/profile` endpoint that calls `get_my_profile` using the provider's documented stateless JSON-RPC endpoint.
 - Provides `/auth/logout` to delete the server-side session.
+- The profile preview has test controls for connect, fetch, disconnect, and best-effort mapping of returned scalar fields and collections into the preview form.
 
 ## Not production-ready
 
 **Do not deploy this publicly yet.** This is an implementation prototype, not a verified integration. The OAuth provider's live discovery, dynamic client registration, callback/token exchange, MCP response shape, refresh flow, and profile field names have not been integration-tested. Review the code and provider terms first.
 
-## Required Cloudflare configuration
+## Deployment setup (manual GitHub Actions workflow)
 
-Create a Worker and bind a KV namespace named `OAUTH_STORE`. Set these Worker variables:
+A manual workflow is included at `.github/workflows/deploy-account-worker.yml`. It deploys **only this Worker**, never the GitHub Pages site. It does not run automatically on commits.
 
-- `APP_ORIGIN`: exact GitHub Pages origin, currently `https://kor1816.github.io` (origin only; no path).
-- `OAUTH_REDIRECT_URI`: exact deployed Worker callback URL ending in `/auth/callback`.
+1. In Cloudflare, create a KV namespace for the account link session store and copy its namespace ID.
+2. Create a scoped Cloudflare API token with permission to edit Workers and access the target account's KV namespace.
+3. In GitHub repository Settings, add these **Actions secrets**:
+   - `CLOUDFLARE_API_TOKEN`
+   - `CLOUDFLARE_ACCOUNT_ID`
+   - `CLOUDFLARE_KV_NAMESPACE_ID`
+4. Add these **Actions repository variables**:
+   - `ACCOUNT_WORKER_APP_ORIGIN` = `https://kor1816.github.io` (origin only; no path)
+   - `ACCOUNT_WORKER_REDIRECT_URI` = the exact Worker callback URL ending in `/auth/callback`, for example `https://YOUR-WORKER-HOST/auth/callback`
+5. In Actions, select **Deploy KOR1816 account Worker**, choose the feature branch `feature/landing-gateway-preview-2026-10-20`, and run the workflow manually.
+6. After a successful deploy, open `https://YOUR-WORKER-HOST/health` and confirm it returns `mode: oauth-prototype-not-production`.
+7. Open the profile preview on that same feature branch, paste the Worker base URL into **계정 연결 서버 주소**, then test connect, consent, fetch, and disconnect.
 
-Do not put access tokens or refresh tokens in GitHub Pages, URL parameters, browser storage, or source control. This prototype does not require a static API key.
+Do not put access tokens or refresh tokens in GitHub Pages, URL parameters, browser storage, or source control. This prototype does not require a static API key. Never paste Cloudflare secrets into a chat or commit them to the repository.
 
 ## Browser cookie limitation
 
