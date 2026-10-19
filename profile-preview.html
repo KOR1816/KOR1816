@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101b2d">
+<title>KOR1816 | 킹샷 프로필 연결</title>
+<style>
+:root{color-scheme:dark;--ink:#eef4ff;--muted:#a8b6cb;--line:rgba(211,226,255,.16);--blue:#8ed0ff;--gold:#e7c98b}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0,#294565,#101b2d 52%,#090f1b);color:var(--ink);font-family:Inter,"Pretendard","Noto Sans KR",system-ui,sans-serif;padding:24px}
+main{width:min(760px,100%);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;letter-spacing:.12em;font-weight:850;color:#dbe8fa}.back{color:var(--blue);text-decoration:none;letter-spacing:0}
+.hero{text-align:center;padding:48px 0 28px}.eyebrow{color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.24em}.hero h1{font-size:clamp(30px,6vw,46px);margin:12px 0}.hero p{color:var(--muted);font-size:14px;line-height:1.7}
+.panel{border:1px solid var(--line);border-radius:18px;background:#101d2ddd;padding:24px;margin:16px 0;box-shadow:0 18px 50px #0003}.panel h2{font-size:18px;margin:0 0 16px}.label{display:block;font-size:12px;font-weight:800;color:#d5e4f7;margin:18px 0 8px}
+input{width:100%;padding:13px 14px;border:1px solid #506781;border-radius:10px;background:#0b1524;color:#fff;font:inherit}button{cursor:pointer;border:1px solid #8ed0ff55;border-radius:10px;background:#203b57;color:#eaf6ff;padding:12px 14px;font:inherit;font-size:13px;font-weight:850}button.primary{background:linear-gradient(135deg,#e7c98b,#b89658);color:#172033;border:0}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.actions button{flex:1;min-width:150px}
+.status{margin-top:14px;padding:12px 14px;border-left:3px solid var(--gold);background:#ffffff08;color:#c2cede;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.status.ok{border-color:#83d6b2}.status.error{border-color:#ff9a9a}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{padding:13px;border:1px solid var(--line);border-radius:10px;background:#ffffff05}.field span{display:block;font-size:11px;color:var(--muted);margin-bottom:6px}.field strong{font-size:14px;overflow-wrap:anywhere}
+.notice{font-size:12px;line-height:1.8;color:#aebdd1}footer{padding:22px 0;text-align:center;color:#7386a0;font-size:10px;letter-spacing:.14em}
+@media(max-width:560px){body{padding:16px}.hero{padding:36px 0 20px}.panel{padding:18px}.grid{grid-template-columns:1fr}.top{font-size:10px}}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><span>KOR1816 · KINGDOM 1816</span><a class="back" href="./landing.html#login-1816">← 시작 화면</a></header>
+<section class="hero"><div class="eyebrow">PLAYER PROFILE</div><h1>킹샷 프로필 연결</h1><p id="spaceDescription">게임 계정과 본인 프로필을 연결하는 화면 시안입니다.</p></section>
+<section class="panel">
+<h2>1. 게임 계정</h2>
+<label class="label" for="gameId">킹샷 게임 ID</label>
+<input id="gameId" inputmode="numeric" autocomplete="off" maxlength="20" value="277809051" aria-describedby="idHelp">
+<p id="idHelp" class="notice">게임 ID는 계정을 식별하기 위한 값입니다. ID만으로 비공개 프로필 정보를 가져오거나 본인 인증을 완료할 수는 없습니다.</p>
+<div class="actions"><button class="primary" id="accountConnectBtn" type="button">계정 연결</button><button id="accountFetchBtn" type="button">프로필 조회</button><button id="accountDisconnectBtn" type="button">연결 해제</button></div>
+<div class="status" id="status" role="status" aria-live="polite">화면 시안입니다. 실제 계정 연결·조회에는 검증된 인증 제공자와 배포된 연동 서버가 필요합니다.</div>
+</section>
+<section class="panel">
+<h2>2. 프로필 미리보기</h2>
+<div class="grid">
+<div class="field"><span>게임 ID</span><strong id="viewId">277809051</strong></div>
+<div class="field"><span>연결 상태</span><strong id="viewState">미연결</strong></div>
+<div class="field"><span>닉네임</span><strong id="viewName">조회 전</strong></div>
+<div class="field"><span>전투력</span><strong id="viewPower">조회 전</strong></div>
+<div class="field"><span>병력 정보</span><strong id="viewTroops">조회 전</strong></div>
+<div class="field"><span>영웅 / 장비</span><strong id="viewHeroes">조회 전</strong></div>
+</div>
+<p class="notice">현재는 오류 없이 화면을 확인할 수 있는 시안입니다. 실제 게임 데이터는 임의로 채우지 않았습니다. 연동 가능 여부와 인증 방식 확인 전에는 프로필 조회가 작동하는 것처럼 표시하지 않습니다.</p>
+</section>
+<footer>KOR1816 · PROFILE LINK PREVIEW</footer>
+</main>
+<script>
+const params = new URLSearchParams(location.search);
+const space = params.get('space') === 'immigrant' ? 'immigrant' : '1816';
+const idInput = document.getElementById('gameId');
+const statusBox = document.getElementById('status');
+const viewState = document.getElementById('viewState');
+document.getElementById('spaceDescription').textContent = space === 'immigrant'
+  ? '이민자 공간 · 프로필 연결 화면 시안'
+  : '1816 연맹원 공간 · 프로필 연결 화면 시안';
+function validId(){const id=idInput.value.trim();if(!/^\\d{4,20}$/.test(id)){statusBox.className='status error';statusBox.textContent='게임 ID는 숫자만 입력해 주세요.';idInput.focus();return null;}document.getElementById('viewId').textContent=id;return id;}
+document.getElementById('accountConnectBtn').addEventListener('click',()=>{if(!validId())return;statusBox.className='status';statusBox.textContent='아직 실제 인증 서버가 연결되지 않았습니다. 현재 화면에서는 계정 연결을 시작하거나 인증 정보를 수집하지 않습니다.';});
+document.getElementById('accountFetchBtn').addEventListener('click',()=>{if(!validId())return;statusBox.className='status';statusBox.textContent='프로필 조회 불가: 실제 게임 데이터 API 또는 인증된 제공자 연동이 아직 구성되지 않았습니다. 임의의 프로필 데이터는 표시하지 않았습니다.';});
+document.getElementById('accountDisconnectBtn').addEventListener('click',()=>{document.getElementById('viewState').textContent='미연결';document.getElementById('viewName').textContent='조회 전';document.getElementById('viewPower').textContent='조회 전';document.getElementById('viewTroops').textContent='조회 전';document.getElementById('viewHeroes').textContent='조회 전';statusBox.className='status';statusBox.textContent='미리보기 상태를 초기화했습니다. 실제 계정 연결이 진행된 상태는 아닙니다.';});
+idInput.addEventListener('input',()=>{document.getElementById('viewId').textContent=idInput.value.trim()||'—';});
+</script>
+</body>
+</html>
