@@ -8,10 +8,12 @@
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search);
-      var hasSectionHash = Boolean(window.location.hash);
+      var hash = window.location.hash;
       var isEntering1816 = params.get("space") === "1816";
       var isExplicitBypass = params.get("bypassGateway") === "1";
-      if (!hasSectionHash && !isEntering1816 && !isExplicitBypass) {
+      // A generic #home link must still show the gateway; preserve other deep links.
+      var isDirectPageLink = Boolean(hash && hash !== "#home");
+      if (!isEntering1816 && !isExplicitBypass && !isDirectPageLink) {
         window.location.replace("./landing.html" + window.location.search);
       }
     })();
