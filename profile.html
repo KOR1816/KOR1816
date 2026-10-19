@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>KOR1816 · 킹샷 프로필 조회</title>
+<style>
+:root{color-scheme:dark;--bg:#080d19;--panel:#111a2b;--line:#263651;--text:#eef4ff;--muted:#9eacc5;--blue:#75b9ff;--gold:#f3ca77;--bad:#ff9b9b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172642 0,#080d19 55%);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+a{color:var(--blue)}button,input{font:inherit}.wrap{max-width:1050px;margin:auto;padding:22px 16px 50px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}.brand{font-weight:900;letter-spacing:.08em;font-size:1.2rem}.brand small{display:block;color:var(--muted);font-size:.78rem;font-weight:500;letter-spacing:0}.lang{background:#18243a;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px}
+h1{font-size:clamp(1.7rem,4vw,2.5rem);margin:0 0 8px;letter-spacing:-.04em}p{margin:0;color:var(--muted)}.intro{margin-bottom:22px}.search{display:flex;gap:10px;flex-wrap:wrap;padding:14px;background:#10192a;border:1px solid var(--line);border-radius:16px;margin:18px 0 12px}.search input{flex:1;min-width:200px;background:#080f1e;border:1px solid #354866;color:var(--text);border-radius:10px;padding:13px 14px;outline:none}.search input:focus{border-color:var(--blue)}.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:800;cursor:pointer;background:var(--blue);color:#07101e}.btn:disabled{opacity:.55;cursor:wait}.note{font-size:.82rem;color:var(--muted);margin:0 0 20px}.status{margin:16px 0;padding:12px 14px;border-radius:12px;background:#111a2b;border:1px solid var(--line);color:var(--muted);display:none}.status.show{display:block}.status.error{border-color:#713b48;color:var(--bad)}.status.good{border-color:#315f59;color:#a8f0d7}.profile{display:none}.profile.show{display:block}.card{background:linear-gradient(145deg,rgba(20,31,50,.97),rgba(13,21,36,.97));border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 12px 35px #0002}.hero-profile{display:flex;gap:18px;align-items:center}.avatar{width:82px;height:82px;border-radius:18px;object-fit:cover;background:#1d2a40;border:1px solid #3a4b66}.name{font-size:1.5rem;font-weight:900;overflow-wrap:anywhere}.sub{color:var(--muted);font-size:.9rem}.pill{display:inline-block;padding:3px 9px;border:1px solid #3b4d68;border-radius:999px;font-size:.78rem;color:#c9d8ef;margin:3px 4px 0 0}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}.stat{background:#0b1322;border:1px solid #22324b;border-radius:12px;padding:12px;min-width:0}.stat span{display:block;color:var(--muted);font-size:.8rem}.stat strong{display:block;font-size:1.1rem;margin-top:4px;overflow-wrap:anywhere}.section-title{font-size:1.15rem;margin:26px 0 10px}.heroes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.hero{border:1px solid var(--line);background:#10192a;border-radius:14px;padding:14px;min-width:0}.hero h3{font-size:1.05rem;margin:0 0 5px}.hero .detail{color:var(--muted);font-size:.87rem}.mini{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.mini span{font-size:.78rem;background:#0a1220;border:1px solid #283951;border-radius:8px;padding:4px 7px}.gear-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.gear{background:#10192a;border:1px solid var(--line);border-radius:12px;padding:12px;overflow-wrap:anywhere}.gear strong{display:block;font-size:.9rem}.gear small{color:var(--muted)}.footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:28px}
+@media(max-width:600px){.wrap{padding:16px 12px 36px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.heroes{grid-template-columns:1fr}.gear-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-profile{align-items:flex-start}.avatar{width:66px;height:66px}.card{padding:14px}.search{padding:10px}.btn{flex:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand">KOR1816 <small>Kingdom 1816 · 곰친자들의 모임</small></div><select class="lang" id="lang" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option></select></header>
+<section class="intro"><h1 id="title">킹샷 플레이어 프로필</h1><p id="subtitle">플레이어 ID로 프로필, 영웅, 장비와 왕국 랭킹을 조회합니다.</p></section>
+<form class="search" id="search-form"><input id="player-id" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="플레이어 ID 입력 (예: 101021610)" aria-label="Player ID" required><button class="btn" id="search-btn" type="submit">프로필 조회</button></form>
+<p class="note" id="note">조회 가능한 공개 프로필 데이터만 표시됩니다. 데이터 갱신 시점에 따라 실제 게임과 차이가 있을 수 있습니다.</p>
+<div class="status" id="status" role="status" aria-live="polite"></div>
+<div class="profile" id="profile"></div>
+<div class="footer"><a href="./?space=1816#home" id="back">← KOR1816 메인으로 돌아가기</a><br>© KOR1816 · MightPulse API</div>
+</div>
+<script>
+(function(){
+ const API='https://kor1816-api.to1ggi8410.workers.dev/api/profile';
+ const $=id=>document.getElementById(id);
+ let lang='ko';
+ const words={
+  ko:{title:'킹샷 플레이어 프로필',subtitle:'플레이어 ID로 프로필, 영웅, 장비와 왕국 랭킹을 조회합니다.',placeholder:'플레이어 ID 입력 (예: 101021610)',search:'프로필 조회',loading:'플레이어 정보를 불러오는 중…',note:'조회 가능한 공개 프로필 데이터만 표시됩니다. 데이터 갱신 시점에 따라 실제 게임과 차이가 있을 수 있습니다.',invalid:'숫자로 된 플레이어 ID를 입력해 주세요.',notfound:'해당 플레이어를 찾을 수 없습니다. ID를 확인해 주세요.',failed:'조회에 실패했습니다. 잠시 후 다시 시도해 주세요.',power:'전투력',town:'시청 레벨',kills:'처치 수',kingdom:'왕국',alliance:'연맹',position:'좌표',active:'최근 활동',heroTitle:'영웅',gearTitle:'영주 장비',rankTitle:'왕국 랭킹',level:'레벨',stars:'별 등급',skills:'스킬',exclusive:'전용 장비',rankPower:'전투력 순위',rankKills:'처치 순위',rankTown:'시청 순위',fresh:'데이터 최신',stale:'데이터 갱신 지연',back:'← KOR1816 메인으로 돌아가기',gearLevel:'강화',refine:'정련',noData:'표시할 데이터가 없습니다.',unknown:'정보 없음',id:'플레이어 ID'},
+  en:{title:'Kingshot Player Profile',subtitle:'Look up a player profile, heroes, gear, and kingdom rankings by player ID.',placeholder:'Enter player ID (e.g. 101021610)',search:'Look up profile',loading:'Loading player profile…',note:'Only available public profile data is shown. Values may differ from the live game depending on data freshness.',invalid:'Enter a numeric player ID.',notfound:'Player not found. Please check the ID.',failed:'Lookup failed. Please try again shortly.',power:'Power',town:'Town Center',kills:'Kills',kingdom:'Kingdom',alliance:'Alliance',position:'Coordinates',active:'Last active',heroTitle:'Heroes',gearTitle:'Governor Gear',rankTitle:'Kingdom Rankings',level:'Level',stars:'Stars',skills:'Skills',exclusive:'Exclusive gear',rankPower:'Power rank',rankKills:'Kills rank',rankTown:'Town Center rank',fresh:'Fresh data',stale:'Data may be stale',back:'← Back to KOR1816 home',gearLevel:'Enhancement',refine:'Refinement',noData:'No data available.',unknown:'Unknown',id:'Player ID'}
+ };
+ const t=k=>words[lang][k]||words.en[k]||k;
+ const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const num=v=>v==null?t('unknown'):Number(v).toLocaleString(lang==='ko'?'ko-KR':'en-US');
+ const status=(msg,type='')=>{$('status').textContent=msg;$('status').className='status show '+type;};
+ const setLabels=()=>{$('title').textContent=t('title');$('subtitle').textContent=t('subtitle');$('player-id').placeholder=t('placeholder');$('search-btn').textContent=t('search');$('note').textContent=t('note');$('back').textContent=t('back');};
+ function render(d){
+  const p=d.player||{}, a=p.alliance||{}, heroes=Array.isArray(d.heroes)?d.heroes:[], ranks=d.ranks||{}, rawGear=d.gov_gear||{}, gear=Array.isArray(rawGear)?rawGear:(Array.isArray(rawGear.items)?rawGear.items:Object.entries(rawGear).filter(([k,v])=>v&&typeof v==='object').map(([k,v])=>({slot:k,...v})));
+  const avatar=(p.avatar_url||p.avatar)?'<img class="avatar" src="'+esc(p.avatar_url||p.avatar)+'" alt="" referrerpolicy="no-referrer">':'<div class="avatar"></div>';
+  const freshness=d.fresh===true?t('fresh'):(d.age_seconds!=null&&d.age_seconds>3600?t('stale'):t('fresh'));
+  let html='<div class="card"><div class="hero-profile">'+avatar+'<div><div class="name">'+esc(p.nickname||p.nick_name||p.name||t('unknown'))+'</div><div class="sub">'+esc(a.abbr||a.tag||a.name||p.alliance_name||'')+' · '+esc(t('kingdom'))+' '+esc(p.kingdom??p.kid??p.kingdom_id??t('unknown'))+'</div><span class="pill">'+esc(t('id'))+': '+esc(p.governor_id||p.fid||p.uid||'')+'</span><span class="pill">'+esc(freshness)+'</span></div></div><div class="stats">'+
+  stat(t('power'),num(p.power))+stat(t('town'),num(p.town_center_level))+stat(t('kills'),num(p.kills))+stat(t('alliance'),a.name||p.alliance_name||t('unknown'))+stat(t('position'),(p.x!=null&&p.y!=null)?p.x+', '+p.y:t('unknown'))+stat(t('active'),p.last_activity||p.last_login||p.last_active||t('unknown'))+'</div></div>';
+  if(a.name)html+='<div class="card"><h2 class="section-title" style="margin-top:0">'+esc(t('alliance'))+'</h2><div>'+esc(a.name)+' ('+esc(a.abbr||'')+')</div><div class="sub">'+esc(a.leader_name||a.leader||'')+' · '+esc(t('power'))+' '+esc(num(a.power))+' · '+esc(num(a.count))+'</div></div>';
+  html+='<h2 class="section-title">'+esc(t('heroTitle'))+' ('+heroes.length+')</h2>';
+  if(heroes.length){html+='<div class="heroes">'+heroes.map(h=>'<article class="hero"><h3>'+esc(h.name||'Hero')+'</h3><div class="detail">'+esc(t('level'))+' '+esc(num(h.level))+' · '+esc(h.star_label||h.stars||h.star||t('unknown'))+'</div><div class="mini">'+((Array.isArray(h.skill_levels)?h.skill_levels:(Array.isArray(h.skills)?h.skills:[])).map(s=>'<span>'+esc(typeof s==='object'?(s.name||s.level||s.level_text||JSON.stringify(s)):s)+'</span>').join(''))+'</div><div class="detail" style="margin-top:9px">'+esc(t('exclusive'))+': '+esc(h.exclusive_gear?.name||h.exclusive_gear?.level||h.exclusiveGear?.name||t('unknown'))+' · Lv '+esc(h.exclusive_gear_level??h.exclusiveGear?.level??0)+'</div>'+(Array.isArray(h.gear)?'<div class="mini">'+h.gear.map(g=>'<span>'+esc(g.slot)+': '+esc(g.enhancement_level??0)+'</span>').join('')+'</div>':'')+'</article>').join('')+'</div>';}else html+='<div class="card">'+esc(t('noData'))+'</div>';
+  html+='<h2 class="section-title">'+esc(t('gearTitle'))+'</h2>';
+  if(gear.length){html+='<div class="gear-grid">'+gear.map(g=>'<div class="gear"><strong>'+esc(g.name||g.slot)+'</strong><small>'+esc(g.tier||'')+'</small><div>'+esc(t('gearLevel'))+': '+esc(num(g.strength_level))+'</div><div>'+esc(t('refine'))+': '+esc(num(g.star??g.refine_level??0))+'</div></div>').join('')+'</div>';}else html+='<div class="card">'+esc(t('noData'))+'</div>';
+  html+='<h2 class="section-title">'+esc(t('rankTitle'))+'</h2><div class="stats">'+stat(t('rankPower'),(ranks.power_rank??ranks.power?.rank??ranks.power)!=null?'#'+num(ranks.power_rank??ranks.power?.rank??ranks.power):t('unknown'))+stat(t('rankKills'),(ranks.kills_rank??ranks.kills?.rank??ranks.kills)!=null?'#'+num(ranks.kills_rank??ranks.kills?.rank??ranks.kills):t('unknown'))+stat(t('rankTown'),(ranks.town_center_rank??ranks.town_center_level?.rank??ranks.town_center_level)!=null?'#'+num(ranks.town_center_rank??ranks.town_center_level?.rank??ranks.town_center_level):t('unknown'))+'</div>';
+  $('profile').innerHTML=html;$('profile').classList.add('show');
+ }
+ function stat(label,value){return '<div class="stat"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong></div>'}
+ $('lang').addEventListener('change',()=>{lang=$('lang').value;document.documentElement.lang=lang;setLabels();const last=$('player-id').value.trim();if(last&&$('profile').classList.contains('show'))status(t('fresh'));});
+ $('search-form').addEventListener('submit',async e=>{
+  e.preventDefault();const id=$('player-id').value.trim();
+  if(!/^\d{4,20}$/.test(id)){status(t('invalid'),'error');return;}
+  $('profile').classList.remove('show');$('profile').textContent='';status(t('loading'));$('search-btn').disabled=true;
+  try{const res=await fetch(API+'?id='+encodeURIComponent(id),{headers:{Accept:'application/json'}});let data;try{data=await res.json()}catch{throw new Error('bad_response')}
+   if(!res.ok||!data.ok){if(res.status===404||data.error==='player_not_found')throw new Error('not_found');throw new Error(data.error||'failed');}
+   if(!data.player)throw new Error('not_found');render(data);$('status').className='status';$('status').textContent='';
+  }catch(err){status(err.message==='not_found'?t('notfound'):t('failed'),'error');}
+  finally{$('search-btn').disabled=false;}
+ });
+ setLabels();
+ const params=new URLSearchParams(location.search);const preset=params.get('id');if(preset&&/^\d{4,20}$/.test(preset)){$('player-id').value=preset;$('search-form').requestSubmit();}
+})();
+</script>
+</body>
+</html>
