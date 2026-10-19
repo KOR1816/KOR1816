@@ -50,7 +50,8 @@ const form = document.getElementById('loginForm');
 const input = document.getElementById('gameId');
 const button = document.getElementById('submitBtn');
 const statusBox = document.getElementById('status');
-const params = new URLSearchParams(location.search);\nconst returnPages = new Set(['home','notices','teams','alliance','battleJoin','castlewar1','castlelayout1','seating','viking','glory']);\nconst returnPage = returnPages.has(params.get('return')) ? params.get('return') : 'home';
+const params = new URLSearchParams(location.search);
+const returnPages = new Set(['home','notices','teams','alliance','battleJoin','castlewar1','castlelayout1','seating','viking','glory']);\nconst returnPage = returnPages.has(params.get('return')) ? params.get('return') : 'home';
 if (/^\d{4,20}$/.test(params.get('id') || '')) input.value = params.get('id');
 function status(message, type='') {
   statusBox.className = 'status' + (type ? ' ' + type : '');
@@ -93,7 +94,8 @@ form.addEventListener('submit', async event => {
     setTimeout(() => { location.href = './index.html?space=1816#' + returnPage; }, 700);
   } catch (error) {
     if (error.message === 'notfound') status('해당 게임 ID를 찾을 수 없습니다. 번호를 확인해 주세요.', 'error');
-    else if (error.message === 'session') status('브라우저 세션 저장을 사용할 수 없습니다. 사이트 권한 설정을 확인해 주세요.', 'error');\n    else status('소속 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요. API 오류 또는 정보 누락 시 입장할 수 없습니다.', 'error');
+    else if (error.message === 'session') status('브라우저 세션 저장을 사용할 수 없습니다. 사이트 권한 설정을 확인해 주세요.', 'error');
+    else status('소속 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요. API 오류 또는 정보 누락 시 입장할 수 없습니다.', 'error');
   } finally {
     if (button.textContent !== '입장 확인 완료') {
       button.disabled = false;
