@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101b2d">
+<title>KOR1816 | 프로필 연결 시안</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1321;--panel:#142238;--line:#30435d;--ink:#eef4ff;--muted:#a8b6cb;--blue:#7fc8ff;--gold:#e7c98b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#263d5b,#0b1321 70%);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;min-height:100vh}
+main{width:min(980px,100%);margin:auto;padding:24px 18px 40px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;letter-spacing:.12em;font-weight:800}.top a,.back{color:var(--blue);text-decoration:none}.tag{color:var(--gold);font-size:11px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var(--muted);line-height:1.65}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--gold);font-weight:800}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.panel{border:1px solid var(--line);border-radius:18px;background:#111e31d9;padding:20px;box-shadow:0 16px 45px #0002}.panel h2{font-size:18px;margin:0 0 14px}label{display:block;font-size:12px;color:#c8d7ea;margin:14px 0 7px}input,select{width:100%;background:#0b1525;border:1px solid #405674;border-radius:10px;color:var(--ink);padding:12px;font:inherit}input[type=file]{padding:9px;font-size:12px}button{width:100%;margin-top:14px;padding:12px;border:1px solid #8c784f;border-radius:10px;background:linear-gradient(135deg,#e7c98b,#b89658);color:#172033;font-weight:900;cursor:pointer}.hint{font-size:12px;border-left:3px solid var(--blue);padding-left:10px;margin-top:14px}.profile{display:flex;gap:14px;align-items:center;margin-bottom:18px}.avatar{width:66px;height:66px;flex-shrink:0;border-radius:16px;border:1px solid #9c895d;background:linear-gradient(145deg,#334c6c,#121f32);display:grid;place-items:center;font-size:28px}.profile h2{margin:0 0 4px}.profile p{margin:0;font-size:12px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat{border:1px solid #2d415a;border-radius:12px;background:#0d192a;padding:12px}.stat small{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.stat strong{font-size:16px;overflow-wrap:anywhere}.subhead{font-size:13px;color:var(--gold);margin:20px 0 9px}.pillrow{display:flex;gap:7px;flex-wrap:wrap}.pill{border:1px solid #415673;border-radius:999px;padding:6px 10px;font-size:12px;color:#dce9f9}.preview{width:100%;max-height:220px;object-fit:contain;background:#09111e;border:1px dashed #405674;border-radius:12px;margin-top:10px;display:none}.status{font-size:12px;color:#9ed6ff;min-height:18px}.foot{margin-top:24px;text-align:center;font-size:11px;color:#8292a9}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.panel{padding:16px}.top{letter-spacing:.04em}.stats{gap:7px}.stat{padding:10px}}
+</style>
+</head>
+<body><main>
+<header class="top"><a href="./landing.html#start">← 처음 화면</a><span>KOR1816 <span class="tag">· PROFILE LAB</span></span></header>
+<p class="eyebrow">PLAYER PROFILE · PROTOTYPE</p>
+<h1>게임 프로필 연결</h1>
+<p>게임 ID와 프로필 캡처를 함께 활용하는 화면 시안이야. 아래 계정 연결은 배포·설정된 OAuth Worker가 있을 때만 동작해. 아직 계정 정보 저장이나 KOR1816 사용자 연결은 구현 전이야.</p>
+<section class="panel" style="margin-top:20px">
+<h2>② 킹샷 계정 로그인 연결 (테스트용)</h2>
+<label for="accountApiBase">계정 연결 서버 주소</label>
+<input id="accountApiBase" type="url" inputmode="url" placeholder="https://your-worker.example.workers.dev">
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:8px">
+<button id="accountConnectBtn" type="button">킹샷 계정 연결</button>
+<button id="accountFetchBtn" type="button">내 계정 정보 조회</button>
+<button id="accountDisconnectBtn" type="button">계정 연결 해제</button>
+</div>
+<pre id="accountResult" style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;background:#09111e;border:1px solid #30435d;border-radius:10px;padding:12px;font-size:12px;color:#cfe2f7">아직 계정 서버에 연결하지 않았어.</pre>
+<p class="hint">테스트용 UI야. 서버 주소가 없으면 아무 요청도 보내지 않아. 제공처 로그인 승인은 제3자 서비스로 이동하며, 실제 배포 전에는 쿠키·세션·사용자 소유 확인을 검증해야 해. API 키나 비밀번호를 이 화면에 입력하지 마.</p>
+</section>
+<div class="grid">
+<section class="panel">
+<h2>① 내 정보 입력</h2>
+<label for="playerId">킹샷 게임 ID</label><input id="playerId" inputmode="numeric" placeholder="예: 123456789">
+<label for="nickname">게임 닉네임</label><input id="nickname" placeholder="프로필에 표시되는 닉네임">
+<label for="kingdom">왕국 번호</label><input id="kingdom" inputmode="numeric" placeholder="예: 710">
+<label for="alliance">연맹</label><input id="alliance" placeholder="연맹명">
+<label for="power">전투력</label><input id="power" placeholder="예: 850M">
+<label for="townCenter">성 레벨 / 타운센터</label><input id="townCenter" placeholder="제공처가 지원할 때 자동 입력">
+<label for="mysticTrial">미스틱 트라이얼 점수</label><input id="mysticTrial" inputmode="numeric" placeholder="예: 1,197">
+<label for="kills">처치 점수</label><input id="kills" placeholder="제공처가 지원할 때 자동 입력">
+<label for="avatarUrl">프로필 아바타 URL</label><input id="avatarUrl" type="url" placeholder="https://...">
+<label for="troops">병사 수 / 병종 정보</label><input id="troops" placeholder="예: 총 2,400,000 · 보병/기병/궁병">
+<label for="heroes">주력 영웅 / 별 등급</label><input id="heroes" placeholder="예: 아마데우스 · 페라 · 로사">
+<label for="equipment">장비 / 부적 메모</label><input id="equipment" placeholder="예: 장비 등급, 부적 레벨 등">
+<label for="capture">프로필 캡처 이미지</label><input id="capture" type="file" accept="image/*">
+<img id="imagePreview" class="preview" alt="선택한 프로필 캡처 미리보기">
+<p class="hint">사진은 이 화면에서 미리보기만 해. 실제 OCR 자동 인식과 게임 데이터 조회는 별도로 검증한 다음 연결할 거야.</p>
+<button id="previewBtn" type="button">프로필 미리보기 반영</button><button id="lookupBtn" type="button" class="secondary">외부 공개 프로필 조회</button><button id="apiLookupBtn" type="button" class="secondary">KOR1816 자동 조회 (서버 연결 후)</button><div class="status" id="status" aria-live="polite"></div>
+</section>
+<section class="panel" aria-label="프로필 미리보기">
+<div class="profile"><div class="avatar" id="avatar">♜</div><div><h2 id="outName">플레이어 닉네임</h2><p><span id="outKingdom">왕국 미입력</span> · <span id="outAlliance">연맹 미입력</span></p><p id="outId">게임 ID 미입력</p></div></div>
+<div class="stats">
+<div class="stat"><small>전투력</small><strong id="outPower">미입력</strong></div>
+<div class="stat"><small>미스틱 트라이얼</small><strong id="outMysticTrial">미입력</strong></div>
+<div class="stat"><small>성 레벨</small><strong id="outTownCenter">미입력</strong></div>
+<div class="stat"><small>병사 정보</small><strong>연동 확인 필요</strong></div>
+<div class="stat"><small>영웅·장비</small><strong id="outHeroes">연동 확인 필요</strong></div>
+</div>
+<h3 class="subhead">상세 프로필</h3>
+<div class="stats"><div class="stat"><small>병사 정보</small><strong id="outTroops">미입력</strong></div><div class="stat"><small>장비 / 부적</small><strong id="outEquipment">미입력</strong></div>
+<div class="stat"><small>처치 점수</small><strong id="outKills">미입력</strong></div><div class="stat"><small>데이터 출처</small><strong id="outSource">직접 입력 / 시안</strong></div></div>
+<div class="pillrow" style="margin-top:12px"><span class="pill">스킬</span><span class="pill">병종별 병력</span><span class="pill">프로필 이미지</span></div>
+<p class="hint">자동 조회가 가능한 정보는 API 검증 후 채우고, 나머지는 캡처 인식 또는 직접 입력으로 보완하는 구조로 설계할 예정이야.</p>
+</section>
+</div>
+<p class="foot">KOR1816 · 화면 검토용 · 실제 인증 / 저장 / 자동 조회 미연결</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const accountBase=()=>{const raw=$("accountApiBase").value.trim();if(!raw)throw new Error("먼저 계정 연결 서버 주소를 입력해줘.");const u=new URL(raw);if(u.protocol!=="https:")throw new Error("계정 연결 서버는 HTTPS 주소여야 해.");return u.origin};
+try{const saved=sessionStorage.getItem("kor1816_account_api_base");if(saved&&/^https:\/\//i.test(saved))$("accountApiBase").value=saved;const auth=new URLSearchParams(location.search).get("auth");if(auth==="connected"){$("accountResult").textContent="로그인 승인 단계에서 돌아왔어. 이제 ‘내 계정 정보 조회’를 눌러줘.";$("status").textContent="계정 로그인 콜백에서 돌아왔어. 서버 세션이 유지되는지 조회해볼 수 있어."}else if(auth==="denied")$("accountResult").textContent="계정 연결 승인이 취소됐거나 실패했어."}catch{}
+$("accountConnectBtn").addEventListener("click",()=>{try{const base=accountBase();sessionStorage.setItem("kor1816_account_api_base",base);location.href=base+"/auth/login"}catch(e){$("accountResult").textContent=e.message}});
+const field=(root,names)=>{const wanted=new Set(names.map(n=>n.toLowerCase().replace(/[^a-z0-9]/g,"")));const seen=new Set();const walk=(v,depth=0)=>{if(!v||typeof v!=="object"||depth>6||seen.has(v))return;seen.add(v);for(const [k,val] of Object.entries(v)){const key=k.toLowerCase().replace(/[^a-z0-9]/g,"");if(wanted.has(key)&&val!==null&&val!==undefined&&val!==""&&typeof val!=="object")return val}for(const val of Object.values(v)){const found=walk(val,depth+1);if(found!==undefined)return found}};return walk(root)};
+const node=(root,names)=>{const wanted=new Set(names.map(n=>n.toLowerCase().replace(/[^a-z0-9]/g,"")));const seen=new Set();const walk=(v,depth=0)=>{if(!v||typeof v!=="object"||depth>6||seen.has(v))return;seen.add(v);for(const [k,val] of Object.entries(v)){const key=k.toLowerCase().replace(/[^a-z0-9]/g,"");if(wanted.has(key)&&val!==null&&val!==undefined&&val!=="")return val}for(const val of Object.values(v)){const found=walk(val,depth+1);if(found!==undefined)return found}};return walk(root)};
+const pretty=(v)=>{if(v===undefined||v===null||v==="")return "";if(typeof v==="string"||typeof v==="number"||typeof v==="boolean")return String(v);if(Array.isArray(v))return v.map(x=>typeof x==="object"?Object.entries(x||{}).filter(([k,val])=>val!==null&&typeof val!=="object").map(([k,val])=>k+": "+val).join(" · "):String(x)).filter(Boolean).join(" / ");return Object.entries(v).filter(([k,val])=>val!==null&&typeof val!=="object").map(([k,val])=>k+": "+val).join(" · ")};
+const applyAccountProfile=(data)=>{const id=field(data,["player_id","playerId","player_game_id","playerGameId","game_id","gameId","user_id","uid"]);const name=field(data,["nickname","nick_name","player_name","playerName","name"]);const kingdom=field(data,["kingdom","kingdom_id","kingdomId","kingdom_number","kid"]);const alliance=node(data,["alliance_name","allianceName","alliance_tag","allianceTag","alliance_abbr","alliance"]);const power=field(data,["power","total_power","totalPower","player_power","playerPower"]);const town=field(data,["town_center_level","townCenterLevel","town_center","townCenter","tc_level","tcLevel"]);const avatar=field(data,["avatar_url","avatarUrl","avatar","portrait_url","portraitUrl"]);const mystic=field(data,["mystic_trial","mysticTrial","mystic_trial_score","mysticTrialScore"]);const kills=field(data,["kills","kill_score","killScore","eliminations"]);const troops=node(data,["troops","troop_counts","troopCounts","troop","soldiers","soldier_count","soldierCount"]);const heroes=node(data,["heroes","hero_list","heroList","owned_heroes","ownedHeroes"]);const gear=node(data,["governor_gear","governorGear","equipment","gear","charms","governor_charm","governorCharm"]);if(id!==undefined)$("playerId").value=String(id);if(name!==undefined)$("nickname").value=String(name);if(kingdom!==undefined)$("kingdom").value=String(kingdom);if(alliance!==undefined)$("alliance").value=typeof alliance==="object"?pretty(alliance):String(alliance);if(power!==undefined)$("power").value=String(power);if(town!==undefined)$("townCenter").value=String(town);if(avatar!==undefined&&typeof avatar==="string"&&/^https:\/\//i.test(avatar))$("avatarUrl").value=avatar;if(mystic!==undefined)$("mysticTrial").value=String(mystic);if(kills!==undefined)$("kills").value=String(kills);if(troops!==undefined)$("troops").value=pretty(troops);if(heroes!==undefined)$("heroes").value=pretty(heroes);if(gear!==undefined)$("equipment").value=pretty(gear);$("previewBtn").click();$("outSource").textContent="Kingshot 계정 동의 조회";$("status").textContent="계정 응답을 화면에 반영했어. 제공처가 반환하지 않은 항목은 비워두었어."};
+$("accountFetchBtn").addEventListener("click",async()=>{let base;try{base=accountBase()}catch(e){$("accountResult").textContent=e.message;return}const b=$("accountFetchBtn");b.disabled=true;$("accountResult").textContent="연결된 계정 정보를 조회 중…";try{const r=await fetch(base+"/api/profile",{method:"GET",credentials:"include",headers:{Accept:"application/json"}});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"계정 조회에 실패했어.");$("accountResult").textContent=JSON.stringify({source:d.source,fetchedAt:d.fetchedAt,data:d.data},null,2);applyAccountProfile(d.data||{});$("status").textContent="계정 정보 조회 완료. 반환된 항목은 프로필 미리보기에 반영했어."}catch(e){$("accountResult").textContent="조회 실패: "+(e.message||"서버 연결을 확인해줘.")+"\\nWorker가 배포되지 않았거나 브라우저가 교차 사이트 쿠키를 차단했을 수 있어."}finally{b.disabled=false}});
+$("accountDisconnectBtn").addEventListener("click",async()=>{let base;try{base=accountBase()}catch(e){$("accountResult").textContent=e.message;return}try{const r=await fetch(base+"/auth/logout",{method:"POST",credentials:"include",headers:{Accept:"application/json"}});const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok)throw new Error(d.error||"연결 해제 요청에 실패했어.");$("accountResult").textContent="서버 세션 연결 해제 요청이 완료됐어.";try{sessionStorage.removeItem("kor1816_account_api_base")}catch{}}catch(e){$("accountResult").textContent="연결 해제 실패: "+(e.message||"서버 설정을 확인해줘.")}}); 
+const lookupButton=$("lookupBtn");
+lookupButton.addEventListener("click",()=>{const id=$("playerId").value.trim();if(!/^\d{5,}$/.test(id)){$("status").textContent="게임 ID를 숫자로 입력해줘.";return}window.open("https://kingshotintel.com/player/"+encodeURIComponent(id),"_blank","noopener,noreferrer");$("status").textContent="외부 공개 프로필 페이지를 새 창으로 열었어. 검색 결과가 없거나 일부 정보가 비어 있을 수 있어."});
+const space=new URLSearchParams(location.search).get("space");
+if(space==="immigrant"){document.title="KOR1816 | 이민자 프로필 시안";document.querySelector(".eyebrow").textContent="MIGRATION COMMUNITY · PROFILE";document.querySelector("h1").textContent="이민자 프로필 연결";document.querySelector(".top .tag").textContent="· IMMIGRANT PROFILE";}
+else if(space==="1816"){document.title="KOR1816 | 1816 프로필 시안";document.querySelector("h1").textContent="1816 프로필 연결";}
+$("capture").addEventListener("change",()=>{const f=$("capture").files&&$("capture").files[0];const img=$("imagePreview");if(!f){img.removeAttribute("src");img.style.display="none";return}if(!f.type.startsWith("image/")){img.style.display="none";$("status").textContent="이미지 파일을 선택해줘.";return}img.src=URL.createObjectURL(f);img.style.display="block";$("status").textContent="캡처를 이 화면에서 미리 볼 수 있어."});
+$("previewBtn").addEventListener("click",()=>{const id=$("playerId").value.trim();$("outId").textContent=id?"게임 ID "+id:"게임 ID 미입력";$("outName").textContent=$("nickname").value.trim()||"플레이어 닉네임";$("outKingdom").textContent=$("kingdom").value.trim()?"왕국 "+$("kingdom").value.trim():"왕국 미입력";$("outAlliance").textContent=$("alliance").value.trim()||"연맹 미입력";$("outPower").textContent=$("power").value.trim()||"미입력";$("outTroops").textContent=$("troops").value.trim()||"미입력";$("outMysticTrial").textContent=$("mysticTrial").value.trim()||"미입력";$("outTownCenter").textContent=$("townCenter").value.trim()||"미입력";$("outKills").textContent=$("kills").value.trim()||"미입력";const avatarUrl=$("avatarUrl").value.trim();$("avatar").style.backgroundImage=avatarUrl?`url("${avatarUrl.replace(/["\\\\]/g,"")}")`:"";$("avatar").style.backgroundSize="cover";$("avatar").style.backgroundPosition="center";$("outHeroes").textContent=$("heroes").value.trim()||"연동 확인 필요";$("outEquipment").textContent=$("equipment").value.trim()||"미입력";$("status").textContent="입력값을 화면 미리보기에 반영했어. 아직 저장하거나 서버에 전송하지 않았어."});
+$("apiLookupBtn").addEventListener("click",async()=>{const id=$("playerId").value.trim();if(!/^\d{5,20}$/.test(id)){$("status").textContent="게임 ID를 숫자로 입력해줘.";return}const endpoint=window.KOR1816_PROFILE_API_URL;if(!endpoint){$("status").textContent="자동 조회 서버가 아직 배포·설정되지 않았어. API 키는 입력하지 마. 서버 설정 후 사용할 수 있어.";return}const btn=$("apiLookupBtn");btn.disabled=true;btn.textContent="조회 중…";$("status").textContent="공개 프로필 조회 중이야. 제공처 응답에 따라 일부 항목은 비어 있을 수 있어.";try{const u=new URL(endpoint);u.searchParams.set("id",id);const res=await fetch(u.toString(),{headers:{Accept:"application/json"}});const result=await res.json();if(!res.ok||!result.ok)throw new Error(result.error||"조회에 실패했어.");const d=result.data||{};const player=d.player||d.data?.player||d;const val=(...xs)=>xs.find(x=>x!==undefined&&x!==null&&String(x).trim()!=="");$("nickname").value=val(player.nick_name,player.nickname,$("nickname").value)||"";$("kingdom").value=val(player.kid,player.kingdom,$("kingdom").value)||"";$("alliance").value=val(player.alliance?.abbr,player.alliance?.name,player.alliance_name,$("alliance").value)||"";$("power").value=val(player.power,$("power").value)||"";$("townCenter").value=val(player.town_center_level,player.townCenterLevel,$("townCenter").value)||"";$("avatarUrl").value=val(player.avatar_url,player.avatarUrl,$("avatarUrl").value)||"";const ranks=d.ranks||d.data?.ranks||{};$("mysticTrial").value=val(ranks.mystic_trial,ranks.mysticTrial,$("mysticTrial").value)||"";$("kills").value=val(ranks.kills,player.kills,$("kills").value)||"";$("previewBtn").click();const heroes=d.heroes||d.data?.heroes||[];$("heroes").value=Array.isArray(heroes)&&heroes.length?heroes.map(h=>(h.name||"영웅")+" "+(h.star_label||h.stars||h.star||"")+" "+(h.level?"Lv."+h.level:"")).join(" / "):$("heroes").value;$("troops").value=$("troops").value||"병사 수: 제공처 응답에서 확인 필요";const gear=d.gov_gear||d.data?.gov_gear;if(gear?.hidden)$("equipment").value="통치자 장비 비공개";else if(gear?.items?.length)$("equipment").value=gear.items.map(g=>[g.slot,g.name,g.quality,g.strength_level?"+"+g.strength_level:""].filter(Boolean).join(" ")).join(" / ");$("previewBtn").click();$("outSource").textContent=(result.source||"외부 제공처")+(result.fetchedAt?" · "+new Date(result.fetchedAt).toLocaleDateString("ko-KR"):"");$("status").textContent="공개 프로필 조회 완료. 출처: "+(result.source||"외부 제공처")+" · "+(result.fetchedAt||"갱신 시각 미제공")+" · 이 조회는 킹샷 계정 로그인 인증이 아니라 공개 데이터 조회야. 미제공/비공개 항목은 직접 확인해야 해."}catch(e){$("status").textContent="조회 실패: "+(e.message||"서버 또는 제공처 응답을 확인해줘.")}finally{btn.disabled=false;btn.textContent="KOR1816 자동 조회 (서버 연결 후)"}});
+</script></body></html>

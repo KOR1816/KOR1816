@@ -1,0 +1,18 @@
+# Example only — copy to wrangler.toml for local deployment setup.
+# Never commit real secrets, tokens, or production identifiers.
+name = "kor1816-account-link"
+main = "account-worker.js"
+compatibility_date = "2026-10-20"
+
+# Create a KV namespace in Cloudflare and replace the placeholder ID locally.
+# Do not deploy until the OAuth callback and cookie behavior are tested.
+[[kv_namespaces]]
+binding = "OAUTH_STORE"
+id = "REPLACE_WITH_CLOUDFLARE_KV_NAMESPACE_ID"
+
+[vars]
+# Exact origin of the profile page in the GitHub Pages feature preview.
+APP_ORIGIN = "https://kor1816.github.io"
+
+# Must match the redirect URI registered/accepted by the OAuth provider.
+OAUTH_REDIRECT_URI = "https://REPLACE_WITH_WORKER_HOST/auth/callback"
