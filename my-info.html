@@ -70,23 +70,22 @@ const slotOrder={Helmet:0,Gloves:1,Armor:2,Boots:3};
 function gearQuality(item){
 const keys=['quality_label','qualityLabel','quality_key','qualityKey','quality','rarity','grade','quality_name','qualityName','quality_color','qualityColor','color_name','colorName','color','rarity_name','rarityName','tier','tier_name','tierName','quality_id','qualityId','rarity_id','rarityId'];
 const rawValue=first(item,keys),raw=String(rawValue&&typeof rawValue==='object'?first(rawValue,['label','key','name','value','color','quality','rarity','id'])??'':rawValue??'').trim().toLowerCase();
-const normalized=raw.replace(/[ _-]+/g,'');
+const q=raw.replace(/[ _-]+/g,'');
 const red=item.red===true||item.red===1||String(item.red).toLowerCase()==='true'||String(item.red)==='1';
-if(red||/(^|[^a-z])red([^a-z]|$)|빨강|적색|红色|赤色|mythic|신화/.test(raw))return 'red';
-if(/yellow|gold|legendary|전설|노랑|노란|황금|황색|黄色|金色/.test(raw))return 'yellow';
-if(/green|uncommon|녹색|초록|绿色|緑/.test(raw))return 'green';
-if(/blue|rare|파랑|파란|청색|蓝色|青色/.test(raw))return 'blue';
-if(/purple|epic|보라|자색|紫色/.test(raw))return 'purple';
-if(/orange|주황|橙色|橘色/.test(raw))return 'orange';
-const iconValue=String(first(item,['icon','image','image_url','imageUrl','icon_url','iconUrl','asset','portrait'])||'');
-const idValue=String(first(item,['eid','equipment_id','equipmentId','item_id','itemId','id'])??'');
-const source=iconValue+' '+idValue+' '+JSON.stringify(item);
-const lordId=(source.match(/lordsequipment_icon_(\\d+)/i)||[])[1]||'';
+if(red||/(^|[^a-z])red([^a-z]|$)|빨강|적색|红色|赤色/.test(q))return 'red';
+if(/yellow|gold|legendary|전설|노랑|노란|황금|황색|黄色|金色/.test(q))return 'yellow';
+if(/green|uncommon|녹색|초록|绿色|緑/.test(q))return 'green';
+if(/blue|rare|파랑|파란|청색|蓝色|青色/.test(q))return 'blue';
+if(/purple|epic|보라|자색|紫色/.test(q))return 'purple';
+if(/orange|주황|橙色|橘色/.test(q))return 'orange';
+const iconValue=first(item,['icon','image','image_url','imageUrl','icon_url','iconUrl','asset','portrait']);
+const idValue=first(item,['eid','equipment_id','equipmentId','item_id','itemId','id']);
+const source=String(iconValue||'')+' '+String(idValue??'');
+const heroId=(source.match(/equipment_icon_(\d{7})/i)||source.match(/\b(\d{7})\b/)||[])[1]||'';
+if(/^10[1-4][1-3]5\d{2}$/.test(heroId))return 'yellow';
+const lordId=(source.match(/lordsequipment_icon_(\d+)/i)||[])[1]||'';
 const lordQuality=({'1001':'yellow','2001':'yellow','3002':'blue','4002':'blue','5002':'blue','6001':'green','1003':'purple','2003':'purple','3003':'purple','4003':'purple','5007':'yellow','6004':'yellow'})[lordId]||'';
-if(lordQuality)return lordQuality;
-const heroId=(source.match(/equipment_icon_(\\d{7})/i)||source.match(/\\b(\\d{7})\\b/)||[])[1]||'';
-if(/^10[1-4][1-3]5\\d{2}$/.test(heroId))return 'yellow';
-return '';
+return lordQuality;
 }
 function gearImage(item, kind='equipment'){const direct=first(item,['icon','image','image_url','imageUrl','icon_url','iconUrl','asset','portrait']);if(direct)return imgUrl(direct);const id=first(item,['eid','equipment_id','equipmentId','item_id','itemId','id']);if(id!=null)return 'https://www.mightpulse.com/assets/icons/'+(kind==='lord'?'lordsequipment_icon_':'equipment_icon_')+id+'.png';return '';}
 const slotIcons={Helmet:'♜',Gloves:'♧',Armor:'◈',Boots:'⬟'};
@@ -112,7 +111,7 @@ Object.assign(map,{
 'Purple T1':{ko:'보라 T1',en:'Purple T1',ja:'紫 T1',zh:'紫色 T1',de:'Lila T1',it:'Viola T1',es:'Morado T1',tr:'Mor T1'},
 'Gold T2':{ko:'황금 T2',en:'Gold T2',ja:'金 T2',zh:'金色 T2',de:'Gold T2',it:'Oro T2',es:'Dorado T2',tr:'Altın T2'}
 });
-return map[v]?.[lang]||v}
+const direct=map[v];if(direct?.[lang])return direct[lang];const key=Object.keys(map).find(k=>k.toLowerCase()===v.toLowerCase());return map[key]?.[lang]||v}
 function gearCard(g){const slot=gearSlot(g),quality=first(g,['quality_label','tier'])||'',enh=gearLevel(g),ref=first(g,['refine_level','refinement_level']);const red=!!g.red||String(g.quality_key||'').toLowerCase()==='legendary';return '<div class="gear-slot '+(red?'red':'')+'"><div class="slot-icon">'+esc(slotIcons[slot]||'◇')+'</div><div style="min-width:0"><div class="gear-name">'+esc(first(g,['name','title'])||slotNames[slot]||slot)+'</div><div class="gear-meta">'+(quality?esc(quality)+'<br>':'')+(enh!==null?esc(T.enhance)+' +'+esc(fmt(enh)):'')+(ref!==null?' · '+esc(T.refine)+' '+esc(fmt(ref)):'')+'</div></div></div>'}
 function renderLord(data){const box=$('lordGear'),g=data.gov_gear||data.governor_gear||data.lord_gear||{};if(g.hidden){box.innerHTML='<div class="empty"><strong>'+esc(T.lordPrivate)+'</strong><br>'+esc(g.message||T.lordMissing)+'</div>';return}const items=Array.isArray(g)?g:(Array.isArray(g.items)?g.items:[]);if(!items.length){box.innerHTML='<div class="empty">'+esc(T.lordMissing)+'</div>';return}box.innerHTML='<div class="gov-gear-grid">'+items.map((item,i)=>{const slot=gearSlot({slot:first(item,['slot','type','part'])||['Helmet','Gloves','Armor','Boots'][i]||'Gear'}),quality=gearQuality(item),image=gearImage(item,'lord')||'https://www.mightpulse.com/assets/icons/lordsequipment_icon_'+(['1001','2001','3001','4001'][i]||'1001')+'.png';return '<div class="gov-gear-item '+(quality?'quality-'+quality:'')+'"><img src="'+esc(image)+'" alt="'+esc(gameLabel(item.name||slotNames[slot]||slot))+'" loading="lazy" onerror="this.remove()"><div class="gear-item-name">'+esc(gameLabel(item.name||slotNames[slot]||slot))+'</div><div class="gear-item-level">'+(item.tier?esc(gameLabel(item.tier))+' · ':'')+esc(T.enhance)+' +'+esc(fmt(first(item,['enhancement_level','strength_level','level'])))+'</div><div class="gear-item-name">'+esc(T.refine)+' '+esc(fmt(first(item,['refine_level','star'])))+'</div></div>'}).join('')+'</div>'}
 function renderHeroes(data){const heroes=Array.isArray(data.heroes)?data.heroes:[];const html=heroes.map(h=>{const name=gameLabel(h.name||'Hero'),icon=imgUrl(h.icon),gear=Array.isArray(h.gear)?h.gear:[],exclusive=h.exclusive_gear||{},star=h.star_label||h.stars||h.star||'—';const exId=first(exclusive,['eid','equipment_id','equipmentId','item_id','itemId','id']);const exIcon=gearImage(exclusive)|| (exId==null?'':'https://www.mightpulse.com/assets/icons/equipment_icon_'+exId+'.png');return '<article class="hero-card"><div class="hero-title">'+(icon?'<img class="hero-icon" src="'+esc(icon)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'<div style="min-width:0"><div class="hero-name">'+esc(name)+'</div><div class="hero-info">'+esc(T.levelLabel)+' '+esc(fmt(h.level))+' · '+esc(T.starLabel)+' '+esc(star)+'</div></div>'+(exclusive.name||exIcon?'<div class="hero-exclusive-item '+(gearQuality(exclusive)?'quality-'+gearQuality(exclusive):'')+'">'+(exIcon?'<img class="hero-gear-image" src="'+esc(exIcon)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'<div class="gear-item-name">'+esc(gameLabel(exclusive.name)||T.exclusive)+'</div><div class="gear-item-level">Lv. '+esc(fmt(exclusive.level??h.exclusive_gear_level??0))+'</div></div>':'')+'</div>'+(gear.length?'<div class="hero-gear-grid">'+gear.map(item=>{const slot=gearSlot(item),img=gearImage(item),quality=gearQuality(item),enh=first(item,['enhancement_level','gear_level','strength_level','level']),ref=first(item,['refine_level','refinement_level','star']);return '<div class="hero-gear-item '+(quality?'quality-'+quality:'')+'">'+(img?'<img class="hero-gear-image" src="'+esc(img)+'" alt="'+esc(gameLabel(slotNames[slot]||slot))+'" loading="lazy" onerror="this.remove()">':'<div class="hero-gear-symbol">'+esc(slotIcons[slot]||'◇')+'</div>')+'<div class="gear-item-name">'+esc(gameLabel(slotNames[slot]||slot))+'</div><div class="gear-item-level">+'+esc(fmt(enh))+'</div><div class="gear-item-name">'+esc(T.refine)+' '+esc(fmt(ref))+'</div></div>'}).join('')+'</div>':'<div class="gear-empty">'+esc(T.heroMissing)+'</div>')+'</article>'}).join('');$('heroGear').innerHTML=html||'<div class="empty">'+esc(T.heroMissing)+'</div>'}
