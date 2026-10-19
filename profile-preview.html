@@ -67,7 +67,7 @@ function resetPreview() {
 }
 function validId() {
   const id = idInput.value.trim();
-  if (!/^\\d{4,20}$/.test(id)) {
+  if (!/^\d{4,20}$/.test(id)) {
     setStatus('게임 ID는 숫자 4~20자리로 입력해 주세요.', 'error');
     idInput.focus();
     return null;
