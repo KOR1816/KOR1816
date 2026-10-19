@@ -11,7 +11,7 @@
 body{margin:0;min-height:100vh;padding:22px;display:grid;place-items:center;color:var(--ink);font-family:Inter,"Pretendard","Noto Sans KR",system-ui,sans-serif;background:linear-gradient(180deg,#07101bd9,#0b1525f2),url("./1816.jpg") center/cover fixed}
 main{width:min(460px,100%);padding:clamp(22px,5vw,36px);border:1px solid var(--line);border-radius:24px;background:#0b1726e8;box-shadow:0 24px 80px #0009;backdrop-filter:blur(12px)}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#d8e8fb;font-size:11px;font-weight:900;letter-spacing:.13em}
-.back{color:var(--blue);text-decoration:none;letter-spacing:0}
+.back{color:var(--blue);text-decoration:none;letter-spacing:0}.language-control{margin-left:auto;display:flex;align-items:center;gap:5px;color:#aebed3;font-size:10px;letter-spacing:0}.language-control select{max-width:105px;padding:6px 5px;border:1px solid #526b88;border-radius:8px;background:#081321;color:#f3f7ff;font:inherit}.brandline{white-space:nowrap}@media(max-width:460px){.top{flex-wrap:wrap}.language-control{margin-left:auto}.brandline{font-size:9px}.back{font-size:10px}}
 .crest{display:grid;place-items:center;width:38px;height:38px;border:1px solid #d7bd7c;border-radius:12px;color:#f1d89b;font: bold 23px Georgia,serif}
 .hero{text-align:center;padding:30px 0 22px}
 .eyebrow{color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.24em}
@@ -30,17 +30,31 @@ button:disabled{opacity:.6;cursor:wait}
 </head>
 <body>
 <main>
-<header class="top"><span class="crest">K</span><span>KOR1816 · KINGDOM 1816</span><a class="back" href="./landing.html">← 뒤로</a></header>
-<section class="hero"><div class="eyebrow">MEMBER ACCESS</div><h1>연맹원 확인</h1><p>게임 ID를 조회해<br>왕국 1816과 연맹 KOR 소속을 확인합니다.</p></section>
+<header class="top"><span class="crest">K</span><span class="brandline">KOR1816 · KINGDOM 1816</span><label class="language-control"><span id="language-label">언어</span><select id="language-select" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="es">Español</option><option value="tr">Türkçe</option></select></label><a class="back" href="./landing.html" data-i18n="back">← 뒤로</a></header>
+<section class="hero"><div class="eyebrow" data-i18n="eyebrow">MEMBER ACCESS</div><h1 data-i18n="title">연맹원 확인</h1><p data-i18n="intro">게임 ID를 조회해 왕국 1816과 연맹 KOR 소속을 확인합니다.</p></section>
 <form id="loginForm">
-<label for="gameId">킹샷 게임 ID</label>
-<input id="gameId" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="게임 ID 숫자 입력" required>
-<button id="submitBtn" type="submit">확인 후 입장하기</button>
+<label for="gameId" data-i18n="gameid">킹샷 게임 ID</label>
+<input id="gameId" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="게임 ID 숫자 입력" data-i18n-placeholder="placeholder" required>
+<button id="submitBtn" type="submit" data-i18n="submit">확인 후 입장하기</button>
 </form>
-<div class="status" id="status" role="status" aria-live="polite">두 조건이 모두 일치해야 입장할 수 있습니다.</div>
-<p class="note">프로필 데이터는 최대 1시간 전 정보일 수 있습니다. 이 확인은 공개 프로필의 소속 확인이며, 게임 계정 소유권을 증명하는 본인 인증은 아닙니다.</p>
+<div class="status" id="status" role="status" aria-live="polite"><span data-i18n="initial">두 조건이 모두 일치해야 입장할 수 있습니다.</span></div>
+<p class="note" data-i18n="note">프로필 데이터는 최대 1시간 전 정보일 수 있습니다. 이 확인은 공개 프로필의 소속 확인이며, 게임 계정 소유권을 증명하는 본인 인증은 아닙니다.</p>
 </main>
 <script>
+const LANGS=['ko','en','ja','zh','de','it','es','tr'];
+const WORDS={
+ko:['← 뒤로','MEMBER ACCESS','연맹원 확인','게임 ID를 조회해 왕국 1816과 연맹 KOR 소속을 확인합니다.','킹샷 게임 ID','게임 ID 숫자 입력','확인 후 입장하기','두 조건이 모두 일치해야 입장할 수 있습니다.','프로필 데이터는 최대 1시간 전 정보일 수 있습니다. 이 확인은 공개 프로필의 소속 확인이며, 게임 계정 소유권을 증명하는 본인 인증은 아닙니다.','소속 확인 중…','공개 프로필에서 왕국과 연맹 정보를 확인하고 있습니다.','게임 ID는 숫자 4~20자리로 입력해 주세요.','입장할 수 없습니다.','왕국 1816 불일치','연맹 KOR 불일치','정보 없음','확인 완료! KOR · 왕국 1816으로 확인되어 연맹 메인으로 이동합니다.','해당 게임 ID를 찾을 수 없습니다. 번호를 확인해 주세요.','브라우저 세션 저장을 사용할 수 없습니다. 사이트 권한 설정을 확인해 주세요.','소속 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.','입장 확인 완료'],
+en:['← Back','MEMBER ACCESS','Member Verification','Check your Game ID to verify membership in Kingdom 1816 and alliance KOR.','Kingshot Game ID','Enter numeric Game ID','Verify & Enter','Both requirements must match to enter.','Profile data may be up to one hour old. This checks public profile membership and does not prove ownership of the game account.','Checking membership…','Checking kingdom and alliance information from the public profile.','Enter a numeric Game ID with 4–20 digits.','Access denied.','Kingdom 1816 mismatch','Alliance KOR mismatch','No information','Verified! Kingdom 1816 and alliance KOR confirmed. Opening the alliance home.','Game ID not found. Please check the number.','Browser session storage is unavailable. Check your site permissions.','Unable to verify membership. Try again later.','Verified'],
+ja:['← 戻る','メンバー確認','同盟メンバー確認','ゲームIDを照会し、王国1816・同盟KORへの所属を確認します。','キングショット ゲームID','数字のゲームIDを入力','確認して入場','入場には両方の条件を満たす必要があります。','プロフィール情報は最大1時間前の可能性があります。公開プロフィールの所属確認であり、アカウント所有者の証明ではありません。','所属を確認中…','公開プロフィールから王国と同盟の情報を確認しています。','ゲームIDは4～20桁の数字で入力してください。','入場できません。','王国1816が一致しません','同盟KORが一致しません','情報なし','確認完了！王国1816・同盟KORを確認しました。ホームへ移動します。','ゲームIDが見つかりません。番号を確認してください。','セッション保存を利用できません。ブラウザ設定を確認してください。','所属情報を確認できません。時間をおいて再試行してください。','確認済み'],
+zh:['← 返回','成员验证','联盟成员验证','查询游戏 ID，确认是否属于 1816 王国和 KOR 联盟。','Kingshot 游戏 ID','输入数字游戏 ID','验证并进入','必须同时满足两个条件才能进入。','资料可能延迟最多一小时。这只检查公开资料中的联盟归属，不能证明账号所有权。','正在确认联盟归属…','正在从公开资料查询王国和联盟信息。','请输入 4–20 位数字游戏 ID。','无法进入。','王国不匹配（需 1816）','联盟不匹配（需 KOR）','无资料','验证成功！已确认 1816 王国和 KOR 联盟，正在进入主页。','未找到该游戏 ID，请检查号码。','无法使用浏览器会话存储，请检查网站权限。','无法确认联盟归属，请稍后重试。','验证完成'],
+de:['← Zurück','MITGLIEDERPRÜFUNG','Allianzmitglied prüfen','Prüfe deine Spiel-ID auf Königreich 1816 und Allianz KOR.','Kingshot-Spiel-ID','Numerische Spiel-ID eingeben','Prüfen und eintreten','Beide Bedingungen müssen erfüllt sein.','Profildaten können bis zu einer Stunde alt sein. Geprüft wird die öffentliche Allianzzugehörigkeit, nicht der Kontobesitz.','Mitgliedschaft wird geprüft…','Königreich und Allianz werden im öffentlichen Profil geprüft.','Bitte eine 4–20-stellige numerische Spiel-ID eingeben.','Zugang verweigert.','Königreich stimmt nicht überein','Allianz stimmt nicht überein','Keine Information','Bestätigt! Königreich 1816 und Allianz KOR gefunden. Startseite wird geöffnet.','Spiel-ID nicht gefunden. Bitte Nummer prüfen.','Sitzungsspeicher nicht verfügbar. Bitte Browsereinstellungen prüfen.','Mitgliedschaft nicht überprüfbar. Bitte später erneut versuchen.','Bestätigt'],
+it:['← Indietro','VERIFICA MEMBRO','Verifica membro alleanza','Controlla l’ID di gioco per verificare il Regno 1816 e l’alleanza KOR.','ID di gioco Kingshot','Inserisci ID numerico','Verifica ed entra','Entrambe le condizioni devono essere soddisfatte.','I dati del profilo possono avere un ritardo fino a un’ora. La verifica controlla il profilo pubblico, non la proprietà dell’account.','Verifica appartenenza…','Controllo del regno e dell’alleanza nel profilo pubblico.','Inserisci un ID numerico di 4–20 cifre.','Accesso negato.','Regno non corrispondente','Alleanza non corrispondente','Nessuna informazione','Verifica completata! Regno 1816 e alleanza KOR confermati. Apertura della home.','ID di gioco non trovato. Controlla il numero.','Archiviazione sessione non disponibile. Controlla le impostazioni.','Impossibile verificare l’appartenenza. Riprova più tardi.','Verificato'],
+es:['← Volver','VERIFICACIÓN DE MIEMBRO','Verificar miembro de alianza','Consulta tu ID de juego para comprobar el Reino 1816 y la alianza KOR.','ID de juego de Kingshot','Introduce un ID numérico','Verificar y entrar','Deben cumplirse ambas condiciones para entrar.','Los datos del perfil pueden tener hasta una hora de antigüedad. Se comprueba el perfil público, no la propiedad de la cuenta.','Comprobando pertenencia…','Consultando los datos del reino y la alianza en el perfil público.','Introduce un ID numérico de 4 a 20 dígitos.','Acceso denegado.','El reino no coincide','La alianza no coincide','Sin información','¡Verificado! Reino 1816 y alianza KOR confirmados. Abriendo inicio.','No se encontró el ID. Comprueba el número.','El almacenamiento de sesión no está disponible. Revisa los permisos.','No se pudo verificar la pertenencia. Inténtalo más tarde.','Verificado'],
+tr:['← Geri','ÜYE DOĞRULAMA','İttifak Üyesi Kontrolü','Oyun kimliğini sorgulayarak 1816 Krallığı ve KOR ittifakını doğrula.','Kingshot Oyun Kimliği','Sayısal oyun kimliğini gir','Doğrula ve gir','Giriş için iki koşul da sağlanmalıdır.','Profil verileri bir saate kadar eski olabilir. Bu kontrol herkese açık profildeki ittifakı doğrular, hesap sahipliğini kanıtlamaz.','Üyelik kontrol ediliyor…','Herkese açık profilden krallık ve ittifak bilgileri kontrol ediliyor.','4–20 basamaklı sayısal oyun kimliği gir.','Giriş reddedildi.','Krallık eşleşmiyor','İttifak eşleşmiyor','Bilgi yok','Doğrulandı! 1816 Krallığı ve KOR ittifakı onaylandı. Ana sayfa açılıyor.','Oyun kimliği bulunamadı. Numarayı kontrol et.','Oturum depolaması kullanılamıyor. Site izinlerini kontrol et.','Üyelik doğrulanamadı. Daha sonra tekrar dene.','Doğrulandı']};
+const NAMES={ko:'언어',en:'Language',ja:'言語',zh:'语言',de:'Sprache',it:'Lingua',es:'Idioma',tr:'Dil'};
+let currentLang='ko';function word(i){return WORDS[currentLang][i]||WORDS.ko[i]}
+function applyLang(lang){currentLang=LANGS.includes(lang)?lang:'ko';document.documentElement.lang=currentLang;document.getElementById('language-select').value=currentLang;document.getElementById('language-label').textContent=NAMES[currentLang];document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=word(({back:0,eyebrow:1,title:2,intro:3,gameid:4,submit:6,initial:7,note:8})[el.dataset.i18n]));document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>el.placeholder=word(5));status(word(7));try{localStorage.setItem('kor1816_rebuild_lang_v1',currentLang);localStorage.setItem('kor1816_lang',currentLang)}catch{}}
+document.getElementById('language-select').addEventListener('change',e=>applyLang(e.target.value));
 const API = 'https://kor1816-api.to1ggi8410.workers.dev/api/profile';
 const form = document.getElementById('loginForm');
 const input = document.getElementById('gameId');
@@ -50,21 +64,18 @@ const params = new URLSearchParams(location.search);
 const returnPages = new Set(['home','notices','teams','alliance','battleJoin','castlewar1','castlelayout1','seating','viking','glory']);
 const returnPage = returnPages.has(params.get('return')) ? params.get('return') : 'home';
 if (/^\d{4,20}$/.test(params.get('id') || '')) input.value = params.get('id');
-function status(message, type='') {
-  statusBox.className = 'status' + (type ? ' ' + type : '');
-  statusBox.textContent = message;
-}
+function status(message, type='') { statusBox.className = 'status' + (type ? ' ' + type : ''); statusBox.textContent = message; }
 form.addEventListener('submit', async event => {
   event.preventDefault();
   const id = input.value.trim();
   if (!/^\d{4,20}$/.test(id)) {
-    status('게임 ID는 숫자 4~20자리로 입력해 주세요.', 'error');
+    status(word(11), 'error');
     input.focus();
     return;
   }
   button.disabled = true;
-  button.textContent = '소속 확인 중…';
-  status('공개 프로필에서 왕국과 연맹 정보를 확인하고 있습니다.');
+  button.textContent = word(9);
+  status(word(10));
   try {
     const response = await fetch(API + '?id=' + encodeURIComponent(id), {headers:{Accept:'application/json'}});
     let data;
@@ -80,26 +91,27 @@ form.addEventListener('submit', async event => {
     const tag = String(alliance.abbr ?? alliance.tag ?? p.alliance_tag ?? '').trim();
     if (kingdom !== '1816' || tag !== 'KOR') {
       const why = [];
-      if (kingdom !== '1816') why.push('왕국 1816 불일치');
-      if (tag !== 'KOR') why.push('연맹 KOR 불일치');
-      status('입장할 수 없습니다. ' + why.join(' · ') + '. 조회 결과: 왕국 ' + (kingdom || '정보 없음') + ' / 연맹 ' + (tag || '정보 없음'), 'error');
+      if (kingdom !== '1816') why.push(word(13));
+      if (tag !== 'KOR') why.push(word(14));
+      status(word(12)+' '+why.join(' · ')+'. '+(kingdom||word(15))+' / '+(tag||word(15)), 'error');
       return;
     }
-    status('확인 완료! KOR · 왕국 1816으로 확인되어 연맹 메인으로 이동합니다.', 'ok');
+    status(word(16), 'ok');
     try { sessionStorage.setItem('kor1816_member_ok', '1816:KOR'); } catch (_) { throw new Error('session'); }
-    button.textContent = '입장 확인 완료';
+    button.textContent = word(20);
     setTimeout(() => { location.href = './index.html?space=1816#' + returnPage; }, 700);
   } catch (error) {
-    if (error.message === 'notfound') status('해당 게임 ID를 찾을 수 없습니다. 번호를 확인해 주세요.', 'error');
-    else if (error.message === 'session') status('브라우저 세션 저장을 사용할 수 없습니다. 사이트 권한 설정을 확인해 주세요.', 'error');
-    else status('소속 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요. API 오류 또는 정보 누락 시 입장할 수 없습니다.', 'error');
+    if (error.message === 'notfound') status(word(17), 'error');
+    else if (error.message === 'session') status(word(18), 'error');
+    else status(word(19), 'error');
   } finally {
     if (button.textContent !== '입장 확인 완료') {
       button.disabled = false;
-      button.textContent = '확인 후 입장하기';
+      button.textContent = word(6);
     }
   }
 });
+applyLang((()=>{try{return localStorage.getItem('kor1816_rebuild_lang_v1')||localStorage.getItem('kor1816_lang')||'ko'}catch{return'ko'}})());
 </script>
 </body>
 </html>
