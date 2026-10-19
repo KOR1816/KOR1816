@@ -39,9 +39,13 @@ function getCookie(request, name) {
   const item = raw.split(";").map(v => v.trim()).find(v => v.startsWith(name + "="));
   return item ? item.slice(name.length + 1) : "";
 }
+function isAllowedOrigin(request, env) {
+  const origin = request.headers.get("Origin");
+  return Boolean(origin && env.APP_ORIGIN && origin === env.APP_ORIGIN);
+}
 function cors(request, env, headers = {}) {
   const origin = request.headers.get("Origin");
-  const allowed = origin && origin === env.APP_ORIGIN;
+  const allowed = isAllowedOrigin(request, env);
   const out = { "Vary": "Origin", ...headers };
   if (allowed) {
     out["Access-Control-Allow-Origin"] = origin;
@@ -229,6 +233,7 @@ async function mcpCall(accessToken, name) {
   return result || payload;
 }
 async function profile(request, env) {
+  if (!isAllowedOrigin(request, env)) return json({ ok: false, error: "origin_not_allowed" }, 403);
   const sessionId = getCookie(request, COOKIE);
   if (!sessionId) return json({ ok: false, error: "not_connected" }, 401, cors(request, env));
   try {
@@ -244,6 +249,7 @@ async function profile(request, env) {
   }
 }
 async function logout(request, env) {
+  if (!isAllowedOrigin(request, env)) return json({ ok: false, error: "origin_not_allowed" }, 403, cors(request, env));
   const sessionId = getCookie(request, COOKIE);
   if (sessionId) await env.OAUTH_STORE.delete("session:" + sessionId);
   return new Response(JSON.stringify({ ok: true }), {
