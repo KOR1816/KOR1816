@@ -40,6 +40,8 @@ const map={
 '연맹원 전용 공간':['연맹원 전용 공간','Alliance members only','同盟メンバー専用','仅限联盟成员','Nur für Allianzmitglieder','Solo membri dell’alleanza','Solo miembros de la alianza','Yalnızca ittifak üyeleri'],
 '프로필 · 전투력 분석 · 연맹 활동':['프로필 · 전투력 분석 · 연맹 활동','Profile · Power analysis · Alliance activity','プロフィール・戦力分析・同盟活動','个人资料 · 战力分析 · 联盟活动','Profil · Machtanalyse · Allianzaktivität','Profilo · Analisi potenza · Attività alleanza','Perfil · Análisis de poder · Actividad de alianza','Profil · Güç analizi · İttifak etkinliği'],
 '입장하기':['입장하기','Enter','入場する','进入','Eintreten','Entra','Entrar','Giriş yap'],
+'게임 ID 입력':['게임 ID 입력','Enter Game ID','ゲームIDを入力','输入游戏 ID','Spiel-ID eingeben','Inserisci ID di gioco','Introduce el ID de juego','Oyun kimliğini gir'],
+'Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':['Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!','Kingdom 1816 · Mess with us and get bitten! · Bear fanatics!','王国1816 · 手を出すと噛むぞ！ · クマ好きの仲間たち','1816王国 · 别惹我们！ · 熊族同好会','Königreich 1816 · Leg dich nicht mit uns an! · Bärenfans','Regno 1816 · Non provocarci! · Amanti degli orsi','Reino 1816 · ¡No te metas con nosotros! · Fans de los osos','Krallık 1816 · Bulaşma, ısırırız! · Ayı tutkunları'],
 '새로운 인연을 찾는 공간':['새로운 인연을 찾는 공간','A place to find new connections','新しい出会いを探す場所','寻找新伙伴的空间','Ein Ort für neue Kontakte','Uno spazio per nuovi incontri','Un lugar para conocer gente','Yeni bağlantılar kurma alanı'],
 '전투력 프로필 · 자기소개 · 이민자 명부':['전투력 프로필 · 자기소개 · 이민자 명부','Power profile · Introduction · Migrant directory','戦力プロフィール・自己紹介・移民名簿','战力资料 · 自我介绍 · 移民名册','Machtprofil · Vorstellung · Einwandererverzeichnis','Profilo potenza · Presentazione · Elenco immigrati','Perfil de poder · Presentación · Lista de inmigrantes','Güç profili · Tanıtım · Göçmen listesi'],
 '안전한 공간을 위해 각 공간은 별도의 로그인과 권한으로 운영됩니다.':['안전한 공간을 위해 각 공간은 별도의 로그인과 권한으로 운영됩니다.','For a safe community, each space uses separate login and permissions.','安全のため、各スペースは別々のログインと権限で運営されます。','为保障安全，各空间使用独立登录和权限。','Für Sicherheit haben alle Bereiche getrennte Anmeldungen und Berechtigungen.','Per sicurezza, ogni spazio usa accessi e autorizzazioni separati.','Por seguridad, cada espacio tiene acceso y permisos independientes.','Güvenlik için her alan ayrı giriş ve izinlerle çalışır.'],
@@ -67,6 +69,7 @@ for(const item of originals){
  else if(item.el.matches('.go')) item.el.innerHTML=tr('입장하기',l)+' <b>↗</b>';
  else item.el.textContent=t;
 }
+document.querySelector('.intro .sub').textContent=tr('Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!',l);
 document.querySelectorAll('.choice-kicker')[0].textContent=l==='ko'?'ALLIANCE MEMBERS':l==='ja'?'同盟メンバー':l==='zh'?'联盟成员':l==='de'?'ALLIANZMITGLIEDER':l==='it'?'MEMBRI DELL’ALLEANZA':l==='es'?'MIEMBROS DE LA ALIANZA':l==='tr'?'İTTİFAK ÜYELERİ':'ALLIANCE MEMBERS';
 document.querySelectorAll('.choice-kicker')[1].textContent=l==='ko'?'MIGRATION COMMUNITY':l==='ja'?'移民コミュニティ':l==='zh'?'移民社区':l==='de'?'EINWANDERER-COMMUNITY':l==='it'?'COMUNITÀ IMMIGRATI':l==='es'?'COMUNIDAD DE INMIGRANTES':l==='tr'?'GÖÇMEN TOPLULUĞU':'MIGRATION COMMUNITY';
 document.querySelectorAll('.choice-body h2')[1].textContent=({ko:'이민자',en:'Immigrants',ja:'移民',zh:'移民',de:'Einwanderer',it:'Immigrati',es:'Inmigrantes',tr:'Göçmenler'})[l];
@@ -74,6 +77,8 @@ document.querySelectorAll('.eyebrow')[0].textContent=({ko:'WELCOME TO OUR KINGDO
 document.querySelectorAll('.eyebrow')[1].textContent=document.querySelectorAll('.choice-kicker')[0].textContent;
 document.querySelectorAll('.eyebrow')[2].textContent=document.querySelectorAll('.choice-kicker')[1].textContent;
 try{localStorage.setItem('kor1816_rebuild_lang_v1',l);localStorage.setItem('kor1816_lang',l)}catch{}
+document.querySelectorAll('.choice').forEach(a=>{const u=new URL(a.href,location.href);u.searchParams.set('lang',l);a.href=u.href});
+document.querySelectorAll('.preview-link').forEach(a=>{const u=new URL(a.href,location.href);u.searchParams.set('lang',l);a.href=u.href});
 }
 document.getElementById('language-select').addEventListener('change',e=>apply(e.target.value));
 apply((()=>{try{return localStorage.getItem('kor1816_rebuild_lang_v1')||localStorage.getItem('kor1816_lang')||'ko'}catch{return'ko'}})());
