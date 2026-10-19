@@ -27,3 +27,13 @@ This folder is a **starter template**, not a deployed service. It is deliberatel
 - It does not modify the existing Firestore `siteData` documents.
 - A static GitHub Pages frontend cannot keep a provider API key secret; a server-side proxy is required.
 - This code is a template and has not been deployed or integration-tested. It must not be described as live until deployed and verified.
+
+## Account sign-in vs public ID lookup
+
+The Worker above is only a **public player-data lookup** using a MightPulse API key. It does not sign the player in and must not be presented as proof that the visitor owns the entered player ID.
+
+For a consent-based account connection closer to the K710 Hub flow, see [ACCOUNT-OAUTH-PLAN.md](./ACCOUNT-OAUTH-PLAN.md). Kingshot Alliance Command documents an OAuth 2.1 + PKCE account endpoint and a read-only `get_my_profile` tool that may return troops, combat stats, heroes, and Town Center level. That path needs a separate server-side OAuth implementation, token/session storage, user consent, and live validation; it is not implemented by this Worker.
+
+The public lookup Worker now stops waiting after 25 seconds and rejects unexpected provider response shapes. This avoids waiting for the provider's full documented refresh window; a timeout should be shown as a retryable lookup failure, not as an empty profile.
+
+Do not deploy this public endpoint without Cloudflare-side rate limiting and monitoring. CORS only limits normal browser access and is not authentication.
