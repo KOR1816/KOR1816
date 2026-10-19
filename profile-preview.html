@@ -33,7 +33,7 @@ h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var
 <label for="capture">프로필 캡처 이미지</label><input id="capture" type="file" accept="image/*">
 <img id="imagePreview" class="preview" alt="선택한 프로필 캡처 미리보기">
 <p class="hint">사진은 이 화면에서 미리보기만 해. 실제 OCR 자동 인식과 게임 데이터 조회는 별도로 검증한 다음 연결할 거야.</p>
-<button id="previewBtn" type="button">프로필 미리보기 반영</button><div class="status" id="status" aria-live="polite"></div>
+<button id="previewBtn" type="button">프로필 미리보기 반영</button><button id="lookupBtn" type="button" class="secondary">외부 공개 프로필 조회</button><div class="status" id="status" aria-live="polite"></div>
 </section>
 <section class="panel" aria-label="프로필 미리보기">
 <div class="profile"><div class="avatar" id="avatar">♜</div><div><h2 id="outName">플레이어 닉네임</h2><p><span id="outKingdom">왕국 미입력</span> · <span id="outAlliance">연맹 미입력</span></p><p id="outId">게임 ID 미입력</p></div></div>
@@ -53,6 +53,8 @@ h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var
 </main>
 <script>
 const $=id=>document.getElementById(id);
+const lookupButton=$("lookupBtn");
+lookupButton.addEventListener("click",()=>{const id=$("playerId").value.trim();if(!/^\d{5,}$/.test(id)){$("status").textContent="게임 ID를 숫자로 입력해줘.";return}window.open("https://kingshotintel.com/player/"+encodeURIComponent(id),"_blank","noopener,noreferrer");$("status").textContent="외부 공개 프로필 페이지를 새 창으로 열었어. 검색 결과가 없거나 일부 정보가 비어 있을 수 있어."});
 const space=new URLSearchParams(location.search).get("space");
 if(space==="immigrant"){document.title="KOR1816 | 이민자 프로필 시안";document.querySelector(".eyebrow").textContent="MIGRATION COMMUNITY · PROFILE";document.querySelector("h1").textContent="이민자 프로필 연결";document.querySelector(".top .tag").textContent="· IMMIGRANT PROFILE";}
 else if(space==="1816"){document.title="KOR1816 | 1816 프로필 시안";document.querySelector("h1").textContent="1816 프로필 연결";}
