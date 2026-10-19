@@ -18,7 +18,19 @@ h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var
 <header class="top"><a href="./landing.html#start">← 처음 화면</a><span>KOR1816 <span class="tag">· PROFILE LAB</span></span></header>
 <p class="eyebrow">PLAYER PROFILE · PROTOTYPE</p>
 <h1>게임 프로필 연결</h1>
-<p>게임 ID와 프로필 캡처를 함께 활용하는 화면 시안이야. 아직 실제 킹샷 서버에 연결되지 않았고, 입력한 정보는 서버로 전송하거나 저장하지 않아.</p>
+<p>게임 ID와 프로필 캡처를 함께 활용하는 화면 시안이야. 아래 계정 연결은 배포·설정된 OAuth Worker가 있을 때만 동작해. 아직 계정 정보 저장이나 KOR1816 사용자 연결은 구현 전이야.</p>
+<section class="panel" style="margin-top:20px">
+<h2>② 킹샷 계정 로그인 연결 (테스트용)</h2>
+<label for="accountApiBase">계정 연결 서버 주소</label>
+<input id="accountApiBase" type="url" inputmode="url" placeholder="https://your-worker.example.workers.dev">
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:8px">
+<button id="accountConnectBtn" type="button">킹샷 계정 연결</button>
+<button id="accountFetchBtn" type="button">내 계정 정보 조회</button>
+<button id="accountDisconnectBtn" type="button">계정 연결 해제</button>
+</div>
+<pre id="accountResult" style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;background:#09111e;border:1px solid #30435d;border-radius:10px;padding:12px;font-size:12px;color:#cfe2f7">아직 계정 서버에 연결하지 않았어.</pre>
+<p class="hint">테스트용 UI야. 서버 주소가 없으면 아무 요청도 보내지 않아. 제공처 로그인 승인은 제3자 서비스로 이동하며, 실제 배포 전에는 쿠키·세션·사용자 소유 확인을 검증해야 해. API 키나 비밀번호를 이 화면에 입력하지 마.</p>
+</section>
 <div class="grid">
 <section class="panel">
 <h2>① 내 정보 입력</h2>
@@ -59,6 +71,10 @@ h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:34px 0 10px}p{color:var
 </main>
 <script>
 const $=id=>document.getElementById(id);
+const accountBase=()=>{const raw=$("accountApiBase").value.trim();if(!raw)throw new Error("먼저 계정 연결 서버 주소를 입력해줘.");const u=new URL(raw);if(u.protocol!=="https:")throw new Error("계정 연결 서버는 HTTPS 주소여야 해.");return u.origin};
+$("accountConnectBtn").addEventListener("click",()=>{try{const base=accountBase();location.href=base+"/auth/login"}catch(e){$("accountResult").textContent=e.message}});
+$("accountFetchBtn").addEventListener("click",async()=>{let base;try{base=accountBase()}catch(e){$("accountResult").textContent=e.message;return}const b=$("accountFetchBtn");b.disabled=true;$("accountResult").textContent="연결된 계정 정보를 조회 중…";try{const r=await fetch(base+"/api/profile",{method:"GET",credentials:"include",headers:{Accept:"application/json"}});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"계정 조회에 실패했어.");$("accountResult").textContent=JSON.stringify({source:d.source,fetchedAt:d.fetchedAt,data:d.data},null,2);$("outSource").textContent=d.source||"계정 연결";$("status").textContent="계정 서버 응답을 받았어. 실제 필드 구조를 확인한 뒤 화면 항목과 매핑할 수 있어."}catch(e){$("accountResult").textContent="조회 실패: "+(e.message||"서버 연결을 확인해줘.")+"\\n브라우저에서 쿠키가 차단됐거나 Worker가 아직 배포되지 않았을 수 있어."}finally{b.disabled=false}});
+$("accountDisconnectBtn").addEventListener("click",async()=>{let base;try{base=accountBase()}catch(e){$("accountResult").textContent=e.message;return}try{const r=await fetch(base+"/auth/logout",{method:"POST",credentials:"include",headers:{Accept:"application/json"}});const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok)throw new Error(d.error||"연결 해제 요청에 실패했어.");$("accountResult").textContent="서버 세션 연결 해제 요청이 완료됐어."}catch(e){$("accountResult").textContent="연결 해제 실패: "+(e.message||"서버 설정을 확인해줘.")}}); 
 const lookupButton=$("lookupBtn");
 lookupButton.addEventListener("click",()=>{const id=$("playerId").value.trim();if(!/^\d{5,}$/.test(id)){$("status").textContent="게임 ID를 숫자로 입력해줘.";return}window.open("https://kingshotintel.com/player/"+encodeURIComponent(id),"_blank","noopener,noreferrer");$("status").textContent="외부 공개 프로필 페이지를 새 창으로 열었어. 검색 결과가 없거나 일부 정보가 비어 있을 수 있어."});
 const space=new URLSearchParams(location.search).get("space");
