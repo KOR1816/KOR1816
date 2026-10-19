@@ -68,9 +68,9 @@ applyLanguage(lang);
 $('lordHeading').textContent=T.govTitle;$('lordSub').textContent=T.govLabel.toUpperCase();$('heroHeading').textContent=T.heroTitle;$('heroSub').textContent=T.heroLabel.toUpperCase();$('footerText').textContent=T.foot;$('footerBrand').textContent=lang==='ko'?'KOR1816 · 내정보':lang==='ja'?'KOR1816 · マイ情報':'KOR1816 · My Info';
 const slotOrder={Helmet:0,Gloves:1,Armor:2,Boots:3};
 function gearQuality(item){
-const keys=['quality_label','qualityLabel','quality_key','qualityKey','quality','rarity','grade','quality_name','qualityName','quality_color','qualityColor','color_name','colorName','color','rarity_name','rarityName','quality_id','qualityId','rarity_id','rarityId','tier','tier_name','tierName'];
-const rawValue=first(item,keys),raw=String(rawValue&&typeof rawValue==='object'?first(rawValue,['label','key','name','value','color','quality','rarity','id'])||'':rawValue||'').trim().toLowerCase();
-const qnorm=raw.replace(/[ _-]+/g,'');
+const keys=['quality_label','qualityLabel','quality_key','qualityKey','quality','rarity','grade','quality_name','qualityName','quality_color','qualityColor','color_name','colorName','color','rarity_name','rarityName','tier','tier_name','tierName','quality_id','qualityId','rarity_id','rarityId'];
+const rawValue=first(item,keys),raw=String(rawValue&&typeof rawValue==='object'?first(rawValue,['label','key','name','value','color','quality','rarity','id'])??'':rawValue??'').trim().toLowerCase();
+const normalized=raw.replace(/[ _-]+/g,'');
 const red=item.red===true||item.red===1||String(item.red).toLowerCase()==='true'||String(item.red)==='1';
 if(red||/(^|[^a-z])red([^a-z]|$)|빨강|적색|红色|赤色|mythic|신화/.test(raw))return 'red';
 if(/yellow|gold|legendary|전설|노랑|노란|황금|황색|黄色|金色/.test(raw))return 'yellow';
@@ -81,11 +81,11 @@ if(/orange|주황|橙色|橘色/.test(raw))return 'orange';
 const iconValue=String(first(item,['icon','image','image_url','imageUrl','icon_url','iconUrl','asset','portrait'])||'');
 const idValue=String(first(item,['eid','equipment_id','equipmentId','item_id','itemId','id'])??'');
 const source=iconValue+' '+idValue+' '+JSON.stringify(item);
-const lordId=(source.match(/lordsequipment_icon_(\d+)/i)||[])[1]||'';
+const lordId=(source.match(/lordsequipment_icon_(\\d+)/i)||[])[1]||'';
 const lordQuality=({'1001':'yellow','2001':'yellow','3002':'blue','4002':'blue','5002':'blue','6001':'green','1003':'purple','2003':'purple','3003':'purple','4003':'purple','5007':'yellow','6004':'yellow'})[lordId]||'';
 if(lordQuality)return lordQuality;
-const heroId=(source.match(/equipment_icon_(\d{7})/i)||source.match(/\b(\d{7})\b/)||[])[1]||'';
-if(/^10[1-4][1-3]5\d{2}$/.test(heroId))return 'yellow';
+const heroId=(source.match(/equipment_icon_(\\d{7})/i)||source.match(/\\b(\\d{7})\\b/)||[])[1]||'';
+if(/^10[1-4][1-3]5\\d{2}$/.test(heroId))return 'yellow';
 return '';
 }
 function gearImage(item, kind='equipment'){const direct=first(item,['icon','image','image_url','imageUrl','icon_url','iconUrl','asset','portrait']);if(direct)return imgUrl(direct);const id=first(item,['eid','equipment_id','equipmentId','item_id','itemId','id']);if(id!=null)return 'https://www.mightpulse.com/assets/icons/'+(kind==='lord'?'lordsequipment_icon_':'equipment_icon_')+id+'.png';return '';}
