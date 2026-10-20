@@ -860,16 +860,6 @@ async function saveNotices(){
 }
 
 
-function knownRosterNicknames(extra=[]){
- const seatingNames=(seatingData?.rows||[]).flatMap(r=>[...(r.left||[]),...(r.right||[])]);
- const allianceNames=Object.values(allianceData?.names||{}).flatMap(groups=>Object.values(groups||{}).flat());
- const teamNames=[...(teamData?.A||[]),...(teamData?.B||[]),...(teamData?.C||[]),...(teamData?.D||[]),...(teamData?.extra||[]),...(teamData?.subs||[])];
- return [...new Set([...FIXED_NICKNAMES,...teamNames,...allianceNames,...seatingNames,...extra].map(v=>String(v||"").trim()).filter(Boolean))];
-}
-function fillNicknameSelect(select,value){
- if(!select)return;const current=String(value||""),names=knownRosterNicknames([current]);
- select.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===current?'selected':'')+'>'+esc(n)+'</option>').join("");select.value=current;
-}
 const PROFILE_API='https://kor1816-api.to1ggi8410.workers.dev/api/profile';
 const PROFILE_ROSTER_IDS=["277646867","279366155","273178050","280841541","272302196","262615089","272947841","271532528","279072727","279234965","278136872","261763324","279367354","269885273","269230772","254167456","277220188","253430709","252823945","277809051","277630478","277565244","270257167","272337940","275747145","279498200","270726183","271966460","278531764","261778876","273258930","277088890","280660595","278759624","270879682","279367558","279562732","278466567","269372902","270443090","279218125","276336897","278416482","280661086","275985582","271688441","277711710","270254362","279137266","264548253","270680423","277383097","256940953","278366666","259097364","264023958","280825224","259425117","259861537","280186422","277350446","279333024","273229188","279776591","269017528","277695498","280431947","272631641","262795207","276323629","272852827","280578852","280644519","279956548","277548000","278416124","279612331","277546906","261799305","279136817","277941037","279285182","280479953","279629382","277252686","277531970","279972554","278530645","279908393","279662322","253577480","278498878","278530654","277170530","277269174","280825692","269869267"];
 const rosterApiProfileList=[];
@@ -987,7 +977,7 @@ function normalizeSeatingRows(value){
   const source=getRows(value);
   const leftLens=[12,17,26],rightLens=[12,18,16];
   const allowed=new Set(knownRosterNicknames());
-  const validId=v=>{const id=String(v??"").trim();return allowed.has(id)?id:"";};
+  const validId=v=>{const id=String(v??"").trim();return allowed.has(id)||id?id:"";};
   return [0,1,2].map(i=>{
    const row=source[i]||{};
    const left=Array.isArray(row.left)?row.left:[];
