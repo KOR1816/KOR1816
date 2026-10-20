@@ -20,7 +20,7 @@
 </div>
 <p class="footnote"><span></span> 안전한 공간을 위해 각 공간은 별도의 로그인과 권한으로 운영됩니다.</p>
 </section>
-<section class="login-panel" id="login-1816"><a class="back" href="#start">← 처음으로</a><p class="eyebrow">ALLIANCE MEMBERS</p><h2>1816 로그인</h2><p>게임 계정 인증을 통해 본인 프로필을 연결하는 공간입니다.</p><label for="id-1816">킹샷 게임 ID</label><input id="id-1816" inputmode="numeric" placeholder="게임 ID 입력"><a class="preview-link" href="./profile-preview.html?space=1816">게임 ID 확인 후 입장 ↗</a><p class="notice">화면 시안입니다. 실제 인증은 API와 본인 확인 방식을 검증한 뒤 연결합니다.</p></section>
+<section class="login-panel" id="login-1816"><a class="back" href="#start">← 처음으로</a><p class="eyebrow">ALLIANCE MEMBERS</p><h2>1816 로그인</h2><p>게임 계정 인증을 통해 본인 프로필을 연결하는 공간입니다.</p><label for="id-1816">킹샷 게임 ID</label><input id="id-1816" inputmode="numeric" autocomplete="username" placeholder="게임 ID 입력"><label for="password-1816">비밀번호</label><input id="password-1816" type="password" inputmode="numeric" autocomplete="current-password" placeholder="비밀번호 입력"><a class="preview-link" href="./profile-preview.html?space=1816">로그인 ↗</a><p class="notice">화면 시안입니다. 실제 인증은 API와 본인 확인 방식을 검증한 뒤 연결합니다.</p></section>
 <section class="login-panel" id="login-immigrant"><a class="back" href="#start">← 처음으로</a><p class="eyebrow">MIGRATION COMMUNITY</p><h2>이민자 로그인</h2><p>이민자 프로필과 자기소개를 관리하는 전용 공간입니다.</p><label for="id-immigrant">킹샷 게임 ID</label><input id="id-immigrant" inputmode="numeric" placeholder="게임 ID 입력"><a class="preview-link" href="./immigrant.html">이민자 명부 입장 ↗</a><p class="notice">이민자 전용 화면입니다. 실제 인증은 연동 가능 여부 확인 후 구현합니다.</p></section>
 <footer><span>KOR1816</span><span>EST. KINGDOM 1816</span></footer>
 </main>
@@ -41,6 +41,9 @@ const map={
 '프로필 · 전투력 분석 · 연맹 활동':['프로필 · 전투력 분석 · 연맹 활동','Profile · Power analysis · Alliance activity','プロフィール・戦力分析・同盟活動','个人资料 · 战力分析 · 联盟活动','Profil · Machtanalyse · Allianzaktivität','Profilo · Analisi potenza · Attività alleanza','Perfil · Análisis de poder · Actividad de alianza','Profil · Güç analizi · İttifak etkinliği'],
 '입장하기':['입장하기','Enter','入場する','进入','Eintreten','Entra','Entrar','Giriş yap'],
 '게임 ID 입력':['게임 ID 입력','Enter Game ID','ゲームIDを入力','输入游戏 ID','Spiel-ID eingeben','Inserisci ID di gioco','Introduce el ID de juego','Oyun kimliğini gir'],
+'비밀번호':['비밀번호','Password','パスワード','密码','Passwort','Password','Contraseña','Şifre'],
+'비밀번호 입력':['비밀번호 입력','Enter password','パスワードを入力','输入密码','Passwort eingeben','Inserisci password','Introduce la contraseña','Şifreyi gir'],
+'로그인 ↗':['로그인 ↗','Log in ↗','ログイン ↗','登录 ↗','Anmelden ↗','Accedi ↗','Iniciar sesión ↗','Giriş yap ↗'],
 'Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!':['Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!','Kingdom 1816 · Mess with us and get bitten! · Bear fanatics!','王国1816 · 手を出すと噛むぞ！ · クマ好きの仲間たち','1816王国 · 别惹我们！ · 熊族同好会','Königreich 1816 · Leg dich nicht mit uns an! · Bärenfans','Regno 1816 · Non provocarci! · Amanti degli orsi','Reino 1816 · ¡No te metas con nosotros! · Fans de los osos','Krallık 1816 · Bulaşma, ısırırız! · Ayı tutkunları'],
 '새로운 인연을 찾는 공간':['새로운 인연을 찾는 공간','A place to find new connections','新しい出会いを探す場所','寻找新伙伴的空间','Ein Ort für neue Kontakte','Uno spazio per nuovi incontri','Un lugar para conocer gente','Yeni bağlantılar kurma alanı'],
 '전투력 프로필 · 자기소개 · 이민자 명부':['전투력 프로필 · 자기소개 · 이민자 명부','Power profile · Introduction · Migrant directory','戦力プロフィール・自己紹介・移民名簿','战力资料 · 自我介绍 · 移民名册','Machtprofil · Vorstellung · Einwandererverzeichnis','Profilo potenza · Presentazione · Elenco immigrati','Perfil de poder · Presentación · Lista de inmigrantes','Güç profili · Tanıtım · Göçmen listesi'],
@@ -65,7 +68,7 @@ document.getElementById('language-select').value=l;document.getElementById('lang
 for(const item of originals){
  const t=tr(item.text,l);
  if(item.el.matches('.intro h1')) item.el.innerHTML=tr('당신의 여정을',l)+'<br><span>'+tr('선택하세요',l)+'</span>';
- else if(item.el.matches('input')) item.el.placeholder=tr('게임 ID 입력',l);
+ else if(item.el.matches('input')) item.el.placeholder=tr(item.el.id==='password-1816'?'비밀번호 입력':'게임 ID 입력',l);
  else if(item.el.matches('.go')) item.el.innerHTML=tr('입장하기',l)+' <b>↗</b>';
  else item.el.textContent=t;
 }
