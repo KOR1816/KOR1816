@@ -26,6 +26,7 @@ button:disabled{opacity:.6;cursor:wait}
 .status.ok{border-color:#70d6a688;color:#c5f6df}.status.error{border-color:#ff9c9c88;color:#ffd0d0}
 .note{color:#8fa2bb;font-size:10px;line-height:1.7;margin:16px 0 0;text-align:center}
 @media(max-width:420px){body{padding:14px}main{padding:22px 18px}.hero{padding:25px 0 18px}}
+.auto-check #loginForm{display:none}.auto-check .hero{padding-bottom:12px}
 </style>
 </head>
 <body>
@@ -121,6 +122,11 @@ form.addEventListener('submit', async event => {
     }
   }
 });
+if (/^\\d{4,20}$/.test(params.get('id') || '')) {
+  input.value = params.get('id');
+  document.body.classList.add('auto-check');
+  form.requestSubmit();
+}
 </script>
 </body>
 </html>
