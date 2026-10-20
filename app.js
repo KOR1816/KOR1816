@@ -1221,7 +1221,7 @@ function resetNewCastleJoinForm(){
  if(box){box.innerHTML="";box.hidden=true;box.style.display="none";}
  const defaults={ncStatus:"yes",ncTier:"A",ncSalo:"yes",ncHilde:"yes"};
  Object.entries(defaults).forEach(([id,value])=>{const field=$("#"+id,root);if(field)field.value=value;});
- $("[data-nc-optional]",root).forEach(el=>{el.style.display="";});
+ $("#[data-nc-optional]",root).forEach(el=>{el.style.display="";});
 }
 function filterNewCastleNicknames(){
  const root=$("#battleJoin"),search=$("#ncIdSearch",root),box=$("#ncNickSearchResults",root);
