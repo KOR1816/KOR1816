@@ -1018,8 +1018,8 @@ function renderTeamsDisplay(){
  display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+localizedTeamHeading(title)+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
  const editing=Boolean(adminModes.teams);
  display.hidden=editing;
- if(editor)editor.hidden=!editing;
- display.style.display=editing?"none":"grid";
+ if(editor){editor.hidden=!editing;editor.style.setProperty("display",editing?"block":"none","important");}
+ display.style.setProperty("display",editing?"none":"grid","important");
  display.style.visibility=editing?"hidden":"visible";
  if(!editing)display.style.minHeight="120px";
  translateStatic();
@@ -1032,8 +1032,8 @@ function resetTeamsAdminMode(){
  const save=$("#teamsSaveBtn",root);if(save)save.style.display="none";
  const clear=$("#teamsClearBtn",root);if(clear)clear.style.display="none";
  const editor=$(".team-columns-wrap",root),display=$("#teamDisplay",root);
- if(editor){editor.hidden=true;editor.style.display="none";}
- if(display){display.hidden=false;display.removeAttribute("hidden");display.style.display="grid";display.style.visibility="visible";display.style.minHeight="120px";}
+ if(editor){editor.hidden=true;editor.style.setProperty("display","none","important");}
+ if(display){display.hidden=false;display.removeAttribute("hidden");display.style.setProperty("display","grid","important");display.style.visibility="visible";display.style.minHeight="120px";}
 }
 async function loadTeams(){
  const root=$("#teams");
