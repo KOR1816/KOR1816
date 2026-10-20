@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261020-seating-native-api-select-v32";
+import { PAGE_CONTENT } from "./page-content.js?v=20261020-seating-api-picker-v33";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -947,7 +947,7 @@ function holySwordPickerLabel(select){
  return {value,label:value?rosterApiDisplayName(value):'닉네임 선택',profile};
 }
 function refreshHolySwordProfilePickers(){
- $('#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]').forEach(select=>{
+ $('#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#seating select[data-seating-row],#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]').forEach(select=>{
   const button=select.parentElement?.querySelector('.hs-api-picker-trigger');
   if(!button)return;
   const {value,label,profile}=holySwordPickerLabel(select);
@@ -958,7 +958,7 @@ function refreshHolySwordProfilePickers(){
 }
 function installHolySwordProfilePicker(){
  const root=document;
- const selectors='#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]';
+ const selectors='#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#seating select[data-seating-row],#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]';
  const selects=$(selectors,root);
  selects.forEach(select=>{
   if(select.dataset.hsPickerReady)return;
