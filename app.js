@@ -1175,23 +1175,26 @@ async function toggleSeatingAdmin(){
 }
 async function saveSeating(){
  if(!adminModes.seating){alert(message("admin"));return;}
+ let stage="입력값 수집";
  try{
-  // Collect every edited select before writing to Firestore. The single-element
-  // helper $ uses querySelector; $ is required here because this is a list.
-  $$("#seatingEditGrid select[data-seating-row]").forEach(select=>{
+  $("#seatingEditGrid select[data-seating-row]").forEach(select=>{
    const row=seatingData.rows[Number(select.dataset.seatingRow)];
    if(row&&Array.isArray(row[select.dataset.seatingSide])){
     row[select.dataset.seatingSide][Number(select.dataset.seatingIndex)]=String(select.value||"").trim();
    }
   });
+  stage="공용 서버 저장";
   seatingData=await saveCloud("seating",seatingData);
+  stage="저장 후 화면 갱신";
   renderSeating();
   renderSeatingAdmin();
   setMsg("seatingLatestMsg",message("saved"));
  }catch(e){
-  console.error("Seating save failed",e);
+  console.error("Seating save failed at "+stage,e);
   const code=String(e?.code||"unknown");
-  const detail=({ "permission-denied":"Firestore 저장 권한 거부(permission-denied). 관리자 계정 또는 Firestore 규칙 확인 필요.", "unauthenticated":"로그인 세션이 없어 저장할 수 없습니다(unauthenticated). 관리자 재로그인 필요.", "unavailable":"Firebase 서버 연결 불가(unavailable). 잠시 후 재시도 필요.", "failed-precondition":"Firestore 설정 오류(failed-precondition). 데이터베이스 설정 확인 필요." })[code]||("저장 오류 코드: "+code);
+  const mapped=({ "permission-denied":"Firestore 저장 권한 거부(permission-denied). 관리자 계정 또는 Firestore 규칙 확인 필요.", "unauthenticated":"로그인 세션이 없어 저장할 수 없습니다(unauthenticated). 관리자 재로그인 필요.", "unavailable":"Firebase 서버 연결 불가(unavailable). 잠시 후 재시도 필요.", "failed-precondition":"Firestore 설정 오류(failed-precondition). 데이터베이스 설정 확인 필요." })[code];
+  const reason=String(e?.message||e?.name||"상세 오류 없음").slice(0,180);
+  const detail=(mapped||("자리배치 오류 · 단계: "+stage+" · "+(e?.name||"Error")+": "+reason+(code!=="unknown"?" ("+code+")":"")));
   setMsg("seatingLatestMsg",detail);
  }
 }
