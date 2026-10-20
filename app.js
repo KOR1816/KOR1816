@@ -287,9 +287,9 @@ function applyLanguage(lang){
  $("#language-label").textContent=({ko:"언어",en:"Language",ja:"言語",zh:"语言",de:"Sprache",it:"Lingua",es:"Idioma",tr:"Dil"})[currentLang];
  const startScreenLink=$("#start-screen-link");if(startScreenLink){startScreenLink.textContent=({ko:"처음화면",en:"Start",ja:"最初の画面",zh:"初始页面",de:"Startseite",it:"Schermata iniziale",es:"Pantalla inicial",tr:"Başlangıç"})[currentLang];startScreenLink.href="./landing.html";}
  const myInfoLink=$("#my-info-link");if(myInfoLink){myInfoLink.textContent=({ko:"내정보",en:"My Info",ja:"マイ情報",zh:"我的信息",de:"Meine Infos",it:"Le mie info",es:"Mi información",tr:"Bilgilerim"})[currentLang];myInfoLink.href="./my-info.html?lang="+encodeURIComponent(currentLang);}
- $("#main-nav button").forEach((b,i)=>{const id=PAGE_IDS[i];b.textContent=PAGE_ICONS[id]+" "+PAGE_LABELS[id][langIndex()];b.setAttribute("aria-label",PAGE_LABELS[id][langIndex()]);});
+ $$("#main-nav button").forEach((b,i)=>{const id=PAGE_IDS[i];b.textContent=PAGE_ICONS[id]+" "+PAGE_LABELS[id][langIndex()];b.setAttribute("aria-label",PAGE_LABELS[id][langIndex()]);});
   const extraLabels={ranking:["🏆 랭킹","🏆 Ranking","🏆 ランキング","🏆 排名","🏆 Rangliste","🏆 Classifica","🏆 Clasificación","🏆 Sıralama"],immigrant:["🌍 이민자목록","🌍 Immigrant List","🌍 移民者一覧","🌍 移民名单","🌍 Einwandererliste","🌍 Elenco immigrati","🌍 Lista de inmigrantes","🌍 Göçmen listesi"]};
-  $("#main-nav .nav-extra").forEach(a=>{const key=a.dataset.extraRoute;a.textContent=(extraLabels[key]||[])[langIndex()]||a.textContent;a.setAttribute("aria-label",a.textContent);});
+  $$("#main-nav .nav-extra").forEach(a=>{const key=a.dataset.extraRoute;a.textContent=(extraLabels[key]||[])[langIndex()]||a.textContent;a.setAttribute("aria-label",a.textContent);});
  try{localStorage.setItem("kor1816_rebuild_lang_v1",currentLang);localStorage.setItem("kor1816_lang",currentLang);}catch{}
  renderNotices();
  translateCommonControls();
