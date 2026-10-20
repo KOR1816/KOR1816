@@ -1175,12 +1175,23 @@ async function toggleSeatingAdmin(){
 }
 async function saveSeating(){
  if(!adminModes.seating){alert(message("admin"));return;}
- $("#seatingEditGrid [data-seating-row]").forEach(input=>{
-  const row=seatingData.rows[Number(input.dataset.seatingRow)];
-  if(row)row[input.dataset.seatingSide][Number(input.dataset.seatingIndex)]=input.value.trim();
- });
- try{seatingData=await saveCloud("seating",seatingData);renderSeating();renderSeatingAdmin();setMsg("seatingLatestMsg",message("saved"));}
- catch(e){console.error(e);setMsg("seatingLatestMsg",message("failed"));}
+ try{
+  // Collect every edited select before writing to Firestore. The single-element
+  // helper $ uses querySelector; $ is required here because this is a list.
+  $("#seatingEditGrid select[data-seating-row]").forEach(select=>{
+   const row=seatingData.rows[Number(select.dataset.seatingRow)];
+   if(row&&Array.isArray(row[select.dataset.seatingSide])){
+    row[select.dataset.seatingSide][Number(select.dataset.seatingIndex)]=String(select.value||"").trim();
+   }
+  });
+  seatingData=await saveCloud("seating",seatingData);
+  renderSeating();
+  renderSeatingAdmin();
+  setMsg("seatingLatestMsg",message("saved"));
+ }catch(e){
+  console.error("Seating save failed",e);
+  setMsg("seatingLatestMsg",message("failed"));
+ }
 }
 async function clearSeating(){
  if(!adminModes.seating){alert(message("admin"));return;}
