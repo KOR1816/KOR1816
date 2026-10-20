@@ -947,7 +947,7 @@ function holySwordPickerLabel(select){
  return {value,label:value?rosterApiDisplayName(value):'닉네임 선택',profile};
 }
 function refreshHolySwordProfilePickers(){
- $('#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#seating select[data-seating-row],#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]').forEach(select=>{
+ $('#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]').forEach(select=>{
   const button=select.parentElement?.querySelector('.hs-api-picker-trigger');
   if(!button)return;
   const {value,label,profile}=holySwordPickerLabel(select);
@@ -958,7 +958,7 @@ function refreshHolySwordProfilePickers(){
 }
 function installHolySwordProfilePicker(){
  const root=document;
- const selectors='#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#seating select[data-seating-row],#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]';
+ const selectors='#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]';
  const selects=Array.from(root.querySelectorAll(selectors));
  selects.forEach(select=>{
   if(select.dataset.hsPickerReady)return;
@@ -1157,9 +1157,10 @@ function renderSeating(){
 }
 function renderSeatingAdmin(){
  const root=$("#seating"),grid=$("#seatingEditGrid",root);if(!grid)return;
- grid.innerHTML=seatingData.rows.map((row,ri)=>'<section class="seating-edit-column"><h4>ROW '+(ri+1)+'</h4><div class="seating-edit-split"><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-left">Bear1</h5>'+row.left.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="left" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select></label>').join("")+'</div><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-right">Bear2</h5>'+row.right.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="right" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select></label>').join("")+'</div></div></section>').join("");
+ const makeRow=(name,ri,side,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="'+side+'" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select><button type="button" class="hs-api-picker-trigger seating-api-picker-trigger" data-seating-api-picker="1">＋ API 닉네임 선택</button></label>';
+ grid.innerHTML=seatingData.rows.map((row,ri)=>'<section class="seating-edit-column"><h4>ROW '+(ri+1)+'</h4><div class="seating-edit-split"><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-left">Bear1</h5>'+row.left.map((name,i)=>makeRow(name,ri,'left',i)).join("")+'</div><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-right">Bear2</h5>'+row.right.map((name,i)=>makeRow(name,ri,'right',i)).join("")+'</div></div></section>').join("");
  $("#seatingEditGrid [data-seating-row]").forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillSeatingNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||"");});
- installHolySwordProfilePicker();
+ $("#seatingEditGrid [data-seating-api-picker]").forEach(button=>{const select=button.parentElement?.querySelector('select[data-seating-row]');if(!select)return;const update=()=>{const profile=rosterApiProfile(select.value);button.innerHTML=(profile?.avatar?holySwordPickerAvatar(profile):'<span class="hs-picker-fallback">'+(select.value?'👤':'＋')+'</span>')+'<span class="hs-picker-trigger-text"><strong>'+esc(select.value?rosterApiDisplayName(select.value):'API 닉네임 선택')+'</strong><small>'+(select.value?(profile?.avatar?'API 프로필 연결':'프로필 정보 확인 필요'):'API 캐릭터 검색')+'</small></span><span class="hs-picker-chevron">▾</span>';};button.addEventListener('click',()=>openHolySwordProfilePicker(select));select.addEventListener('change',update);update();});
 }
 async function loadSeating(){
  const r=await loadData("seating",seatingData);
