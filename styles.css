@@ -1075,3 +1075,6 @@ footer{color:#8498b3;letter-spacing:.06em}
   .main-nav button{font-size:12px;padding:8px 4px}
 }
 
+
+/* API loading banner matches the latest-content banner frame. */
+.msg.is-status-message.is-api-loading{color:#79cfff!important;border:1px solid #365783!important;border-left:4px solid #79a9ff!important;border-radius:6px!important;background:rgba(70,112,177,.16)!important;padding:8px 10px 8px 11px!important;font-weight:600!important}
