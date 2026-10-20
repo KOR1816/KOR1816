@@ -959,7 +959,7 @@ function refreshHolySwordProfilePickers(){
 function installHolySwordProfilePicker(){
  const root=document;
  const selectors='#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#seating select[data-seating-row],#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]';
- const selects=$(selectors,root);
+ const selects=Array.from(root.querySelectorAll(selectors));
  selects.forEach(select=>{
   if(select.dataset.hsPickerReady)return;
   select.dataset.hsPickerReady='1';
