@@ -88,7 +88,7 @@ document.getElementById('login-1816-submit').addEventListener('click',event=>{
   event.preventDefault();
   const id=document.getElementById('id-1816').value.trim();
   const password=document.getElementById('password-1816').value;
-  if(!/^\\d{4,20}$/.test(id)){alert(({ko:'킹샷 게임 ID를 숫자 4~20자리로 입력해 주세요.',en:'Enter a numeric Game ID with 4–20 digits.',ja:'ゲームIDを4～20桁の数字で入力してください。',zh:'请输入4–20位数字游戏 ID。',de:'Bitte eine 4–20-stellige numerische Spiel-ID eingeben.',it:'Inserisci un ID numerico di 4–20 cifre.',es:'Introduce un ID numérico de 4–20 dígitos.',tr:'4–20 basamaklı sayısal oyun kimliği gir.'})[document.getElementById('language-select').value]||'킹샷 게임 ID를 숫자 4~20자리로 입력해 주세요.');document.getElementById('id-1816').focus();return;}
+  if(!/^\d{4,20}$/.test(id)){alert(({ko:'킹샷 게임 ID를 숫자 4~20자리로 입력해 주세요.',en:'Enter a numeric Game ID with 4–20 digits.',ja:'ゲームIDを4～20桁の数字で入力してください。',zh:'请输入4–20位数字游戏 ID。',de:'Bitte eine 4–20-stellige numerische Spiel-ID eingeben.',it:'Inserisci un ID numerico di 4–20 cifre.',es:'Introduce un ID numérico de 4–20 dígitos.',tr:'4–20 basamaklı sayısal oyun kimliği gir.'})[document.getElementById('language-select').value]||'킹샷 게임 ID를 숫자 4~20자리로 입력해 주세요.');document.getElementById('id-1816').focus();return;}
   if(password!=='0011'){alert(({ko:'비밀번호가 올바르지 않습니다.',en:'Incorrect password.',ja:'パスワードが正しくありません。',zh:'密码错误。',de:'Falsches Passwort.',it:'Password errata.',es:'Contraseña incorrecta.',tr:'Şifre yanlış.'})[document.getElementById('language-select').value]||'비밀번호가 올바르지 않습니다.');document.getElementById('password-1816').focus();return;}
   const next=new URL('./profile-preview.html',location.href);
   next.searchParams.set('space','1816');
