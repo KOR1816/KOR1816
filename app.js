@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261020-teams-save-display-v23";
+import { PAGE_CONTENT } from "./page-content.js?v=20261020-castle-rally-leaders-v24";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -1231,13 +1231,15 @@ function renderParticipants(){
  });
  participants=[...uniqueByNickname.values()];
  const tierOrder=p=>isFixedLeader(p.nickname)?0:p.tier==="A"?1:p.tier==="B"?2:p.tier==="C"?3:4;
- const tierLabel=p=>isFixedLeader(p.nickname)?(fixedLeaderRole(p.nickname)==="Nemesis"?"Nemesis 집결장":"집결장"):p.tier==="A"?"A등급":p.tier==="B"?"B등급":p.tier==="C"?"C등급":"해당없음";
+ const tierLabel=p=>isFixedLeader(p.nickname)?"집결장":p.tier==="A"?"A등급":p.tier==="B"?"B등급":p.tier==="C"?"C등급":"해당없음";
  const sortWithinTier=(a,b)=>{
   const rank=p=>{const n=(p.salo?1:0)+(p.hilde?1:0);return n===2?"1":n===1?"2":"3";};
   return rank(a).localeCompare(rank(b))||a.nickname.localeCompare(b.nickname);
  };
- const active=participants.filter(p=>p.status==="yes").sort((a,b)=>tierOrder(a)-tierOrder(b)||sortWithinTier(a,b));
- const waiting=participants.filter(p=>p.status!=="yes").sort((a,b)=>tierOrder(a)-tierOrder(b)||(a.status==="later"?0:1)-(b.status==="later"?0:1)||sortWithinTier(a,b));
+ const active=participants.filter(p=>!isFixedLeader(p.nickname)&&p.status==="yes").sort((a,b)=>tierOrder(a)-tierOrder(b)||sortWithinTier(a,b));
+ const waiting=participants.filter(p=>!isFixedLeader(p.nickname)&&p.status!=="yes").sort((a,b)=>tierOrder(a)-tierOrder(b)||(a.status==="later"?0:1)-(b.status==="later"?0:1)||sortWithinTier(a,b));
+ const leaders=$("#ncFixedLeaders",root);
+ if(leaders)leaders.innerHTML=FIXED_LEADERS.map(nickname=>battleJoinParticipantCard({nickname,status:"yes",tier:"none",salo:false,hilde:false})).join("");
  const groupedCards=items=>{
   const groups=new Map();
   items.forEach(p=>{
