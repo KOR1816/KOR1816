@@ -1247,7 +1247,7 @@ function castleWarRoster(){
 function activeCastleWarParticipants(){return castleWarRoster().filter(p=>p.status==="yes");}
 function castleWarSelect(value){
  const names=[...new Set([...FIXED_LEADERS,...knownRosterNicknames(activeCastleWarParticipants().map(p=>p.nickname))])];
- return '<option value="">'+esc(castleCardText("choose"))+'</option>'+names.map(n=>{const p=participants.find(x=>x.nickname===n),tier=FIXED_LEADERS.includes(n)?"S":p&&["A","B","C"].includes(p.tier)?p.tier:"—";return '<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(tier+" · "+n)+'</option>';}).join("");
+ return '<option value="">'+esc(castleCardText("choose"))+'</option>'+names.map(n=>{const p=participants.find(x=>x.nickname===n),tier=FIXED_LEADERS.includes(n)?"S":p&&["A","B","C"].includes(p.tier)?p.tier:"—";return '<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(tier+" · "+rosterApiDisplayName(n))+'</option>';}).join("");
 }
 function castleParticipantMeta(name){const p=participants.find(x=>x.nickname===name);if(!name)return "";if(FIXED_LEADERS.includes(name))return "S · 집결장";if(!p)return "";return (p.tier||"—")+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X");}
 function sanitizeCastleWarAssignments(){
@@ -1448,7 +1448,7 @@ function renderCastleLayout(){
  wrap.innerHTML=Array.from({length:28},(_,i)=>{
   const name=castleLayoutData.slots[i]||"",isFixed=i<6,p=participants.find(x=>x.nickname===name);
   let inner;
-  if(adminModes.castlelayout1&&!isFixed)inner='<select data-layout-slot="'+i+'"><option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===name?'selected':'')+'>'+esc(n)+'</option>').join("")+'</select>';
+  if(adminModes.castlelayout1&&!isFixed)inner='<select data-layout-slot="'+i+'"><option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===name?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join("")+'</select>';
   else if(!name)inner='<span>—</span>';
   else if(isFixed)inner=castleMemberCard(name,castleCardText("leader"));
   else inner=castleMemberCard(name,p?(participantRank(p)||p.tier)+" · "+castleCardText("salo")+" "+(p.salo?"O":"X")+" · "+castleCardText("hilde")+" "+(p.hilde?"O":"X"):"");
