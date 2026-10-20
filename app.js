@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261020-nemesis-api-profiles-v22";
+import { PAGE_CONTENT } from "./page-content.js?v=20261020-teams-save-display-v23";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -1016,10 +1016,12 @@ function renderTeamsDisplay(){
  const root=$("#teams"),display=$("#teamDisplay"),editor=$(".team-columns-wrap",root);if(!root||!display)return;
  const groups=[["A","A1",6],["B","A2",6],["C","D1",6],["D","D2",6],["extra","💥 개돌조",6],["subs","🔄 대체자",10]];
  display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+localizedTeamHeading(title)+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
- display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
- if(!adminModes.teams){display.hidden=false;display.removeAttribute("hidden");display.style.visibility="visible";display.style.minHeight="120px";}
- // Keep the public roster visible even if a previous render left inline display styles behind.
- if(!adminModes.teams){display.hidden=false;display.removeAttribute("hidden");display.style.visibility="visible";display.style.minHeight="120px";}
+ const editing=Boolean(adminModes.teams);
+ display.hidden=editing;
+ display.style.display=editing?"none":"grid";
+ display.style.visibility=editing?"hidden":"visible";
+ if(editor)editor.style.display=editing?"block":"none";
+ if(!editing){display.removeAttribute("hidden");display.style.minHeight="120px";}
  translateStatic();
  translateTeamsHeadings();
 }
@@ -1030,7 +1032,8 @@ function resetTeamsAdminMode(){
  const save=$("#teamsSaveBtn",root);if(save)save.style.display="none";
  const clear=$("#teamsClearBtn",root);if(clear)clear.style.display="none";
  const editor=$(".team-columns-wrap",root),display=$("#teamDisplay",root);
- if(editor)editor.style.display="none";if(display)display.style.display="grid";
+ if(editor)editor.style.display="none";
+ if(display){display.hidden=false;display.removeAttribute("hidden");display.style.display="grid";display.style.visibility="visible";display.style.minHeight="120px";}
 }
 async function loadTeams(){
  // Refresh/navigation always returns Holy Sword to read-only display mode before and after loading.
@@ -1058,10 +1061,17 @@ async function clearAllTeams(){
  await saveAllTeams();
 }
 async function saveAllTeams(){
- if(!adminModes.teams){alert(message("admin"));return;}const root=$("#teams"),next={A:[],B:[],C:[],D:[],extra:[],subs:[]};
+ if(!adminModes.teams){alert(message("admin"));return;}
+ const root=$("#teams"),next={A:[],B:[],C:[],D:[],extra:[],subs:[]};
  for(const g of ["A","B","C","D"])for(let i=1;i<=6;i++)next[g].push($("#team-"+g+"-"+i,root)?.value.trim()||"");
- for(let i=1;i<=6;i++)next.extra.push($("#extra-"+i,root)?.value.trim()||"");for(let i=1;i<=10;i++)next.subs.push($("#sub-"+i,root)?.value.trim()||"");
- try{teamData=await saveCloud("teams",next);renderTeamsDisplay();setMsg("teamMsg",message("saved"));}catch(e){console.error(e);setMsg("teamMsg",message("failed"));}
+ for(let i=1;i<=6;i++)next.extra.push($("#extra-"+i,root)?.value.trim()||"");
+ for(let i=1;i<=10;i++)next.subs.push($("#sub-"+i,root)?.value.trim()||"");
+ try{
+  teamData=await saveCloud("teams",next);
+  resetTeamsAdminMode();
+  renderTeamsDisplay();
+  setMsg("teamMsg",message("saved"));
+ }catch(e){console.error(e);setMsg("teamMsg",message("failed"));}
 }
 async function loadAlliance(){
  const root=$("#alliance");if(root){root.classList.add("alliance-loading");$$(".alliance-display",root).forEach(el=>el.replaceChildren());}
