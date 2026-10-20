@@ -1177,7 +1177,7 @@ async function saveSeating(){
  if(!adminModes.seating){alert(message("admin"));return;}
  let stage="입력값 수집";
  try{
-  $("#seatingEditGrid select[data-seating-row]").forEach(select=>{
+  $$("#seatingEditGrid select[data-seating-row]").forEach(select=>{
    const row=seatingData.rows[Number(select.dataset.seatingRow)];
    if(row&&Array.isArray(row[select.dataset.seatingSide])){
     row[select.dataset.seatingSide][Number(select.dataset.seatingIndex)]=String(select.value||"").trim();
