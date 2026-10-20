@@ -1858,7 +1858,7 @@ Object.assign(STATIC_TRANSLATIONS,{
 });
 Object.assign(window,{
  loadHome,toggleHomeAdmin,saveHome,refreshTeams:()=>{resetTeamsAdminMode();return loadTeams();},toggleTeamsAdmin,saveAllTeams,clearAllTeams,
- loadAlliance,toggleAllianceAdmin,saveAlliance,clearAllAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
+ loadAlliance,toggleAllianceAdmin,saveAlliance,clearAllAlliance,loadSeating,toggleSeatingAdmin,saveSeating,clearSeating,
  updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
  loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,autoArrangeCastleWar,resetCastleWarTable,
  loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!isFixedLeader(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
