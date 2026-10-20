@@ -864,3 +864,13 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 .hs-api-picker-empty{grid-column:1/-1;justify-content:center;color:#cbd8ea}
 .hs-api-picker-no-results{grid-column:1/-1;text-align:center;color:#aebed3;padding:18px 8px;font-size:13px}
 @media(max-width:520px){.hs-api-picker-dialog{padding:12px}.hs-api-picker-list{grid-template-columns:minmax(0,1fr)}.hs-api-picker-option img{width:38px;height:38px;flex-basis:38px}#teams .hs-api-picker-trigger{gap:5px;padding:4px}.hs-api-picker-trigger>img,#teams .hs-api-picker-trigger>.hs-picker-fallback{width:28px;height:28px;flex-basis:28px}#teams .hs-picker-trigger-text strong{font-size:11px}}
+
+
+/* Castle pages: keep the same photo + nickname + game-ID hierarchy as the Holy Sword profile picker. */
+#battleJoin .nc-participant-card .nc-meta{min-height:12px;color:#9fb5d2;font-size:10px;line-height:1.35;white-space:normal;overflow-wrap:anywhere}
+#castlewar1 .nc-member-card .nc-meta{display:block;min-width:0;color:#9fb5d2;font-size:10px;line-height:1.35;overflow-wrap:anywhere}
+#castlelayout1 .castle-person-card{display:flex;align-items:center;gap:7px;min-width:0}
+#castlelayout1 .castle-person-card .castle-avatar{width:38px;height:38px;flex-basis:38px;border:1px solid #7895c5;background-position:center;background-size:cover;background-repeat:no-repeat}
+#castlelayout1 .castle-person-main{flex:1;min-width:0}
+#castlelayout1 .castle-profile-meta{display:block;margin-top:3px;color:#9fb5d2;font-size:10px;line-height:1.35;overflow-wrap:anywhere}
+@media(max-width:760px){#castlelayout1 .castle-person-card .castle-avatar{width:32px;height:32px;flex-basis:32px}#castlelayout1 .castle-person-name{font-size:11px}}
