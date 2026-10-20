@@ -122,7 +122,7 @@ form.addEventListener('submit', async event => {
     }
   }
 });
-if (/^\\d{4,20}$/.test(params.get('id') || '')) {
+if (/^\d{4,20}$/.test(params.get('id') || '')) {
   input.value = params.get('id');
   document.body.classList.add('auto-check');
   form.requestSubmit();
