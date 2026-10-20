@@ -297,13 +297,15 @@ function applyLanguage(lang){
  translateStatic();
  translateTeamsHeadings();
  refreshGenericLoadMessages();
+ refreshHolySwordProfilePickers();
  if(activePage==="home")renderHome();
  if(activePage==="teams")renderTeamsDisplay();
  if(activePage==="glory")renderRecords();
  if(activePage==="seating")refreshTranslatedBanner("seating","seatingLatestMsg");
  if(activePage==="castlewar1")refreshTranslatedBanner("castlewar1","ncWarMsg");
  if(activePage==="castlelayout1")refreshTranslatedBanner("castlelayout1","castleLayout1Msg");
- if(activePage==="battleJoin")refreshTranslatedBanner("battleJoin","ncJoinMsg");
+ if(activePage==="battleJoin"){if(!apiProfilesReady)setMsg("ncJoinMsg",apiLoadingMessage());else refreshTranslatedBanner("battleJoin","ncJoinMsg");}
+ if(activePage==="viking"&&!apiProfilesReady)setMsg("vikingMsg",apiLoadingMessage());
  if($('#hsApiProfilePicker')?.hidden===false){const title=$('#hsApiPickerTitle');if(title)title.textContent=pickerWord('dialog');const search=$('#hsApiPickerSearch');if(search)search.placeholder=pickerWord('search');renderHolySwordProfilePickerList();}
  document.dispatchEvent(new CustomEvent("kor1816:languagechange",{detail:{language:currentLang}}));
 }
@@ -998,6 +1000,7 @@ function refreshHolySwordProfilePickers(){
   const button=select.nextElementSibling?.classList.contains('hs-api-picker-trigger')?select.nextElementSibling:select.parentElement?.querySelector('.hs-api-picker-trigger');
   if(!button)return;
   const {value,label,profile}=holySwordPickerLabel(select);
+  button.setAttribute('aria-label',pickerWord('dialog'));
   button.innerHTML=(profile?.avatar?holySwordPickerAvatar(profile):'<span class="hs-picker-fallback">'+(value?'👤':'＋')+'</span>')+
    '<span class="hs-picker-trigger-text"><strong>'+esc(label)+'</strong><small>'+(profile?(profile.avatar?pickerWord('connected'):pickerWord('photoNeeded')):value?pickerWord('missing'):pickerWord('character'))+'</small></span><span class="hs-picker-chevron">▾</span>';
   button.classList.toggle('has-profile',Boolean(profile?.avatar));
