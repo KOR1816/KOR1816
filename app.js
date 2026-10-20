@@ -1889,6 +1889,7 @@ function boot(){
  setupTemplates();makeNav();
  $("#language-select").addEventListener("change",e=>applyLanguage(e.target.value));
  window.addEventListener("hashchange",restoreRoute);window.addEventListener("popstate",restoreRoute);
- ensureReadSession().catch(e=>console.warn("Read session unavailable",e)).finally(()=>restoreRoute());
+ restoreRoute();
+ ensureReadSession().catch(e=>console.warn("Read session unavailable",e));
 }
 boot();
