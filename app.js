@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261020-notice-absence-clear-v34";
+import { PAGE_CONTENT } from "./page-content.js?v=20261020-visual-v57";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -270,9 +270,9 @@ function translateBrandHeader(){
   es:"Kingdom 1816 · ¡Si nos provocas, mordemos! · ¡El punto de encuentro de los fanáticos de los osos!",
   tr:"Kingdom 1816 · Bize bulaşanın canını yakarız! · Ayı tutkunlarının buluşma yeri!!"
  }[currentLang]||"Kingdom 1816 · 건들면 문다! · 곰친자들의 모임!!";
- const title=document.querySelector("header h1");
- const tagline=document.querySelector("header p");
- if(title)title.textContent="KOR1816";
+ const title=document.querySelector(".brand-title");
+ const tagline=document.querySelector(".brand-copy p");
+ if(title)title.innerHTML='KOR1816 <i>·</i> KINGDOM 1816';
  if(tagline)tagline.textContent=subtitle;
 }
 function applyLanguage(lang){
@@ -283,6 +283,7 @@ function applyLanguage(lang){
  translateBrandHeader();
  $("#language-select").value=currentLang;
  $("#language-label").textContent=({ko:"언어",en:"Language",ja:"言語",zh:"语言",de:"Sprache",it:"Lingua",es:"Idioma",tr:"Dil"})[currentLang];
+ const startScreenLink=$("#start-screen-link");if(startScreenLink){startScreenLink.textContent=({ko:"처음화면",en:"Start",ja:"最初の画面",zh:"初始页面",de:"Startseite",it:"Schermata iniziale",es:"Pantalla inicial",tr:"Başlangıç"})[currentLang];startScreenLink.href="./landing.html";}
  const myInfoLink=$("#my-info-link");if(myInfoLink){myInfoLink.textContent=({ko:"내정보",en:"My Info",ja:"マイ情報",zh:"我的信息",de:"Meine Infos",it:"Le mie info",es:"Mi información",tr:"Bilgilerim"})[currentLang];myInfoLink.href="./my-info.html?lang="+encodeURIComponent(currentLang);}
  $$("#main-nav button").forEach((b,i)=>{const id=PAGE_IDS[i];b.textContent=PAGE_ICONS[id]+" "+PAGE_LABELS[id][langIndex()];b.setAttribute("aria-label",PAGE_LABELS[id][langIndex()]);});
  try{localStorage.setItem("kor1816_rebuild_lang_v1",currentLang);localStorage.setItem("kor1816_lang",currentLang);}catch{}
