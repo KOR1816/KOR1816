@@ -1214,7 +1214,7 @@ function battleJoinParticipantCard(p,hideSkills=false){
  const fixed=isFixedLeader(p.nickname),fixedRole=fixedLeaderRole(p.nickname),hasTier=["A","B","C"].includes(p.tier);
  const tier=fixed?"S":hasTier?p.tier:"😭";
  const avatar=apiAvatarMarkup(p.nickname,'nc-avatar');
- const barracks=fixed?(fixedRole==="Nemesis"?"Nemesis · "+castleCardText("leader"):castleCardText("leader")):p.tier==="A"?castleCardText("barracks5"):p.tier==="B"?castleCardText("barracks45"):p.tier==="C"?castleCardText("barracks4"):castleCardText("tierNone");
+ const barracks=fixed?castleCardText("leader"):p.tier==="A"?castleCardText("barracks5"):p.tier==="B"?castleCardText("barracks45"):p.tier==="C"?castleCardText("barracks4"):castleCardText("tierNone");
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
