@@ -574,9 +574,21 @@ const homeDefaults={
  welcome:"소통 · 협력 · 성장 · KVK 조직력을 중심으로 함께합니다."
 };
 async function loadHome(){
- const r=await loadData("home",homeDefaults);homeData=r.data;
+ // Render the home page immediately so a slow or unavailable Firebase read
+ // cannot leave the main page looking blank while data is loading.
+ homeData={...homeDefaults,translations:homeData.translations||{}};
  renderHome();
- if(r.source==="unavailable")setMsg("homeMsg",message("fallback"));else setMsg("homeMsg",message("load"));
+ setMsg("homeMsg",message("load"));
+ try{
+  const r=await loadData("home",homeDefaults);
+  homeData=r.data;
+  renderHome();
+  if(r.source==="unavailable")setMsg("homeMsg",message("fallback"));
+  else setMsg("homeMsg",message("load"));
+ }catch(error){
+  console.error("Home data load failed; keeping defaults visible",error);
+  setMsg("homeMsg",message("fallback"));
+ }
 }
 function ensureHomeNoticeBody(){
  return homeText("lines").join("\n");
