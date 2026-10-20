@@ -877,7 +877,54 @@ function safeAvatarUrl(value){try{const url=new URL(String(value||''));return ur
 function rosterApiAvatarStyle(name){const url=rosterApiMatch(name);return url?'background-image:url("'+url.replace(/["\\\r\n]/g,'')+'");background-size:cover;background-position:center;background-repeat:no-repeat;':'';}
 function apiAvatarMarkup(name,className='roster-avatar'){const url=rosterApiMatch(name);return '<span class="'+className+(!url?' roster-avatar-missing':'')+'" data-roster-api-name="'+esc(name||'')+'">'+(url?'<img src="'+esc(url)+'" alt="" loading="lazy" decoding="async">':'<span class="api-avatar-placeholder">👤</span>')+'</span>';}
 function applyRosterApiAvatars(){document.querySelectorAll('[data-roster-api-name]').forEach(el=>{const url=rosterApiMatch(el.getAttribute('data-roster-api-name'));if(url){el.innerHTML='<img src="'+esc(url)+'" alt="" loading="lazy" decoding="async">';el.classList.remove('roster-avatar-missing');}else{el.innerHTML='<span class="api-avatar-placeholder">👤</span>';el.classList.add('roster-avatar-missing');}});document.querySelectorAll('[data-roster-api-label]').forEach(el=>{const source=el.getAttribute('data-roster-api-label');if(source)el.textContent=rosterApiDisplayName(source);});}
-async function loadRosterApiAvatars(){let cursor=0;const jobs=Array.from({length:8},async()=>{while(cursor<PROFILE_ROSTER_IDS.length){const id=PROFILE_ROSTER_IDS[cursor++];try{let data=null;const cacheKey='kor1816_roster_avatar_'+id;try{const saved=JSON.parse(localStorage.getItem(cacheKey)||'null');if(saved&&Date.now()-saved.savedAt<12*60*60*1000&&saved.data?.nickname)data=saved.data;}catch{}if(!data){try{const old=JSON.parse(localStorage.getItem('kor1816_roster_'+id)||'null');const p=old?.data?.player;if(old&&Date.now()-old.savedAt<12*60*60*1000&&p&&(p.nick_name||p.nickname||p.name))data={nickname:p.nick_name||p.nickname||p.name,avatar:p.avatar_url||p.avatar};}catch{}}if(!data){const response=await fetch(PROFILE_API+'?id='+encodeURIComponent(id)+'&t='+Date.now(),{headers:{Accept:'application/json'},cache:'no-store'});const json=await response.json();if(!response.ok||!json?.ok)throw new Error(json?.error||String(response.status));const p=json.player||json.profile||json.data?.player||json.data?.profile||{};data={nickname:p.nick_name||p.nickname||p.name||p.player_name,avatar:p.avatar_url||p.avatar||p.avatarUrl||p.profile_image_url||p.profile?.avatar_url};if(!data.nickname)throw new Error('API response has no nickname');try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),data}));}catch{}}const nickname=cleanApiNickname(data.nickname);if(!nickname)continue;const key=normalizeRosterMatch(nickname);if(!key)continue;const profile={id,nickname,avatar:safeAvatarUrl(data.avatar)};rosterApiProfileList.push(profile);const matchKeys=[...new Set([key,rosterApiLookupKey(nickname)].filter(Boolean))];for(const matchKey of matchKeys){if(!rosterApiNameMap.has(matchKey))rosterApiNameMap.set(matchKey,nickname);if(profile.avatar&&!rosterApiAvatars.has(matchKey))rosterApiAvatars.set(matchKey,profile.avatar);}}catch(error){console.warn('Roster API profile unavailable:',id,error);}}});await Promise.all(jobs);rosterApiProfileList.sort((a,b)=>PROFILE_ROSTER_IDS.indexOf(a.id)-PROFILE_ROSTER_IDS.indexOf(b.id));applyRosterApiAvatars();refreshRosterSelectors();if(typeof renderTeamsDisplay==='function')renderTeamsDisplay();if(typeof renderAllianceDisplay==='function')renderAllianceDisplay();if(typeof renderParticipants==='function')renderParticipants();if(typeof renderCastleWar==='function')renderCastleWar();if(typeof renderCastleLayout==='function')renderCastleLayout();if(typeof renderSeating==='function')renderSeating();if(typeof renderViking==='function')renderViking();}
+function apiProfileAvatar(p){
+ const keys=["avatar_url","avatarUrl","profile_image_url","profileImageUrl","portrait_url","portraitUrl","head_url","headUrl","icon_url","iconUrl","avatar","portrait","head","profile_image","profileImage"];
+ const seen=new Set(),queue=[p];
+ while(queue.length){const item=queue.shift();if(!item||typeof item!=="object"||seen.has(item))continue;seen.add(item);
+  for(const key of keys){const value=item[key];if(typeof value==="string"&&/^https?:\\/\\//i.test(value))return value;if(value&&typeof value==="object")queue.push(value);}
+  for(const [key,value] of Object.entries(item)){if(value&&typeof value==="object"&&/profile|player|user|data|base|avatar|image/i.test(key))queue.push(value);}
+ }
+ return "";
+}
+async function loadRosterApiAvatars(){
+ let cursor=0;
+ const jobs=Array.from({length:8},async()=>{while(cursor<PROFILE_ROSTER_IDS.length){
+  const id=PROFILE_ROSTER_IDS[cursor++];
+  try{
+   let data=null;const cacheKey="kor1816_roster_avatar_"+id;
+   // The player reported missing is refreshed directly from API; other cache entries are only trusted if they include a photo.
+   if(id!=="271532528"){
+    try{const saved=JSON.parse(localStorage.getItem(cacheKey)||"null");if(saved&&Date.now()-saved.savedAt<12*60*60*1000&&saved.data?.nickname&&safeAvatarUrl(saved.data.avatar))data=saved.data;}catch{}
+    if(!data){try{const old=JSON.parse(localStorage.getItem("kor1816_roster_"+id)||"null");const p=old?.data?.player||old?.player;const avatar=apiProfileAvatar(p||{});if(old&&Date.now()-old.savedAt<12*60*60*1000&&p&&(p.nick_name||p.nickname||p.name)&&avatar)data={nickname:p.nick_name||p.nickname||p.name,avatar};}catch{}}
+   }
+   if(!data){
+    const response=await fetch(PROFILE_API+"?id="+encodeURIComponent(id)+"&t="+Date.now(),{headers:{Accept:"application/json"},cache:"no-store"});
+    const json=await response.json();if(!response.ok||json?.ok===false)throw new Error(json?.error||String(response.status));
+    const p=json.player||json.profile||json.data?.player||json.data?.profile||json.result?.player||json.result||json.data||{};
+    const nickname=p.nick_name||p.nickname||p.name||p.player_name||p.playerName||p.governor_name||p.governorName;
+    const avatar=apiProfileAvatar(json);
+    if(!nickname)throw new Error("API response has no nickname");
+    data={nickname,avatar};
+    try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),data}));}catch{}
+   }
+   const nickname=cleanApiNickname(data.nickname);if(!nickname)continue;
+   const key=normalizeRosterMatch(nickname);if(!key)continue;
+   const profile={id,nickname,avatar:safeAvatarUrl(data.avatar)};rosterApiProfileList.push(profile);
+   const matchKeys=[...new Set([key,rosterApiLookupKey(nickname)].filter(Boolean))];
+   for(const matchKey of matchKeys){if(!rosterApiNameMap.has(matchKey))rosterApiNameMap.set(matchKey,nickname);if(profile.avatar&&!rosterApiAvatars.has(matchKey))rosterApiAvatars.set(matchKey,profile.avatar);}
+  }catch(error){console.warn("Roster API profile unavailable:",id,error);}
+ }});
+ await Promise.all(jobs);
+ rosterApiProfileList.sort((a,b)=>PROFILE_ROSTER_IDS.indexOf(a.id)-PROFILE_ROSTER_IDS.indexOf(b.id));
+ applyRosterApiAvatars();refreshRosterSelectors();installHolySwordProfilePicker();
+ if(typeof renderTeamsDisplay==="function")renderTeamsDisplay();
+ if(typeof renderAllianceDisplay==="function")renderAllianceDisplay();
+ if(typeof renderParticipants==="function")renderParticipants();
+ if(typeof renderCastleWar==="function")renderCastleWar();
+ if(typeof renderCastleLayout==="function")renderCastleLayout();
+ if(typeof renderSeating==="function")renderSeating();
+ if(typeof renderViking==="function")renderViking();
+}
 function knownRosterNicknames(extra=[]){const extras=(Array.isArray(extra)?extra.flat(Infinity):[extra]).map(v=>String(v||'').trim()).filter(Boolean);return [...new Set([...rosterApiProfileList.map(p=>p.nickname).filter(Boolean),...extras])];}
 function fillNicknameSelect(select,value){if(!select)return;const original=String(value||'').trim(),current=rosterApiDisplayName(original),names=knownRosterNicknames([original,current]);select.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===current||n===original?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join('');select.value=[...select.options].some(o=>o.value===current)?current:original;}
 function refreshRosterSelectors(){const selector='select[id^="team-"],select[id^="extra-"],select[id^="sub-"],select[id^="alliance-"],select[id^="ae-"],select[id^="eNoticeAbsence"],#ncNick';$$(selector).forEach(select=>fillNicknameSelect(select,select.value));$$('#seatingEditGrid select[data-seating-row]').forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillSeatingNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||select.value||'');});refreshHolySwordProfilePickers();const nick=$('#vikingNickname');if(nick){const selected=nick.value,names=knownRosterNicknames(Object.values(vikingData.teams||{}).flat());nick.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(rosterApiDisplayName(n))+'</option>').join('')+'<option value="__custom__">직접 입력</option>';if([...nick.options].some(o=>o.value===selected))nick.value=selected;}const layout=$$('#castlelayout1 [data-layout-slot]');layout.forEach(select=>{const selected=select.value,names=knownRosterNicknames([selected,...participants.map(p=>p.nickname)]);select.innerHTML='<option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===selected?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join('');select.value=selected;});$$("#castlewar1 select[data-war],#castlewar1 select[data-war-leader]").forEach(select=>{const selected=select.value;select.innerHTML=castleWarSelect(selected);select.value=selected;});}
