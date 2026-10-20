@@ -1178,7 +1178,7 @@ async function saveSeating(){
  try{
   // Collect every edited select before writing to Firestore. The single-element
   // helper $ uses querySelector; $ is required here because this is a list.
-  $("#seatingEditGrid select[data-seating-row]").forEach(select=>{
+  $$("#seatingEditGrid select[data-seating-row]").forEach(select=>{
    const row=seatingData.rows[Number(select.dataset.seatingRow)];
    if(row&&Array.isArray(row[select.dataset.seatingSide])){
     row[select.dataset.seatingSide][Number(select.dataset.seatingIndex)]=String(select.value||"").trim();
