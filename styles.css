@@ -1076,5 +1076,5 @@ footer{color:#8498b3;letter-spacing:.06em}
 }
 
 
-/* API loading banner matches the latest-content banner frame. */
-.msg.is-status-message.is-api-loading{color:#79cfff!important;border:1px solid #365783!important;border-left:4px solid #79a9ff!important;border-radius:6px!important;background:rgba(70,112,177,.16)!important;padding:8px 10px 8px 11px!important;font-weight:600!important}
+/* API loading banner uses the exact same frame as the latest-content banner. */
+.msg.is-status-message.is-api-loading{color:#79cfff!important;border:1px solid #365783!important;border-radius:7px!important;padding:10px 12px!important;margin:10px 0!important;background:#080d18!important;font-size:14px!important;font-weight:600!important;line-height:1.55!important}
