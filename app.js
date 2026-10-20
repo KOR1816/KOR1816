@@ -1173,11 +1173,18 @@ async function toggleSeatingAdmin(){
 }
 async function saveSeating(){
  if(!adminModes.seating){alert(message("admin"));return;}
- $$("#seatingEditGrid [data-seating-row]").forEach(input=>{
+ $("#seatingEditGrid [data-seating-row]").forEach(input=>{
   const row=seatingData.rows[Number(input.dataset.seatingRow)];
   if(row)row[input.dataset.seatingSide][Number(input.dataset.seatingIndex)]=input.value.trim();
  });
  try{seatingData=await saveCloud("seating",seatingData);renderSeating();renderSeatingAdmin();setMsg("seatingLatestMsg",message("saved"));}
+ catch(e){console.error(e);setMsg("seatingLatestMsg",message("failed"));}
+}
+async function clearSeating(){
+ if(!adminModes.seating){alert(message("admin"));return;}
+ if(!confirm("자리배치에 저장된 모든 닉네임을 삭제하고 빈 자리배치로 초기화할까요? 이 작업은 저장 후 되돌릴 수 없습니다."))return;
+ const emptyRows=[{row:"Row 1",left:Array(12).fill(""),right:Array(12).fill("")},{row:"Row 2",left:Array(17).fill(""),right:Array(18).fill("")},{row:"Row 3",left:Array(26).fill(""),right:Array(16).fill("")}];
+ try{seatingData=await saveCloud("seating",{rows:emptyRows});renderSeating();renderSeatingAdmin();setMsg("seatingLatestMsg","자리배치 저장 내용을 전체 삭제하고 초기화했습니다.");}
  catch(e){console.error(e);setMsg("seatingLatestMsg",message("failed"));}
 }
 
