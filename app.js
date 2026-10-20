@@ -939,28 +939,39 @@ async function loadRosterApiAvatars(){
  const jobs=Array.from({length:8},async()=>{while(cursor<PROFILE_ROSTER_IDS.length){
   const id=PROFILE_ROSTER_IDS[cursor++];
   try{
-   let data=null;const cacheKey="kor1816_roster_avatar_"+id;
-   // The player reported missing is refreshed directly from API; other cache entries are only trusted if they include a photo.
-   if(!["271532528","270726183","268217971","278661073"].includes(id)){
-    try{const saved=JSON.parse(localStorage.getItem(cacheKey)||"null");if(saved&&Date.now()-saved.savedAt<12*60*60*1000&&saved.data?.nickname&&safeAvatarUrl(saved.data.avatar))data=saved.data;}catch{}
-    if(!data){try{const old=JSON.parse(localStorage.getItem("kor1816_roster_"+id)||"null");const p=old?.data?.player||old?.player;const avatar=apiProfileAvatar(p||{});if(old&&Date.now()-old.savedAt<12*60*60*1000&&p&&(p.nick_name||p.nickname||p.name)&&avatar)data={nickname:p.nick_name||p.nickname||p.name,avatar};}catch{}}
+   let data=null;const cacheKey="kor1816_roster_avatar_"+id;const now=Date.now();
+   // Cache both complete profiles and profiles without photos. Temporarily suppress repeated failures.
+   try{
+    const saved=JSON.parse(localStorage.getItem(cacheKey)||"null");
+    if(saved?.failedUntil&&now<saved.failedUntil)continue;
+    if(saved&&now-saved.savedAt<12*60*60*1000&&saved.data?.nickname)data=saved.data;
+   }catch{}
+   if(!data){
+    try{const old=JSON.parse(localStorage.getItem("kor1816_roster_"+id)||"null");const p=old?.data?.player||old?.player;const avatar=apiProfileAvatar(p||{});if(old&&now-old.savedAt<12*60*60*1000&&p&&(p.nick_name||p.nickname||p.name)&&avatar)data={nickname:p.nick_name||p.nickname||p.name,avatar};}catch{}
    }
    if(!data){
-    const response=await fetch(PROFILE_API+"?id="+encodeURIComponent(id)+"&t="+Date.now(),{headers:{Accept:"application/json"},cache:"no-store"});
-    const json=await response.json();if(!response.ok||json?.ok===false)throw new Error(json?.error||String(response.status));
-    const p=json.player||json.profile||json.data?.player||json.data?.profile||json.result?.player||json.result||json.data||{};
-    const nickname=p.nick_name||p.nickname||p.name||p.player_name||p.playerName||p.governor_name||p.governorName;
-    const avatar=apiProfileAvatar(json);
-    if(!nickname)throw new Error("API response has no nickname");
-    data={nickname,avatar};
-    try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),data}));}catch{}
+    const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),10000);
+    try{
+     const response=await fetch(PROFILE_API+"?id="+encodeURIComponent(id),{headers:{Accept:"application/json"},cache:"no-store",signal:controller.signal});
+     const json=await response.json();if(!response.ok||json?.ok===false)throw new Error(json?.error||String(response.status));
+     const p=json.player||json.profile||json.data?.player||json.data?.profile||json.result?.player||json.result||json.data||{};
+     const nickname=p.nick_name||p.nickname||p.name||p.player_name||p.playerName||p.governor_name||p.governorName;
+     const avatar=apiProfileAvatar(json);
+     if(!nickname)throw new Error("API response has no nickname");
+     data={nickname,avatar};
+     try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),data}));}catch{}
+    }finally{clearTimeout(timeout);}
    }
    const nickname=cleanApiNickname(data.nickname);if(!nickname)continue;
    const key=normalizeRosterMatch(nickname);if(!key)continue;
    const profile={id,nickname,avatar:safeAvatarUrl(data.avatar)};rosterApiProfileList.push(profile);
    const matchKeys=[...new Set([key,rosterApiLookupKey(nickname)].filter(Boolean))];
    for(const matchKey of matchKeys){if(!rosterApiNameMap.has(matchKey))rosterApiNameMap.set(matchKey,nickname);if(profile.avatar&&!rosterApiAvatars.has(matchKey))rosterApiAvatars.set(matchKey,profile.avatar);}
-  }catch(error){console.warn("Roster API profile unavailable:",id,error);}
+  }catch(error){
+   // Avoid hammering the provider when an ID fails or times out; retry after 15 minutes.
+   try{localStorage.setItem("kor1816_roster_avatar_"+id,JSON.stringify({failedUntil:Date.now()+15*60*1000,error:String(error?.message||error).slice(0,160)}));}catch{}
+   console.warn("Roster API profile unavailable (temporarily cached):",id,error);
+  }
  }});
  await Promise.all(jobs);
  apiProfilesReady=true;
