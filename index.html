@@ -18,13 +18,15 @@
           isAuthorized = true;
         }
       } catch (_) {}
-      if (!isAuthorized) {
-        window.location.replace("./landing.html" + window.location.search);
-        return;
-      }
       var isEntering1816 = params.get("space") === "1816";
       var requestedPage = params.get("page") || "";
       var isDirectPageLink = Boolean(hash || requestedPage);
+      // Keep shared/deep links usable even when this browser has no saved
+      // member flag. The flag only controls the landing-page entry flow.
+      if (!isAuthorized && !isEntering1816 && !isDirectPageLink) {
+        window.location.replace("./landing.html" + window.location.search);
+        return;
+      }
       if (!isEntering1816 && !isDirectPageLink) {
         window.location.replace("./landing.html" + window.location.search);
       }
