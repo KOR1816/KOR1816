@@ -867,9 +867,10 @@ const rosterApiNameMap=new Map();
 const rosterApiAmbiguousNames=new Set();
 const rosterApiAvatars=new Map();
 function normalizeRosterMatch(value){return String(value||'').normalize('NFKC').toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu,'');}
+function rosterApiLookupKey(value){const key=normalizeRosterMatch(value);const aliases={팜:'pham',pham:'pham',샌디:'sandiego',샌디에이고:'sandiego',sandiego:'sandiego'};return aliases[key]||key;}
 function cleanApiNickname(value){const raw=String(value||'').normalize('NFKC');const clean=raw.replace(/[^\p{L}\p{N}\s]/gu,'').replace(/\s+/g,' ').trim();return clean||raw.trim();}
 function rosterApiDisplayName(name){const key=normalizeRosterMatch(name);return key&&!rosterApiAmbiguousNames.has(key)&&rosterApiNameMap.get(key)||cleanApiNickname(name);}
-function rosterApiMatch(name){const key=normalizeRosterMatch(name);return key&&!rosterApiAmbiguousNames.has(key)?rosterApiAvatars.get(key)||'':'';}
+function rosterApiMatch(name){const key=rosterApiLookupKey(name);if(!key)return '';const direct=rosterApiAvatars.get(key);if(direct)return direct;for(const [profileKey,url] of rosterApiAvatars){if(rosterApiLookupKey(profileKey)===key&&!rosterApiAmbiguousNames.has(profileKey))return url||'';}return '';}
 function safeAvatarUrl(value){try{const url=new URL(String(value||''));return url.protocol==='https:'||url.protocol==='http:'?url.href:'';}catch{return '';}}
 function rosterApiAvatarStyle(name){const url=rosterApiMatch(name);return url?'background-image:url("'+url.replace(/["\\\r\n]/g,'')+'");background-size:cover;background-position:center;background-repeat:no-repeat;':'';}
 function applyRosterApiAvatars(){document.querySelectorAll('[data-roster-api-name]').forEach(el=>{const url=rosterApiMatch(el.getAttribute('data-roster-api-name'));if(url){el.style.backgroundImage='url("'+url.replace(/["\\\r\n]/g,'')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';el.style.backgroundRepeat='no-repeat';el.classList.remove('roster-avatar-missing');el.textContent='';}});document.querySelectorAll('[data-roster-api-label]').forEach(el=>{const source=el.getAttribute('data-roster-api-label');if(source)el.textContent=rosterApiDisplayName(source);});}
