@@ -905,7 +905,7 @@ function refreshHolySwordProfilePickers(){
 }
 function installHolySwordProfilePicker(){
  const root=$('#teams');if(!root)return;
- const selects=$('select[id^="team-"],select[id^="extra-"],select[id^="sub-"]',root);
+ const selects=$$('select[id^="team-"],select[id^="extra-"],select[id^="sub-"]',root);
  selects.forEach(select=>{
   if(select.dataset.hsPickerReady)return;
   select.dataset.hsPickerReady='1';
