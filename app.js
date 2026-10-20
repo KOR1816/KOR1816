@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261020-teams-six-slots-v21";
+import { PAGE_CONTENT } from "./page-content.js?v=20261020-nemesis-api-profiles-v22";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -36,7 +36,8 @@ const LEGACY = {
 };
 const FIXED_NICKNAMES=["Nemesis","Pham","샌디에이고","Constant","SsungBi","Jinno","KOREAN MONSTER","hhHa","GeeGeeGeeZ","Jiwon","Aveline","DON QUIXOTE","Leo li","Aimee","yongi","moon","Chan Dam Bom","bebe","VIVIAN","Pika","Lekum","ImNotKorean","DDoro","Hani","miiiiia","bossi","Wilk","Krungkrung","Keith ape","OMEGA","Zidf","hajae","Mushi","Libby","LSJ","jennie","Nyctifer_v","Lager","GieZues","Sant Jordi","Eagle","Architect","El Elegido","LJ","Furball","AVA","AgaresKOR","coculim","Rarara","ROKA","Ian","다잘이 돌아왔다","backki","Commander 주","HIGH FIVE","Gideon","Dark Knight","Lady Anaiah","Korean","FlexMan","Dingdong","Alucard","S ssh","Hair loss beam","RESCENE Yaho","SUMMER","hun","themis1994","Sylvanas","RACruze","Kashish","Vista","HERA","Alchemist","DaddyEpstein","KOR","Rayan","ADIPATI KOR","Kuu Rawr","SAGAMI","KK Master","Solace","Bilal","The Warrior","Citykan","스타리아","Adanali Ibo","Hsun","benson627","Remember","Jshan","lolkillmeplz67","Pamuk","gozeromin","KOOK","Ojr","Mahecha","MG PRIME","MissCoco"];
 const FIXED_LEADERS = ["Nemesis","Pham","샌디에이고","Jinno","Leo li","SsungBi"];
-function isFixedLeader(name){return FIXED_LEADERS.some(leader=>rosterApiLookupKey(leader)===rosterApiLookupKey(name));}
+function fixedLeaderRole(name){const key=normalizeRosterMatch(name);if(["팜phamkor","팜phpmkor","phamkor","phpmkor"].includes(key))return "Nemesis";return FIXED_LEADERS.find(leader=>rosterApiLookupKey(leader)===rosterApiLookupKey(name))||"";}
+function isFixedLeader(name){return Boolean(fixedLeaderRole(name));}
 const NOTICE_DEFAULTS = {
   bearLeaders:"집결장: 알카 · 페라 · 로사",
   bearMembers:"집결원: 아마데우스 · 첸코 · 연우 · 마르고 · 아마네\n영웅 없이 X",
@@ -868,7 +869,7 @@ const rosterApiNameMap=new Map();
 const rosterApiAmbiguousNames=new Set();
 const rosterApiAvatars=new Map();
 function normalizeRosterMatch(value){return String(value||'').normalize('NFKC').toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu,'');}
-function rosterApiLookupKey(value){const key=normalizeRosterMatch(value);const aliases={팜:'pham',pham:'pham',팜phpmkor:'pham',샌디:'sandiego',샌디에이고:'sandiego',sandiego:'sandiego',썽비:'ssungbi',ssungbi:'ssungbi',썽비ssungbi:'ssungbi'};return aliases[key]||key;}
+function rosterApiLookupKey(value){const key=normalizeRosterMatch(value);const aliases={팜:'pham',pham:'pham',phamkor:'pham',phpmkor:'pham',팜phamkor:'pham',팜phpmkor:'pham',샌디:'sandiego',샌디에이고:'sandiego',sandiego:'sandiego',썽비:'ssungbi',ssungbi:'ssungbi',썽비ssungbi:'ssungbi'};return aliases[key]||key;}
 function cleanApiNickname(value){return String(value||'').normalize('NFKC').replace(/[^가-힣A-Za-z\s]/g,'').replace(/\s+/g,' ').trim();}
 function rosterApiProfile(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw),alias=rosterApiLookupKey(raw);if(!key)return null;const exact=rosterApiProfileList.find(p=>normalizeRosterMatch(p.nickname)===key)||rosterApiProfileList.find(p=>rosterApiLookupKey(p.nickname)===alias);if(exact)return exact;if(alias==="pham")return rosterApiProfileList.find(p=>{const n=normalizeRosterMatch(p.nickname);return n==="pham"||n==="팜phpmkor"||n.includes("phpmkor");})||null;return null;}
 function rosterApiDisplayName(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw);if(!key)return '';const alias=rosterApiLookupKey(raw),fixed={팜phpmkor:'팜phpmKOR',pham:'팜phpmKOR',썽비ssungbi:'썽비 Ssungbi',ssungbi:'썽비 Ssungbi'};if(fixed[key])return fixed[key];if(fixed[alias])return fixed[alias];const direct=rosterApiNameMap.get(key);if(direct)return direct;const matched=alias&&rosterApiNameMap.get(alias);return matched||cleanApiNickname(raw)||raw;}
