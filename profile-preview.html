@@ -122,10 +122,18 @@ form.addEventListener('submit', async event => {
     }
   }
 });
-if (/^\d{4,20}$/.test(params.get('id') || '')) {
-  input.value = params.get('id');
+const passedId = params.get('id') || '';
+if (/^\d{4,20}$/.test(passedId)) {
+  input.value = passedId;
   document.body.classList.add('auto-check');
   form.requestSubmit();
+} else {
+  // Do not show a second Game ID form when this page is opened directly.
+  // Return to the first login panel where Game ID and password are entered together.
+  const loginUrl = new URL('./landing.html', location.href);
+  loginUrl.searchParams.set('lang', params.get('lang') || 'ko');
+  loginUrl.hash = 'login-1816';
+  location.replace(loginUrl.href);
 }
 </script>
 </body>
