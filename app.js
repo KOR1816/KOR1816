@@ -1158,7 +1158,8 @@ function renderSeating(){
 function renderSeatingAdmin(){
  const root=$("#seating"),grid=$("#seatingEditGrid",root);if(!grid)return;
  grid.innerHTML=seatingData.rows.map((row,ri)=>'<section class="seating-edit-column"><h4>ROW '+(ri+1)+'</h4><div class="seating-edit-split"><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-left">Bear1</h5>'+row.left.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="left" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select></label>').join("")+'</div><div class="seating-edit-card"><h5 class="seating-edit-side-title seating-side-'+(ri+1)+'-right">Bear2</h5>'+row.right.map((name,i)=>'<label class="seating-edit-row"><span>'+(i+1)+'</span><select data-seating-row="'+ri+'" data-seating-side="right" data-seating-index="'+i+'"><option value="">닉네임 선택</option></select></label>').join("")+'</div></div></section>').join("");
- $$("#seatingEditGrid [data-seating-row]").forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillSeatingNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||"");});
+ $("#seatingEditGrid [data-seating-row]").forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillSeatingNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||"");});
+ installHolySwordProfilePicker();
 }
 async function loadSeating(){
  const r=await loadData("seating",seatingData);
