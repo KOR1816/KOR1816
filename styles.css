@@ -828,3 +828,7 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 
 /* Personal profile shortcut */
 .header-actions{display:flex;align-items:center;gap:10px;flex:0 0 auto}.my-info-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 14px;border:1px solid #d6b45f;border-radius:10px;background:linear-gradient(135deg,#e9cb7b,#b78a36);color:#182033;text-decoration:none;font-weight:800;white-space:nowrap}.my-info-link:hover{filter:brightness(1.08)}@media(max-width:760px){.header-actions{gap:7px;align-items:flex-start}.my-info-link{min-height:36px;padding:8px 10px;font-size:12px}.site-header{gap:8px}.language-control select{max-width:104px;padding:8px 5px}}
+
+/* API roster names stay inside their cards on desktop and mobile. */
+.roster-person-name,.nc-name-line>strong,.castle-person-name>strong,.viking-member-name{min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nc-name-line,.castle-person-name{min-width:0;}
