@@ -963,3 +963,8 @@ button,.admin-btn{font-family:inherit;letter-spacing:-.01em}
 footer{color:#8498b3;letter-spacing:.06em}
 @media(max-width:760px){.site-header{align-items:center;gap:10px}.brand{gap:9px;flex:1 1 100%}.brand .crest{width:35px;height:35px;flex-basis:35px;font-size:21px;border-radius:10px}.brand .brand-title{font-size:15px;letter-spacing:.045em}.brand-copy p{font-size:11px}.header-actions{width:100%;justify-content:flex-start;gap:7px}.start-screen-link,.my-info-link{min-height:36px;padding:8px 10px}.language-control{margin-left:auto;flex-direction:row;align-items:center}.language-control select{max-width:115px}.main-nav button{font-size:12px}}
 @media(max-width:390px){.brand .brand-title{font-size:13px}.brand-copy p{font-size:10px}.language-control select{max-width:96px}}
+
+/* Extra navigation links: ranking and public immigrant directory */
+.main-nav .nav-extra{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:39px;padding:9px 12px;border:1px solid #30455f;border-radius:11px;background:linear-gradient(145deg,#17263d,#0e192a);color:#e5eefb;text-decoration:none;font-family:inherit;font-size:13px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;transition:background .15s,border-color .15s}
+.main-nav .nav-extra:hover{border-color:#8bbfe4;background:#1b2c43}
+@media(max-width:760px){.main-nav .nav-extra{font-size:12px;padding:9px 11px}}
