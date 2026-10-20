@@ -896,3 +896,6 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 .notice-absence-avatar .roster-avatar,.notice-absence-avatar .roster-avatar img {
   border-radius:4px!important;
 }
+
+/* Keep Holy Sword public table and admin editor mutually exclusive, overriding legacy !important display rules. */
+#teams #teamDisplay[hidden],#teams .team-columns-wrap[hidden]{display:none!important;}
