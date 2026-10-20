@@ -1016,6 +1016,7 @@ function renderTeamsDisplay(){
  const groups=[["A","A1",6],["B","A2",6],["C","D1",6],["D","D2",6],["extra","💥 개돌조",6],["subs","🔄 대체자",10]];
  display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+localizedTeamHeading(title)+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
  display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
+ if(!adminModes.teams){display.hidden=false;display.removeAttribute("hidden");display.style.visibility="visible";display.style.minHeight="120px";}
  // Keep the public roster visible even if a previous render left inline display styles behind.
  if(!adminModes.teams){display.hidden=false;display.removeAttribute("hidden");display.style.visibility="visible";display.style.minHeight="120px";}
  translateStatic();
