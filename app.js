@@ -35,7 +35,7 @@ const LEGACY = {
   battleJoin:"castle_features_v1", castlewar1:"castle_features_v1", castlelayout1:"castle_layout1_v1"
 };
 const FIXED_NICKNAMES=["Nemesis","Pham","샌디에이고","Constant","SsungBi","Jinno","KOREAN MONSTER","hhHa","GeeGeeGeeZ","Jiwon","Aveline","DON QUIXOTE","Leo li","Aimee","yongi","moon","Chan Dam Bom","bebe","VIVIAN","Pika","Lekum","ImNotKorean","DDoro","Hani","miiiiia","bossi","Wilk","Krungkrung","Keith ape","OMEGA","Zidf","hajae","Mushi","Libby","LSJ","jennie","Nyctifer_v","Lager","GieZues","Sant Jordi","Eagle","Architect","El Elegido","LJ","Furball","AVA","AgaresKOR","coculim","Rarara","ROKA","Ian","다잘이 돌아왔다","backki","Commander 주","HIGH FIVE","Gideon","Dark Knight","Lady Anaiah","Korean","FlexMan","Dingdong","Alucard","S ssh","Hair loss beam","RESCENE Yaho","SUMMER","hun","themis1994","Sylvanas","RACruze","Kashish","Vista","HERA","Alchemist","DaddyEpstein","KOR","Rayan","ADIPATI KOR","Kuu Rawr","SAGAMI","KK Master","Solace","Bilal","The Warrior","Citykan","스타리아","Adanali Ibo","Hsun","benson627","Remember","Jshan","lolkillmeplz67","Pamuk","gozeromin","KOOK","Ojr","Mahecha","MG PRIME","MissCoco"];
-const FIXED_LEADERS = ["Nemesis","팜phpmKOR","샌디에이고","Jinno","Leo li","썽비 Ssungbi"];
+const FIXED_LEADERS = ["Nemesis","Pham","샌디에이고","Jinno","Leo li","SsungBi"];
 const NOTICE_DEFAULTS = {
   bearLeaders:"집결장: 알카 · 페라 · 로사",
   bearMembers:"집결원: 아마데우스 · 첸코 · 연우 · 마르고 · 아마네\n영웅 없이 X",
@@ -98,7 +98,7 @@ let seatingData = {rows:[
  {row:"Row 3",left:Array(26).fill(""),right:Array(16).fill("")}
 ]};
 let participants = [];
-let castleWarData = {war:{assault:Array(10).fill(""),rush:Array(10).fill(""),finish:Array(10).fill(""),north:Array(10).fill(""),west:Array(10).fill(""),reserve:Array(10).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"Nemesis",rush:"팜phpmKOR",finish:"샌디에이고"},updatedAt:0};
+let castleWarData = {war:{assault:Array(10).fill(""),rush:Array(10).fill(""),finish:Array(10).fill(""),north:Array(10).fill(""),west:Array(10).fill(""),reserve:Array(10).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"Nemesis",rush:"Pham",finish:"샌디에이고"},updatedAt:0};
 let castleLayoutData = {slots:Array(28).fill(""),updatedAt:0};
 let vikingData = {teams:Object.fromEntries(Array.from({length:25},(_,i)=>[i+1,[]])),updatedAt:0};
 let vikingPhotosByTeam = {};
@@ -944,7 +944,7 @@ function holySwordPickerLabel(select){
  return {value,label:value?rosterApiDisplayName(value):'닉네임 선택',profile};
 }
 function refreshHolySwordProfilePickers(){
- $$('#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"]').forEach(select=>{
+ $('#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#seating select[data-seating-row],#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]').forEach(select=>{
   const button=select.parentElement?.querySelector('.hs-api-picker-trigger');
   if(!button)return;
   const {value,label,profile}=holySwordPickerLabel(select);
@@ -1249,7 +1249,7 @@ async function loadNewCastleFeatures(){
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("castlewar1"));if(old.exists())data=old.data();}
    const war=data?.war||data?.castleWar||{};
-   castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:8},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:8},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:8},(_,i)=>war.finish?.[i]||""),north:Array.from({length:8},(_,i)=>war.north?.[i]||""),west:Array.from({length:8},(_,i)=>war.west?.[i]||""),reserve:Array.from({length:8},(_,i)=>war.reserve?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:(data?.warLeaders?.rush==="Pham"||!data?.warLeaders?.rush)?"팜phpmKOR":data.warLeaders.rush,finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
+   castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:8},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:8},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:8},(_,i)=>war.finish?.[i]||""),north:Array.from({length:8},(_,i)=>war.north?.[i]||""),west:Array.from({length:8},(_,i)=>war.west?.[i]||""),reserve:Array.from({length:8},(_,i)=>war.reserve?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:data?.warLeaders?.rush||"Pham",finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
    if(rosterLoaded&&sanitizeCastleWarAssignments()){try{castleWarData=await saveCloud("castlewar1",castleWarData);}catch(saveError){console.warn("Could not persist removed Castle War assignments",saveError);}}
    if(rosterLoaded){try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.warn("Castle War auto-sync on load failed",syncError);}}
    renderCastleWar();setMsg("ncWarMsg",latestBanner("castlewar1"));
