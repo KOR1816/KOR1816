@@ -1030,7 +1030,7 @@ async function saveAlliance(){
 function seatingRosterLabel(id){return rosterApiDisplayName(id);}
 function seatingRosterPerson(id){
  if(!id)return '<span class="roster-person-empty"></span>';
- return '<span class="roster-person">'+rosterAvatar(id)+'<span class="roster-person-name">'+esc(seatingRosterLabel(id))+'</span></span>';
+ return '<span class="roster-person">'+rosterAvatar(id)+'<span class="roster-person-name" data-roster-api-label="'+esc(id)+'">'+esc(seatingRosterLabel(id))+'</span></span>';
 }
 function fillSeatingNicknameSelect(select,value){
  if(!select)return;
