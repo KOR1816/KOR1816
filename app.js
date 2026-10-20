@@ -303,6 +303,7 @@ function applyLanguage(lang){
  if(activePage==="castlewar1")refreshTranslatedBanner("castlewar1","ncWarMsg");
  if(activePage==="castlelayout1")refreshTranslatedBanner("castlelayout1","castleLayout1Msg");
  if(activePage==="battleJoin")refreshTranslatedBanner("battleJoin","ncJoinMsg");
+ if($('#hsApiProfilePicker')?.hidden===false){const title=$('#hsApiPickerTitle');if(title)title.textContent=pickerWord('dialog');const search=$('#hsApiPickerSearch');if(search)search.placeholder=pickerWord('search');renderHolySwordProfilePickerList();}
  document.dispatchEvent(new CustomEvent("kor1816:languagechange",{detail:{language:currentLang}}));
 }
 const ORIGINAL_TEXT = new WeakMap();
@@ -965,10 +966,11 @@ async function loadRosterApiAvatars(){
  if(typeof renderViking==="function")renderViking();
 }
 function knownRosterNicknames(extra=[]){const extras=(Array.isArray(extra)?extra.flat(Infinity):[extra]).map(v=>String(v||'').trim()).filter(Boolean);return [...new Set([...rosterApiProfileList.map(p=>p.nickname).filter(Boolean),...extras])];}
-function fillNicknameSelect(select,value){if(!select)return;const original=String(value||'').trim(),current=rosterApiDisplayName(original),names=knownRosterNicknames([original,current]);select.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===current||n===original?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join('');select.value=[...select.options].some(o=>o.value===current)?current:original;}
+function pickerWord(key){const w={ko:{choose:'닉네임 선택',character:'캐릭터 선택',connected:'API 프로필 연결',photoNeeded:'API 프로필 · 사진 확인 필요',missing:'프로필 정보 없음',dialog:'API 프로필 캐릭터 선택',loading:'API 프로필 불러오는 중…',search:'닉네임 검색',clear:'＋ 선택 해제',photo:'API 프로필 사진 연결',noPhoto:'사진 없음 · API 확인 필요',select:'선택',empty:'일치하는 프로필이 없습니다. API 조회 상태를 확인해 주세요.'},en:{choose:'Select nickname',character:'Select character',connected:'API profile connected',photoNeeded:'API profile · check photo',missing:'Profile unavailable',dialog:'Choose an API profile',loading:'Loading API profiles…',search:'Search nickname',clear:'＋ Clear selection',photo:'API profile photo connected',noPhoto:'No photo · check API',select:'Select',empty:'No matching profiles. Check API status.'},ja:{choose:'ニックネームを選択',character:'キャラクターを選択',connected:'APIプロフィール接続済み',photoNeeded:'APIプロフィール・写真要確認',missing:'プロフィール情報なし',dialog:'APIプロフィールから選択',loading:'APIプロフィール読み込み中…',search:'ニックネーム検索',clear:'＋ 選択解除',photo:'APIプロフィール写真あり',noPhoto:'写真なし・API確認が必要',select:'選択',empty:'一致するプロフィールがありません。APIを確認してください。'},zh:{choose:'选择昵称',character:'选择角色',connected:'已连接 API 资料',photoNeeded:'API 资料 · 请检查照片',missing:'无个人资料',dialog:'选择 API 角色资料',loading:'正在加载 API 资料…',search:'搜索昵称',clear:'＋ 清除选择',photo:'已连接 API 头像',noPhoto:'无照片 · 请检查 API',select:'选择',empty:'没有匹配的资料，请检查 API 状态。'},de:{choose:'Spitznamen wählen',character:'Charakter wählen',connected:'API-Profil verbunden',photoNeeded:'API-Profil · Foto prüfen',missing:'Profil nicht verfügbar',dialog:'API-Profil auswählen',loading:'API-Profile werden geladen…',search:'Spitznamen suchen',clear:'＋ Auswahl löschen',photo:'API-Profilfoto verbunden',noPhoto:'Kein Foto · API prüfen',select:'Auswählen',empty:'Keine passenden Profile. Bitte API-Status prüfen.'},it:{choose:'Scegli nickname',character:'Scegli personaggio',connected:'Profilo API collegato',photoNeeded:'Profilo API · controlla foto',missing:'Profilo non disponibile',dialog:'Scegli un profilo API',loading:'Caricamento profili API…',search:'Cerca nickname',clear:'＋ Cancella selezione',photo:'Foto profilo API collegata',noPhoto:'Nessuna foto · controlla API',select:'Seleziona',empty:'Nessun profilo corrispondente. Controlla l’API.'},es:{choose:'Elegir apodo',character:'Elegir personaje',connected:'Perfil API conectado',photoNeeded:'Perfil API · revisar foto',missing:'Perfil no disponible',dialog:'Elegir perfil de API',loading:'Cargando perfiles API…',search:'Buscar apodo',clear:'＋ Borrar selección',photo:'Foto de perfil API conectada',noPhoto:'Sin foto · revisar API',select:'Elegir',empty:'No hay perfiles coincidentes. Comprueba la API.'},tr:{choose:'Takma ad seç',character:'Karakter seç',connected:'API profili bağlı',photoNeeded:'API profili · fotoğrafı kontrol et',missing:'Profil bilgisi yok',dialog:'API profilinden karakter seç',loading:'API profilleri yükleniyor…',search:'Takma ad ara',clear:'＋ Seçimi temizle',photo:'API profil fotoğrafı bağlı',noPhoto:'Fotoğraf yok · API’yi kontrol et',select:'Seç',empty:'Eşleşen profil yok. API durumunu kontrol edin.'}};return (w[currentLang]||w.ko)[key]||w.ko[key]||key;}
+function fillNicknameSelect(select,value){if(!select)return;const original=String(value||'').trim(),current=rosterApiDisplayName(original),names=knownRosterNicknames([original,current]);select.innerHTML='<option value="">'+esc(pickerWord('choose'))+'</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===current||n===original?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join('');select.value=[...select.options].some(o=>o.value===current)?current:original;}
 function refreshRosterSelectors(){const selector='select[id^="team-"],select[id^="extra-"],select[id^="sub-"],select[id^="alliance-"],select[id^="ae-"],select[id^="eNoticeAbsence"],#ncNick';$$(selector).forEach(select=>fillNicknameSelect(select,select.value));$$('#seatingEditGrid select[data-seating-row]').forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillSeatingNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||select.value||'');});refreshHolySwordProfilePickers();const nick=$('#vikingNickname');if(nick){const selected=nick.value,names=knownRosterNicknames(Object.values(vikingData.teams||{}).flat());nick.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(rosterApiDisplayName(n))+'</option>').join('')+'<option value="__custom__">직접 입력</option>';if([...nick.options].some(o=>o.value===selected))nick.value=selected;}const layout=$$('#castlelayout1 [data-layout-slot]');layout.forEach(select=>{const selected=select.value,names=knownRosterNicknames([selected,...participants.map(p=>p.nickname)]);select.innerHTML='<option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===selected?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join('');select.value=selected;});$$("#castlewar1 select[data-war],#castlewar1 select[data-war-leader]").forEach(select=>{const selected=select.value;select.innerHTML=castleWarSelect(selected);select.value=selected;});}
 function rosterAvatar(name){return apiAvatarMarkup(name,'roster-avatar');}
-loadRosterApiAvatars();
+const rosterApiLoadPromise=loadRosterApiAvatars();
 function rosterPerson(name){return name?'<span class="roster-person">'+rosterAvatar(name)+'<span class="roster-person-name" data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</span></span>':'<span class="roster-person-empty"></span>';}
 
 /* Holy Sword API profile picker: keeps the existing nickname values and save format. */
@@ -988,7 +990,7 @@ function refreshHolySwordProfilePickers(){
   if(!button)return;
   const {value,label,profile}=holySwordPickerLabel(select);
   button.innerHTML=(profile?.avatar?holySwordPickerAvatar(profile):'<span class="hs-picker-fallback">'+(value?'👤':'＋')+'</span>')+
-   '<span class="hs-picker-trigger-text"><strong>'+esc(label)+'</strong><small>'+(profile?(profile.avatar?'API 프로필 연결':'API 프로필 · 사진 확인 필요'):value?'프로필 정보 없음':'캐릭터 선택')+'</small></span><span class="hs-picker-chevron">▾</span>';
+   '<span class="hs-picker-trigger-text"><strong>'+esc(label)+'</strong><small>'+(profile?(profile.avatar?pickerWord('connected'):pickerWord('photoNeeded')):value?pickerWord('missing'):pickerWord('character'))+'</small></span><span class="hs-picker-chevron">▾</span>';
   button.classList.toggle('has-profile',Boolean(profile?.avatar));
  });
 }
@@ -1016,10 +1018,15 @@ function installHolySwordProfilePicker(){
  refreshHolySwordProfilePickers();
 }
 let holySwordPickerTarget=null;
-function openHolySwordProfilePicker(select){
+async function openHolySwordProfilePicker(select){
  const modal=$('#hsApiProfilePicker');if(!modal)return;
  holySwordPickerTarget=select;modal.hidden=false;
- const search=$('#hsApiPickerSearch');if(search)search.value='';
+ const search=$('#hsApiPickerSearch');if(search){search.value='';search.placeholder=pickerWord('search');}
+ const title=$('#hsApiPickerTitle');if(title)title.textContent=pickerWord('dialog');
+ const count=$('#hsApiPickerCount');if(count)count.textContent=pickerWord('loading');
+ const list=$('#hsApiPickerList');if(list)list.innerHTML='<p class="hs-api-picker-no-results">'+esc(pickerWord('loading'))+'</p>';
+ try{await rosterApiLoadPromise;}catch(error){console.warn('API profile picker load failed',error);}
+ if(holySwordPickerTarget!==select)return;
  renderHolySwordProfilePickerList();
  setTimeout(()=>search?.focus(),0);
 }
@@ -1029,9 +1036,9 @@ function renderHolySwordProfilePickerList(){
  const query=String(search?.value||'').trim().toLocaleLowerCase();
  const profiles=rosterApiProfileList.filter(p=>!query||p.nickname.toLocaleLowerCase().includes(query)||cleanApiNickname(p.nickname).toLocaleLowerCase().includes(query)||p.id.includes(query));
  if(count)count.textContent='API 프로필 '+rosterApiProfileList.length+'명 · 검색 결과 '+profiles.length+'명';
- const empty='<button type="button" class="hs-api-picker-empty" data-hs-picker-empty="1">＋ 선택 해제</button>';
- list.innerHTML=empty+profiles.map(p=>'<button type="button" class="hs-api-picker-option" data-hs-profile-id="'+esc(p.id)+'">'+holySwordPickerAvatar(p)+'<span class="hs-api-picker-option-text"><strong>'+esc(p.nickname)+'</strong><small>'+(p.avatar?'API 프로필 사진 연결':'사진 없음 · API 확인 필요')+'</small></span><span class="hs-api-picker-selectmark">선택</span></button>').join('')+
-  (!profiles.length?'<p class="hs-api-picker-no-results">일치하는 프로필이 없습니다. API 조회 상태를 확인해 주세요.</p>':'');
+ const empty='<button type="button" class="hs-api-picker-empty" data-hs-picker-empty="1">'+esc(pickerWord('clear'))+'</button>';
+ list.innerHTML=empty+profiles.map(p=>'<button type="button" class="hs-api-picker-option" data-hs-profile-id="'+esc(p.id)+'">'+holySwordPickerAvatar(p)+'<span class="hs-api-picker-option-text"><strong>'+esc(p.nickname)+'</strong><small>'+(p.avatar?pickerWord('photo'):pickerWord('noPhoto'))+'</small></span><span class="hs-api-picker-selectmark">'+esc(pickerWord('select'))+'</span></button>').join('')+
+  (!profiles.length?'<p class="hs-api-picker-no-results">'+esc(pickerWord('empty'))+'</p>':'');
  list.querySelector('[data-hs-picker-empty]')?.addEventListener('click',()=>{if(holySwordPickerTarget){holySwordPickerTarget.value='';refreshHolySwordProfilePickers();}closeHolySwordProfilePicker();});
  list.querySelectorAll('[data-hs-profile-id]').forEach(button=>button.addEventListener('click',()=>{
   const profile=rosterApiProfileList.find(p=>p.id===button.dataset.hsProfileId);if(!profile||!holySwordPickerTarget)return;
