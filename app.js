@@ -1019,7 +1019,11 @@ function renderTeamsDisplay(){
  translateTeamsHeadings();
 }
 async function loadTeams(){
- const r=await loadData("teams",teamData);teamData={...teamData,...r.data};const root=$("#teams");
+ // Refresh/navigation must always return Holy Sword to read-only display mode.
+ adminModes.teams=false;
+ const root=$("#teams");
+ if(root){setTeamsInputsEnabled(false);setAdminButton($("#teamsAdminBtn",root),false);const save=$("#teamsSaveBtn",root);if(save)save.style.display="none";const clear=$("#teamsClearBtn",root);if(clear)clear.style.display="none";}
+ const r=await loadData("teams",teamData);teamData={...teamData,...r.data};
  for(const g of ["A","B","C","D"])(teamData[g]||[]).forEach((v,i)=>fillNicknameSelect($("#team-"+g+"-"+(i+1),root),v||""));
  installHolySwordProfilePicker();
  (teamData.extra||[]).forEach((v,i)=>fillNicknameSelect($("#extra-"+(i+1),root),v||""));
