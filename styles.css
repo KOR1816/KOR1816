@@ -835,11 +835,11 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 
 
 /* Holy Sword API-backed profile picker, used only in the admin editor. */
-#teams .hs-api-picker-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
+#teams .hs-api-picker-native,#alliance .hs-api-picker-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
 #teams .slot{min-width:0}
-#teams .hs-api-picker-trigger{display:flex;align-items:center;gap:8px;width:100%;min-width:0;min-height:48px;padding:5px 8px;border:1px solid #365783;border-radius:8px;background:#101c31;color:#f4f7ff;text-align:left;cursor:pointer}
-#teams .hs-api-picker-trigger:hover{border-color:#86c7ff;background:#172844}
-#teams .hs-api-picker-trigger>img,#teams .hs-api-picker-trigger>.hs-picker-fallback{width:34px;height:34px;flex:0 0 34px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:#253a5a}
+#teams .hs-api-picker-trigger,#alliance .hs-api-picker-trigger{display:flex;align-items:center;gap:8px;width:100%;min-width:0;min-height:48px;padding:5px 8px;border:1px solid #365783;border-radius:8px;background:#101c31;color:#f4f7ff;text-align:left;cursor:pointer}
+#teams .hs-api-picker-trigger:hover,#alliance .hs-api-picker-trigger:hover{border-color:#86c7ff;background:#172844}
+#teams .hs-api-picker-trigger>img,#teams .hs-api-picker-trigger>.hs-picker-fallback,#alliance .hs-api-picker-trigger>img,#alliance .hs-api-picker-trigger>.hs-picker-fallback{width:34px;height:34px;flex:0 0 34px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:#253a5a}
 #teams .hs-picker-trigger-text{display:flex;flex:1;flex-direction:column;min-width:0;gap:2px}
 #teams .hs-picker-trigger-text strong{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #teams .hs-picker-trigger-text small{font-size:10px;color:#9fb5d2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
