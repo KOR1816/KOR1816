@@ -1190,7 +1190,7 @@ function renderParticipants(){
  const sel=$("#ncNick",root);
  if(sel){
   const old=sel.value;
-  const names=knownRosterNicknames(participants.map(p=>p.nickname));
+  const names=knownRosterNicknames([...FIXED_LEADERS,...participants.map(p=>p.nickname)]);
   sel.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(rosterApiDisplayName(n))+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
   const matched=names.find(n=>normalizeRosterMatch(n)===normalizeRosterMatch(old));if(matched)sel.value=matched;else if([...sel.options].some(o=>o.value===old))sel.value=old;
  }
