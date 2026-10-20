@@ -1,4 +1,4 @@
-import { PAGE_CONTENT } from "./page-content.js?v=20261020-castle-rally-leaders-v24";
+import { PAGE_CONTENT } from "./page-content.js?v=20261020-teams-refresh-fix-v25";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -1018,10 +1018,10 @@ function renderTeamsDisplay(){
  display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+localizedTeamHeading(title)+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
  const editing=Boolean(adminModes.teams);
  display.hidden=editing;
+ if(editor)editor.hidden=!editing;
  display.style.display=editing?"none":"grid";
  display.style.visibility=editing?"hidden":"visible";
- if(editor)editor.style.display=editing?"block":"none";
- if(!editing){display.removeAttribute("hidden");display.style.minHeight="120px";}
+ if(!editing)display.style.minHeight="120px";
  translateStatic();
  translateTeamsHeadings();
 }
@@ -1032,19 +1032,28 @@ function resetTeamsAdminMode(){
  const save=$("#teamsSaveBtn",root);if(save)save.style.display="none";
  const clear=$("#teamsClearBtn",root);if(clear)clear.style.display="none";
  const editor=$(".team-columns-wrap",root),display=$("#teamDisplay",root);
- if(editor)editor.style.display="none";
+ if(editor){editor.hidden=true;editor.style.display="none";}
  if(display){display.hidden=false;display.removeAttribute("hidden");display.style.display="grid";display.style.visibility="visible";display.style.minHeight="120px";}
 }
 async function loadTeams(){
- // Refresh/navigation always returns Holy Sword to read-only display mode before and after loading.
- resetTeamsAdminMode();
  const root=$("#teams");
- const r=await loadData("teams",teamData);teamData={...teamData,...r.data};
- for(const g of ["A","B","C","D"])(teamData[g]||[]).forEach((v,i)=>fillNicknameSelect($("#team-"+g+"-"+(i+1),root),v||""));
- installHolySwordProfilePicker();
- (teamData.extra||[]).forEach((v,i)=>fillNicknameSelect($("#extra-"+(i+1),root),v||""));
- (teamData.subs||[]).forEach((v,i)=>fillNicknameSelect($("#sub-"+(i+1),root),v||""));
- resetTeamsAdminMode();renderTeamsDisplay();setMsg("teamMsg",r.source==="unavailable"?message("fallback"):message("load"));
+ // Refresh and page navigation must always leave the public table visible and the editor closed.
+ resetTeamsAdminMode();
+ try{
+  const r=await loadData("teams",teamData);
+  teamData={...teamData,...(r?.data||{})};
+  for(const g of ["A","B","C","D"])(teamData[g]||[]).forEach((v,i)=>fillNicknameSelect($("#team-"+g+"-"+(i+1),root),v||""));
+  installHolySwordProfilePicker();
+  (teamData.extra||[]).forEach((v,i)=>fillNicknameSelect($("#extra-"+(i+1),root),v||""));
+  (teamData.subs||[]).forEach((v,i)=>fillNicknameSelect($("#sub-"+(i+1),root),v||""));
+  setMsg("teamMsg",r?.source==="unavailable"?message("fallback"):message("load"));
+ }catch(e){
+  console.error("Holy Sword table refresh failed",e);
+  setMsg("teamMsg",message("fallback"));
+ }finally{
+  resetTeamsAdminMode();
+  renderTeamsDisplay();
+ }
 }
 async function toggleTeamsAdmin(){
  const root=$("#teams");if(!root)return;if(!adminModes.teams&&!await ensureGoogleAdmin())return;
