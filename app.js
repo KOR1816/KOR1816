@@ -878,13 +878,14 @@ function rosterApiAvatarStyle(name){const url=rosterApiMatch(name);return url?'b
 function apiAvatarMarkup(name,className='roster-avatar'){const url=rosterApiMatch(name);return '<span class="'+className+(!url?' roster-avatar-missing':'')+'" data-roster-api-name="'+esc(name||'')+'">'+(url?'<img src="'+esc(url)+'" alt="" loading="lazy" decoding="async">':'<span class="api-avatar-placeholder">👤</span>')+'</span>';}
 function applyRosterApiAvatars(){document.querySelectorAll('[data-roster-api-name]').forEach(el=>{const url=rosterApiMatch(el.getAttribute('data-roster-api-name'));if(url){el.innerHTML='<img src="'+esc(url)+'" alt="" loading="lazy" decoding="async">';el.classList.remove('roster-avatar-missing');}else{el.innerHTML='<span class="api-avatar-placeholder">👤</span>';el.classList.add('roster-avatar-missing');}});document.querySelectorAll('[data-roster-api-label]').forEach(el=>{const source=el.getAttribute('data-roster-api-label');if(source)el.textContent=rosterApiDisplayName(source);});}
 function apiProfileAvatar(p){
- const keys=["avatar_url","avatarUrl","profile_image_url","profileImageUrl","portrait_url","portraitUrl","head_url","headUrl","icon_url","iconUrl","avatar","portrait","head","profile_image","profileImage"];
- const seen=new Set(),queue=[p];
- while(queue.length){const item=queue.shift();if(!item||typeof item!=="object"||seen.has(item))continue;seen.add(item);
-  for(const key of keys){const value=item[key];if(typeof value==="string"&&/^https?:/i.test(value)&&value.startsWith("http"))return value;if(value&&typeof value==="object")queue.push(value);}
-  for(const [key,value] of Object.entries(item)){if(value&&typeof value==="object"&&/profile|player|user|data|base|avatar|image/i.test(key))queue.push(value);}
- }
- return "";
+  const directKeys=["avatar_url","avatarUrl","profile_image_url","profileImageUrl","portrait_url","portraitUrl","head_url","headUrl","icon_url","iconUrl","photo_url","photoUrl","picture_url","pictureUrl","image_url","imageUrl","cdn_url","cdnUrl","avatar","portrait","head","profile_image","profileImage","photo","picture","image"];
+  const seen=new Set(),queue=[{value:p,context:""}];
+  while(queue.length){const entry=queue.shift(),item=entry?.value,context=entry?.context||"";if(!item||typeof item!=="object"||seen.has(item))continue;seen.add(item);
+   for(const key of directKeys){const value=item[key];if(typeof value==="string"&&/^https?:\/\//i.test(value))return value;if(value&&typeof value==="object")queue.push({value,context:key});}
+   for(const [key,value] of Object.entries(item)){if(value&&typeof value==="object"&&/profile|player|user|data|base|avatar|image|photo|picture|portrait|head|icon/i.test(key))queue.push({value,context:key});}
+   if(/avatar|image|photo|picture|portrait|head|icon/i.test(context)){for(const key of ["url","src","uri","link","original","large","medium","small"]){const value=item[key];if(typeof value==="string"&&/^https?:\/\//i.test(value))return value;}}
+  }
+  return "";
 }
 async function loadRosterApiAvatars(){
  let cursor=0;
@@ -949,7 +950,7 @@ function refreshHolySwordProfilePickers(){
   if(!button)return;
   const {value,label,profile}=holySwordPickerLabel(select);
   button.innerHTML=(profile?.avatar?holySwordPickerAvatar(profile):'<span class="hs-picker-fallback">'+(value?'👤':'＋')+'</span>')+
-   '<span class="hs-picker-trigger-text"><strong>'+esc(label)+'</strong><small>'+(profile?'게임 ID '+esc(profile.id):value?'프로필 정보 없음':'캐릭터 선택')+'</small></span><span class="hs-picker-chevron">▾</span>';
+   '<span class="hs-picker-trigger-text"><strong>'+esc(label)+'</strong><small>'+(profile?(profile.avatar?'API 프로필 연결':'API 프로필 · 사진 확인 필요'):value?'프로필 정보 없음':'캐릭터 선택')+'</small></span><span class="hs-picker-chevron">▾</span>';
   button.classList.toggle('has-profile',Boolean(profile?.avatar));
  });
 }
@@ -1181,7 +1182,7 @@ function battleJoinParticipantCard(p,hideSkills=false){
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
- const gameId=(fixed||hideSkills)?"":rosterApiGameId(p.nickname);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
+ const meta=skills.filter(Boolean).join(" · ");
  return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong data-roster-api-label="'+esc(p.nickname)+'">'+esc(rosterApiDisplayName(p.nickname))+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(meta)+'</div></div></div>';
 }
 function renderParticipants(){
@@ -1356,7 +1357,7 @@ function castleParticipantCard(p,hideSkills=false){
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
- const gameId=(fixed||hideSkills)?"":rosterApiGameId(name);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
+ const meta=skills.filter(Boolean).join(" · ");
  return '<div class="castle-person-card"><strong class="castle-rank'+(hasTier||fixed?"":" castle-rank-none")+'">'+tier+'</strong>'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</strong><span>('+esc(barracks)+')</span></div><small class="castle-profile-meta">'+esc(meta)+'</small></div></div>';
 }
 function castleMemberCard(name,meta){
