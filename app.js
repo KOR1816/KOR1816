@@ -1180,7 +1180,7 @@ function battleJoinParticipantCard(p,hideSkills=false){
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
- const gameId=fixed?"":rosterApiGameId(p.nickname);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
+ const gameId=(fixed||hideSkills)?"":rosterApiGameId(p.nickname);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
  return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong data-roster-api-label="'+esc(p.nickname)+'">'+esc(rosterApiDisplayName(p.nickname))+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(meta)+'</div></div></div>';
 }
 function renderParticipants(){
@@ -1354,7 +1354,7 @@ function castleParticipantCard(p,hideSkills=false){
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
- const gameId=fixed?"":rosterApiGameId(name);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
+ const gameId=(fixed||hideSkills)?"":rosterApiGameId(name);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
  return '<div class="castle-person-card"><strong class="castle-rank'+(hasTier||fixed?"":" castle-rank-none")+'">'+tier+'</strong>'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</strong><span>('+esc(barracks)+')</span></div><small class="castle-profile-meta">'+esc(meta)+'</small></div></div>';
 }
 function castleMemberCard(name,meta){
