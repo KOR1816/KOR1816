@@ -91,7 +91,7 @@ let adminModes = {};
 let readSessionPromise = null;
 let homeData = { latestTitle:"", latestBody:"", schedule:"", welcome:"", translations:{} };
 let noticeData = { ...NOTICE_DEFAULTS, translations: NOTICE_TRANSLATIONS, absenceList:{team1:Array(5).fill(""),team2:Array(5).fill("")}, updatedAt:0 };
-let teamData = {A:Array(7).fill(""),B:Array(7).fill(""),C:Array(7).fill(""),D:Array(7).fill(""),extra:["",""],subs:Array(10).fill("")};
+let teamData = {A:Array(6).fill(""),B:Array(6).fill(""),C:Array(6).fill(""),D:Array(6).fill(""),extra:Array(6).fill(""),subs:Array(10).fill("")};
 let allianceData = {names:{}};
 let seatingData = {rows:[
  {row:"Row 1",left:Array(12).fill(""),right:Array(12).fill("")},
@@ -1013,23 +1013,31 @@ function renderHolySwordProfilePickerList(){
 function setTeamsInputsEnabled(enabled){setInputsEnabled($("#teams"),enabled);}
 function renderTeamsDisplay(){
  const root=$("#teams"),display=$("#teamDisplay"),editor=$(".team-columns-wrap",root);if(!root||!display)return;
- const groups=[["A","A1",7],["B","A2",7],["C","D1",7],["D","D2",7],["extra","💥 개돌조",2],["subs","🔄 대체자",10]];
+ const groups=[["A","A1",6],["B","A2",6],["C","D1",6],["D","D2",6],["extra","💥 개돌조",6],["subs","🔄 대체자",10]];
  display.innerHTML=groups.map(([key,title,count])=>'<section class="team-display-column"><h3>'+localizedTeamHeading(title)+'</h3>'+Array.from({length:count},(_,i)=>'<div class="team-display-slot"><span class="team-display-number">'+(i+1)+'</span>'+rosterPerson((teamData[key]||[])[i]||"")+'</div>').join("")+'</section>').join("");
  display.style.display=adminModes.teams?"none":"grid";if(editor)editor.style.display=adminModes.teams?"block":"none";
  translateStatic();
  translateTeamsHeadings();
 }
-async function loadTeams(){
- // Refresh/navigation must always return Holy Sword to read-only display mode.
+function resetTeamsAdminMode(){
  adminModes.teams=false;
+ const root=$("#teams");if(!root)return;
+ setTeamsInputsEnabled(false);setAdminButton($("#teamsAdminBtn",root),false);
+ const save=$("#teamsSaveBtn",root);if(save)save.style.display="none";
+ const clear=$("#teamsClearBtn",root);if(clear)clear.style.display="none";
+ const editor=$(".team-columns-wrap",root),display=$("#teamDisplay",root);
+ if(editor)editor.style.display="none";if(display)display.style.display="grid";
+}
+async function loadTeams(){
+ // Refresh/navigation always returns Holy Sword to read-only display mode before and after loading.
+ resetTeamsAdminMode();
  const root=$("#teams");
- if(root){setTeamsInputsEnabled(false);setAdminButton($("#teamsAdminBtn",root),false);const save=$("#teamsSaveBtn",root);if(save)save.style.display="none";const clear=$("#teamsClearBtn",root);if(clear)clear.style.display="none";}
  const r=await loadData("teams",teamData);teamData={...teamData,...r.data};
  for(const g of ["A","B","C","D"])(teamData[g]||[]).forEach((v,i)=>fillNicknameSelect($("#team-"+g+"-"+(i+1),root),v||""));
  installHolySwordProfilePicker();
  (teamData.extra||[]).forEach((v,i)=>fillNicknameSelect($("#extra-"+(i+1),root),v||""));
  (teamData.subs||[]).forEach((v,i)=>fillNicknameSelect($("#sub-"+(i+1),root),v||""));
- setTeamsInputsEnabled(Boolean(adminModes.teams));renderTeamsDisplay();setMsg("teamMsg",r.source==="unavailable"?message("fallback"):message("load"));
+ resetTeamsAdminMode();renderTeamsDisplay();setMsg("teamMsg",r.source==="unavailable"?message("fallback"):message("load"));
 }
 async function toggleTeamsAdmin(){
  const root=$("#teams");if(!root)return;if(!adminModes.teams&&!await ensureGoogleAdmin())return;
@@ -1040,15 +1048,15 @@ async function clearAllTeams(){
  if(!adminModes.teams){alert(message("admin"));return;}
  if(!confirm("성검쟁탈의 모든 배치 내용을 삭제할까요?"))return;
  const root=$("#teams");
- for(const g of ["A","B","C","D"])for(let i=1;i<=7;i++){const el=$("#team-"+g+"-"+i,root);if(el)el.value="";}
- for(let i=1;i<=2;i++){const el=$("#extra-"+i,root);if(el)el.value="";}
+ for(const g of ["A","B","C","D"])for(let i=1;i<=6;i++){const el=$("#team-"+g+"-"+i,root);if(el)el.value="";}
+ for(let i=1;i<=6;i++){const el=$("#extra-"+i,root);if(el)el.value="";}
  for(let i=1;i<=10;i++){const el=$("#sub-"+i,root);if(el)el.value="";}
  await saveAllTeams();
 }
 async function saveAllTeams(){
  if(!adminModes.teams){alert(message("admin"));return;}const root=$("#teams"),next={A:[],B:[],C:[],D:[],extra:[],subs:[]};
- for(const g of ["A","B","C","D"])for(let i=1;i<=7;i++)next[g].push($("#team-"+g+"-"+i,root)?.value.trim()||"");
- for(let i=1;i<=2;i++)next.extra.push($("#extra-"+i,root)?.value.trim()||"");for(let i=1;i<=10;i++)next.subs.push($("#sub-"+i,root)?.value.trim()||"");
+ for(const g of ["A","B","C","D"])for(let i=1;i<=6;i++)next[g].push($("#team-"+g+"-"+i,root)?.value.trim()||"");
+ for(let i=1;i<=6;i++)next.extra.push($("#extra-"+i,root)?.value.trim()||"");for(let i=1;i<=10;i++)next.subs.push($("#sub-"+i,root)?.value.trim()||"");
  try{teamData=await saveCloud("teams",next);renderTeamsDisplay();setMsg("teamMsg",message("saved"));}catch(e){console.error(e);setMsg("teamMsg",message("failed"));}
 }
 async function loadAlliance(){
@@ -1818,7 +1826,7 @@ Object.assign(STATIC_TRANSLATIONS,{
  "수성:":["수성:","Defense:","防衛：","防守：","Verteidigung:","Difesa:","Defensa:","Savunma:"]
 });
 Object.assign(window,{
- loadHome,toggleHomeAdmin,saveHome,refreshTeams:loadTeams,toggleTeamsAdmin,saveAllTeams,clearAllTeams,
+ loadHome,toggleHomeAdmin,saveHome,refreshTeams:()=>{resetTeamsAdminMode();return loadTeams();},toggleTeamsAdmin,saveAllTeams,clearAllTeams,
  loadAlliance,toggleAllianceAdmin,saveAlliance,clearAllAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
  updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
  loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,autoArrangeCastleWar,resetCastleWarTable,
