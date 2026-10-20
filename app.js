@@ -752,7 +752,7 @@ function renderNoticeAbsenceList(root){
  for(const team of [1,2]){
   const names=Array.from({length:5},(_,i)=>String(list["team"+team]?.[i]||""));
   const view=$("#noticeAbsenceView"+team,root),edit=$("#noticeAbsenceEdit"+team,root);
-  if(view)view.innerHTML=names.map((name,i)=>'<div class="notice-absence-row"><span class="notice-absence-number">'+(i+1)+'.</span>'+(name?'<span class="notice-absence-avatar">'+rosterAvatar(name)+'</span>':'<span class="notice-absence-avatar notice-absence-empty">—</span>')+'<span class="notice-absence-name">'+(name?esc(name):"")+'</span></div>').join("");
+  if(view)view.innerHTML=names.map((name,i)=>'<div class="notice-absence-row"><span class="notice-absence-number">'+(i+1)+'.</span>'+(name?'<span class="notice-absence-avatar">'+rosterAvatar(name)+'</span>':'<span class="notice-absence-avatar notice-absence-empty">—</span>')+'<span class="notice-absence-name" data-roster-api-label="'+esc(name)+'">'+(name?esc(rosterApiDisplayName(name)):"")+'</span></div>').join("");
   if(edit){edit.innerHTML=names.map((name,i)=>'<label class="notice-absence-edit-row"><span>'+(i+1)+'.</span><select id="eNoticeAbsence'+team+'_'+(i+1)+'" aria-label="'+esc(selectLabels[currentLang]||selectLabels.ko)+'"></select></label>').join("");for(let i=0;i<5;i++){const select=$("#eNoticeAbsence"+team+"_"+(i+1),root);fillNicknameSelect(select,names[i]);if(select){select.disabled=!noticeAdmin;const first=select.options[0];if(first)first.textContent=selectLabels[currentLang]||selectLabels.ko;}}}
  }
 }
@@ -1071,9 +1071,9 @@ function renderParticipants(){
  const sel=$("#ncNick",root);
  if(sel){
   const old=sel.value;
-  const names=[...new Set([...FIXED_NICKNAMES,...participants.map(p=>p.nickname)])];
-  sel.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
-  if([...sel.options].some(o=>o.value===old))sel.value=old;
+  const names=knownRosterNicknames(participants.map(p=>p.nickname));
+  sel.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(rosterApiDisplayName(n))+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
+  const matched=names.find(n=>normalizeRosterMatch(n)===normalizeRosterMatch(old));if(matched)sel.value=matched;else if([...sel.options].some(o=>o.value===old))sel.value=old;
  }
  // Collapse legacy duplicate records by nickname, keeping the most recently updated entry.
  const uniqueByNickname=new Map();
@@ -1163,10 +1163,10 @@ function filterNewCastleNicknames(){
  if(!search||!box)return;
  const q=search.value.trim().toLocaleLowerCase();
  if(!q){box.innerHTML="";box.hidden=true;box.style.display="none";return;}
- const names=[...new Set([...FIXED_NICKNAMES,...participants.map(p=>p.nickname)])];
- const matches=names.filter(n=>n.toLocaleLowerCase().startsWith(q)).slice(0,30);
+ const names=knownRosterNicknames(participants.map(p=>p.nickname));
+ const matches=names.filter(n=>rosterApiDisplayName(n).toLocaleLowerCase().startsWith(q)).slice(0,30);
  if(!matches.length){box.innerHTML='<div class="nc-nickname-no-results">검색 결과가 없습니다.</div>';box.hidden=false;box.style.display="block";return;}
- box.innerHTML=matches.map(n=>'<button type="button" class="nc-nickname-result" data-nickname="'+esc(n)+'">'+esc(n+(participants.some(p=>p.nickname===n)?" ✓":""))+'</button>').join("");
+ box.innerHTML=matches.map(n=>'<button type="button" class="nc-nickname-result" data-nickname="'+esc(n)+'">'+esc(rosterApiDisplayName(n)+(participants.some(p=>normalizeRosterMatch(p.nickname)===normalizeRosterMatch(n))?" ✓":""))+'</button>').join("");
  box.hidden=false;box.style.display="block";
  $$(".nc-nickname-result",box).forEach(button=>button.addEventListener("click",()=>chooseNewCastleNickname(button.dataset.nickname)));
 }
@@ -1256,7 +1256,7 @@ function castleWarRoster(){
 }
 function activeCastleWarParticipants(){return castleWarRoster().filter(p=>p.status==="yes");}
 function castleWarSelect(value){
- const names=[...new Set([...FIXED_LEADERS,...activeCastleWarParticipants().map(p=>p.nickname)])];
+ const names=[...new Set([...FIXED_LEADERS,...knownRosterNicknames(activeCastleWarParticipants().map(p=>p.nickname))])];
  return '<option value="">'+esc(castleCardText("choose"))+'</option>'+names.map(n=>{const p=participants.find(x=>x.nickname===n),tier=FIXED_LEADERS.includes(n)?"S":p&&["A","B","C"].includes(p.tier)?p.tier:"—";return '<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(tier+" · "+n)+'</option>';}).join("");
 }
 function castleParticipantMeta(name){const p=participants.find(x=>x.nickname===name);if(!name)return "";if(FIXED_LEADERS.includes(name))return "S · 집결장";if(!p)return "";return (p.tier||"—")+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X");}
@@ -1454,7 +1454,7 @@ async function loadCastleLayout1(){
 }
 function renderCastleLayout(){
  const root=$("#castlelayout1"),wrap=$("#castleLayout1Slots",root);if(!wrap)return;
- const names=[...new Set([...FIXED_LEADERS,...participants.map(p=>p.nickname)])];
+ const names=[...new Set([...FIXED_LEADERS,...knownRosterNicknames(participants.map(p=>p.nickname))])];
  wrap.innerHTML=Array.from({length:28},(_,i)=>{
   const name=castleLayoutData.slots[i]||"",isFixed=i<6,p=participants.find(x=>x.nickname===name);
   let inner;
