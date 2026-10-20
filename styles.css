@@ -902,10 +902,6 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 
 
 /* Seating admin: visible API character picker and clear/save actions. */
-#seating .hs-api-picker-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
-#seating .hs-api-picker-trigger{display:flex;align-items:center;gap:8px;width:100%;min-width:0;min-height:38px;padding:4px 6px;border:1px solid #365783;border-radius:8px;background:#101c31;color:#f4f7ff;text-align:left;cursor:pointer}
-#seating .hs-api-picker-trigger:hover{border-color:#86c7ff;background:#172844}
-#seating .hs-api-picker-trigger>img,#seating .hs-api-picker-trigger>.hs-picker-fallback{width:30px;height:30px;flex:0 0 30px;object-fit:cover;display:grid;place-items:center;background:#253a5a}
 #seating .hs-picker-trigger-text{display:flex;flex:1;flex-direction:column;min-width:0;gap:2px}
 #seating .hs-picker-trigger-text strong{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #seating .hs-picker-trigger-text small{font-size:10px;color:#9fb5d2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
