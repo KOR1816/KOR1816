@@ -948,7 +948,7 @@ function holySwordPickerLabel(select){
 }
 function refreshHolySwordProfilePickers(){
  $$('#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]').forEach(select=>{
-  const button=select.parentElement?.querySelector('.hs-api-picker-trigger');
+  const button=select.nextElementSibling?.classList.contains('hs-api-picker-trigger')?select.nextElementSibling:select.parentElement?.querySelector('.hs-api-picker-trigger');
   if(!button)return;
   const {value,label,profile}=holySwordPickerLabel(select);
   button.innerHTML=(profile?.avatar?holySwordPickerAvatar(profile):'<span class="hs-picker-fallback">'+(value?'👤':'＋')+'</span>')+
