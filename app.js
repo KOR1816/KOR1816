@@ -1116,6 +1116,7 @@ function renderSeating(){
  const root=$("#seating");if(!root)return;const wrap=$(".seating-3col-wrap",root);if(!wrap)return;const colors=[["#2459b5","#62bde9"],["#27864a","#a7dba2"],["#e18a32","#8055bd"]];
  wrap.innerHTML=seatingData.rows.map((row,ri)=>'<div class="seating-row-group"><h3 class="seating-column-title">ROW '+(ri+1)+'</h3><div class="seating-split-pair"><section class="seating-split-card seating-side-'+(ri+1)+'-left"><h4 style="--seating-side-color:'+colors[ri][0]+'">Bear1</h4>'+row.left.map((name,i)=>'<div class="seating-row"><span class="seating-number">'+(i+1)+'</span>'+seatingRosterPerson(name)+'</div>').join("")+'</section><section class="seating-split-card seating-side-'+(ri+1)+'-right"><h4 style="--seating-side-color:'+colors[ri][1]+'">Bear2</h4>'+row.right.map((name,i)=>'<div class="seating-row"><span class="seating-number">'+(i+1)+'</span>'+seatingRosterPerson(name)+'</div>').join("")+'</section></div></div>').join("");
  const panel=$("#seatingEdit",root);if(panel)panel.style.display=adminModes.seating?"block":"none";setAdminButton($("#seatingAdminBtn",root),adminModes.seating);
+ installHolySwordProfilePicker();
 }
 function renderSeatingAdmin(){
  const root=$("#seating"),grid=$("#seatingEditGrid",root);if(!grid)return;
@@ -1230,6 +1231,7 @@ function renderParticipants(){
  const waitingHeading=$('h3[data-newcastle="waiting"]',root);
  if(waitingHeading)waitingHeading.textContent="대기 명단 ("+waiting.length+")";
  translateStatic();
+ installHolySwordProfilePicker();
 }
 async function loadNewCastleFeatures(){
  // Capture the route before awaiting Firestore so a quick page switch cannot mix page state.
@@ -1526,6 +1528,7 @@ function renderCastleWar(){
  const autoButton=$("[data-newcastle='auto']",root);
  if(autoButton)autoButton.style.display=adminModes.castlewar1?"inline-flex":"none";
  translateStatic();
+ installHolySwordProfilePicker();
 }
 async function resetCastleWarTable(){
  if(!adminModes.castlewar1){alert(message("admin"));return;}
@@ -1583,6 +1586,7 @@ function renderCastleLayout(){
  setAdminButton(b,adminModes.castlelayout1);
  if(save)save.style.display=adminModes.castlelayout1?"inline-flex":"none";
  translateStatic();
+ installHolySwordProfilePicker();
 }
 async function toggleCastleLayout1Admin(){await togglePageAdmin("castlelayout1","castleLayout1AdminBtn","castleLayout1SaveBtn");}
 async function saveCastleLayout1(){
@@ -1636,6 +1640,7 @@ function renderViking(){
  if(clearButton)clearButton.style.display=vikingAdminMode?"inline-flex":"none";
  $$("#vikingTeams [data-viking-photo]").forEach(button=>button.addEventListener("click",()=>triggerVikingPhoto(Number(button.dataset.team),button.dataset.nick)));
  translateStatic();
+ installHolySwordProfilePicker();
 }
 const PHOTO_ADMIN_LABELS={
  ko:["🔐 사진 관리자","🔒 사진 수정 종료"],en:["🔐 Photo admin","🔒 Finish photo editing"],ja:["🔐 写真管理","🔒 写真編集終了"],zh:["🔐 照片管理","🔒 结束照片编辑"],de:["🔐 Fotoadmin","🔒 Fotobearbeitung beenden"],it:["🔐 Gestione foto","🔒 Termina modifica foto"],es:["🔐 Admin de fotos","🔒 Finalizar edición de fotos"],tr:["🔐 Foto yöneticisi","🔒 Foto düzenlemeyi bitir"]
