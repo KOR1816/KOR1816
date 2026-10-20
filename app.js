@@ -35,7 +35,7 @@ const LEGACY = {
   battleJoin:"castle_features_v1", castlewar1:"castle_features_v1", castlelayout1:"castle_layout1_v1"
 };
 const FIXED_NICKNAMES=["Nemesis","Pham","샌디에이고","Constant","SsungBi","Jinno","KOREAN MONSTER","hhHa","GeeGeeGeeZ","Jiwon","Aveline","DON QUIXOTE","Leo li","Aimee","yongi","moon","Chan Dam Bom","bebe","VIVIAN","Pika","Lekum","ImNotKorean","DDoro","Hani","miiiiia","bossi","Wilk","Krungkrung","Keith ape","OMEGA","Zidf","hajae","Mushi","Libby","LSJ","jennie","Nyctifer_v","Lager","GieZues","Sant Jordi","Eagle","Architect","El Elegido","LJ","Furball","AVA","AgaresKOR","coculim","Rarara","ROKA","Ian","다잘이 돌아왔다","backki","Commander 주","HIGH FIVE","Gideon","Dark Knight","Lady Anaiah","Korean","FlexMan","Dingdong","Alucard","S ssh","Hair loss beam","RESCENE Yaho","SUMMER","hun","themis1994","Sylvanas","RACruze","Kashish","Vista","HERA","Alchemist","DaddyEpstein","KOR","Rayan","ADIPATI KOR","Kuu Rawr","SAGAMI","KK Master","Solace","Bilal","The Warrior","Citykan","스타리아","Adanali Ibo","Hsun","benson627","Remember","Jshan","lolkillmeplz67","Pamuk","gozeromin","KOOK","Ojr","Mahecha","MG PRIME","MissCoco"];
-const FIXED_LEADERS = ["Nemesis","Pham","샌디에이고","Jinno","Leo li","SsungBi"];
+const FIXED_LEADERS = ["Nemesis","팜phpmKOR","샌디에이고","Jinno","Leo li","SsungBi"];
 const NOTICE_DEFAULTS = {
   bearLeaders:"집결장: 알카 · 페라 · 로사",
   bearMembers:"집결원: 아마데우스 · 첸코 · 연우 · 마르고 · 아마네\n영웅 없이 X",
@@ -98,7 +98,7 @@ let seatingData = {rows:[
  {row:"Row 3",left:Array(26).fill(""),right:Array(16).fill("")}
 ]};
 let participants = [];
-let castleWarData = {war:{assault:Array(10).fill(""),rush:Array(10).fill(""),finish:Array(10).fill(""),north:Array(10).fill(""),west:Array(10).fill(""),reserve:Array(10).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"Nemesis",rush:"Pham",finish:"샌디에이고"},updatedAt:0};
+let castleWarData = {war:{assault:Array(10).fill(""),rush:Array(10).fill(""),finish:Array(10).fill(""),north:Array(10).fill(""),west:Array(10).fill(""),reserve:Array(10).fill(""),substitute:{assault:"",rush:"",finish:""}},warLeaders:{assault:"Nemesis",rush:"팜phpmKOR",finish:"샌디에이고"},updatedAt:0};
 let castleLayoutData = {slots:Array(28).fill(""),updatedAt:0};
 let vikingData = {teams:Object.fromEntries(Array.from({length:25},(_,i)=>[i+1,[]])),updatedAt:0};
 let vikingPhotosByTeam = {};
@@ -867,7 +867,7 @@ const rosterApiNameMap=new Map();
 const rosterApiAmbiguousNames=new Set();
 const rosterApiAvatars=new Map();
 function normalizeRosterMatch(value){return String(value||'').normalize('NFKC').toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu,'');}
-function rosterApiLookupKey(value){const key=normalizeRosterMatch(value);const aliases={팜:'pham',pham:'pham',샌디:'sandiego',샌디에이고:'sandiego',sandiego:'sandiego'};return aliases[key]||key;}
+function rosterApiLookupKey(value){const key=normalizeRosterMatch(value);const aliases={팜:'pham',pham:'pham',팜phpmkor:'pham',샌디:'sandiego',샌디에이고:'sandiego',sandiego:'sandiego'};return aliases[key]||key;}
 function cleanApiNickname(value){return String(value||'').normalize('NFKC').replace(/[^가-힣A-Za-z\s]/g,'').replace(/\s+/g,' ').trim();}
 function rosterApiProfile(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw),alias=rosterApiLookupKey(raw);if(!key)return null;return rosterApiProfileList.find(p=>normalizeRosterMatch(p.nickname)===key)||rosterApiProfileList.find(p=>rosterApiLookupKey(p.nickname)===alias)||null;}
 function rosterApiDisplayName(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw);if(!key)return '';const direct=rosterApiNameMap.get(key);if(direct)return direct;const alias=rosterApiLookupKey(raw),matched=alias&&rosterApiNameMap.get(alias);return matched||cleanApiNickname(raw)||raw;}
@@ -1131,7 +1131,7 @@ function battleJoinParticipantCard(p,hideSkills=false){
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
- const gameId=rosterApiGameId(p.nickname);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
+ const gameId=fixed?"":rosterApiGameId(p.nickname);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
  return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong data-roster-api-label="'+esc(p.nickname)+'">'+esc(rosterApiDisplayName(p.nickname))+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(meta)+'</div></div></div>';
 }
 function renderParticipants(){
@@ -1200,7 +1200,7 @@ async function loadNewCastleFeatures(){
    let data=own;
    if(!data){const old=await getDoc(legacyDoc("castlewar1"));if(old.exists())data=old.data();}
    const war=data?.war||data?.castleWar||{};
-   castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:8},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:8},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:8},(_,i)=>war.finish?.[i]||""),north:Array.from({length:8},(_,i)=>war.north?.[i]||""),west:Array.from({length:8},(_,i)=>war.west?.[i]||""),reserve:Array.from({length:8},(_,i)=>war.reserve?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:data?.warLeaders?.rush||"Pham",finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
+   castleWarData={war:{...castleWarData.war,...war,assault:Array.from({length:8},(_,i)=>war.assault?.[i]||""),rush:Array.from({length:8},(_,i)=>war.rush?.[i]||""),finish:Array.from({length:8},(_,i)=>war.finish?.[i]||""),north:Array.from({length:8},(_,i)=>war.north?.[i]||""),west:Array.from({length:8},(_,i)=>war.west?.[i]||""),reserve:Array.from({length:8},(_,i)=>war.reserve?.[i]||""),substitute:{...castleWarData.war.substitute,...(war.substitute||{})}},warLeaders:{assault:data?.warLeaders?.assault||"Nemesis",rush:(data?.warLeaders?.rush==="Pham"||!data?.warLeaders?.rush)?"팜phpmKOR":data.warLeaders.rush,finish:data?.warLeaders?.finish||"샌디에이고"},updatedAt:data?.updatedAt||0};
    if(rosterLoaded&&sanitizeCastleWarAssignments()){try{castleWarData=await saveCloud("castlewar1",castleWarData);}catch(saveError){console.warn("Could not persist removed Castle War assignments",saveError);}}
    if(rosterLoaded){try{await syncCastleWarAssignmentsFromRoster();}catch(syncError){console.warn("Castle War auto-sync on load failed",syncError);}}
    renderCastleWar();setMsg("ncWarMsg",latestBanner("castlewar1"));
@@ -1305,7 +1305,7 @@ function castleParticipantCard(p,hideSkills=false){
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
- const gameId=rosterApiGameId(name);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
+ const gameId=fixed?"":rosterApiGameId(name);const meta=[gameId?"게임 ID "+gameId:"",...skills].filter(Boolean).join(" · ");
  return '<div class="castle-person-card"><strong class="castle-rank'+(hasTier||fixed?"":" castle-rank-none")+'">'+tier+'</strong>'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</strong><span>('+esc(barracks)+')</span></div><small class="castle-profile-meta">'+esc(meta)+'</small></div></div>';
 }
 function castleMemberCard(name,meta){
