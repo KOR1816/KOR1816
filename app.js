@@ -517,6 +517,7 @@ function setupTemplates(){
   $("#notice-refresh",n)?.addEventListener("click",loadNotices);
   $("#notice-admin",n)?.addEventListener("click",toggleNoticeAdmin);
   $("#notice-save",n)?.addEventListener("click",saveNotices);
+  $("#notice-absence-clear-all",n)?.addEventListener("click",clearNoticeAbsenceSelections);
   $("#notice-edit-language",n)?.addEventListener("change",e=>{captureNoticeEditor();noticeEditLang=LANGS.includes(e.target.value)?e.target.value:"ko";renderNotices();});
  }
  // The source markup is content only; handlers below are shared, page-aware actions.
@@ -861,6 +862,24 @@ async function toggleNoticeAdmin(){
  if(!noticeAdmin&&!await ensureGoogleAdmin())return;
  if(noticeAdmin)captureNoticeEditor();
  noticeAdmin=!noticeAdmin;renderNotices();
+}
+function clearNoticeAbsenceSelections(){
+ if(!noticeAdmin){alert(message("admin"));return;}
+ const labels={
+  ko:"불참자 목록의 1군·2군 캐릭터 선택만 모두 비울까요? 다른 공지 내용은 변경하지 않습니다. 반영하려면 저장 버튼을 눌러주세요.",
+  en:"Clear only the character selections in the 1st and 2nd squad absentee lists? Other notices will not be changed. Click Save to persist.",
+  ja:"不参加者リストの1軍・2軍のキャラクター選択だけを消去しますか？他のお知らせは変更しません。反映するには保存を押してください。",
+  zh:"仅清空缺席名单中1队和2队的角色选择？其他公告不会更改。请点击保存以提交。",
+  de:"Nur die Charakterauswahl der Abwesenheitslisten für Team 1 und 2 leeren? Andere Hinweise bleiben unverändert. Zum Übernehmen auf Speichern klicken.",
+  it:"Svuotare solo le selezioni dei personaggi nelle liste assenti delle squadre 1 e 2? Gli altri avvisi non cambiano. Premi Salva per applicare.",
+  es:"¿Vaciar solo las selecciones de personajes de las listas de ausentes de los equipos 1 y 2? Los demás avisos no cambiarán. Pulsa Guardar para aplicar.",
+  tr:"Yalnızca 1. ve 2. takım devamsız listelerindeki karakter seçimleri temizlensin mi? Diğer duyurular değişmez. Uygulamak için Kaydet'e basın."
+ };
+ if(!confirm(labels[currentLang]||labels.ko))return;
+ // Preserve any other notice edits currently typed before re-rendering this one section.
+ captureNoticeEditor();
+ noticeData.absenceList={team1:Array(5).fill(""),team2:Array(5).fill("")};
+ renderNotices();
 }
 async function saveNotices(){
  if(!noticeAdmin){alert(message("admin"));return;}
