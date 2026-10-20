@@ -968,7 +968,7 @@ function installHolySwordProfilePicker(){
  if(!holySwordPickerInstalled){
   holySwordPickerInstalled=true;
   const modal=document.createElement('div');modal.id='hsApiProfilePicker';modal.className='hs-api-picker-overlay';modal.hidden=true;
-  modal.innerHTML='<section class="hs-api-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="hsApiPickerTitle"><header class="hs-api-picker-header"><div><h3 id="hsApiPickerTitle">API 프로필 캐릭터 선택</h3><p id="hsApiPickerCount">API 프로필 불러오는 중…</p></div><button type="button" class="hs-api-picker-close" aria-label="닫기">✕</button></header><input type="search" id="hsApiPickerSearch" placeholder="닉네임 또는 게임 ID 검색" autocomplete="off"><div id="hsApiPickerList" class="hs-api-picker-list"></div></section>';
+  modal.innerHTML='<section class="hs-api-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="hsApiPickerTitle"><header class="hs-api-picker-header"><div><h3 id="hsApiPickerTitle">API 프로필 캐릭터 선택</h3><p id="hsApiPickerCount">API 프로필 불러오는 중…</p></div><button type="button" class="hs-api-picker-close" aria-label="닫기">✕</button></header><input type="search" id="hsApiPickerSearch" placeholder="닉네임 검색" autocomplete="off"><div id="hsApiPickerList" class="hs-api-picker-list"></div></section>';
   document.body.appendChild(modal);
   modal.querySelector('.hs-api-picker-close').addEventListener('click',closeHolySwordProfilePicker);
   modal.addEventListener('click',e=>{if(e.target===modal)closeHolySwordProfilePicker();});
