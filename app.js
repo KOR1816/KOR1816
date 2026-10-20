@@ -881,7 +881,7 @@ function apiProfileAvatar(p){
  const keys=["avatar_url","avatarUrl","profile_image_url","profileImageUrl","portrait_url","portraitUrl","head_url","headUrl","icon_url","iconUrl","avatar","portrait","head","profile_image","profileImage"];
  const seen=new Set(),queue=[p];
  while(queue.length){const item=queue.shift();if(!item||typeof item!=="object"||seen.has(item))continue;seen.add(item);
-  for(const key of keys){const value=item[key];if(typeof value==="string"&&/^https?:\\/\\//i.test(value))return value;if(value&&typeof value==="object")queue.push(value);}
+  for(const key of keys){const value=item[key];if(typeof value==="string"&&/^https?:/i.test(value)&&value.startsWith("http"))return value;if(value&&typeof value==="object")queue.push(value);}
   for(const [key,value] of Object.entries(item)){if(value&&typeof value==="object"&&/profile|player|user|data|base|avatar|image/i.test(key))queue.push(value);}
  }
  return "";
