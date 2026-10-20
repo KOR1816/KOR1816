@@ -874,3 +874,13 @@ button,.admin-btn{cursor:pointer;border:1px solid #405a80;border-radius:8px;back
 #castlelayout1 .castle-person-main{flex:1;min-width:0}
 #castlelayout1 .castle-profile-meta{display:block;margin-top:3px;color:#9fb5d2;font-size:10px;line-height:1.35;overflow-wrap:anywhere}
 @media(max-width:760px){#castlelayout1 .castle-person-card .castle-avatar{width:32px;height:32px;flex-basis:32px}#castlelayout1 .castle-person-name{font-size:11px}}
+
+
+/* API-only profile avatars: actual image elements, never legacy sprite/background photos. */
+.roster-avatar>img,.nc-avatar>img,.castle-avatar>img,.viking-sprite>img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.roster-avatar,.nc-avatar,.castle-avatar,.viking-sprite{overflow:hidden}
+.roster-avatar-missing{background:#203253!important;border:1px solid #58759d!important}
+.api-avatar-placeholder{display:grid;place-items:center;width:100%;height:100%;font-size:17px;line-height:1}
+#battleJoin .nc-avatar{display:grid;place-items:center}
+#castlelayout1 .castle-person-card .castle-avatar{width:38px;height:38px;flex-basis:38px;border:1px solid #7895c5;background:#203253}
+@media(max-width:760px){#castlelayout1 .castle-person-card .castle-avatar{width:32px;height:32px;flex-basis:32px}}
