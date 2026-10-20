@@ -88,6 +88,7 @@ const NOTICE_TRANSLATIONS = {
 };
 let currentLang = "ko";
 let activePage = "home";
+let apiProfilesReady = false;
 let adminModes = {};
 let readSessionPromise = null;
 let homeData = { latestTitle:"", latestBody:"", schedule:"", welcome:"", translations:{} };
@@ -498,6 +499,7 @@ function translateCommonControls(){
 function navigate(id,updateUrl=true){
  if(!PAGE_IDS.includes(id))id="home";
  activePage=id;
+ if(!apiProfilesReady&&(id==="battleJoin"||id==="viking"))setMsg(id==="battleJoin"?"ncJoinMsg":"vikingMsg",apiLoadingMessage());
  $$(".page").forEach(p=>p.classList.toggle("active",p.id===id));
  $$("#main-nav button").forEach(b=>{if(b.dataset.route===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
  if(updateUrl&&location.hash!=="#"+id)history.pushState({page:id},"","#"+id);
@@ -959,6 +961,7 @@ async function loadRosterApiAvatars(){
   }catch(error){console.warn("Roster API profile unavailable:",id,error);}
  }});
  await Promise.all(jobs);
+ apiProfilesReady=true;
  rosterApiProfileList.sort((a,b)=>PROFILE_ROSTER_IDS.indexOf(a.id)-PROFILE_ROSTER_IDS.indexOf(b.id));
  if(activePage==="battleJoin")setMsg("ncJoinMsg",apiLoadedMessage());
  if(activePage==="viking")setMsg("vikingMsg",apiLoadedMessage());
