@@ -23,7 +23,8 @@
         return;
       }
       var isEntering1816 = params.get("space") === "1816";
-      var isDirectPageLink = Boolean(hash && hash !== "#home");
+      var requestedPage = params.get("page") || "";
+      var isDirectPageLink = Boolean(hash || requestedPage);
       if (!isEntering1816 && !isDirectPageLink) {
         window.location.replace("./landing.html" + window.location.search);
       }
