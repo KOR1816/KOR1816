@@ -962,20 +962,16 @@ async function saveAlliance(){
 }
 
 /* Seating table */
-function seatingRosterLabel(id){
- const value=String(id||"");
- return /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(value)?value:value.replace(/[^A-Za-z0-9 ]/g,"");
-}
+function seatingRosterLabel(id){return rosterApiDisplayName(id);}
 function seatingRosterPerson(id){
  if(!id)return '<span class="roster-person-empty"></span>';
  return '<span class="roster-person">'+rosterAvatar(id)+'<span class="roster-person-name">'+esc(seatingRosterLabel(id))+'</span></span>';
 }
 function fillSeatingNicknameSelect(select,value){
  if(!select)return;
- const allowed=new Set(FIXED_NICKNAMES);
- const current=allowed.has(String(value||"").trim())?String(value).trim():"";
- select.innerHTML='<option value="">닉네임 선택</option>'+FIXED_NICKNAMES.map(id=>'<option value="'+esc(id)+'" '+(id===current?'selected':'')+'>'+esc(seatingRosterLabel(id))+'</option>').join("");
- select.value=current;
+ const allowed=knownRosterNicknames([value]),original=String(value||"").trim(),current=allowed.includes(rosterApiDisplayName(original))?rosterApiDisplayName(original):allowed.includes(original)?original:"";
+ select.innerHTML='<option value="">닉네임 선택</option>'+allowed.map(id=>'<option value="'+esc(id)+'" '+(id===current||id===original?'selected':'')+'>'+esc(seatingRosterLabel(id))+'</option>').join("");
+ select.value=[...select.options].some(o=>o.value===current)?current:original;
 }
 function getRows(value){
  if(Array.isArray(value))return value;
@@ -990,7 +986,7 @@ function getRows(value){
 function normalizeSeatingRows(value){
   const source=getRows(value);
   const leftLens=[12,17,26],rightLens=[12,18,16];
-  const allowed=new Set(FIXED_NICKNAMES);
+  const allowed=new Set(knownRosterNicknames());
   const validId=v=>{const id=String(v??"").trim();return allowed.has(id)?id:"";};
   return [0,1,2].map(i=>{
    const row=source[i]||{};
@@ -1062,13 +1058,13 @@ function battleJoinParticipantCard(p,hideSkills=false){
  if(!p||!p.nickname)return '<div class="nc-empty">—</div>';
  const fixed=FIXED_LEADERS.includes(p.nickname),hasTier=["A","B","C"].includes(p.tier);
  const tier=fixed?"S":hasTier?p.tier:"😭";
- const sprite=getVikingSprite(p.nickname),spriteStyle=vikingSpriteStyle(p.nickname);
- const avatar='<span class="nc-avatar" '+(spriteStyle?'style="'+spriteStyle+'"':"")+'>'+(sprite?"":esc((p.nickname||"?").slice(0,1)))+'</span>';
+ const sprite=getVikingSprite(p.nickname),spriteStyle=vikingSpriteStyle(p.nickname),apiStyle=rosterApiAvatarStyle(p.nickname);
+ const avatar='<span class="nc-avatar" data-roster-api-name="'+esc(p.nickname)+'" '+(apiStyle?'style="'+apiStyle+'"':spriteStyle?'style="'+spriteStyle+'"':"")+'>'+(apiStyle||spriteStyle?"":esc((p.nickname||"?").slice(0,1)))+'</span>';
  const barracks=fixed?castleCardText("leader"):p.tier==="A"?castleCardText("barracks5"):p.tier==="B"?castleCardText("barracks45"):p.tier==="C"?castleCardText("barracks4"):castleCardText("tierNone");
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
- return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong>'+esc(p.nickname)+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(skills.join(" · "))+'</div></div></div>';
+ return '<div class="nc-member-card nc-participant-card"><strong class="nc-rank-label'+(hasTier||fixed?"":" nc-rank-none")+'">'+esc(tier)+'</strong>'+avatar+'<div class="nc-member-main"><div class="nc-name-line"><strong data-roster-api-label="'+esc(p.nickname)+'">'+esc(rosterApiDisplayName(p.nickname))+'</strong><span class="nc-barracks">('+esc(barracks)+')</span></div><div class="nc-meta">'+esc(skills.join(" · "))+'</div></div></div>';
 }
 function renderParticipants(){
  const root=$("#battleJoin");if(!root)return;
@@ -1234,8 +1230,8 @@ const CASTLE_CARD_TEXT={
 };
 function castleCardText(key){return (CASTLE_CARD_TEXT[currentLang]||CASTLE_CARD_TEXT.ko)[key]||key;}
 function castleAvatar(name){
- const style=vikingSpriteStyle(name);
- return '<span class="castle-avatar" '+(style?'style="'+style+'"':"")+'>'+(style?"":'<span>?</span>')+'</span>';
+ const style=rosterApiAvatarStyle(name)||vikingSpriteStyle(name);
+ return '<span class="castle-avatar" data-roster-api-name="'+esc(name||"")+'" '+(style?'style="'+style+'"':"")+'>'+(style?"":'<span>?</span>')+'</span>';
 }
 function castleParticipantCard(p,hideSkills=false){
  if(!p||!p.nickname)return '<div class="castle-person-empty">—</div>';
@@ -1244,14 +1240,14 @@ function castleParticipantCard(p,hideSkills=false){
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
- return '<div class="castle-person-card"><strong class="castle-rank'+(hasTier||fixed?"":" castle-rank-none")+'">'+tier+'</strong>'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong>'+esc(name)+'</strong><span>('+esc(barracks)+')</span></div><small>'+esc(skills.join(" · "))+'</small></div></div>';
+ return '<div class="castle-person-card"><strong class="castle-rank'+(hasTier||fixed?"":" castle-rank-none")+'">'+tier+'</strong>'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</strong><span>('+esc(barracks)+')</span></div><small>'+esc(skills.join(" · "))+'</small></div></div>';
 }
 function castleMemberCard(name,meta){
  if(!name)return '<div class="castle-person-empty">—</div>';
  const p=participants.find(x=>x.nickname===name);
  if(p)return castleParticipantCard(p);
  if(FIXED_LEADERS.includes(name))return castleParticipantCard({nickname:name,tier:"S",salo:false,hilde:false});
- return '<div class="castle-person-card">'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong>'+esc(name)+'</strong></div><small>'+esc(meta||"")+'</small></div></div>';
+ return '<div class="castle-person-card">'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</strong></div><small>'+esc(meta||"")+'</small></div></div>';
 }
 function castleWarRoster(){
  const latest=new Map();
@@ -1505,17 +1501,17 @@ function renderViking(){
  const root=$("#viking"),team=$("#vikingTeam"),count=$("#vikingCount"),list=$("#vikingTeams"),nick=$("#vikingNickname");
  if(team)team.innerHTML='<option value="">참가 팀</option>'+Array.from({length:25},(_,i)=>'<option value="'+(i+1)+'">Team '+(i+1)+'</option>').join("");
  if(nick){
-  const selected=nick.value,names=[...new Set([...FIXED_NICKNAMES,...Object.values(vikingData.teams||{}).flat()])];
-  nick.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
+  const selected=nick.value,names=knownRosterNicknames(Object.values(vikingData.teams||{}).flat());
+  nick.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(rosterApiDisplayName(n))+'</option>').join("")+'<option value="__custom__">직접 입력</option>';
   if([...nick.options].some(o=>o.value===selected))nick.value=selected;
  }
  if(count)count.textContent=Object.values(vikingData.teams||{}).reduce((n,a)=>n+(a?.length||0),0)+" / 100";
  if(list)list.innerHTML=Array.from({length:25},(_,i)=>{
   const teamNo=i+1,roster=vikingData.teams?.[teamNo]||[],photos=vikingPhotosByTeam[teamNo]||{};
   const members=roster.length?roster.map(name=>{
-   const photo=photos[name],sprite=vikingSpriteStyle(name),avatar=typeof photo==="string"&&photo.startsWith("data:image/")?'<img src="'+photo+'" alt="">':sprite?'<span class="viking-sprite" style="'+sprite+'"></span>':'<span class="viking-no-photo">?</span>';
+   const photo=photos[name],sprite=vikingSpriteStyle(name),apiStyle=rosterApiAvatarStyle(name),avatar=apiStyle?'<span class="viking-sprite" data-roster-api-name="'+esc(name)+'" style="'+apiStyle+'"></span>':typeof photo==="string"&&photo.startsWith("data:image/")?'<img src="'+photo+'" alt="">':sprite?'<span class="viking-sprite" data-roster-api-name="'+esc(name)+'" style="'+sprite+'"></span>':'<span class="viking-sprite" data-roster-api-name="'+esc(name)+'">?</span>';
    const upload=vikingPhotoAdmin?'<button type="button" class="viking-photo-button" data-viking-photo="1" data-team="'+teamNo+'" data-nick="'+esc(name)+'">📷</button>':"";
-   return '<div class="viking-member"><span class="viking-avatar">'+avatar+'</span><span class="viking-member-name">'+esc(name)+'</span>'+upload+'</div>';
+   return '<div class="viking-member"><span class="viking-avatar">'+avatar+'</span><span class="viking-member-name" data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</span>'+upload+'</div>';
   }).join(""):'<div class="viking-empty">—</div>';
   return '<div class="viking-team"><h3>🛡️ Team '+teamNo+' <small>('+roster.length+'/4)</small></h3>'+members+'</div>';
  }).join("");
