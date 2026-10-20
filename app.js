@@ -926,7 +926,11 @@ function apiProfileAvatar(p){
   }
   return "";
 }
+function apiLoadingMessage(){return ({ko:'API 불러오는 중…',en:'Loading API…',ja:'APIを読み込み中…',zh:'正在加载 API…',de:'API wird geladen…',it:'Caricamento API…',es:'Cargando API…',tr:'API yükleniyor…'})[currentLang]||'API 불러오는 중…';}
+function apiLoadedMessage(){return ({ko:'API 프로필을 불러왔습니다.',en:'API profiles loaded.',ja:'APIプロフィールを読み込みました。',zh:'已加载 API 资料。',de:'API-Profile geladen.',it:'Profili API caricati.',es:'Perfiles API cargados.',tr:'API profilleri yüklendi.'})[currentLang]||'API 프로필을 불러왔습니다.';}
 async function loadRosterApiAvatars(){
+ if(activePage==="battleJoin")setMsg("ncJoinMsg",apiLoadingMessage());
+ if(activePage==="viking")setMsg("vikingMsg",apiLoadingMessage());
  let cursor=0;
  const jobs=Array.from({length:8},async()=>{while(cursor<PROFILE_ROSTER_IDS.length){
   const id=PROFILE_ROSTER_IDS[cursor++];
@@ -956,6 +960,8 @@ async function loadRosterApiAvatars(){
  }});
  await Promise.all(jobs);
  rosterApiProfileList.sort((a,b)=>PROFILE_ROSTER_IDS.indexOf(a.id)-PROFILE_ROSTER_IDS.indexOf(b.id));
+ if(activePage==="battleJoin")setMsg("ncJoinMsg",apiLoadedMessage());
+ if(activePage==="viking")setMsg("vikingMsg",apiLoadedMessage());
  applyRosterApiAvatars();refreshRosterSelectors();installHolySwordProfilePicker();
  if(typeof renderTeamsDisplay==="function")renderTeamsDisplay();
  if(typeof renderAllianceDisplay==="function")renderAllianceDisplay();
@@ -1002,7 +1008,7 @@ function installHolySwordProfilePicker(){
   if(select.dataset.hsPickerReady)return;
   select.dataset.hsPickerReady='1';
   select.classList.add('hs-api-picker-native');
-  const button=document.createElement('button');button.type='button';button.className='hs-api-picker-trigger';button.setAttribute('aria-label','API 프로필에서 캐릭터 선택');button.addEventListener('click',()=>openHolySwordProfilePicker(select));
+  const button=document.createElement('button');button.type='button';button.className='hs-api-picker-trigger';button.setAttribute('aria-label',pickerWord('dialog'));button.addEventListener('click',()=>openHolySwordProfilePicker(select));
   select.insertAdjacentElement('afterend',button);
  });
  if(!holySwordPickerInstalled){
@@ -1035,7 +1041,7 @@ function renderHolySwordProfilePickerList(){
  const list=$('#hsApiPickerList'),count=$('#hsApiPickerCount'),search=$('#hsApiPickerSearch');if(!list)return;
  const query=String(search?.value||'').trim().toLocaleLowerCase();
  const profiles=rosterApiProfileList.filter(p=>!query||p.nickname.toLocaleLowerCase().includes(query)||cleanApiNickname(p.nickname).toLocaleLowerCase().includes(query)||p.id.includes(query));
- if(count)count.textContent='API 프로필 '+rosterApiProfileList.length+'명 · 검색 결과 '+profiles.length+'명';
+ if(count)count.textContent=({ko:'API 프로필 ',en:'API profiles ',ja:'APIプロフィール ',zh:'API资料 ',de:'API-Profile ',it:'Profili API ',es:'Perfiles API ',tr:'API profilleri '})[currentLang]+rosterApiProfileList.length+({ko:'명 · 검색 결과 ',en:' · results ',ja:'件 · 検索結果 ',zh:'个 · 搜索结果 ',de:' · Suchergebnisse ',it:' · risultati ',es:' · resultados ',tr:' · sonuç '})[currentLang]+profiles.length+({ko:'명',en:'',ja:'件',zh:'个',de:'',it:'',es:'',tr:''})[currentLang];
  const empty='<button type="button" class="hs-api-picker-empty" data-hs-picker-empty="1">'+esc(pickerWord('clear'))+'</button>';
  list.innerHTML=empty+profiles.map(p=>'<button type="button" class="hs-api-picker-option" data-hs-profile-id="'+esc(p.id)+'">'+holySwordPickerAvatar(p)+'<span class="hs-api-picker-option-text"><strong>'+esc(p.nickname)+'</strong><small>'+(p.avatar?pickerWord('photo'):pickerWord('noPhoto'))+'</small></span><span class="hs-api-picker-selectmark">'+esc(pickerWord('select'))+'</span></button>').join('')+
   (!profiles.length?'<p class="hs-api-picker-no-results">'+esc(pickerWord('empty'))+'</p>':'');
