@@ -36,6 +36,7 @@ const LEGACY = {
 };
 const FIXED_NICKNAMES=["Nemesis","Pham","샌디에이고","Constant","SsungBi","Jinno","KOREAN MONSTER","hhHa","GeeGeeGeeZ","Jiwon","Aveline","DON QUIXOTE","Leo li","Aimee","yongi","moon","Chan Dam Bom","bebe","VIVIAN","Pika","Lekum","ImNotKorean","DDoro","Hani","miiiiia","bossi","Wilk","Krungkrung","Keith ape","OMEGA","Zidf","hajae","Mushi","Libby","LSJ","jennie","Nyctifer_v","Lager","GieZues","Sant Jordi","Eagle","Architect","El Elegido","LJ","Furball","AVA","AgaresKOR","coculim","Rarara","ROKA","Ian","다잘이 돌아왔다","backki","Commander 주","HIGH FIVE","Gideon","Dark Knight","Lady Anaiah","Korean","FlexMan","Dingdong","Alucard","S ssh","Hair loss beam","RESCENE Yaho","SUMMER","hun","themis1994","Sylvanas","RACruze","Kashish","Vista","HERA","Alchemist","DaddyEpstein","KOR","Rayan","ADIPATI KOR","Kuu Rawr","SAGAMI","KK Master","Solace","Bilal","The Warrior","Citykan","스타리아","Adanali Ibo","Hsun","benson627","Remember","Jshan","lolkillmeplz67","Pamuk","gozeromin","KOOK","Ojr","Mahecha","MG PRIME","MissCoco"];
 const FIXED_LEADERS = ["Nemesis","Pham","샌디에이고","Jinno","Leo li","SsungBi"];
+function isFixedLeader(name){return FIXED_LEADERS.some(leader=>rosterApiLookupKey(leader)===rosterApiLookupKey(name));}
 const NOTICE_DEFAULTS = {
   bearLeaders:"집결장: 알카 · 페라 · 로사",
   bearMembers:"집결원: 아마데우스 · 첸코 · 연우 · 마르고 · 아마네\n영웅 없이 X",
@@ -869,7 +870,7 @@ const rosterApiAvatars=new Map();
 function normalizeRosterMatch(value){return String(value||'').normalize('NFKC').toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu,'');}
 function rosterApiLookupKey(value){const key=normalizeRosterMatch(value);const aliases={팜:'pham',pham:'pham',팜phpmkor:'pham',샌디:'sandiego',샌디에이고:'sandiego',sandiego:'sandiego',썽비:'ssungbi',ssungbi:'ssungbi',썽비ssungbi:'ssungbi'};return aliases[key]||key;}
 function cleanApiNickname(value){return String(value||'').normalize('NFKC').replace(/[^가-힣A-Za-z\s]/g,'').replace(/\s+/g,' ').trim();}
-function rosterApiProfile(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw),alias=rosterApiLookupKey(raw);if(!key)return null;return rosterApiProfileList.find(p=>normalizeRosterMatch(p.nickname)===key)||rosterApiProfileList.find(p=>rosterApiLookupKey(p.nickname)===alias)||null;}
+function rosterApiProfile(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw),alias=rosterApiLookupKey(raw);if(!key)return null;const exact=rosterApiProfileList.find(p=>normalizeRosterMatch(p.nickname)===key)||rosterApiProfileList.find(p=>rosterApiLookupKey(p.nickname)===alias);if(exact)return exact;if(alias==="pham")return rosterApiProfileList.find(p=>{const n=normalizeRosterMatch(p.nickname);return n==="pham"||n==="팜phpmkor"||n.includes("phpmkor");})||null;return null;}
 function rosterApiDisplayName(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw);if(!key)return '';const alias=rosterApiLookupKey(raw),fixed={팜phpmkor:'팜phpmKOR',pham:'팜phpmKOR',썽비ssungbi:'썽비 Ssungbi',ssungbi:'썽비 Ssungbi'};if(fixed[key])return fixed[key];if(fixed[alias])return fixed[alias];const direct=rosterApiNameMap.get(key);if(direct)return direct;const matched=alias&&rosterApiNameMap.get(alias);return matched||cleanApiNickname(raw)||raw;}
 function rosterApiMatch(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw),alias=rosterApiLookupKey(raw);return rosterApiAvatars.get(key)||rosterApiAvatars.get(alias)||safeAvatarUrl(rosterApiProfile(name)?.avatar)||'';}
 function rosterApiGameId(name){return rosterApiProfile(name)?.id||'';}
@@ -1179,7 +1180,7 @@ async function loadParticipantRoster(){
 function participantRank(p){if(!p||p.status!=="yes")return "";const base={A:"A",B:"B",C:"C"}[p.tier];if(!base)return "";return base+(p.salo?"1":"2");}
 function battleJoinParticipantCard(p,hideSkills=false){
  if(!p||!p.nickname)return '<div class="nc-empty">—</div>';
- const fixed=FIXED_LEADERS.includes(p.nickname),hasTier=["A","B","C"].includes(p.tier);
+ const fixed=isFixedLeader(p.nickname),hasTier=["A","B","C"].includes(p.tier);
  const tier=fixed?"S":hasTier?p.tier:"😭";
  const avatar=apiAvatarMarkup(p.nickname,'nc-avatar');
  const barracks=fixed?castleCardText("leader"):p.tier==="A"?castleCardText("barracks5"):p.tier==="B"?castleCardText("barracks45"):p.tier==="C"?castleCardText("barracks4"):castleCardText("tierNone");
@@ -1267,7 +1268,7 @@ function updateNewCastleJoinFields(){
  const root=$("#battleJoin"),sel=$("#ncNick",root),search=$("#ncIdSearch",root),box=$("#ncNickSearchResults",root);
  if(search&&sel?.value&&sel.value!=="__custom__")search.value=sel.value;
  if(box){box.hidden=true;box.style.display="none";}
- const special=FIXED_LEADERS.includes(sel?.value);
+ const special=isFixedLeader(sel?.value);
  $$("[data-nc-optional]",root).forEach(el=>{el.style.display=special?"none":"";});
  const existing=participants.find(p=>p.nickname===sel?.value);
  if(existing){$("#ncStatus",root).value=existing.status;$("#ncTier",root).value=existing.tier;$("#ncSalo",root).value=existing.salo?"yes":"no";$("#ncHilde",root).value=existing.hilde?"yes":"no";}
@@ -1356,7 +1357,7 @@ function castleCardText(key){return (CASTLE_CARD_TEXT[currentLang]||CASTLE_CARD_
 function castleAvatar(name){return apiAvatarMarkup(name,'castle-avatar');}
 function castleParticipantCard(p,hideSkills=false){
  if(!p||!p.nickname)return '<div class="castle-person-empty">—</div>';
- const name=p.nickname,fixed=FIXED_LEADERS.includes(name),hasTier=["A","B","C"].includes(p.tier),tier=fixed?"S":hasTier?p.tier:"😭";
+ const name=p.nickname,fixed=isFixedLeader(name),hasTier=["A","B","C"].includes(p.tier),tier=fixed?"S":hasTier?p.tier:"😭";
  const barracks=fixed?castleCardText("leader"):castleCardText(p.tier==="A"?"tierA":p.tier==="B"?"tierB":p.tier==="C"?"tierC":"tierNone");
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
@@ -1368,7 +1369,7 @@ function castleMemberCard(name,meta){
  if(!name)return '<div class="castle-person-empty">—</div>';
  const p=participants.find(x=>x.nickname===name);
  if(p)return castleParticipantCard(p);
- if(FIXED_LEADERS.includes(name))return castleParticipantCard({nickname:name,tier:"S",salo:false,hilde:false});
+ if(isFixedLeader(name))return castleParticipantCard({nickname:name,tier:"S",salo:false,hilde:false});
  return '<div class="castle-person-card">'+castleAvatar(name)+'<div class="castle-person-main"><div class="castle-person-name"><strong data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</strong></div><small>'+esc(meta||"")+'</small></div></div>';
 }
 function castleWarRoster(){
@@ -1379,9 +1380,9 @@ function castleWarRoster(){
 function activeCastleWarParticipants(){return castleWarRoster().filter(p=>p.status==="yes");}
 function castleWarSelect(value){
  const names=[...new Set([...FIXED_LEADERS,...knownRosterNicknames(activeCastleWarParticipants().map(p=>p.nickname))])];
- return '<option value="">'+esc(castleCardText("choose"))+'</option>'+names.map(n=>{const p=participants.find(x=>x.nickname===n),tier=FIXED_LEADERS.includes(n)?"S":p&&["A","B","C"].includes(p.tier)?p.tier:"—";return '<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(tier+" · "+rosterApiDisplayName(n))+'</option>';}).join("");
+ return '<option value="">'+esc(castleCardText("choose"))+'</option>'+names.map(n=>{const p=participants.find(x=>x.nickname===n),tier=isFixedLeader(n)?"S":p&&["A","B","C"].includes(p.tier)?p.tier:"—";return '<option value="'+esc(n)+'" '+(n===value?'selected':'')+'>'+esc(tier+" · "+rosterApiDisplayName(n))+'</option>';}).join("");
 }
-function castleParticipantMeta(name){const p=participants.find(x=>x.nickname===name);if(!name)return "";if(FIXED_LEADERS.includes(name))return "S · 집결장";if(!p)return "";return (p.tier||"—")+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X");}
+function castleParticipantMeta(name){const p=participants.find(x=>x.nickname===name);if(!name)return "";if(isFixedLeader(name))return "S · 집결장";if(!p)return "";return (p.tier||"—")+" · 살로 "+(p.salo?"O":"X")+" · 힐데 "+(p.hilde?"O":"X");}
 function sanitizeCastleWarAssignments(){
  const eligible=new Set([...FIXED_LEADERS,...activeCastleWarParticipants().map(p=>p.nickname)]);
  let changed=false;
@@ -1398,7 +1399,7 @@ function sanitizeCastleWarAssignments(){
 }
 function castleWarTierSortedParticipants(excludedNames=[]){
  const excluded=new Set(excludedNames.map(n=>String(n||"").trim().toLocaleLowerCase()));
- return castleWarRoster().filter(p=>p.status==="yes"&&!FIXED_LEADERS.includes(p.nickname)&&!excluded.has(String(p.nickname||"").trim().toLocaleLowerCase()))
+ return castleWarRoster().filter(p=>p.status==="yes"&&!isFixedLeader(p.nickname)&&!excluded.has(String(p.nickname||"").trim().toLocaleLowerCase()))
   .sort((a,b)=>({A:0,B:1,C:2}[a.tier]??9)-({A:0,B:1,C:2}[b.tier]??9)||(participantRank(a)||"Z").localeCompare(participantRank(b)||"Z")||a.nickname.localeCompare(b.nickname));
 }
 async function syncCastleWarAssignmentsFromRoster(){
@@ -1513,7 +1514,7 @@ function renderCastleWar(){
  const attack=$("#ncWarAttack",root),turrets=$("#ncWarTurrets",root);
  const groups=[["assault","돌격조"],["rush","개돌조"],["finish","마무리조"]];
  const turretGroups=[["north","Leo li",""],["west","Jinno",""],["reserve","SsungBi"," (예비)"]];
- const displayWarCard=(name,hideSkills=false)=>{const p=activeCastleWarParticipants().find(p=>p.nickname===name);return p?battleJoinParticipantCard(p,hideSkills):FIXED_LEADERS.includes(name)?battleJoinParticipantCard({nickname:name,tier:"S",status:"yes",salo:false,hilde:false},true):'<div class="castle-person-empty">—</div>';};
+ const displayWarCard=(name,hideSkills=false)=>{const p=activeCastleWarParticipants().find(p=>p.nickname===name);return p?battleJoinParticipantCard(p,hideSkills):isFixedLeader(name)?battleJoinParticipantCard({nickname:name,tier:"S",status:"yes",salo:false,hilde:false},true):'<div class="castle-person-empty">—</div>';};
  const cell=(name,key,index)=>adminModes.castlewar1?'<div class="nc-war-admin-cell">'+displayWarCard(name)+'<select data-war="'+key+'" data-index="'+index+'">'+castleWarSelect(name)+'</select></div>':displayWarCard(name);
  const leaderCell=(key)=>{const name=castleWarData.warLeaders[key]||"";return adminModes.castlewar1?'<div class="nc-war-admin-cell">'+displayWarCard(name,true)+'<select data-war-leader="'+key+'">'+castleWarSelect(name)+'</select></div>':displayWarCard(name,true);};
  const renderColumn=(key,title,leader,suffix="",isAttack=true)=>'<section class="nc-war-column '+(isAttack?"":"nc-turret-column")+'"><h3>'+title+suffix+'</h3><div class="nc-war-row nc-war-leader-row"><b>집결장</b>'+(isAttack?leaderCell(key):battleJoinParticipantCard({nickname:leader,tier:"S",status:"yes",salo:false,hilde:false},true))+'</div>'+Array.from({length:8},(_,i)=>'<div class="nc-war-row"><b class="nc-war-slot-number">'+(i+1)+'</b>'+cell(castleWarData.war[key]?.[i]||"",key,i)+'</div>').join("")+'</section>';
@@ -1565,7 +1566,7 @@ async function loadCastleLayout1(){
    if(old.exists()){
     const d=old.data();castleLayoutData={slots:Array.isArray(d.slots)?d.slots.slice(0,28):Array(28).fill(""),updatedAt:d.updatedAt||0};
    }else{
-    const sorted=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!FIXED_LEADERS.includes(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));
+    const sorted=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!isFixedLeader(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));
     castleLayoutData={slots:[...FIXED_LEADERS,...Array.from({length:22},(_,i)=>sorted[i]?.nickname||"")],updatedAt:0};
    }
   }
@@ -1599,7 +1600,7 @@ async function saveCastleLayout1(){
  $$("#castlelayout1 [data-layout-slot]").forEach(el=>castleLayoutData.slots[Number(el.dataset.layoutSlot)]=el.value);
  FIXED_LEADERS.forEach((n,i)=>castleLayoutData.slots[i]=n);
  const chosen=castleLayoutData.slots.slice(6).filter(Boolean);
- if(chosen.some(n=>FIXED_LEADERS.includes(n))){alert(message("fixedLeaderSlots"));return;}
+ if(chosen.some(n=>isFixedLeader(n))){alert(message("fixedLeaderSlots"));return;}
  if(new Set(chosen).size!==chosen.length){alert(message("duplicateLayout"));return;}
  try{castleLayoutData=await saveCloud("castlelayout1",castleLayoutData);renderCastleLayout();setMsg("castleLayout1Msg",message("saved"));}
  catch(e){console.error(e);setMsg("castleLayout1Msg",message("failed"));}
@@ -1821,7 +1822,7 @@ Object.assign(window,{
  loadAlliance,toggleAllianceAdmin,saveAlliance,clearAllAlliance,loadSeating,toggleSeatingAdmin,saveSeating,
  updateNewCastleJoinFields,filterNewCastleNicknames,chooseNewCastleNickname,submitNewCastleParticipation,cancelNewCastleParticipation,
  loadNewCastleFeatures,toggleNewCastleAdmin,deleteAllNewCastleParticipants,saveNewCastleFeatures,autoArrangeCastleWar,resetCastleWarTable,
- loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!FIXED_LEADERS.includes(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
+ loadCastleLayout1,toggleCastleLayout1Admin,saveCastleLayout1,runCastleLayout1Auto:()=>{if(!adminModes.castlelayout1){alert(message("admin"));return;}const active=participants.filter(p=>p.status==="yes"&&participantRank(p)&&!isFixedLeader(p.nickname)).sort((a,b)=>participantRank(a).localeCompare(participantRank(b))||a.nickname.localeCompare(b.nickname));for(let i=6;i<28;i++)castleLayoutData.slots[i]=active[i-6]?.nickname||"";renderCastleLayout();},
  toggleVikingCustomNick,joinVikingTeam,leaveVikingTeam,loadViking,toggleVikingPhotoAdmin,triggerVikingPhoto,toggleVikingAdmin,clearAllVikingTeams,toggleGloryAdmin,openEditor,closeEditor,saveRecord,loadRecords,deleteRecord
 });
 
