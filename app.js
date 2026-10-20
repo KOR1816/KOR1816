@@ -992,7 +992,7 @@ function renderHolySwordProfilePickerList(){
  const profiles=rosterApiProfileList.filter(p=>!query||p.nickname.toLocaleLowerCase().includes(query)||cleanApiNickname(p.nickname).toLocaleLowerCase().includes(query)||p.id.includes(query));
  if(count)count.textContent='API 프로필 '+rosterApiProfileList.length+'명 · 검색 결과 '+profiles.length+'명';
  const empty='<button type="button" class="hs-api-picker-empty" data-hs-picker-empty="1">＋ 선택 해제</button>';
- list.innerHTML=empty+profiles.map(p=>'<button type="button" class="hs-api-picker-option" data-hs-profile-id="'+esc(p.id)+'">'+holySwordPickerAvatar(p)+'<span class="hs-api-picker-option-text"><strong>'+esc(p.nickname)+'</strong><small>게임 ID '+esc(p.id)+(p.avatar?' · 프로필 사진 연결':' · 사진 없음')+'</small></span><span class="hs-api-picker-selectmark">선택</span></button>').join('')+
+ list.innerHTML=empty+profiles.map(p=>'<button type="button" class="hs-api-picker-option" data-hs-profile-id="'+esc(p.id)+'">'+holySwordPickerAvatar(p)+'<span class="hs-api-picker-option-text"><strong>'+esc(p.nickname)+'</strong><small>'+(p.avatar?'API 프로필 사진 연결':'사진 없음 · API 확인 필요')+'+'</small></span><span class="hs-api-picker-selectmark">선택</span></button>').join('')+
   (!profiles.length?'<p class="hs-api-picker-no-results">일치하는 프로필이 없습니다. API 조회 상태를 확인해 주세요.</p>':'');
  list.querySelector('[data-hs-picker-empty]')?.addEventListener('click',()=>{if(holySwordPickerTarget){holySwordPickerTarget.value='';refreshHolySwordProfilePickers();}closeHolySwordProfilePicker();});
  list.querySelectorAll('[data-hs-profile-id]').forEach(button=>button.addEventListener('click',()=>{
