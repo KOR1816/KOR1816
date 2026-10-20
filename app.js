@@ -1192,10 +1192,10 @@ async function loadParticipantRoster(){
 function participantRank(p){if(!p||p.status!=="yes")return "";const base={A:"A",B:"B",C:"C"}[p.tier];if(!base)return "";return base+(p.salo?"1":"2");}
 function battleJoinParticipantCard(p,hideSkills=false){
  if(!p||!p.nickname)return '<div class="nc-empty">—</div>';
- const fixed=isFixedLeader(p.nickname),hasTier=["A","B","C"].includes(p.tier);
+ const fixed=isFixedLeader(p.nickname),fixedRole=fixedLeaderRole(p.nickname),hasTier=["A","B","C"].includes(p.tier);
  const tier=fixed?"S":hasTier?p.tier:"😭";
  const avatar=apiAvatarMarkup(p.nickname,'nc-avatar');
- const barracks=fixed?castleCardText("leader"):p.tier==="A"?castleCardText("barracks5"):p.tier==="B"?castleCardText("barracks45"):p.tier==="C"?castleCardText("barracks4"):castleCardText("tierNone");
+ const barracks=fixed?(fixedRole==="Nemesis"?"Nemesis · "+castleCardText("leader"):castleCardText("leader")):p.tier==="A"?castleCardText("barracks5"):p.tier==="B"?castleCardText("barracks45"):p.tier==="C"?castleCardText("barracks4"):castleCardText("tierNone");
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
@@ -1220,9 +1220,8 @@ function renderParticipants(){
   if(!prev||(Number(p.updatedAt)||0)>=(Number(prev.updatedAt)||0))uniqueByNickname.set(key,p);
  });
  participants=[...uniqueByNickname.values()];
- const fixedOrder=new Set(FIXED_LEADERS);
- const tierOrder=p=>fixedOrder.has(p.nickname)?0:p.tier==="A"?1:p.tier==="B"?2:p.tier==="C"?3:4;
- const tierLabel=p=>fixedOrder.has(p.nickname)?"집결장":p.tier==="A"?"A등급":p.tier==="B"?"B등급":p.tier==="C"?"C등급":"해당없음";
+ const tierOrder=p=>isFixedLeader(p.nickname)?0:p.tier==="A"?1:p.tier==="B"?2:p.tier==="C"?3:4;
+ const tierLabel=p=>isFixedLeader(p.nickname)?(fixedLeaderRole(p.nickname)==="Nemesis"?"Nemesis 집결장":"집결장"):p.tier==="A"?"A등급":p.tier==="B"?"B등급":p.tier==="C"?"C등급":"해당없음";
  const sortWithinTier=(a,b)=>{
   const rank=p=>{const n=(p.salo?1:0)+(p.hilde?1:0);return n===2?"1":n===1?"2":"3";};
   return rank(a).localeCompare(rank(b))||a.nickname.localeCompare(b.nickname);
@@ -1369,8 +1368,8 @@ function castleCardText(key){return (CASTLE_CARD_TEXT[currentLang]||CASTLE_CARD_
 function castleAvatar(name){return apiAvatarMarkup(name,'castle-avatar');}
 function castleParticipantCard(p,hideSkills=false){
  if(!p||!p.nickname)return '<div class="castle-person-empty">—</div>';
- const name=p.nickname,fixed=isFixedLeader(name),hasTier=["A","B","C"].includes(p.tier),tier=fixed?"S":hasTier?p.tier:"😭";
- const barracks=fixed?castleCardText("leader"):castleCardText(p.tier==="A"?"tierA":p.tier==="B"?"tierB":p.tier==="C"?"tierC":"tierNone");
+ const name=p.nickname,fixed=isFixedLeader(name),fixedRole=fixedLeaderRole(name),hasTier=["A","B","C"].includes(p.tier),tier=fixed?"S":hasTier?p.tier:"😭";
+ const barracks=fixed?(fixedRole==="Nemesis"?"Nemesis · "+castleCardText("leader"):castleCardText("leader")):castleCardText(p.tier==="A"?"tierA":p.tier==="B"?"tierB":p.tier==="C"?"tierC":"tierNone");
  const skills=[];
  if(!hideSkills&&!fixed&&p.salo)skills.push(castleCardText("salo")+" O");
  if(!hideSkills&&!fixed&&p.hilde)skills.push(castleCardText("hilde")+" O");
