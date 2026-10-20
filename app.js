@@ -876,10 +876,83 @@ function applyRosterApiAvatars(){document.querySelectorAll('[data-roster-api-nam
 async function loadRosterApiAvatars(){let cursor=0;const jobs=Array.from({length:8},async()=>{while(cursor<PROFILE_ROSTER_IDS.length){const id=PROFILE_ROSTER_IDS[cursor++];try{let data=null;const cacheKey='kor1816_roster_avatar_'+id;try{const saved=JSON.parse(localStorage.getItem(cacheKey)||'null');if(saved&&Date.now()-saved.savedAt<12*60*60*1000&&saved.data?.nickname)data=saved.data;}catch{}if(!data){const response=await fetch(PROFILE_API+'?id='+encodeURIComponent(id),{headers:{Accept:'application/json'},cache:'no-store'});if(!response.ok)continue;const json=await response.json();if(!json?.ok||!json?.player)continue;const p=json.player;data={nickname:p.nick_name||p.nickname||p.name||p.player_name,avatar:p.avatar_url||p.avatar};try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),data}));}catch{}}const nickname=cleanApiNickname(data.nickname);if(!nickname)continue;const key=normalizeRosterMatch(nickname);if(!key)continue;const profile={id,nickname,avatar:safeAvatarUrl(data.avatar)};rosterApiProfileList.push(profile);if(rosterApiNameMap.has(key)&&rosterApiNameMap.get(key)!==nickname){rosterApiNameMap.set(key,'');rosterApiAmbiguousNames.add(key);}else if(!rosterApiAmbiguousNames.has(key))rosterApiNameMap.set(key,nickname);if(profile.avatar&&!rosterApiAmbiguousNames.has(key)&&!rosterApiAvatars.has(key))rosterApiAvatars.set(key,profile.avatar);}catch(error){console.warn('Roster API profile unavailable:',id,error);}}});await Promise.all(jobs);rosterApiProfileList.sort((a,b)=>PROFILE_ROSTER_IDS.indexOf(a.id)-PROFILE_ROSTER_IDS.indexOf(b.id));applyRosterApiAvatars();refreshRosterSelectors();}
 function knownRosterNicknames(extra=[]){const seatingNames=(seatingData?.rows||[]).flatMap(r=>[...(r.left||[]),...(r.right||[])]);const allianceNames=Object.values(allianceData?.names||{}).flatMap(groups=>Object.values(groups||{}).flat());const teamNames=[...(teamData?.A||[]),...(teamData?.B||[]),...(teamData?.C||[]),...(teamData?.D||[]),...(teamData?.extra||[]),...(teamData?.subs||[])];const apiNames=rosterApiProfileList.map(p=>p.nickname).filter(Boolean);const unmatchedLeaders=FIXED_LEADERS.filter(n=>!rosterApiNameMap.has(normalizeRosterMatch(n)));return [...new Set([...(apiNames.length?apiNames:FIXED_NICKNAMES),...unmatchedLeaders,...teamNames,...allianceNames,...seatingNames,...extra].map(v=>String(v||'').trim()).filter(Boolean))];}
 function fillNicknameSelect(select,value){if(!select)return;const original=String(value||'').trim(),current=rosterApiDisplayName(original),names=knownRosterNicknames([original,current]);select.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===current||n===original?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join('');select.value=[...select.options].some(o=>o.value===current)?current:original;}
-function refreshRosterSelectors(){const selector='select[id^="team-"],select[id^="extra-"],select[id^="sub-"],select[id^="alliance-"],select[id^="ae-"],select[id^="eNoticeAbsence"],#ncNick';$$(selector).forEach(select=>fillNicknameSelect(select,select.value));$$('#seatingEditGrid select[data-seating-row]').forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillSeatingNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||select.value||'');});const nick=$('#vikingNickname');if(nick){const selected=nick.value,names=knownRosterNicknames(Object.values(vikingData.teams||{}).flat());nick.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(rosterApiDisplayName(n))+'</option>').join('')+'<option value="__custom__">직접 입력</option>';if([...nick.options].some(o=>o.value===selected))nick.value=selected;}const layout=$('#castlelayout1 [data-layout-slot]');layout.forEach(select=>{const selected=select.value,names=knownRosterNicknames([selected,...participants.map(p=>p.nickname)]);select.innerHTML='<option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===selected?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join('');select.value=selected;});$("#castlewar1 select[data-war],#castlewar1 select[data-war-leader]").forEach(select=>{const selected=select.value;select.innerHTML=castleWarSelect(selected);select.value=selected;});}
+function refreshRosterSelectors(){const selector='select[id^="team-"],select[id^="extra-"],select[id^="sub-"],select[id^="alliance-"],select[id^="ae-"],select[id^="eNoticeAbsence"],#ncNick';$$(selector).forEach(select=>fillNicknameSelect(select,select.value));$$('#seatingEditGrid select[data-seating-row]').forEach(select=>{const row=seatingData.rows[Number(select.dataset.seatingRow)];fillSeatingNicknameSelect(select,row?.[select.dataset.seatingSide]?.[Number(select.dataset.seatingIndex)]||select.value||'');});refreshHolySwordProfilePickers();const nick=$('#vikingNickname');if(nick){const selected=nick.value,names=knownRosterNicknames(Object.values(vikingData.teams||{}).flat());nick.innerHTML='<option value="">닉네임 선택</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(rosterApiDisplayName(n))+'</option>').join('')+'<option value="__custom__">직접 입력</option>';if([...nick.options].some(o=>o.value===selected))nick.value=selected;}const layout=$('#castlelayout1 [data-layout-slot]');layout.forEach(select=>{const selected=select.value,names=knownRosterNicknames([selected,...participants.map(p=>p.nickname)]);select.innerHTML='<option value="">—</option>'+names.map(n=>'<option value="'+esc(n)+'" '+(n===selected?'selected':'')+'>'+esc(rosterApiDisplayName(n))+'</option>').join('');select.value=selected;});$("#castlewar1 select[data-war],#castlewar1 select[data-war-leader]").forEach(select=>{const selected=select.value;select.innerHTML=castleWarSelect(selected);select.value=selected;});}
 function rosterAvatar(name){const spriteStyle=name?vikingSpriteStyle(name):'',apiStyle=rosterApiAvatarStyle(name),apiName=esc(name||'');return '<span class="roster-avatar'+(!apiStyle&&!spriteStyle?' roster-avatar-missing':'')+'" data-roster-api-name="'+apiName+'" '+(apiStyle?'style="'+apiStyle+'"':spriteStyle?'style="'+spriteStyle+'"':'')+'>'+(apiStyle||spriteStyle?'':'😭')+'</span>';}
 loadRosterApiAvatars();
 function rosterPerson(name){return name?'<span class="roster-person">'+rosterAvatar(name)+'<span class="roster-person-name" data-roster-api-label="'+esc(name)+'">'+esc(rosterApiDisplayName(name))+'</span></span>':'<span class="roster-person-empty"></span>';}
+
+/* Holy Sword API profile picker: keeps the existing nickname values and save format. */
+let holySwordPickerInstalled=false;
+function holySwordPickerAvatar(profile){
+ const url=safeAvatarUrl(profile?.avatar);
+ return url?'<img src="'+esc(url)+'" alt="" loading="lazy">':'<span class="hs-picker-fallback">👤</span>';
+}
+function holySwordPickerLabel(select){
+ const value=String(select?.value||'').trim();
+ const profile=rosterApiProfileList.find(p=>normalizeRosterMatch(p.nickname)===normalizeRosterMatch(value));
+ return {value,label:value?rosterApiDisplayName(value):'닉네임 선택',profile};
+}
+function refreshHolySwordProfilePickers(){
+ $('#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"]').forEach(select=>{
+  const button=select.parentElement?.querySelector('.hs-api-picker-trigger');
+  if(!button)return;
+  const {value,label,profile}=holySwordPickerLabel(select);
+  button.innerHTML=(profile?.avatar?holySwordPickerAvatar(profile):'<span class="hs-picker-fallback">'+(value?'👤':'＋')+'</span>')+
+   '<span class="hs-picker-trigger-text"><strong>'+esc(label)+'</strong><small>'+(profile?'게임 ID '+esc(profile.id):value?'프로필 정보 없음':'캐릭터 선택')+'</small></span><span class="hs-picker-chevron">▾</span>';
+  button.classList.toggle('has-profile',Boolean(profile?.avatar));
+ });
+}
+function installHolySwordProfilePicker(){
+ const root=$('#teams');if(!root)return;
+ const selects=$('select[id^="team-"],select[id^="extra-"],select[id^="sub-"]',root);
+ selects.forEach(select=>{
+  if(select.dataset.hsPickerReady)return;
+  select.dataset.hsPickerReady='1';
+  select.classList.add('hs-api-picker-native');
+  const button=document.createElement('button');button.type='button';button.className='hs-api-picker-trigger';button.setAttribute('aria-label','API 프로필에서 캐릭터 선택');button.addEventListener('click',()=>openHolySwordProfilePicker(select));
+  select.insertAdjacentElement('afterend',button);
+ });
+ if(!holySwordPickerInstalled){
+  holySwordPickerInstalled=true;
+  const modal=document.createElement('div');modal.id='hsApiProfilePicker';modal.className='hs-api-picker-overlay';modal.hidden=true;
+  modal.innerHTML='<section class="hs-api-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="hsApiPickerTitle"><header class="hs-api-picker-header"><div><h3 id="hsApiPickerTitle">성검쟁탈 캐릭터 선택</h3><p id="hsApiPickerCount">API 프로필 불러오는 중…</p></div><button type="button" class="hs-api-picker-close" aria-label="닫기">✕</button></header><input type="search" id="hsApiPickerSearch" placeholder="닉네임 또는 게임 ID 검색" autocomplete="off"><div id="hsApiPickerList" class="hs-api-picker-list"></div></section>';
+  document.body.appendChild(modal);
+  modal.querySelector('.hs-api-picker-close').addEventListener('click',closeHolySwordProfilePicker);
+  modal.addEventListener('click',e=>{if(e.target===modal)closeHolySwordProfilePicker();});
+  modal.querySelector('#hsApiPickerSearch').addEventListener('input',renderHolySwordProfilePickerList);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHolySwordProfilePicker();});
+ }
+ refreshHolySwordProfilePickers();
+}
+let holySwordPickerTarget=null;
+function openHolySwordProfilePicker(select){
+ const modal=$('#hsApiProfilePicker');if(!modal)return;
+ holySwordPickerTarget=select;modal.hidden=false;
+ const search=$('#hsApiPickerSearch');if(search)search.value='';
+ renderHolySwordProfilePickerList();
+ setTimeout(()=>search?.focus(),0);
+}
+function closeHolySwordProfilePicker(){const modal=$('#hsApiProfilePicker');if(modal)modal.hidden=true;holySwordPickerTarget=null;}
+function renderHolySwordProfilePickerList(){
+ const list=$('#hsApiPickerList'),count=$('#hsApiPickerCount'),search=$('#hsApiPickerSearch');if(!list)return;
+ const query=String(search?.value||'').trim().toLocaleLowerCase();
+ const profiles=rosterApiProfileList.filter(p=>!query||p.nickname.toLocaleLowerCase().includes(query)||p.id.includes(query));
+ if(count)count.textContent='API 프로필 '+rosterApiProfileList.length+'명 · 검색 결과 '+profiles.length+'명';
+ const empty='<button type="button" class="hs-api-picker-empty" data-hs-picker-empty="1">＋ 선택 해제</button>';
+ list.innerHTML=empty+profiles.map(p=>'<button type="button" class="hs-api-picker-option" data-hs-profile-id="'+esc(p.id)+'">'+holySwordPickerAvatar(p)+'<span class="hs-api-picker-option-text"><strong>'+esc(p.nickname)+'</strong><small>게임 ID '+esc(p.id)+(p.avatar?' · 프로필 사진 연결':' · 사진 없음')+'</small></span><span class="hs-api-picker-selectmark">선택</span></button>').join('')+
+  (!profiles.length?'<p class="hs-api-picker-no-results">일치하는 프로필이 없습니다. API 조회 상태를 확인해 주세요.</p>':'');
+ list.querySelector('[data-hs-picker-empty]')?.addEventListener('click',()=>{if(holySwordPickerTarget){holySwordPickerTarget.value='';refreshHolySwordProfilePickers();}closeHolySwordProfilePicker();});
+ list.querySelectorAll('[data-hs-profile-id]').forEach(button=>button.addEventListener('click',()=>{
+  const profile=rosterApiProfileList.find(p=>p.id===button.dataset.hsProfileId);if(!profile||!holySwordPickerTarget)return;
+  const select=holySwordPickerTarget;
+  if(![...select.options].some(o=>o.value===profile.nickname)){
+   const option=document.createElement('option');option.value=profile.nickname;option.textContent=profile.nickname;select.appendChild(option);
+  }
+  select.value=profile.nickname;select.dispatchEvent(new Event('change',{bubbles:true}));
+  refreshHolySwordProfilePickers();closeHolySwordProfilePicker();
+ }));
+}
+
 
 /* Holy Sword and Alliance */
 function setTeamsInputsEnabled(enabled){setInputsEnabled($("#teams"),enabled);}
@@ -894,6 +967,7 @@ function renderTeamsDisplay(){
 async function loadTeams(){
  const r=await loadData("teams",teamData);teamData={...teamData,...r.data};const root=$("#teams");
  for(const g of ["A","B","C","D"])(teamData[g]||[]).forEach((v,i)=>fillNicknameSelect($("#team-"+g+"-"+(i+1),root),v||""));
+ installHolySwordProfilePicker();
  (teamData.extra||[]).forEach((v,i)=>fillNicknameSelect($("#extra-"+(i+1),root),v||""));
  (teamData.subs||[]).forEach((v,i)=>fillNicknameSelect($("#sub-"+(i+1),root),v||""));
  setTeamsInputsEnabled(Boolean(adminModes.teams));renderTeamsDisplay();setMsg("teamMsg",r.source==="unavailable"?message("fallback"):message("load"));
