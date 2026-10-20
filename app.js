@@ -35,7 +35,7 @@ const LEGACY = {
   battleJoin:"castle_features_v1", castlewar1:"castle_features_v1", castlelayout1:"castle_layout1_v1"
 };
 const FIXED_NICKNAMES=["Nemesis","Pham","샌디에이고","Constant","SsungBi","Jinno","KOREAN MONSTER","hhHa","GeeGeeGeeZ","Jiwon","Aveline","DON QUIXOTE","Leo li","Aimee","yongi","moon","Chan Dam Bom","bebe","VIVIAN","Pika","Lekum","ImNotKorean","DDoro","Hani","miiiiia","bossi","Wilk","Krungkrung","Keith ape","OMEGA","Zidf","hajae","Mushi","Libby","LSJ","jennie","Nyctifer_v","Lager","GieZues","Sant Jordi","Eagle","Architect","El Elegido","LJ","Furball","AVA","AgaresKOR","coculim","Rarara","ROKA","Ian","다잘이 돌아왔다","backki","Commander 주","HIGH FIVE","Gideon","Dark Knight","Lady Anaiah","Korean","FlexMan","Dingdong","Alucard","S ssh","Hair loss beam","RESCENE Yaho","SUMMER","hun","themis1994","Sylvanas","RACruze","Kashish","Vista","HERA","Alchemist","DaddyEpstein","KOR","Rayan","ADIPATI KOR","Kuu Rawr","SAGAMI","KK Master","Solace","Bilal","The Warrior","Citykan","스타리아","Adanali Ibo","Hsun","benson627","Remember","Jshan","lolkillmeplz67","Pamuk","gozeromin","KOOK","Ojr","Mahecha","MG PRIME","MissCoco"];
-const FIXED_LEADERS = ["Nemesis","팜phpmKOR","샌디에이고","Jinno","Leo li","SsungBi"];
+const FIXED_LEADERS = ["Nemesis","팜phpmKOR","샌디에이고","Jinno","Leo li","썽비 Ssungbi"];
 const NOTICE_DEFAULTS = {
   bearLeaders:"집결장: 알카 · 페라 · 로사",
   bearMembers:"집결원: 아마데우스 · 첸코 · 연우 · 마르고 · 아마네\n영웅 없이 X",
@@ -867,10 +867,10 @@ const rosterApiNameMap=new Map();
 const rosterApiAmbiguousNames=new Set();
 const rosterApiAvatars=new Map();
 function normalizeRosterMatch(value){return String(value||'').normalize('NFKC').toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu,'');}
-function rosterApiLookupKey(value){const key=normalizeRosterMatch(value);const aliases={팜:'pham',pham:'pham',팜phpmkor:'pham',샌디:'sandiego',샌디에이고:'sandiego',sandiego:'sandiego'};return aliases[key]||key;}
+function rosterApiLookupKey(value){const key=normalizeRosterMatch(value);const aliases={팜:'pham',pham:'pham',팜phpmkor:'pham',샌디:'sandiego',샌디에이고:'sandiego',sandiego:'sandiego',썽비:'ssungbi',ssungbi:'ssungbi',썽비ssungbi:'ssungbi'};return aliases[key]||key;}
 function cleanApiNickname(value){return String(value||'').normalize('NFKC').replace(/[^가-힣A-Za-z\s]/g,'').replace(/\s+/g,' ').trim();}
 function rosterApiProfile(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw),alias=rosterApiLookupKey(raw);if(!key)return null;return rosterApiProfileList.find(p=>normalizeRosterMatch(p.nickname)===key)||rosterApiProfileList.find(p=>rosterApiLookupKey(p.nickname)===alias)||null;}
-function rosterApiDisplayName(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw);if(!key)return '';const direct=rosterApiNameMap.get(key);if(direct)return direct;const alias=rosterApiLookupKey(raw),matched=alias&&rosterApiNameMap.get(alias);return matched||cleanApiNickname(raw)||raw;}
+function rosterApiDisplayName(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw);if(!key)return '';const alias=rosterApiLookupKey(raw),fixed={팜phpmkor:'팜phpmKOR',pham:'팜phpmKOR',썽비ssungbi:'썽비 Ssungbi',ssungbi:'썽비 Ssungbi'};if(fixed[key])return fixed[key];if(fixed[alias])return fixed[alias];const direct=rosterApiNameMap.get(key);if(direct)return direct;const matched=alias&&rosterApiNameMap.get(alias);return matched||cleanApiNickname(raw)||raw;}
 function rosterApiMatch(name){const raw=String(name||'').trim(),key=normalizeRosterMatch(raw),alias=rosterApiLookupKey(raw);return rosterApiAvatars.get(key)||rosterApiAvatars.get(alias)||safeAvatarUrl(rosterApiProfile(name)?.avatar)||'';}
 function rosterApiGameId(name){return rosterApiProfile(name)?.id||'';}
 function safeAvatarUrl(value){try{const url=new URL(String(value||''));return url.protocol==='https:'||url.protocol==='http:'?url.href:'';}catch{return '';}}
@@ -893,7 +893,7 @@ function holySwordPickerAvatar(profile){
 }
 function holySwordPickerLabel(select){
  const value=String(select?.value||'').trim();
- const profile=rosterApiProfileList.find(p=>normalizeRosterMatch(p.nickname)===normalizeRosterMatch(value));
+ const profile=rosterApiProfile(value);
  return {value,label:value?rosterApiDisplayName(value):'닉네임 선택',profile};
 }
 function refreshHolySwordProfilePickers(){
@@ -907,8 +907,9 @@ function refreshHolySwordProfilePickers(){
  });
 }
 function installHolySwordProfilePicker(){
- const root=$('#teams');if(!root)return;
- const selects=$$('select[id^="team-"],select[id^="extra-"],select[id^="sub-"]',root);
+ const root=document;
+ const selectors='#teams select[id^="team-"],#teams select[id^="extra-"],#teams select[id^="sub-"],#alliance select[id^="alliance-"],#alliance select[id^="ae-"],select[id^="eNoticeAbsence"],#battleJoin #ncNick,#viking #vikingNickname,#seating select[data-seating-row],#castlelayout1 select[data-layout-slot],#castlewar1 select[data-war],#castlewar1 select[data-war-leader]';
+ const selects=$(selectors,root);
  selects.forEach(select=>{
   if(select.dataset.hsPickerReady)return;
   select.dataset.hsPickerReady='1';
@@ -919,7 +920,7 @@ function installHolySwordProfilePicker(){
  if(!holySwordPickerInstalled){
   holySwordPickerInstalled=true;
   const modal=document.createElement('div');modal.id='hsApiProfilePicker';modal.className='hs-api-picker-overlay';modal.hidden=true;
-  modal.innerHTML='<section class="hs-api-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="hsApiPickerTitle"><header class="hs-api-picker-header"><div><h3 id="hsApiPickerTitle">성검쟁탈 캐릭터 선택</h3><p id="hsApiPickerCount">API 프로필 불러오는 중…</p></div><button type="button" class="hs-api-picker-close" aria-label="닫기">✕</button></header><input type="search" id="hsApiPickerSearch" placeholder="닉네임 또는 게임 ID 검색" autocomplete="off"><div id="hsApiPickerList" class="hs-api-picker-list"></div></section>';
+  modal.innerHTML='<section class="hs-api-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="hsApiPickerTitle"><header class="hs-api-picker-header"><div><h3 id="hsApiPickerTitle">API 프로필 캐릭터 선택</h3><p id="hsApiPickerCount">API 프로필 불러오는 중…</p></div><button type="button" class="hs-api-picker-close" aria-label="닫기">✕</button></header><input type="search" id="hsApiPickerSearch" placeholder="닉네임 또는 게임 ID 검색" autocomplete="off"><div id="hsApiPickerList" class="hs-api-picker-list"></div></section>';
   document.body.appendChild(modal);
   modal.querySelector('.hs-api-picker-close').addEventListener('click',closeHolySwordProfilePicker);
   modal.addEventListener('click',e=>{if(e.target===modal)closeHolySwordProfilePicker();});
@@ -940,7 +941,7 @@ function closeHolySwordProfilePicker(){const modal=$('#hsApiProfilePicker');if(m
 function renderHolySwordProfilePickerList(){
  const list=$('#hsApiPickerList'),count=$('#hsApiPickerCount'),search=$('#hsApiPickerSearch');if(!list)return;
  const query=String(search?.value||'').trim().toLocaleLowerCase();
- const profiles=rosterApiProfileList.filter(p=>!query||p.nickname.toLocaleLowerCase().includes(query)||p.id.includes(query));
+ const profiles=rosterApiProfileList.filter(p=>!query||p.nickname.toLocaleLowerCase().includes(query)||cleanApiNickname(p.nickname).toLocaleLowerCase().includes(query)||p.id.includes(query));
  if(count)count.textContent='API 프로필 '+rosterApiProfileList.length+'명 · 검색 결과 '+profiles.length+'명';
  const empty='<button type="button" class="hs-api-picker-empty" data-hs-picker-empty="1">＋ 선택 해제</button>';
  list.innerHTML=empty+profiles.map(p=>'<button type="button" class="hs-api-picker-option" data-hs-profile-id="'+esc(p.id)+'">'+holySwordPickerAvatar(p)+'<span class="hs-api-picker-option-text"><strong>'+esc(p.nickname)+'</strong><small>게임 ID '+esc(p.id)+(p.avatar?' · 프로필 사진 연결':' · 사진 없음')+'</small></span><span class="hs-api-picker-selectmark">선택</span></button>').join('')+
@@ -949,8 +950,9 @@ function renderHolySwordProfilePickerList(){
  list.querySelectorAll('[data-hs-profile-id]').forEach(button=>button.addEventListener('click',()=>{
   const profile=rosterApiProfileList.find(p=>p.id===button.dataset.hsProfileId);if(!profile||!holySwordPickerTarget)return;
   const select=holySwordPickerTarget;
+  const displayName=rosterApiDisplayName(profile.nickname);
   if(![...select.options].some(o=>o.value===profile.nickname)){
-   const option=document.createElement('option');option.value=profile.nickname;option.textContent=profile.nickname;select.appendChild(option);
+   const option=document.createElement('option');option.value=profile.nickname;option.textContent=displayName;select.appendChild(option);
   }
   select.value=profile.nickname;select.dispatchEvent(new Event('change',{bubbles:true}));
   refreshHolySwordProfilePickers();closeHolySwordProfilePicker();
