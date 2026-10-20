@@ -1190,7 +1190,9 @@ async function saveSeating(){
   setMsg("seatingLatestMsg",message("saved"));
  }catch(e){
   console.error("Seating save failed",e);
-  setMsg("seatingLatestMsg",message("failed"));
+  const code=String(e?.code||"unknown");
+  const detail=({ "permission-denied":"Firestore 저장 권한 거부(permission-denied). 관리자 계정 또는 Firestore 규칙 확인 필요.", "unauthenticated":"로그인 세션이 없어 저장할 수 없습니다(unauthenticated). 관리자 재로그인 필요.", "unavailable":"Firebase 서버 연결 불가(unavailable). 잠시 후 재시도 필요.", "failed-precondition":"Firestore 설정 오류(failed-precondition). 데이터베이스 설정 확인 필요." })[code]||("저장 오류 코드: "+code);
+  setMsg("seatingLatestMsg",detail);
  }
 }
 async function clearSeating(){
