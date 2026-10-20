@@ -542,7 +542,7 @@ async function togglePageAdmin(id,buttonId,saveId){
  if(id==="castlelayout1")renderCastleLayout();
 }
 function setInputsEnabled(root,enabled){$$("input,textarea,select",root).forEach(el=>{if(!["vikingNickname","vikingTeam","ncNick","ncIdSearch","ncStatus","ncTier"].includes(el.id))el.disabled=!enabled;});}
-function setMsg(id,msg){const el=$("#"+id);if(el){el.textContent=msg;const isLatest=/최신 .*내용을 불러왔습니다\.|최신 내용을 불러왔습니다\.|Latest .*loaded\.|Latest content loaded\.|最新.*読み込みました|已加载最新|Aktuelle .*geladen|Contenuti .*caricat|Se cargó el contenido más reciente|En güncel .*yüklendi/i.test(String(msg));el.classList.toggle("is-latest-load",isLatest);}}
+function setMsg(id,msg){const el=$("#"+id);if(!el)return;const value=String(msg??"");el.textContent=value;const isLatest=/최신 .*내용을 불러왔습니다\.|최신 내용을 불러왔습니다\.|Latest .*loaded\.|Latest content loaded\.|最新.*読み込みました|已加载最新|Aktuelle .*geladen|Contenuti .*caricat|Se cargó el contenido más reciente|En güncel .*yüklendi/i.test(value);const isFailure=/실패|저장되지 않았|오류|권한 거부|로그인 세션|확인 필요|failed|not saved|error|denied|unauthenticated|unavailable|failed-precondition|失敗|保存されていません|错误|未保存|fehlgeschlagen|Fehler|non riusc|fallid|başarısız/i.test(value);const isSuccess=/저장했습니다|저장 완료|삭제했습니다|초기화했습니다|등록했습니다|취소했습니다|완료했습니다|Saved to|successfully|deleted|reset complete|登録しました|保存しました|已保存|已删除|gespeichert|salvato|guardado|kaydedildi/i.test(value);el.classList.add("is-status-message");el.classList.toggle("is-latest-load",isLatest);el.classList.toggle("is-status-failure",isFailure);el.classList.toggle("is-status-success",isSuccess&&!isFailure);el.classList.toggle("is-status-neutral",!isLatest&&!isFailure&&!isSuccess);}}
 
 /* Home */
 const HOME_TRANSLATIONS={
